@@ -1,0 +1,10 @@
+﻿## Interface: 20400
+## Title: X-Perl Options by |cFFFF8080Zek |cFF40FF40(LoadOnDemand)|r
+## Title-zhCN: X-Perl 选项 |cFF40FF40(LoadOnDemand)|r
+## Notes: X-Perl Options GUI
+## Notes-deDE: X-Perl UnitFrames Optionen GUI
+## Author: Zek
+## X-License: GNU GPL v3, 29 June 2007
+## RequiredDeps: XPerl
+## LoadOnDemand: 1
+XPerl_FrameOptions.xml
