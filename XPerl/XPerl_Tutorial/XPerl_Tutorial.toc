@@ -1,9 +1,0 @@
-﻿## Interface: 20400
-## Title: X-Perl Tutorial by |cFFFF8080Zek|r |cFF40FF40(LoadOnDemand)|r
-## Title-zhCN: X-Perl 教程
-## Notes: Give Tutorial tips for new users.
-## Author: Zek
-## X-License: GNU GPL v3, 29 June 2007
-## RequiredDeps: XPerl
-## LoadOnDemand: 1
-XPerl_Tutorial.xml

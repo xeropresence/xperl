@@ -1,8 +1,0 @@
-﻿## Interface: 20400
-## Title: X-Perl Raid Pets by |cFFFF8080Zek|r
-## Title-zhCN: X-Perl 团队宠物窗口
-## Notes: X-Perl Raid pets
-## Author: Zek
-## X-License: GNU GPL v3, 29 June 2007
-## Dependencies: XPerl_RaidFrames
-XPerl_RaidPets.xml
