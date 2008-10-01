@@ -1,5 +1,6 @@
-﻿
--- Localisation file
+﻿-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 if (GetLocale() == "koKR") then
 	XPERL_MINIMAP_HELP1	= "|c00FFFFFF좌클릭|r 하시면 설정창이 나옵니다. (그리고 |c0000FF00프레임 고정|r이 풀립니다.)"

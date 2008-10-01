@@ -1,3 +1,7 @@
+-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
+
 local conf
 XPerl_RequestConfig(function(new) conf = new end)
 local percD	= "%d"..PERCENT_SYMBOL
@@ -489,6 +493,22 @@ function XPerl_BlizzFrameDisable(self)
 	end
 end
 
+-- smoothColor
+local function smoothColor(percentage)
+	local r, g, b
+	if (percentage < 0.5) then
+		r = 1
+		g = min(1, max(0, 2*percentage))
+		b = 0
+	else
+		g = 1
+		r = min(1, max(0, 2*(1 - percentage)))
+		b = 0
+	end
+
+	return r, g, b
+end
+
 ---------------------------------
 --Smooth Health Bar Color      --
 ---------------------------------
@@ -496,28 +516,18 @@ function XPerl_SetSmoothBarColor(self, percentage)
 	if (self) then
 		local r, g, b
 		if (conf.colour.classic) then
-			if (percentage < 0.5) then
-				r = 1
-				g = 2*percentage
-				b = 0
-			else
-				g = 1
-				r = 2*(1 - percentage)
-				b = 0
-			end
+			r, g, b = smoothColor(percentage)
 		else
 			local c = conf.colour.bar
-			r = c.healthEmpty.r + ((c.healthFull.r - c.healthEmpty.r) * percentage)
-			g = c.healthEmpty.g + ((c.healthFull.g - c.healthEmpty.g) * percentage)
-			b = c.healthEmpty.b + ((c.healthFull.b - c.healthEmpty.b) * percentage)
+			r = min(1, max(0, c.healthEmpty.r + ((c.healthFull.r - c.healthEmpty.r) * percentage)))
+			g = min(1, max(0, c.healthEmpty.g + ((c.healthFull.g - c.healthEmpty.g) * percentage)))
+			b = min(1, max(0, c.healthEmpty.b + ((c.healthFull.b - c.healthEmpty.b) * percentage)))
 		end
 
-		if (r >= 0 and g >= 0 and b >= 0 and r <= 1 and g <= 1 and b <= 1) then
-			self:SetStatusBarColor(r, g, b)
+		self:SetStatusBarColor(r, g, b)
 
-			if (self.bg) then
-				self.bg:SetVertexColor(r, g, b, 0.25)
-			end
+		if (self.bg) then
+			self.bg:SetVertexColor(r, g, b, 0.25)
 		end
 	end
 end
@@ -659,6 +669,10 @@ function XPerl_UnlockFrames()
 		XPerl_Party_Virtual(true)
 	end
 
+	if (XPerl_Player_Pet_Virtual) then
+		XPerl_Player_Pet_Virtual(true)
+	end
+
 	if (XPerl_AggroAnchor) then
 		XPerl_AggroAnchor:Enable()
 	end
@@ -687,6 +701,10 @@ function XPerl_LockFrames()
 
 	if (XPerl_Party_Virtual) then
 		XPerl_Party_Virtual()
+	end
+
+	if (XPerl_Player_Pet_Virtual) then
+		XPerl_Player_Pet_Virtual()
 	end
 
 	if (XPerl_AggroAnchor) then
@@ -1049,9 +1067,10 @@ function XPerl_SetManaBarType(self)
 			local p = UnitPowerType(unit)
 			if (p) then
 				local c = conf.colour.bar[ManaColours[p]]
-
-				m:SetStatusBarColor(c.r, c.g, c.b, 1)
-				m.bg:SetVertexColor(c.r, c.g, c.b, 0.25)
+				if (c) then
+					m:SetStatusBarColor(c.r, c.g, c.b, 1)
+					m.bg:SetVertexColor(c.r, c.g, c.b, 0.25)
+				end
 			end
 		end
 	end
@@ -1118,7 +1137,7 @@ function XPerl_PlayerTip(self, unitid)
 		XPerl_RaidTipExtra(unitid)
 	end
 
-	if (conf.tooltip.xperlInfo and XPerl_GetUsage and not strmatch(unitid, "pet")) then
+--[[	if (conf.tooltip.xperlInfo and XPerl_GetUsage and not strmatch(unitid, "pet")) then
 		local xpUsage = XPerl_GetUsage(UnitName(unitid), unitid)
 		if (xpUsage) then
 			local xp, any = "|cFFD00000X-Perl|r "
@@ -1140,7 +1159,7 @@ function XPerl_PlayerTip(self, unitid)
 				GameTooltip:Show()
 			end
 		end
-	end
+	end ]]
 
 	XPerl_Highlight:TooltipInfo(UnitName(unitid))
 end
@@ -2194,6 +2213,10 @@ function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent)
 		end
 		button:SetScale(size / 32)
 
+		if (setup.onCreate) then
+			setup.onCreate(button)
+		end
+
 		if (debuff == 1) then
 			--buffFrame.UpdateTooltip = setup.updateTooltipDebuff
 			button.UpdateTooltip = setup.updateTooltipDebuff
@@ -2854,13 +2877,16 @@ end
 -- Re-usable tables
 local FreeTables = setmetatable({}, {__mode = "k"})
 local requested, freed = 0, 0
-function XPerl_GetReusableTable()
+function XPerl_GetReusableTable(...)
 	requested = requested + 1
 	for t in pairs(FreeTables) do
 		FreeTables[t] = nil
+		for i = 1, select("#", ...) do
+			t[i] = select(i, ...)
+		end
 		return t
 	end
-	return {}
+	return {...}
 end
 function XPerl_FreeTable(t, deep)
 	if (t) then
@@ -3325,9 +3351,16 @@ end
 XPerl_UnitHealth = UnitHealth
 
 if (LibStub) then
-	LoadAddOn("LibQuickHealth-1.0")
-	local QuickHealth = LibStub("LibQuickHealth-1.0", true)
-	
+	local lqh = 1
+	LoadAddOn("LibQuickHealth-2.0")
+	local QuickHealth = LibStub("LibQuickHealth-2.0", true)
+	if (QuickHealth) then
+		lqh = 2
+	else
+		LoadAddOn("LibQuickHealth-1.0")
+		QuickHealth = LibStub("LibQuickHealth-1.0", true)
+	end
+
 	if (QuickHealth) then
 		QuickHealth.RegisterCallback("XPerlHealthCallback", "HealthUpdated",
 			function(event, GUID, newHealth)
@@ -3363,9 +3396,12 @@ if (LibStub) then
 			end
 		)
 
-		function XPerl_UnitHealth(...)
-			return QuickHealth:UnitHealth(...)
+		if (lqh == 2) then
+			XPerl_UnitHealth = QuickHealth.UnitHealth
+		else
+			function XPerl_UnitHealth(...)
+				return QuickHealth:UnitHealth(...)
+			end
 		end
 	end
 end
-

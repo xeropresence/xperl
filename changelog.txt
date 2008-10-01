@@ -1,3 +1,26 @@
+X-Perl UnitFrames
+Author: Zek <Boodhoof-EU>
+License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
+
+2.4.3e
+Fixed: The XPerl_ParseCTRA bug.
+
+2.4.3d
+NEW: Flashy Power Word: Shield graphic when extra sparkles enabled.
+Fixed: Player Pet self error.
+
+2.4.3c
+Note: X-Perl now falls under the GNU General Public Licence version 3. This does not affect users in any way. It's merely to protect against other people making money from my work.
+NEW: Support for the LibQuickHealth-2.0 library.
+NEW: Pet and Pet's target will show in virtual mode when options are open.
+NEW: Sparkles. Everyone likes sparkles, in varying degrees from the mild mannered subtle to the downwright obscene. For the obscene among you, there's an 'Extra Sparkles' option for that touch of pure bad taste all unit frames deserve.
+Changed: Version query module brought up to date with the latest in 18th century coding techniques, now replies via whisper instead of queueing up replies on channels. Much saner.
+Changed: Highlighting module a little more robust now, and uses unit GUIDs rather than names where possible. Should now also work correctly with raid pets.
+Changed: HOT Highlighting changed (optionally) from a border colour to now showing a yellow bar (with sparkles) at the top of a unit's health bar indicating Hot duration.
+Changed: Circle of Healing now counts as a highlighted heal, showing the green healing border for 1 second.
+Changed: Raid pets won't grow taller than a standard raid group now, but will instead grow sideways 5 per column.
+Changed: POM highlighting now actually follows your Prayer of Mending from target to target, complete with moving sparkles and changed the highlight from a border colour to a glowing icon in the frame. If sparkles are disabled, the old border highlight will show as before.
+
 2.4.3b
 Fixed: Fixes to LibQuickHealth-1.0 support to reflect changes in library, and now uses GUID maps instead of loops for updates.
 

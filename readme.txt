@@ -1,3 +1,7 @@
+X-Perl UnitFrames
+Author: Zek <Boodhoof-EU>
+License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
+
 A much enchanced version of Nymbia's Perl UnitFrames, and a complete replacement for Blizzard's default unit frames, including raid frames and raid tools, with many additions and improvements over the original Nymbia code.
 
 Range Finder (combined with optional health check and/or debuff check) for all frames based on spell or item range test.

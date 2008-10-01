@@ -1,34 +1,31 @@
-﻿-- zhTW Locale
+﻿-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
+
 -- Thanks 星塵 for translations
 if (GetLocale() == "zhTW") then
+XPerl_ProductName	= "|cFFD00000X-Perl|r 框架"
+XPerl_Description	= XPerl_ProductName.." 作者 "..XPerl_Author
 
-XPerl_ProductName		= "|cFFD00000X-Perl|r 框架"
--- XPerl_ShortProductName	= "|cFFD00000X-Perl|r"
--- XPerl_Author			= "|cFFFF8080Zek|r"
-XPerl_Description		= XPerl_ProductName.." 作者 "..XPerl_Author
--- XPerl_VersionNumber 	= "2.4.3b"
--- XPerl_Version			= XPerl_Description.." - "..XPerl_VersionNumber
 XPerl_LongDescription	= "全新外觀的玩家狀態框，包括玩家、寵物、隊伍、團隊、目標以及目標的目標"
--- XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
 
--- XPERL_COMMS_PREFIX		= "X-Perl"
-XPERL_MINIMAP_HELP1		= "|c00FFFFFF左鍵點擊|r 開啟設定視窗 (以及 |c0000FF00解鎖框架|r)"
-XPERL_MINIMAP_HELP2		= "|c00FFFFFF右鍵拖動|r 移動此圖示"
-XPERL_MINIMAP_HELP3		= "\r團隊成員: |c00FFFF80%d|r\r隊伍成員: |c00FFFF80%d|r"
-XPERL_MINIMAP_HELP4		= "\r你是此 隊伍/團隊 隊長"
-XPERL_MINIMAP_HELP5		= "|c00FFFFFFAlt|r 顯示 X-Perl 記憶體用量"
-XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Shift|r 顯示 X-Perl 記憶體使用明細"
+XPERL_MINIMAP_HELP1	= "|c00FFFFFF左鍵點擊|r 開啟設定視窗 (以及 |c0000FF00解鎖框架|r)"
+XPERL_MINIMAP_HELP2	= "|c00FFFFFF右鍵拖動|r 移動此圖標"
+XPERL_MINIMAP_HELP3	= "\r團隊成員: |c00FFFF80%d|r\r隊伍成員: |c00FFFF80%d|r"
+XPERL_MINIMAP_HELP4	= "\r你是此 隊伍/團隊 隊長"
+XPERL_MINIMAP_HELP5	= "|c00FFFFFFAlt|r 顯示 X-Perl 記憶體用量"
+XPERL_MINIMAP_HELP6	= "|c00FFFFFF+Shift|r 顯示 X-Perl 記憶體使用明細"
 
-XPERL_MINIMENU_OPTIONS		= "功能設定"
-XPERL_MINIMENU_ASSIST		= "顯示協助框架"
-XPERL_MINIMENU_CASTMON		= "顯示施法監視"
-XPERL_MINIMENU_RAIDAD		= "顯示團隊幫手"
-XPERL_MINIMENU_ITEMCHK		= "顯示物品確認"
-XPERL_MINIMENU_RAIDBUFF 	= "團隊增益"
-XPERL_MINIMENU_ROSTERTEXT	= "名冊文字"
-XPERL_MINIMENU_RAIDSORT 	= "團隊排序"
-XPERL_MINIMENU_RAIDSORT_GROUP 	= "依據隊伍排序"
-XPERL_MINIMENU_RAIDSORT_CLASS 	= "依據職業排序"
+XPERL_MINIMENU_OPTIONS	= "功能設定"
+XPERL_MINIMENU_ASSIST	= "顯示協助框架"
+XPERL_MINIMENU_CASTMON	= "顯示施法監視"
+XPERL_MINIMENU_RAIDAD	= "顯示團隊幫手"
+XPERL_MINIMENU_ITEMCHK	= "顯示物品確認"
+XPERL_MINIMENU_RAIDBUFF = "團隊 Buffs"
+XPERL_MINIMENU_ROSTERTEXT="名單文字"
+XPERL_MINIMENU_RAIDSORT = "團隊排序"
+XPERL_MINIMENU_RAIDSORT_GROUP = "依據隊伍排序"
+XPERL_MINIMENU_RAIDSORT_CLASS = "依據職業排序"
 
 -- Class name localization is not too important. The only time these strings
 -- are used is when the raid frame titles need to be shown when in class sort
@@ -51,11 +48,6 @@ XPERL_TYPE_BOSS		= "首領"
 XPERL_TYPE_RAREPLUS	= "稀有精英+"
 XPERL_TYPE_ELITE	= "精英"
 XPERL_TYPE_RARE		= "稀有"
-
-XPERL_SPELL_SUNDER	= GetSpellInfo(30901)		-- "破甲攻擊"
-XPERL_SPELL_SHADOWV = GetSpellInfo(15258)		-- "暗影易傷"
-XPERL_SPELL_FIREV	= GetSpellInfo(22959)		-- "火焰易傷"
-XPERL_SPELL_WINTERCH	= GetSpellInfo(28595)	-- "深冬之寒"
 
 -- Status
 XPERL_LOC_DEAD		= DEAD			-- "Dead"
@@ -93,7 +85,7 @@ BINDING_NAME_TOGGLERAIDPETS = "切換是否使用團隊寵物"
 BINDING_NAME_TOGGLEOPTIONS = "開/關設定視窗"
 BINDING_NAME_TOGGLEBUFFTYPE = "切換 增益/減益/無"
 BINDING_NAME_TOGGLEBUFFCASTABLE = "切換顯示可施加/解除的增益/減益魔法"
-BINDING_NAME_TEAMSPEAKMONITOR = "顯示 Teamspeak 監看圖示"
+BINDING_NAME_TEAMSPEAKMONITOR = "顯示 Teamspeak 監看圖標"
 BINDING_NAME_TOGGLERANGEFINDER = "切換距離偵測開啟/關閉"
 
 XPERL_KEY_NOTICE_RAID_BUFFANY = "顯示所有 增益/減益魔法"
@@ -112,13 +104,6 @@ XPERL_USAGE_MODULES	= "模組: "
 XPERL_USAGE_NEWVERSION	= "*新版本"
 XPERL_USAGE_AVAILABLE	= "已有 %s |c00FFFFFF%s|r 可下載使用"
 
--- XPERL_CMD_MENU		= "menu"
--- XPERL_CMD_OPTIONS	= "options"
--- XPERL_CMD_LOCK		= "lock"
--- XPERL_CMD_UNLOCK	= "unlock"
--- XPERL_CMD_CONFIG	= "config"
--- XPERL_CMD_LIST		= "list"
--- XPERL_CMD_DELETE	= "delete"
 XPERL_CMD_HELP		= "|c00FFFF80使用: |c00FFFFFF/xperl menu | lock | unlock | config list | config delete <realm> <name>"
 XPERL_CANNOT_DELETE_CURRENT	= "無法刪除您的個人設定"
 XPERL_CONFIG_DELETED		= "刪除 %s/%s 的個人設定"

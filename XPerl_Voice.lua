@@ -1,4 +1,6 @@
--- New voice stuff
+-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 CreateFrame("Frame", "XPerl_Voice")
 local voice = XPerl_Voice

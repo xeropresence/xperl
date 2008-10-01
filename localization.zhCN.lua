@@ -1,5 +1,6 @@
-﻿
--- zhCN Locale
+﻿-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 if (GetLocale() == "zhCN") then
 XPerl_LongDescription	= "全新外观的玩家状态框，包括玩家、宠物、队伍、团队、目标、目标的目标、焦点、团队"

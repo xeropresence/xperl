@@ -1,5 +1,6 @@
-﻿
--- Localisation file
+﻿-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 if (GetLocale() == "deDE") then
 	XPerl_LongDescription	= "UnitFrame Alternative für ein neues Aussehen von Spieler, Begleiter, Gruppe, Ziel, Ziel des Ziels, Raid"

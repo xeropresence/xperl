@@ -1,3 +1,7 @@
+-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
+
 -- XPerl_SlashHandler
 local function XPerl_SlashHandler(msg)
 	local args = {}

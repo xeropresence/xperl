@@ -1,4 +1,6 @@
--- XPerlConfigNew		-- Our settings for everything
+-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 XPerlLocked		= 1
 local conf
@@ -127,7 +129,7 @@ function XPerl_CopyTable(old)
 		return
 	end
 
-	local new = {}
+	local new = XPerl_GetReusableTable()
 
 	for k,v in pairs(old) do
 		if (type(v) == "table") then

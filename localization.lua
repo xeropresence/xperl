@@ -1,11 +1,12 @@
-﻿
--- Localisation file
+﻿-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 XPerl_ProductName		= "|cFFD00000X-Perl|r UnitFrames"
 XPerl_ShortProductName	= "|cFFD00000X-Perl|r"
 XPerl_Author			= "|cFFFF8080Zek|r"
 XPerl_Description		= XPerl_ProductName.." by "..XPerl_Author
-XPerl_VersionNumber 	= "2.4.3b"
+XPerl_VersionNumber 	= "2.4.3e"
 XPerl_Version			= XPerl_Description.." - "..XPerl_VersionNumber
 XPerl_LongDescription	= "UnitFrame replacement for new look Player, Pet, Party, Target, Target's Target, Focus, Raid"
 XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
@@ -137,11 +138,11 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(28880)] = 15			-- Gift of the Naaru (Racial)
 	},
 	pomSpells = {
-		[GetSpellInfo(33076)] = 15			-- Prayer of Mending
+		[GetSpellInfo(33076)] = 30			-- Prayer of Mending
 	},
 	shieldSpells = {
 		[GetSpellInfo(25218)] = 30,			-- Power Word: Shield
-		[GetSpellInfo(32594)] = 60 * 10		-- Earth Shield
+		[GetSpellInfo(32594)] = 600			-- Earth Shield			-- TODO change me
 	},
 	healSpells = {
 		[GetSpellInfo(25235)] = 1,			-- Flash Heal
@@ -170,7 +171,8 @@ XPERL_HIGHLIGHT_SPELLS = {
 		},
 	},
 	groupHealSpells = {
-		[GetSpellInfo(25308)] = 3			-- Prayer of Healing
+		[GetSpellInfo(25308)] = 3,			-- Prayer of Healing
+		[GetSpellInfo(34866)] = -1			-- Circle of Healing		Negative means any group
 	},
 }
 

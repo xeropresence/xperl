@@ -387,16 +387,6 @@
 					if (XPerlDB.highlightSelection) then
 						self.sel = nil
 						self.tex:Hide()
-						--XPerl_Highlight:SetHighlight(self:GetParent())
-
-						local unit = self:GetParent():GetAttribute("unit")
-						if (unit) then
-							local name = UnitName(unit)
-							if (name) then
-								XPerl_Highlight:SetHighlight(self:GetParent(), name)
-								return
-							end
-						end
 						XPerl_Highlight:SetHighlight(self:GetParent())
 					end
 				end

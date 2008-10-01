@@ -1,5 +1,6 @@
-﻿-- Localisation file
-
+﻿-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 if (GetLocale() == "frFR") then
 	XPerl_LongDescription = "UnitFrame replacement for new look Joueur, Familier, Groupe, Cible, Cible de la cible, Raid"

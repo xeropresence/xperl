@@ -1,3 +1,7 @@
+-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
+
 local init_done, gradient, conf, doneOptions
 local errorCount = 0
 XPerl_RequestConfig(function(new) conf = new end)
@@ -137,6 +141,18 @@ function XPerl_SetAllFrames()
 	XPerl_SetHighlights()
 end
 
+-- XPerl_pcall
+function XPerl_pcall(...)
+	local success, error = pcall(...)
+	if (not success) then
+		errorCount = errorCount + 1
+		if (not doneOptions) then
+			XPerl_Notice("Error:"..error)
+		end
+		geterrorhandler()(error)
+	end
+end
+
 -- Buff Tooltip Hook
 local function XPerl_GameTooltipSetPlayerBuff(self, buffId)
 	if (this.parent and this.parent.buffObject and this.parent.buffObject.type) then
@@ -176,18 +192,6 @@ local function XPerl_GameTooltipSetPlayerBuff(self, buffId)
 				end
 			end
 		end
-	end
-end
-
--- XPerl_pcall
-function XPerl_pcall(...)
-	local success, error = pcall(...)
-	if (not success) then
-		errorCount = errorCount + 1
-		if (not doneOptions) then
-			XPerl_Notice("Error:"..error)
-		end
-		geterrorhandler()(error)
 	end
 end
 

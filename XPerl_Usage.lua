@@ -1,25 +1,75 @@
+-- X-Perl UnitFrames
+-- Author: Zek <Boodhoof-EU>
+-- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
+
 if (not XPerl_GetUsage) then
 
 local conf
 XPerl_RequestConfig(function(new) conf = new end)
 
 XPerl_Usage = {}
-local lastSend = 0
-local notifiedVersion = nil
-local needToSend = {}
-local responsePacket
+
+local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
+
+local mod = CreateFrame("Frame", "XPerl_UsageFrame")
+mod:RegisterEvent("PLAYER_ENTERING_WORLD")
+mod:RegisterEvent("CHAT_MSG_ADDON")
+mod:RegisterEvent("RAID_ROSTER_UPDATE")
+mod:RegisterEvent("PARTY_MEMBERS_CHANGED")
+mod:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+
+function modOnEvent(self, event, ...)
+	local f = mod[event]
+	if (f) then
+		f(mod, ...)
+	end
+end
+
+mod:SetScript("OnEvent", modOnEvent)
+
+mod.notifiedVersion = nil
+
+local function XPerl_GameTooltipSetUnit(tooltip, unitid)
+	mod:TooltipInfo(tooltip, unitid)
+end
+hooksecurefunc(GameTooltip, "SetUnit", XPerl_GameTooltipSetUnit)
+
+function mod:UPDATE_MOUSEOVER_UNIT()
+	self:TooltipInfo(GameTooltip, "mouseover")
+end
+
+function mod:TooltipInfo(tooltip, unitid)
+	if (conf and conf.tooltip.xperlInfo and XPerl_GetUsage and not strmatch(unitid, "pet")) then
+		local xpUsage = XPerl_GetUsage(UnitName(unitid), unitid)
+		if (xpUsage) then
+			local xp, any = "|cFFD00000X-Perl|r "
+			if (xpUsage.version) then
+				xp = xp..xpUsage.version
+			else
+				xp = xp..XPerl_VersionNumber
+			end
+			any = true
+
+			if (xpUsage.mods and IsShiftKeyDown()) then
+				local modList = self:DecodeModuleList(xpUsage.mods)
+				if (modList) then
+					xp = xp.." : |c00909090"..modList
+				end
+			end
+			if (any) then
+				GameTooltip:AddLine(xp, 1, 1, 1, 1)
+				GameTooltip:Show()
+			end
+		end
+	end
+end
 
 -- CheckForNewerVersion
-local function CheckForNewerVersion(ver)
+function mod:CheckForNewerVersion(ver)
 	if (not strfind(strlower(ver), "beta")) then
-		--local _, _, a,b,c = strfind(ver, "(%d+).(%d+).(%d+)")
-		--local _, _, aa,bb,cc = strfind(XPerl_VersionNumber, "(%d+).(%d+).(%d+)")
-		--local vThem = a * 10000 + b * 100 + c
-		--local vMe = aa * 10000 + bb * 100 + cc
-		--if (vThem > vMe) then
 		if (ver > XPerl_VersionNumber) then
-			if (not notifiedVersion or notifiedVersion < ver) then
-				notifiedVersion = ver
+			if (not self.notifiedVersion or self.notifiedVersion < ver) then
+				self.notifiedVersion = ver
 
 				if (not conf or conf.tooltip.xperlInfo) then
 					DEFAULT_CHAT_FRAME:AddMessage(format(XPERL_USAGE_AVAILABLE, XPerl_ProductName, ver))
@@ -31,57 +81,71 @@ local function CheckForNewerVersion(ver)
 end
 
 -- ProcessXPerlMessage
-local function ProcessXPerlMessage(unitName, msg)
-	local myUsage = XPerl_Usage[unitName]
-	if (not myUsage) then
-		myUsage = {}
-		XPerl_Usage[unitName] = myUsage
-	end
+function mod:ProcessXPerlMessage(sender, msg, channel)
+	local myUsage = XPerl_Usage[sender]
 
-	local rcv
-	if (msg == "R") then
-		-- It's a response packet, so don't reply
-		responsePacket = true
-		if (XPerlTest) then myUsage.responses = (myUsage.responses or 0) + 1 end
+	if (strsub(msg, 1, 4) == "VER ") then
+		-- ChatFrame7:AddMessage(" Received info from "..sender..", channel: "..channel)
+		if (not myUsage) then
+			myUsage = {}
+			XPerl_Usage[sender] = myUsage
+		end
 
-	elseif (strsub(msg, 1, 4) == "VER ") then
-		-- ChatFrame7:AddMessage(" Received info from "..unitName..", channel: "..arg3)
 		if (XPerlTest) then myUsage.packets = (myUsage.packets or 0) + 1 end
+
 		myUsage.old = nil
 		local ver = strsub(msg, 5)
 		if (ver == XPerl_VersionNumber) then
 			myUsage.version = nil
 		else
 			myUsage.version = ver
-			CheckForNewerVersion(ver)
+			self:CheckForNewerVersion(ver)
 		end
-		if (not responsePacket) then
-			rcv = true
+
+		if (channel ~= "WHISPER" and sender ~= UnitName("player")) then
+			self:SendModules("WHISPER", sender)
+		end
+
+	elseif (strsub(msg, 1, 7) == "MAXVER ") then
+		local ver = strsub(msg, 8)
+		if (ver >= XPerl_VersionNumber) then
+			self:CheckForNewerVersion(ver)
+		end
+
+	elseif (msg == "S") then
+		if (channel == "WHISPER") then
+			-- Version only sent, so ask for rest
+			SendAddonMessage(XPERL_COMMS_PREFIX, "ASK", chan, target)
+		end
+
+	elseif (msg == "ASK") then
+		if (channel == "WHISPER") then
+			-- Details asked for
+			self:SendModules("WHISPER", sender)
 		end
 
 	elseif (strsub(msg, 1, 4) == "MOD ") then
-		myUsage.mods = strsub(msg, 5)
+		if (myUsage) then
+			myUsage.mods = strsub(msg, 5)
+		end
 
 	elseif (strsub(msg, 1, 4) == "LOC ") then
-		local loc = strsub(msg, 5)
-		if (loc ~= GetLocale()) then
-			myUsage.locale = loc
+		if (myUsage) then
+			local loc = strsub(msg, 5)
+			if (loc ~= GetLocale()) then
+				myUsage.locale = loc
+			end
 		end
 
 	elseif (strsub(msg, 1, 3) == "GC ") then
-		myUsage.gc = tonumber(strsub(msg, 4))
-	end
-
-	if (rcv) then
-		if (unitName ~= UnitName("player")) then
-			-- Will send out our own version when we receive one, if it's been at least 2 minutes since the last send
-			XPerl_SendModules(arg3, true, arg4)
+		if (myUsage) then
+			myUsage.gc = tonumber(strsub(msg, 4))
 		end
 	end
 end
 
 -- XPerl_GeneralTooltip
-function XPerl_GeneralTooltip(name, anchor)
+function mod:GeneralTooltip(name, anchor)
 	if (name) then
 		local xpUsage = XPerl_Usage[name]
 		if (xpUsage) then
@@ -101,12 +165,12 @@ function XPerl_GeneralTooltip(name, anchor)
 				GameTooltip:SetText(XPerl_ProductName.." "..ver, 1, 1, 1)
 			end
 
-			if (xpUsage.version and CheckForNewerVersion(xpUsage.version)) then
+			if (xpUsage.version and self:CheckForNewerVersion(xpUsage.version)) then
 				GameTooltip:AddLine(XPERL_USAGE_NEWVERSION, 0.5, 1, 0.5)
 			end
 
 			if (xpUsage.mods) then
-				local modList = XPerl_DecodeModuleList(xpUsage.mods)
+				local modList = self:DecodeModuleList(xpUsage.mods)
 				if (modList) then
 					GameTooltip:AddLine(XPERL_USAGE_MODULES..modList, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
 				end
@@ -131,7 +195,7 @@ local function XPerl_GuildMateTooltip()
 	end
 
 	local name, rank, rankIndex, level, class, zone, note, officernote, online = GetGuildRosterInfo(this.guildIndex)
-	XPerl_GeneralTooltip(name, this)
+	mod:GeneralTooltip(name, this)
 end
 
 -- XPerl_FriendTooltip
@@ -141,7 +205,7 @@ local function XPerl_FriendTooltip()
 	end
 
 	local name, level, class, area, connected, status = GetFriendInfo(this:GetID())
-	XPerl_GeneralTooltip(name, this)
+	mod:GeneralTooltip(name, this)
 end
 
 -- XPerl_WhoTooltip
@@ -154,115 +218,84 @@ local function XPerl_WhoTooltip()
 	XPerl_GeneralTooltip(name, this)
 end
 
-local inRaid, inParty, lastResponseWhisper
 -- XPerl_UsageStartup
-function XPerl_Usage_OnEvent(self, event)
-	if (event == "PLAYER_ENTERING_WORLD") then
-		if (conf.tooltip.xperlInfo) then			-- FOR TESTING
-			-- If this cures taint problem, then put a frame mask over whole guild area and use MouseIsOver()
+function mod:PLAYER_ENTERING_WORLD()
+	if (conf.tooltip.xperlInfo) then			-- FOR TESTING
+		-- If this cures taint problem, then put a frame mask over whole guild area and use MouseIsOver()
 
-			-- Hook the guild name list to show tooltip for X-Perl users
-			for i = 1,GUILDMEMBERS_TO_DISPLAY do
-				local f = getglobal("GuildFrameButton"..i)
-				if (f) then
-					f:SetScript("OnEnter", XPerl_GuildMateTooltip)
-					f:SetScript("OnLeave", XPerl_PlayerTipHide)
-				end
-				f = getglobal("GuildFrameGuildStatusButton"..i)
-				if (f) then
-					f:SetScript("OnEnter", XPerl_GuildMateTooltip)
-					f:SetScript("OnLeave", XPerl_PlayerTipHide)
-				end
+		-- Hook the guild name list to show tooltip for X-Perl users
+		for i = 1,GUILDMEMBERS_TO_DISPLAY do
+			local f = getglobal("GuildFrameButton"..i)
+			if (f) then
+				f:SetScript("OnEnter", XPerl_GuildMateTooltip)
+				f:SetScript("OnLeave", XPerl_PlayerTipHide)
 			end
-
-			for i = 1,FRIENDS_TO_DISPLAY do
-				local f = getglobal("FriendsFrameFriendButton"..i)
-				if (f) then
-					f:SetScript("OnEnter", XPerl_FriendTooltip)
-					f:SetScript("OnLeave", XPerl_PlayerTipHide)
-				end
+			f = getglobal("GuildFrameGuildStatusButton"..i)
+			if (f) then
+				f:SetScript("OnEnter", XPerl_GuildMateTooltip)
+				f:SetScript("OnLeave", XPerl_PlayerTipHide)
 			end
-
-			for i = 1,WHOS_TO_DISPLAY do
-				local f = getglobal("WhoFrameButton"..i)
-				if (f) then
-					f:SetScript("OnEnter", XPerl_WhoTooltip)
-					f:SetScript("OnLeave", XPerl_PlayerTipHide)
-				end
-			end
-
-			if (GetNumRaidMembers() > 0) then
-				needToSend.RAID = true
-			elseif (GetNumPartyMembers() > 0) then
-				needToSend.PARTY = true
-			end
-			XPerl_SendModules("GUILD")
 		end
 
-	elseif (event == "RAID_ROSTER_UPDATE") then
-		if (GetNumRaidMembers() > 0) then
-			if (not inRaid) then
-				inRaid = true
-				XPerl_SendModules("RAID")			-- Let other X-Perl users know which version we're running
+		for i = 1,FRIENDS_TO_DISPLAY do
+			local f = getglobal("FriendsFrameFriendButton"..i)
+			if (f) then
+				f:SetScript("OnEnter", XPerl_FriendTooltip)
+				f:SetScript("OnLeave", XPerl_PlayerTipHide)
 			end
-		else
-			inRaid = nil
 		end
 
-	elseif (event == "PARTY_MEMBERS_CHANGED") then
-		if (GetNumPartyMembers() > 0) then
-			if (not inParty and not inRaid) then
-				inParty = true
-				XPerl_SendModules("PARTY")			-- Let other X-Perl users know which version we're running
+		for i = 1,WHOS_TO_DISPLAY do
+			local f = getglobal("WhoFrameButton"..i)
+			if (f) then
+				f:SetScript("OnEnter", XPerl_WhoTooltip)
+				f:SetScript("OnLeave", XPerl_PlayerTipHide)
 			end
-		else
-			inParty = nil
 		end
 
-	elseif (event == "CHAT_MSG_ADDON") then
-		-- prefix, message, distribution, sender
-		if (arg1 == XPERL_COMMS_PREFIX) then
-			XPerl_ParseCTRA(arg4, arg2, ProcessXPerlMessage)
-			responsePacket = nil
-
-			if (arg4 == "WHISPER") then
-				if (lastResponseWhisper ~= arg4) then
-					lastResponseWhisper = arg4
-					local packet = MakePacket(response)
-					SendAddonMessage(XPERL_COMMS_PREFIX, packet, "WHISPER", arg4)
-				end
-			end
-
-		elseif (arg1 == "CTRA") then
-			XPerl_SendToChannel()		-- Check's to see if anything pending to send
-		end
+		self:SendModules()			-- No channel given will detect BG, RAID, PARTY
+		self:SendModules("GUILD")
 	end
 end
 
--- XPerl_SplitCTRAMessage
-function XPerl_SplitCTRAMessage(msg, char)
-	local arr = { }
-	while (strfind(msg, char) ) do
-		local iStart, iEnd = strfind(msg, char)
-		tinsert(arr, strsub(msg, 1, iStart-1))
-		msg = strsub(msg, iEnd+1, strlen(msg))
+-- RAID_ROSTER_UPDATE
+function mod:RAID_ROSTER_UPDATE()
+	if (GetNumRaidMembers() > 0) then
+		if (not self.inRaid) then
+			self.inRaid = true
+			self:SendModules("RAID")			-- Let other X-Perl users know which version we're running
+		end
+	else
+		self.inRaid = nil
 	end
-	if ( strlen(msg) > 0 ) then
-		tinsert(arr, msg)
+end
+
+-- PARTY_MEMBERS_CHANGED
+function mod:PARTY_MEMBERS_CHANGED()
+	if (GetNumPartyMembers() > 0) then
+		if (not self.inParty and not self.inRaid) then
+			self.inParty = true
+			self:SendModules("PARTY")			-- Let other X-Perl users know which version we're running
+		end
+	else
+		self.inParty = nil
 	end
-	return arr
+end
+
+-- CHAT_MSG_ADDON
+function mod:CHAT_MSG_ADDON(prefix, msg, channel, sender)
+	if (prefix == XPERL_COMMS_PREFIX) then
+		self:ParseCTRA(sender, msg, channel)
+	end
 end
 
 -- XPerl_ParseCTRA
-function XPerl_ParseCTRA(nick, msg, func)
-	if (strfind(msg, "#")) then
-		local arr = XPerl_SplitCTRAMessage(msg, "#")
-		for i,subMsg in pairs(arr) do
-			func(nick, subMsg)
-		end
-	else
-		func(nick, msg)
+function mod:ParseCTRA(sender, msg, channel)
+	local arr = new(strsplit("#", msg))
+	for i,subMsg in pairs(arr) do
+		self:ProcessXPerlMessage(sender, subMsg, channel)
 	end
+	del(arr)
 end
 
 -- !!!!! Don't change the order of this list - EVER!!!!!
@@ -270,7 +303,8 @@ local xpModList = {"XPerl", "XPerl_Player", "XPerl_PlayerPet", "XPerl_Target", "
 --------------------------------------------------------
 
 -- XPerl_SendModules
-function XPerl_SendModules(chan, response)
+mod.throttle = {}
+function mod:SendModules(chan, target)
 	if (not chan) then
 		if (GetNumRaidMembers() > 0) then
 			if (select(2, IsInInstance()) == "pvp") then
@@ -282,54 +316,46 @@ function XPerl_SendModules(chan, response)
 			chan = "PARTY"
 		end
 	end
-	needToSend[chan] = true
-	XPerl_SendToChannel(response)
+
+	if (chan) then
+		if (chan == "WHISPER") then
+			local t = self.throttle[target]
+			if (t and time() < t + 15) then
+				return
+			end
+			self.throttle[target] = time()
+		end
+
+		local packet = self:MakePacket(chan == "WHISPER")
+		SendAddonMessage(XPERL_COMMS_PREFIX, packet, chan, target)
+	end
 end
 
 -- MakePacket
-local function MakePacket(response)
-
-	local modules = ""
-	for k,v in pairs(xpModList) do
-		modules = modules..(tostring(IsAddOnLoaded(v) or 0))
-	end
-	local gc = floor(collectgarbage("count"))	--	gcinfo()
-
+function mod:MakePacket(response, versionOnly)
 	local resp
-	if (response) then resp = "R#" else resp = "" end
+	if (response) then resp = "R#S#" else resp = "" end
 
-	return resp.."VER "..XPerl_VersionNumber.."#GC "..gc.."#LOC "..GetLocale().."#MOD "..modules
-end
-
--- XPerl_SendToChannel
-function XPerl_SendToChannel(response)
-	if (GetTime() < lastSend + 2*60) then
-		return
-	end
-	lastSend = GetTime()
-
-	local packet
-	for k,v in pairs({"GUILD", "RAID", "PARTY", "BATTLEGROUND"}) do
-		if (needToSend[v]) then
-			if (IsInGuild() or v ~= "GUILD") then
-				if (not packet) then
-					packet = MakePacket(response)
-				end
-
-				if (v == "WHISPER") then
-					SendAddonMessage(XPERL_COMMS_PREFIX, packet, v, arg4)
-				else
-					SendAddonMessage(XPERL_COMMS_PREFIX, packet, v)
-				end
-				needToSend[v] = nil
-			end
+	if (versionOnly) then
+		return format("%sVER %s", resp, XPerl_VersionNumber)
+	else
+		local modules = ""
+		for k,v in pairs(xpModList) do
+			modules = modules..(tostring(IsAddOnLoaded(v) or 0))
 		end
+		local gc = floor(collectgarbage("count"))
+
+		local s = format("%sVER %s#GC %d#LOC %s#MOD %s", resp, XPerl_VersionNumber, gc, GetLocale(), modules)
+		if (self.notifiedVersion and self.notifiedVersion > XPerl_VersionNumber) then
+			s = format("%s#MAXVER %s", s, self.notifiedVersion)
+		end
+		return s
 	end
 end
 
 -- XPerl_DecodeModuleList
-function XPerl_DecodeModuleList(modList)
-	local ret = {}
+function mod:DecodeModuleList(modList)
+	local ret = new()
 	for k,v in pairs(xpModList) do
 		if (strsub(modList, k, k) == "1") then
 			if (XPerlUsageNameList[v]) then
@@ -339,33 +365,28 @@ function XPerl_DecodeModuleList(modList)
 			end
 		end
 	end
-	return table.concat(ret, ", ")
+	local tmp = table.concat(ret, ", ")
+	del(ret)
+	return tmp
 end
 
 -- XPerl_GetUsage
 function XPerl_GetUsage(unitName, unitID)
---	if (not XPerl_Usage[unitName] and XPerlTest) then
---		if (not unitID or (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
---			if (not directQueries) then
---				directQueries = {}
---			end
---			if (not directQueries[unitName]) then
---				directQueries[unitName] = true
---				SendAddonMessage(XPERL_COMMS_PREFIX, MakePacket(), "WHISPER", unitName)
---			end
---		end
---	end
+	local ver = XPerl_Usage[unitName]
+	if (not ver and XPerlTest) then
+		if (unitID and (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
+			if (not mod.directQueries) then
+				mod.directQueries = {}
+			end
+			if (not mod.directQueries[unitName]) then
+				mod.directQueries[unitName] = true
+				SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true), "WHISPER", unitName)
+			end
+		end
+	end
 
-	return XPerl_Usage[unitName]
+	return ver
 end
 
-if (not XPerl_UsageFrame) then
-	local f = CreateFrame("Frame", "XPerl_UsageFrame")
-	f:RegisterEvent("PLAYER_ENTERING_WORLD")
-	f:RegisterEvent("CHAT_MSG_ADDON")
-	f:RegisterEvent("RAID_ROSTER_UPDATE")
-	f:RegisterEvent("PARTY_MEMBERS_CHANGED")
-	f:SetScript("OnEvent", XPerl_Usage_OnEvent)
-end
 
 end
