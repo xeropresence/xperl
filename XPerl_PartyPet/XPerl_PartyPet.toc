@@ -1,0 +1,10 @@
+﻿## Interface: 20400
+## Title: X-Perl Party Pet by |cFFFF8080Zek|r
+## Title-zhCN: X-Perl 队友宠物窗口
+## Notes: Replaces the default party's pet frames.
+## Notes-deDE: Ersetzt die Gruppenbegleiterframes.
+## Author: Zek
+## X-License: GNU GPL v3, 29 June 2007
+## RequiredDeps: XPerl, XPerl_Party
+## OptionalDeps: XPerl_ArcaneBar
+XPerl_Party_Pet.xml
