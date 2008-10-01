@@ -1,0 +1,9 @@
+﻿## Interface: 20400
+## Title: X-Perl Target's Target by |cFFFF8080Zek|r
+## Title-zhCN: X-Perl 目标的目标窗口
+## Notes: Replaces the default Target of Target frame.
+## Notes-deDE: Bietet Frames f?r Ziel des Zieles und Ziel des Ziel des Zieles an.
+## Author: Zek
+## X-License: GNU GPL v3, 29 June 2007
+## RequiredDeps: XPerl, XPerl_Target
+XPerl_TargetTarget.xml
