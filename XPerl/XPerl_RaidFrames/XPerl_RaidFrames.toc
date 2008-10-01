@@ -1,0 +1,10 @@
+﻿## Interface: 20400
+## Title: X-Perl RaidFrames by |cFFFF8080Zek|r
+## Title-zhCN: X-Perl 团队窗口
+## Notes: X-Perl Raid frames
+## Notes-deDE: X-Perl UnitFrames Schlachtzugframes
+## Author: Zek
+## X-License: GNU GPL v3, 29 June 2007
+## Dependencies: XPerl
+## SavedVariablesPerCharacter: XPerl_Roster
+XPerl_Raid.xml
