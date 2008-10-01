@@ -1,0 +1,11 @@
+﻿## Interface: 20400
+## Title: X-Perl Raid Helper by |cFFFF8080Zek|r
+## Title-zhCN: X-Perl 团队助手
+## Notes: Replaces CTRA MT Targets window with extra functionality, and provides assists frame.
+## Notes-deDE: Ersetzt das CTRA MT-Fenster mit Extrafunktionen und bietet einen Assistentenframe an.
+## Author: Zek
+## X-License: GNU GPL v3, 29 June 2007
+## SavedVariablesPerCharacter: XPerlConfigHelper, XPerl_MainTanks
+## RequiredDeps: XPerl
+XPerl_RaidHelper.xml
+XPerl_AssistFrame.xml
