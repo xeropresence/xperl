@@ -144,7 +144,7 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 	end
 end
 
--- XPerl_GeneralTooltip
+-- GeneralTooltip
 function mod:GeneralTooltip(name, anchor)
 	if (name) then
 		local xpUsage = XPerl_Usage[name]
@@ -215,7 +215,7 @@ local function XPerl_WhoTooltip()
 	end
 
 	local name, guild, level, race, class, zone = GetWhoInfo(this.whoIndex)
-	XPerl_GeneralTooltip(name, this)
+	mod:GeneralTooltip(name, this)
 end
 
 -- XPerl_UsageStartup
