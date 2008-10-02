@@ -3441,6 +3441,9 @@
 									XPerl_Options_EnableSibling("HighlightShields")
 									XPerl_Options_EnableSibling("HighlightHotcount")
 									XPerl_Options_EnableSibling("HighlightTarget")
+									XPerl_Options_EnableSibling("HighlightMending")
+									XPerl_Options_EnableSibling("HighlightSparkles")
+									XPerl_Options_EnableSibling("ExtraSparkles")
 
 									local _, class = UnitClass("player")
 									if (class ~= "DRUID" and class ~= "PRIEST") then
