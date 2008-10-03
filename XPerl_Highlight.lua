@@ -1432,7 +1432,7 @@ function xpHigh:CHAT_MSG_ADDON(source, msg, channel, player)
 				self:Add(name, "HEAL", 1, source)
 			end
 		elseif (source == xperlHealComms) then
-			local msgType, name, dur = strmatch(msg, "^(%a+) ([x%d]+) (%d+)")
+			local msgType, name, dur = strmatch(msg, "^(%a+) ([%a%d]+) (%d+)")
 			if (msgType) then
 				if (msgType == "HEALG") then
 					self.gettingGUIDsFrom[source] = true
@@ -1454,8 +1454,8 @@ function xpHigh:CHAT_MSG_ADDON(source, msg, channel, player)
 							self:Remove(name, "HEAL")
 						end
 					end
-				else
-					ChatFrame1:AddMessage("Un-parsed X-Perl Heal comms: "..msg)
+				--else
+				--	ChatFrame1:AddMessage("Un-parsed X-Perl Heal comms: "..msg)
 				end
 			end
 		end
