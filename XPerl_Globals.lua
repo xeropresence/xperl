@@ -11,6 +11,25 @@ local iFixed1
 local totalBlocked = 0
 local xperlBlocked = 0
 local lastConfigMode
+local maxRevision
+
+function XPerl_GetRevision()
+	return (maxRevision and "r"..maxRevision) or ""
+end
+function XPerl_SetModuleRevision(rev)
+	if (rev) then
+		rev = strmatch(rev, "Revision: (%d+)")
+		if (rev) then
+			rev = tonumber(rev)
+			if (not maxRevision or rev > maxRevision) then
+				maxRevision = rev
+			end
+		end
+	end
+end
+local AddRevision = XPerl_SetModuleRevision
+
+XPerl_SetModuleRevision("$Revision$")
 
 function XPerl_Notice(...)
 	if (DEFAULT_CHAT_FRAME) then
@@ -48,11 +67,12 @@ end
 
 -- XPerl_RequestConfig
 -- Setup a callback to give config around to local variables
-function XPerl_RequestConfig(getConfig)
+function XPerl_RequestConfig(getConfig, rev)
 	tinsert(ConfigRequesters, getConfig)
 	if (XPerlDB) then
 		getConfig(XPerlDB)
 	end
+	AddRevision(rev)
 end
 
 -- CurrentConfig()

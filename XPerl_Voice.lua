@@ -6,7 +6,7 @@ CreateFrame("Frame", "XPerl_Voice")
 local voice = XPerl_Voice
 
 local conf
-XPerl_RequestConfig(function(new) conf = new voice:RepositionAll() end)
+XPerl_RequestConfig(function(new) conf = new voice:RepositionAll() end, "$Revision$")
 
 voice.frames = {}
 voice.permenantUnits = {}

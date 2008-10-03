@@ -3,7 +3,7 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 local conf
-XPerl_RequestConfig(function(new) conf = new end)
+XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
 local myClass
 local playerAggro, petAggro

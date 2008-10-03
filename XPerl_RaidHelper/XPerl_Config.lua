@@ -2,6 +2,8 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+XPerl_SetModuleRevision("$Revision$")
+
 function XPerl_Message(msg)
 	DEFAULT_CHAT_FRAME:AddMessage(XPERL_MSG_PREFIX.."- "..msg)
 end

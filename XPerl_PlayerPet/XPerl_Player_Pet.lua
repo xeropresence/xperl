@@ -10,7 +10,7 @@ XPerl_RequestConfig(function(new)
 			if (XPerl_Player_Pet) then
 				XPerl_Player_Pet.conf = pconf
 			end
-		end)
+		end, "$Revision$")
 
 local XPerl_Player_Pet_HighlightCallback
 

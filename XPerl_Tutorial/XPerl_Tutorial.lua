@@ -11,7 +11,7 @@
 -- so that it can be used like a function
 
 local conf
-XPerl_RequestConfig(function(new) conf = new end)
+XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
 XPerl_Tutorial = setmetatable({}, {__call = function(self, n) self:Start(n) end})
 local xpTut = XPerl_Tutorial

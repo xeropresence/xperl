@@ -2,6 +2,10 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+2.4.3f
+Fixed: Unparsed HEAL comms problem.
+Fixed: Couple of options cosmetics.
+
 2.4.3e
 Fixed: The XPerl_ParseCTRA bug.
 

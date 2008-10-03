@@ -16,7 +16,7 @@
 				self.Setup = function(self)
 					local text = getglobal(self:GetName().."_Text")
 					text:SetTextColor(1,1,1,1)
-					text:SetText(XPerl_Version)
+					text:SetText(XPerl_Version.." "..XPerl_GetRevision())
 					XPerl_DoGradient(self, true)
 				end
 			</OnLoad>
@@ -2072,6 +2072,7 @@
 				</Anchors>
 				<Scripts>
 					<OnShow>
+						XPerl_SetModuleRevision("$Revision$")
 						if (not IsAddOnLoaded("XPerl_PartyPet")) then
 							getglobal(self:GetName().."_ScalePets"):Hide()
 						end

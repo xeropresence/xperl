@@ -5,7 +5,7 @@
 local ArcaneBars = {}
 
 local conf
-XPerl_RequestConfig(function(new) conf = new end)
+XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
 -- Registers frame to spellcast events.
 

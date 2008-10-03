@@ -4,7 +4,7 @@
 
 local playerClass, playerName
 local conf
-XPerl_RequestConfig(function(new) conf = new end)
+XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
 local GetNumPartyMembers = GetNumPartyMembers
 local GetNumRaidMembers = GetNumRaidMembers

@@ -8,6 +8,8 @@ local TableUnits = {}			-- Dynamic list of units indexed by raid id, changed on 
 XPerlRaidMonConfig = {}
 local config = XPerlRaidMonConfig
 
+XPerl_SetModuleRevision("$Revision$")
+
 XPERL_RAIDMON_UNIT_WIDTH_MIN = 50
 XPERL_RAIDMON_UNIT_WIDTH_MAX = 150
 XPERL_RAIDMON_UNIT_HEIGHT_MIN = 9

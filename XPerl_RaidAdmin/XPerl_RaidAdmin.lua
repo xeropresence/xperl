@@ -2,6 +2,8 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+XPerl_SetModuleRevision("$Revision$")
+
 local SavedRoster = nil
 local XswapCount = 0
 local XmoveCount = 0

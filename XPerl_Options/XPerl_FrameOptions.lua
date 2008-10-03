@@ -2,6 +2,8 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+XPerl_SetModuleRevision("$Revision$")
+
 function XPerl_Options_SetupFunc(self)
 	XPerl_DoGradient(self, true)
 	self:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)

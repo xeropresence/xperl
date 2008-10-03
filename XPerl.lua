@@ -3,7 +3,7 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 local conf
-XPerl_RequestConfig(function(new) conf = new end)
+XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 local percD	= "%d"..PERCENT_SYMBOL
 
 -- Some local copies for speed
@@ -970,7 +970,7 @@ function XPerl_MinimapButton_OnEnter(self)
 	XPerl_Tutorial(1)			-- Minimap Icon/Options
 
 	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	GameTooltip:SetText(XPerl_Version, 1, 1, 1)
+	GameTooltip:SetText(XPerl_Version.." "..XPerl_GetRevision(), 1, 1, 1)
 	GameTooltip:AddLine(XPERL_MINIMAP_HELP1)
 	GameTooltip:AddLine(XPERL_MINIMAP_HELP2)
 	if (UpdateAddOnMemoryUsage) then

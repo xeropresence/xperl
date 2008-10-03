@@ -33,7 +33,7 @@ local UnitPowerType = UnitPowerType
 -- TODO - Watch for:   ERR_FRIEND_OFFLINE_S = "%s has gone offline."
 
 local conf, rconf
-XPerl_RequestConfig(function(newConf) conf = newConf rconf = conf.raid end)
+XPerl_RequestConfig(function(newConf) conf = newConf rconf = conf.raid end, "$Revision$")
 
 XPERL_RAIDGRP_PREFIX	= "XPerl_Raid_Grp"
 

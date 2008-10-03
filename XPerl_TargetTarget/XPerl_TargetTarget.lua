@@ -9,7 +9,7 @@ XPerl_RequestConfig(function(new)
 				if (XPerl_TargetTargetTarget) then XPerl_TargetTargetTarget.conf = conf.targettargettarget end
 				if (XPerl_FocusTarget) then XPerl_FocusTarget.conf = conf.focustarget end
 				if (XPerl_PetTarget) then XPerl_PetTarget.conf = conf.pettarget end
-			end)
+			end, "$Revision$")
 
 local UnitName = UnitName
 local UnitHealth = UnitHealth

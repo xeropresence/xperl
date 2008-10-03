@@ -5,7 +5,7 @@
 if (not XPerl_GetUsage) then
 
 local conf
-XPerl_RequestConfig(function(new) conf = new end)
+XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
 XPerl_Usage = {}
 
@@ -95,15 +95,24 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 
 		myUsage.old = nil
 		local ver = strsub(msg, 5)
+
 		if (ver == XPerl_VersionNumber) then
 			myUsage.version = nil
 		else
 			myUsage.version = ver
-			self:CheckForNewerVersion(ver)
+			self:CheckForNewerVersion(ver)			-- Won't do a per revision check
 		end
 
 		if (channel ~= "WHISPER" and sender ~= UnitName("player")) then
 			self:SendModules("WHISPER", sender)
+		end
+
+	elseif (strsub(msg, 1, 4) == "REV ") then
+		if (myUsage) then
+			local temp = strmatch(strsub(msg, 5), "(%d+)")
+			if (temp) then
+				myUsage.revision = tonumber(temp)
+			end
 		end
 
 	elseif (strsub(msg, 1, 7) == "MAXVER ") then
@@ -337,7 +346,7 @@ function mod:MakePacket(response, versionOnly)
 	if (response) then resp = "R#S#" else resp = "" end
 
 	if (versionOnly) then
-		return format("%sVER %s", resp, XPerl_VersionNumber)
+		return format("%sVER %s#REV %s", resp, XPerl_VersionNumber, XPerl_GetRevision())
 	else
 		local modules = ""
 		for k,v in pairs(xpModList) do
@@ -345,7 +354,7 @@ function mod:MakePacket(response, versionOnly)
 		end
 		local gc = floor(collectgarbage("count"))
 
-		local s = format("%sVER %s#GC %d#LOC %s#MOD %s", resp, XPerl_VersionNumber, gc, GetLocale(), modules)
+		local s = format("%sVER %s#REV %s#GC %d#LOC %s#MOD %s", resp, XPerl_VersionNumber, XPerl_GetRevision(), gc, GetLocale(), modules)
 		if (self.notifiedVersion and self.notifiedVersion > XPerl_VersionNumber) then
 			s = format("%s#MAXVER %s", s, self.notifiedVersion)
 		end

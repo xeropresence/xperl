@@ -2,6 +2,8 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+XPerl_SetModuleRevision("$Revision$")
+
 XPerl_MainTanks = {}
 local MainTankCount = 0
 local MainTanks = {}

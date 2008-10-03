@@ -7,7 +7,7 @@ if (not XPerl_RequestConfig) then
 end
 
 local conf
-XPerl_RequestConfig(function(new) conf = new.custom end)
+XPerl_RequestConfig(function(new) conf = new.custom end, "$Revision$")
 
 local ch = CreateFrame("Frame", "XPerl_Custom")
 ch.active = {}
