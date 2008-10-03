@@ -690,10 +690,6 @@ local function XPerl_Target_GetHealthMI2(self)
 	local partyid = self.partyid
 	local hp, hpMax = XPerl_Unit_GetHealth(self)
 
-	if (MobHealthFrame) then
-		MobHealthFrame:Hide()
-	end
-
 	local percent
 	if (hpMax == 100) then
 		local index, current, max, table
