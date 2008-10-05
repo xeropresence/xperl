@@ -416,12 +416,12 @@ function XPerl_AllBarTextures(short)
 		tinsert(list, {"X-Perl "..i, "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"..(i + 1)})
 	end
 
-	if (not short and AceLibrary) then
-		local media = AceLibrary:HasInstance("LibSharedMedia-3.0") and AceLibrary("LibSharedMedia-3.0")
+	if (not short and LibStub) then
+		local media = LibStub("LibSharedMedia-3.0", true)
 		if (not media) then
-			media = AceLibrary:HasInstance("SharedMedia-2.0") and AceLibrary("SharedMedia-2.0")
+			media = LibStub("SharedMedia-2.0", true)
 			if (not media) then
-				media = AceLibrary:HasInstance("SharedMedia-1.0") and AceLibrary("SharedMedia-1.0")
+				media = LibStub("SharedMedia-1.0", true)
 			end
 		end
 		if (media) then
@@ -3351,7 +3351,7 @@ end
 
 XPerl_UnitHealth = UnitHealth
 
-if (LibStub) then
+if (LibStub or LoadAddOn("LibStub")) then
 	local lqh = 1
 	LoadAddOn("LibQuickHealth-2.0")
 	local QuickHealth = LibStub("LibQuickHealth-2.0", true)

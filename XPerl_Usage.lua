@@ -39,7 +39,7 @@ function mod:UPDATE_MOUSEOVER_UNIT()
 end
 
 function mod:TooltipInfo(tooltip, unitid)
-	if (conf and conf.tooltip.xperlInfo and XPerl_GetUsage and not strmatch(unitid, "pet")) then
+	if (conf and conf.tooltip.xperlInfo and not strmatch(unitid, "pet")) then
 		local xpUsage = XPerl_GetUsage(UnitName(unitid), unitid)
 		if (xpUsage) then
 			local xp, any = "|cFFD00000X-Perl|r "
@@ -383,7 +383,7 @@ end
 function XPerl_GetUsage(unitName, unitID)
 	local ver = XPerl_Usage[unitName]
 	if (not ver and XPerlTest) then
-		if (unitID and (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
+		if (unitID and unitName ~= UNKNOWN and (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
 			if (not mod.directQueries) then
 				mod.directQueries = {}
 			end
