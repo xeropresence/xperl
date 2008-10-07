@@ -359,6 +359,8 @@ function XPerl_Raid_UpdateHealth(self)
 		end
 	end
 
+	XPerl_SetExpectedHealth(self)
+
 	local name = UnitName(partyid)
 	local myRoster = XPerl_Roster[name]
 	if (name and UnitIsConnected(partyid)) then

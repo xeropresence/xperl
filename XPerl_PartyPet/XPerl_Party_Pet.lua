@@ -225,6 +225,8 @@ local function XPerl_Party_Pet_UpdateHealth(self)
 	self.statsFrame.healthBar:SetValue(Partypethealth)
 	XPerl_ColourHealthBar(self, healthPct)
 
+	XPerl_SetExpectedHealth(self)
+
 	if (UnitIsDead(self.partyid)) then
 		self.statsFrame:SetGrey()
 		self.statsFrame.healthBar.text:SetText(XPERL_LOC_DEAD)

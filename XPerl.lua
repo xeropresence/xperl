@@ -3,7 +3,7 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 local conf
-XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
+XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
 local percD	= "%d"..PERCENT_SYMBOL
 
 -- Some local copies for speed
@@ -34,6 +34,49 @@ local GetRaidRosterInfo = GetRaidRosterInfo
 
 local largeNumDiv = XPERL_LOC_LARGENUMDIV
 local largeNumTag = XPERL_LOC_LARGENUMTAG
+
+------------------------------------------------------------------------------
+-- Re-usable tables
+local FreeTables = setmetatable({}, {__mode = "k"})
+local requested, freed = 0, 0
+function XPerl_GetReusableTable(...)
+	requested = requested + 1
+	for t in pairs(FreeTables) do
+		FreeTables[t] = nil
+		for i = 1, select("#", ...) do
+			t[i] = select(i, ...)
+		end
+		return t
+	end
+	return {...}
+end
+function XPerl_FreeTable(t, deep)
+	if (t) then
+		if (type(t) ~= "table") then
+			error("Usage: XPerl_FreeTable([table])")
+		end
+		if (FreeTables[t]) then
+			error("XPerl_FreeTable - Table already freed")
+		end
+
+		freed = freed + 1
+
+		FreeTables[t] = true
+		for k,v in pairs(t) do
+			if (deep and type(v) == "table") then
+				XPerl_FreeTable(v, true)
+			end
+			t[k] = nil
+		end
+		t[''] = 0
+		t[''] = nil
+	end
+end
+function XPerl_TableStats()
+	return requested, freed
+end
+
+local new, del = XPerl_GetReusableTable, XPerl_FreeTable
 
 -- meta table for string based colours. Allows for other mods changing class colours and things all working
 XPerlColourTable = setmetatable({},{
@@ -620,6 +663,7 @@ function XPerl_SetHealthBar(self, hp, Max)
 			end
 		end
 	end
+	XPerl_SetExpectedHealth(self)
 end
 
 ---------------------------------
@@ -2874,48 +2918,6 @@ function XPerl_FrameFlashStop(self, method)
 	end
 end
 
-------------------------------------------------------------------------------
--- Re-usable tables
-local FreeTables = setmetatable({}, {__mode = "k"})
-local requested, freed = 0, 0
-function XPerl_GetReusableTable(...)
-	requested = requested + 1
-	for t in pairs(FreeTables) do
-		FreeTables[t] = nil
-		for i = 1, select("#", ...) do
-			t[i] = select(i, ...)
-		end
-		return t
-	end
-	return {...}
-end
-function XPerl_FreeTable(t, deep)
-	if (t) then
-		if (type(t) ~= "table") then
-			error("Usage: XPerl_FreeTable([table])")
-		end
-		if (FreeTables[t]) then
-			error("XPerl_FreeTable - Table already freed")
-		end
-
-		freed = freed + 1
-
-		FreeTables[t] = true
-		for k,v in pairs(t) do
-			if (deep and type(v) == "table") then
-				XPerl_FreeTable(v, true)
-			end
-			t[k] = nil
-		end
-		t[''] = 0
-		t[''] = nil
-	end
-end
-function XPerl_TableStats()
-	return requested, freed
-end
-
-
 -- XPerl_ProtectedCall
 function XPerl_ProtectedCall(func, self)
 	if (func) then
@@ -3129,14 +3131,14 @@ end
 -- Changes anchored corner without actually moving the frame
 
 -- XPerl_SwitchAnchor
-function XPerl_SwitchAnchor(self, new)
+function XPerl_SwitchAnchor(self, New)
 	if (not self:GetPoint(2)) then
 		local a1, f, a2, x, y = self:GetPoint(1)
 
-		if (a1 == a2 and new ~= a1) then
+		if (a1 == a2 and New ~= a1) then
 			local parent = self:GetParent()
-			local newV = strmatch(new, "TOP") or strmatch(new, "BOTTOM")
-			local newH = strmatch(new, "LEFT") or strmatch(new, "RIGHT")
+			local newV = strmatch(New, "TOP") or strmatch(New, "BOTTOM")
+			local newH = strmatch(New, "LEFT") or strmatch(New, "RIGHT")
 
 			if (newV == "TOP") then
 				y = -(768 - (self:GetTop() * self:GetEffectiveScale())) / self:GetEffectiveScale()
@@ -3155,7 +3157,7 @@ function XPerl_SwitchAnchor(self, new)
 			end
 
 			self:ClearAllPoints()
-			self:SetPoint(new, f, new, x, y)
+			self:SetPoint(New, f, New, x, y)
 		end
 	end
 end
@@ -3297,7 +3299,6 @@ function XPerl_RegisterScalableFrame(self, anchorFrame, minScale, maxScale, resi
 		scalable = true
 	end
 
-	local new
 	if (not self.corner) then
 		self.corner = CreateFrame("Frame", nil, self)
 		self.corner:SetFrameLevel(self:GetFrameLevel() + 3)
@@ -3319,7 +3320,6 @@ function XPerl_RegisterScalableFrame(self, anchorFrame, minScale, maxScale, resi
 
 		self.corner.anchor = anchorFrame
 		self.corner.frame = self
-		new = true
 	end
 
 	self:SetMinResize(10, 10)
@@ -3404,5 +3404,163 @@ if (LibStub or LoadAddOn("LibStub")) then
 				return QuickHealth:UnitHealth(...)
 			end
 		end
+	end
+
+	-- HealComm interface
+	LoadAddOn("LibHealComm-3.0")
+	local HealComm = LibStub("LibHealComm-3.0")
+
+	XPerl_ExpectedUnitHealth = XPerl_UnitHealth
+
+	if (HealComm) then
+		local myHeals = {}
+		local hcMiniFrame = CreateFrame("Frame", nil)
+		hcMiniFrame:RegisterEvent("RAID_ROSTER_UPDATE")
+		hcMiniFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
+		hcMiniFrame:SetScript("OnEvent", function()
+			local temp = new()
+
+			if (GetNumRaidMembers() > 0) then
+				for i = 1,GetNumRaidMembers() do
+					local id = "raid"..i
+					local guid = UnitGUID(id)
+					if (guid) then
+						temp[guid] = true
+						id = "raidpet"..i
+						guid = UnitGUID(id)
+						if (guid) then
+							temp[guid] = true
+						end
+					end
+				end
+			elseif (GetNumPartyMembers() > 0) then
+				for i = 0,GetNumPartyMembers() do
+					local id = i == 0 and "player" or "party"..i
+					local guid = UnitGUID(id)
+					if (guid) then
+						temp[guid] = true
+						id = i == 0 and "pet" or "raidpet"..i
+						guid = UnitGUID(id)
+						if (guid) then
+							temp[guid] = true
+						end
+					end
+				end
+			else
+				myHeals = {}
+			end
+
+			for guid in pairs(myHeals) do
+				if (not temp[guid]) then
+					myHeals[guid] = nil
+				end
+			end
+
+			del(temp)
+		end)
+
+		local function unitFullName(unit)
+		    local name, realm = UnitName(unit)
+	    	if (realm and realm ~= "") then
+		        return name .. "-" .. realm
+    		else
+	        	return name
+	    	end
+		end
+
+		local function UpdateIncomingHeals(healSize, ...)
+			for i = 1,select("#",...) do
+				local name = select(i, ...)
+				local guid = UnitGUID(name)
+				local f
+
+				if (healSize and UnitIsUnit("player", name)) then
+					myHeals[guid] = healSize
+				end
+
+				if (XPerl_Raid_GetUnitFrameByGUID) then
+					f = XPerl_Raid_GetUnitFrameByGUID(guid)
+					if (f) then
+						XPerl_Raid_UpdateHealth(f)
+					end
+				end
+
+				if (XPerl_Party_GetUnitFrameByGUID) then
+					f = XPerl_Party_GetUnitFrameByGUID(guid)
+					if (f) then
+						XPerl_Party_UpdateHealth(f)
+					end
+				end
+
+				if (XPerl_Player_UpdateHealth and UnitGUID("player") == guid) then
+					XPerl_Player_UpdateHealth(XPerl_Player)
+				elseif (XPerl_Player_Pet_UpdateHealth and UnitGUID("pet") == guid) then
+					XPerl_Player_Pet_UpdateHealth(XPerl_Player)
+				elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
+					XPerl_Party_Pet_GetUnitFrameByGUID(guid)
+					if (f) then
+						XPerl_Party_Pet_UpdateHealth(f)
+					end
+				end
+
+				if (XPerl_Target_SetHealth and UnitGUID("target") == guid) then
+					XPerl_Target_SetHealth(XPerl_Target)
+				end
+				if (XPerl_Target_SetHealth and UnitGUID("focus") == guid) then
+					XPerl_Target_SetHealth(XPerl_Focus)
+				end
+			end
+		end
+
+		-- XPerl_ExpectedUnitHealth
+		function XPerl_ExpectedUnitHealth(unit)
+			local health = XPerl_UnitHealth(unit)
+			local incoming = HealComm:UnitIncomingHealGet(unit, GetTime() + 100.0) or 0
+			incoming = incoming + (myHeals[UnitGUID(unit)] or 0)
+			if (incoming > 0) then
+				local effective = incoming * HealComm:UnitHealModifierGet(unit)
+				return health + effective
+			end
+
+			return health
+		end
+
+		-- XPerl_SetExpectedHealth
+		function XPerl_SetExpectedHealth(self)
+			local bar = self.statsFrame.expectedHealth
+			if (bar) then
+				local expectedHealth = XPerl_ExpectedUnitHealth(self.partyid)
+				if (expectedHealth == UnitHealth(self.partyid)) then
+					bar:Hide()
+				else
+					local healthMax = UnitHealthMax(self.partyid)
+					bar:Show()
+					bar:SetMinMaxValues(0, healthMax)
+					bar:SetValue(expectedHealth)
+				end
+			end
+		end
+
+		local function xperl_HealComm_DirectHealStart(event, healerFullName, healSize, endTime, ...)
+			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStart(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+			UpdateIncomingHeals(healSize, ...)
+		end
+		local function xperl_HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
+			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStop(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+			UpdateIncomingHeals(0, ...)
+		end
+		local function xperl_HealComm_DirectHealDelayed(event, healerFullName, healSize, endTime, ...)
+			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealDelayed(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+			UpdateIncomingHeals(healSize, ...)
+		end
+		local function xperl_HealComm_HealModifierUpdate(event, unit, targetFullName, healModifier)
+			--ChatFrame1:AddMessage(format("xperl_HealComm_HealModifierUpdate(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime)))
+			UpdateIncomingHeals(nil, targetFullName)
+		end
+
+		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStart", xperl_HealComm_DirectHealStart)
+		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStop", xperl_HealComm_DirectHealStop)
+		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealDelayed", xperl_HealComm_DirectHealDelayed)
+		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_HealModifierUpdate", xperl_HealComm_HealModifierUpdate)
 	end
 end

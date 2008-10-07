@@ -1515,6 +1515,14 @@ function xpHigh:FindMyPomPom()
 	end
 end
 
+-- RemoveAllFromGUID
+function xpHigh:RemoveAllFromGUID(unit)
+	if (guid and self.list[guid]) then
+		self.list[guid] = nil
+		self:Send(guid)
+	end
+end
+
 -- xpHigh:UNIT_AURA
 function xpHigh:UNIT_AURA(unit)
 	if (not UnitInParty(unit) and not UnitPlayerOrPetInRaid(unit) and not UnitPlayerOrPetInParty(unit)) then
@@ -1522,6 +1530,11 @@ function xpHigh:UNIT_AURA(unit)
 	end
 
 	local guid = UnitGUID(unit)
+
+	if (UnitIsDeadOrGhost(unit)) then
+		self:RemoveAllFromGUID(guid)
+		return
+	end
 
 	if (playerClass == "PRIEST") then
 		-- Check pom movement
