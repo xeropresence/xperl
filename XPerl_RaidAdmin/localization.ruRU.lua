@@ -1,6 +1,6 @@
-﻿
+﻿--Russian localization file
+--Translated by StingerSoft
 if (GetLocale() == "ruRU") then
-
 XPERL_ADMIN_TITLE	= XPerl_ShortProductName.." Рейд Админ"
 
 XPERL_MSG_PREFIX	= "|c00C05050X-Perl|r "
@@ -18,20 +18,20 @@ XPERL_BUTTON_ADMIN_DELETE2	= "Удалить выбранный список"
 XPERL_BUTTON_ADMIN_STOPLOAD1 = "Остановить загрузку"
 XPERL_BUTTON_ADMIN_STOPLOAD2 = "Прекратить процедуру загрузки списка"
 
-XPERL_LOAD			        = "Загр-ть"
+XPERL_LOAD					= "Загр-ть"
 
 XPERL_SAVED_ROSTER		    = "Сохр-ть список с названием '%s'"
 XPERL_ADMIN_DIFFERENCES		= "%d отличие с текущим списком"
-XPERL_NO_ROSTER_NAME_GIVEN	= "не задано имя списка"
+XPERL_NO_ROSTER_NAME_GIVEN	= "Не задано имя списка"
 XPERL_NO_ROSTER_CALLED		= "Нет списка с названием '%s'"
 
 -- Item Checker
-XPERL_CHECK_TITLE		    = XPerl_ShortProductName.." Предмет контроль"
+XPERL_CHECK_TITLE			= XPerl_ShortProductName.." Предмет контроль"
 
 XPERL_RAID_TOOLTIP_NOCTRA	= "CTRA не найдено"
-XPERL_CHECK_NAME		    = "Имя"
+XPERL_CHECK_NAME			= "Имя"
 
-XPERL_CHECK_DROPITEMTIP1	= "Упавшие вещи"
+XPERL_CHECK_DROPITEMTIP1	= "Добытые вещи"
 XPERL_CHECK_DROPITEMTIP2	= "Предмет может быть перетащен в фрейм и добавлен в список запрашиваемых вещей.\rВы можете использовать простую команду /raitem  и предметы будут добавлены сюда в будущем."
 XPERL_CHECK_QUERY_DESC1		= "Запрос"
 XPERL_CHECK_QUERY_DESC2		= "Выполнить проверку предметов (/raitem) на все выбранные предметы\rЗапрос всегда выдаст информацию о текущей прочности, устойчивости и реагентах"
@@ -91,9 +91,9 @@ XPERL_CHECK_EQUIPED		= "Одето"
 
 XPERL_CHECK_SCAN_MISSING	= "Производится сканирование предметов игроков. (%d не просканировано)"
 
-XPERL_REAGENTS			= {PRIEST = "Sacred Candle", MAGE = "Arcane Powder", DRUID = "Wild Thornroot",
-					SHAMAN = "Ankh", WARLOCK = "Soul Shard", PALADIN = "Symbol of Divinity",
-					ROGUE = "Flash Powder"}
+XPERL_REAGENTS			= {PRIEST = "Священная свеча", MAGE = "Порошок чар", DRUID = "Дикий шипокорень",
+					SHAMAN = "Крест", WARLOCK = "Осколок души", PALADIN = "Символ божественности",
+					ROGUE = "Воспламеняющийся порошок"}
 
 XPERL_CHECK_REAGENTS		= "Реагенты"
 

@@ -1,7 +1,9 @@
 ﻿## Interface: 20400
 ## Title: X-Perl Custom Highlight by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cFFFF6060Выделение|r
 ## Title-zhCN: X-Perl 自定义Debuff高亮
 ## Notes: Custom highlights module allowing definition of frame by frame indicator of important debuffs.
+## Notes-ruRU: Модуль Выделений позволяет выявлять в индекаторе фрейма важные дебаффы.
 ## Author: Zek
 ## RequiredDeps: XPerl
 ## X-License: GNU GPL v3, 29 June 2007

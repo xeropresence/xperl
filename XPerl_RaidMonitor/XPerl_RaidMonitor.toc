@@ -1,7 +1,9 @@
 ﻿## Interface: 20400
 ## Title: X-Perl Raid Monitor by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cFFFF6060Монитор|r
 ## Title-zhCN: X-Perl 团队监控
 ## Notes: Provides a casting monitor and mana status window.
+## Notes-ruRU: Обеспечивает окном мониторинга применений и маны.
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## SavedVariablesPerCharacter: XPerlRaidMonConfig

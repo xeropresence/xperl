@@ -1,6 +1,8 @@
 ﻿## Interface: 20400
 ## Title: X-Perl Arcane Bars by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cFFFF6060Полосы применений|r
 ## Notes: Gives player, pet, target, focus and party frames a casting bar.
+## Notes-ruRU: Отображение полоски применения игрока, питомца, цели, фокуса и группы.
 ## Title-zhCN: X-Perl 施法条
 ## Notes-zhCN: 在玩家, 宠物, 目标, 焦点和队伍头像上增加施法条.
 ## Author: Zek

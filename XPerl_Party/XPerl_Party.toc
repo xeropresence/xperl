@@ -1,7 +1,9 @@
 ﻿## Interface: 20400
 ## Title: X-Perl Party by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cFFFF6060Группа|r
 ## Title-zhCN: X-Perl 小队窗口
 ## Notes: Replaces the default party frames.
+## Notes-ruRU: Заменяет стандартные фреймы группы.
 ## Notes-deDE: Ersetzt die Gruppenframes.
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007

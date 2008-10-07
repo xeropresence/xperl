@@ -1,7 +1,9 @@
 ﻿## Interface: 20400
 ## Title: X-Perl Raid Helper by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cFFFF6060Рейд помощник|r
 ## Title-zhCN: X-Perl 团队助手
 ## Notes: Replaces CTRA MT Targets window with extra functionality, and provides assists frame.
+## Notes-ruRU: Заменяет окно главных танков CTRA на более функциональное, и обеспечивает фреймом поддержки.
 ## Notes-deDE: Ersetzt das CTRA MT-Fenster mit Extrafunktionen und bietet einen Assistentenframe an.
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007

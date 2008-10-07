@@ -1,7 +1,9 @@
 ﻿## Interface: 20400
 ## Title: X-Perl Target by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cFFFF6060Цель|r
 ## Title-zhCN: X-Perl 目标窗口
 ## Notes: Replaces the default target frame.
+## Notes-ruRU: Заменяет стандартный фрейм цели.
 ## Notes-deDE: Ersetzt den Zielframe.
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007

@@ -2,6 +2,7 @@
 	-- Would have put the lua declaration directly into the TOC file, but that doesn't work with Load on Demand...
 	<Script file="XPerl_Tutorial.lua"/>
 	<Script file="localization.lua"/>
+	<Script file="localization.ruRU.lua"/>
 	<Script file="localization.frFR.lua"/>
 	<Script file="localization.esES.lua"/>
 	<Script file="localization.zhTW.lua"/>
