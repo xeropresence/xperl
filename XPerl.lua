@@ -2246,7 +2246,7 @@ function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent)
 		button = CreateFrame("Button", "XPerlBuff"..buffIconCount, parent, format("XPerl_Cooldown_%sTemplate", buffType))
 		button:Hide()
 		button:SetID(buffnum)
-		button.cooldown.noCooldownCount = true				-- OmniCC to NOT show cooldown
+		--button.cooldown.noCooldownCount = true				-- OmniCC to NOT show cooldown
 
 		if (setup.rightClickable) then
 			button:RegisterForClicks("RightButtonUp")
