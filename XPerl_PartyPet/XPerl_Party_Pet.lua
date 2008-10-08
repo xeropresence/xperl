@@ -216,7 +216,7 @@ local function XPerl_Party_Pet_UpdateName(self)
 end
 
 -- XPerl_Party_Pet_UpdateHealth
-local function XPerl_Party_Pet_UpdateHealth(self)
+function XPerl_Party_Pet_UpdateHealth(self)
 	local Partypethealth, Partypethealthmax = XPerl_UnitHealth(self.partyid), UnitHealthMax(self.partyid)
 	local healthPct = Partypethealth / Partypethealthmax
 	local phealthPct = format("%3.0f", healthPct * 100)
