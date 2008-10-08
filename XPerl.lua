@@ -3350,6 +3350,7 @@ function XPerl_RegisterScalableFrame(self, anchorFrame, minScale, maxScale, resi
 end
 
 XPerl_UnitHealth = UnitHealth
+XPerl_ExpectedUnitHealth = XPerl_UnitHealth
 
 if (LibStub or LoadAddOn("LibStub")) then
 	local lqh = 1
@@ -3409,8 +3410,6 @@ if (LibStub or LoadAddOn("LibStub")) then
 	-- HealComm interface
 	LoadAddOn("LibHealComm-3.0")
 	local HealComm = LibStub("LibHealComm-3.0")
-
-	XPerl_ExpectedUnitHealth = XPerl_UnitHealth
 
 	if (HealComm) then
 		local myHeals = {}
