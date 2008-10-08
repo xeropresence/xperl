@@ -3409,7 +3409,7 @@ if (LibStub or LoadAddOn("LibStub")) then
 
 	-- HealComm interface
 	LoadAddOn("LibHealComm-3.0")
-	local HealComm = LibStub("LibHealComm-3.0")
+	local HealComm = LibStub("LibHealComm-3.0", true)
 
 	if (HealComm) then
 		local myHeals = {}
