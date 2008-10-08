@@ -3351,6 +3351,8 @@ end
 
 XPerl_UnitHealth = UnitHealth
 XPerl_ExpectedUnitHealth = XPerl_UnitHealth
+function XPerl_SetExpectedHealth()
+end
 
 if (LibStub or LoadAddOn("LibStub")) then
 	local lqh = 1
