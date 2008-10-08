@@ -324,6 +324,12 @@ end
 
 -- XPerl_RaidPets_HideShow
 function XPerl_RaidPets_HideShow()
+	local singleGroup
+	if (XPerl_Party_SingleGroup) then
+		if (conf.party.smallRaid) then
+			singleGroup = XPerl_Party_SingleGroup()
+		end
+	end
 
 	local on = (GetNumRaidMembers() > 0 and rconf.enable)
 
@@ -336,7 +342,7 @@ function XPerl_RaidPets_HideShow()
 		end
 	end
 
-	if (rconf.enable and GetNumRaidMembers() > 0) then
+	if (rconf.enable and GetNumRaidMembers() > 0 and not singleGroup) then
 		XPerl_RaidPets_Frame:Show()
 		XPerl_Raid_TitlePets:Show()
 		XPerl_Raid_GrpPets:Show()
