@@ -620,7 +620,6 @@ end
 -- XPerl_SetHealthBar
 function XPerl_SetHealthBar(self, hp, Max)
 	local bar = self.statsFrame.healthBar
-	local hbt = bar.text
 
 	bar:SetMinMaxValues(0, Max)
 	if (conf.bar.inverse) then
@@ -641,6 +640,7 @@ function XPerl_SetHealthBar(self, hp, Max)
 	end
 
 	if (bar.text) then
+		local hbt = bar.text
 		if (self.conf.healerMode.enable and self.conf.healerMode.type ~= 2) then
 			if (self.conf.healerMode.type == 1) then
 				if (Max > 100000) then
@@ -3349,6 +3349,7 @@ function XPerl_RegisterScalableFrame(self, anchorFrame, minScale, maxScale, resi
 	self.corner.scaling = nil
 end
 
+-- HealComm/LibQuickHealth interface
 XPerl_UnitHealth = UnitHealth
 XPerl_ExpectedUnitHealth = XPerl_UnitHealth
 function XPerl_SetExpectedHealth()
@@ -3469,13 +3470,53 @@ if (LibStub or LoadAddOn("LibStub")) then
 	    	end
 		end
 
-		local function UpdateIncomingHeals(healSize, ...)
+		local guidFrame = CreateFrame("Frame")
+		guidFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+		local playerGUID, targetGUID, focusGUID, petGUID, targettargetGUID
+
+		guidFrame:SetScript("OnEvent", function(self, event, ...)
+			local f = self[event]
+			if (f) then f(self, ...) end
+		end)
+		
+		function guidFrame:PLAYER_ENTERING_WORLD()
+			self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+			self:RegisterEvent("PLAYER_LEAVING_WORLD")
+			self:RegisterEvent("PLAYER_TARGET_CHANGED")
+			self:RegisterEvent("PLAYER_FOCUS_CHANGED")
+			self:RegisterEvent("UNIT_PET")
+			playerGUID = UnitGUID("player")
+			self:GetGUIDs()
+			self.PLAYER_ENTERING_WORLD = nil
+		end
+
+		function guidFrame:PLAYER_LEAVING_WORLD()
+			targetGUID, focusGUID, targettargetGUID = nil, nil, nil
+		end
+
+		function guidFrame:GetGUIDs()
+			petGUID = UnitGUID("pet")
+			targetGUID = UnitGUID("target")
+			targettargetGUID = UnitGUID("targettarget")
+			focusGUID = UnitGUID("focus")
+		end
+
+		guidFrame.PLAYER_TARGET_CHANGED = guidFrame.GetGUIDs
+		guidFrame.PLAYER_FOCUS_CHANGED = guidFrame.GetGUIDs
+
+		function guidFrame:UNIT_PET(unit)
+			if (unit == "player") then
+				self:GetGUIDs()
+			end
+		end
+
+		local function UpdateIncomingHeals(healerFullName, healSize, ...)
 			for i = 1,select("#",...) do
 				local name = select(i, ...)
 				local guid = UnitGUID(name)
 				local f
 
-				if (healSize and UnitIsUnit("player", name)) then
+				if (healSize and UnitIsUnit("player", healerFullName)) then
 					myHeals[guid] = healSize
 				end
 
@@ -3493,22 +3534,25 @@ if (LibStub or LoadAddOn("LibStub")) then
 					end
 				end
 
-				if (XPerl_Player_UpdateHealth and UnitGUID("player") == guid) then
+				if (XPerl_Player_UpdateHealth and guid == playerGUID) then
 					XPerl_Player_UpdateHealth(XPerl_Player)
-				elseif (XPerl_Player_Pet_UpdateHealth and UnitGUID("pet") == guid) then
+				elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
 					XPerl_Player_Pet_UpdateHealth(XPerl_Player)
 				elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
-					XPerl_Party_Pet_GetUnitFrameByGUID(guid)
+					f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
 					if (f) then
 						XPerl_Party_Pet_UpdateHealth(f)
 					end
 				end
 
-				if (XPerl_Target_SetHealth and UnitGUID("target") == guid) then
+				if (XPerl_Target_SetHealth and guid == targetGUID) then
 					XPerl_Target_SetHealth(XPerl_Target)
 				end
-				if (XPerl_Target_SetHealth and UnitGUID("focus") == guid) then
+				if (XPerl_Target_SetHealth and guid == focusGUID) then
 					XPerl_Target_SetHealth(XPerl_Focus)
+				end
+				if (XPerl_Target_SetHealth and guid == targettargetGUID) then
+					XPerl_Target_SetHealth(XPerl_TargetTarget)
 				end
 			end
 		end
@@ -3531,7 +3575,7 @@ if (LibStub or LoadAddOn("LibStub")) then
 			local bar = self.statsFrame.expectedHealth
 			if (bar) then
 				local expectedHealth = XPerl_ExpectedUnitHealth(self.partyid)
-				if (expectedHealth == UnitHealth(self.partyid)) then
+				if (expectedHealth == XPerl_UnitHealth(self.partyid)) then
 					bar:Hide()
 				else
 					local healthMax = UnitHealthMax(self.partyid)
@@ -3544,19 +3588,19 @@ if (LibStub or LoadAddOn("LibStub")) then
 
 		local function xperl_HealComm_DirectHealStart(event, healerFullName, healSize, endTime, ...)
 			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStart(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-			UpdateIncomingHeals(healSize, ...)
+			UpdateIncomingHeals(healerFullName, healSize, ...)
 		end
 		local function xperl_HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
 			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStop(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-			UpdateIncomingHeals(0, ...)
+			UpdateIncomingHeals(healerFullName, 0, ...)
 		end
 		local function xperl_HealComm_DirectHealDelayed(event, healerFullName, healSize, endTime, ...)
 			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealDelayed(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-			UpdateIncomingHeals(healSize, ...)
+			UpdateIncomingHeals(healerFullName, healSize, ...)
 		end
 		local function xperl_HealComm_HealModifierUpdate(event, unit, targetFullName, healModifier)
 			--ChatFrame1:AddMessage(format("xperl_HealComm_HealModifierUpdate(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime)))
-			UpdateIncomingHeals(nil, targetFullName)
+			UpdateIncomingHeals(healerFullName, nil, targetFullName)
 		end
 
 		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStart", xperl_HealComm_DirectHealStart)
@@ -3565,3 +3609,4 @@ if (LibStub or LoadAddOn("LibStub")) then
 		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_HealModifierUpdate", xperl_HealComm_HealModifierUpdate)
 	end
 end
+-- End of HealComm/LibQuickHealth

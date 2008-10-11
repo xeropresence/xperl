@@ -99,7 +99,7 @@
 		<Anchors><Anchor point="TOP"/></Anchors>
 		<Scripts>
 			<OnLoad>
-				XPerl_GenericDropDown_OnLoad()
+				XPerl_GenericDropDown_OnLoad(self)
 			</OnLoad>
 		</Scripts>
 	</Frame>

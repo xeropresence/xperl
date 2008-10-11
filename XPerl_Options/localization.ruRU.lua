@@ -1,7 +1,6 @@
-﻿--[[
-Russian localization file
-Translated by StingerSoft
-]]
+﻿-- Russian localization file
+-- Translated by StingerSoft
+
 if (GetLocale() == "ruRU") then
 
 -- Tabs
@@ -18,7 +17,7 @@ XPERL_CONF_TITLE10						= "Помощник"
 XPERL_CONF_TITLE11						= "Монитор"
 XPERL_CONF_TITLE12						= "Админ"
 
-XPERL_CONF_OPTIONS_COLOUR					= "Сменить цвет в окне настроек"
+XPERL_CONF_OPTIONS_COLOUR				= "Сменить цвет в окне настроек"
 
 -- Titles
 XPERL_CONF_PLAYER_ALIGNMENT				= "Регулировка игрока"
@@ -30,7 +29,7 @@ XPERL_CONF_TARGETTARGET_OPTIONS			= "Опции целей цели"
 XPERL_CONF_FOCUSTARGET_OPTIONS			= "Опции цели фокуса"
 XPERL_CONF_PETTARGET_OPTIONS			= "Опции цели пета"
 XPERL_CONF_GROUPS						= "Группы"
-XPERL_CONF_CLASSES				 		= "Классы"
+XPERL_CONF_CLASSES						= "Классы"
 XPERL_CONF_TANK_TARGETS					= "Цели танка"
 XPERL_CONF_TARGET_COUNTERS				= "Счётчики цели"
 XPERL_CONF_COLOUR_REACTIONS				= "Обозначения"
@@ -52,7 +51,7 @@ XPERL_CONF_COLOUR_FRAMES_GRADSTART_DESC	= "Выберите цвет для на
 XPERL_CONF_COLOUR_FRAMES_GRADEND		= "Конец градиента"
 XPERL_CONF_COLOUR_FRAMES_GRADEND_DESC	= "Выберите цвет для заканчивания градиента"
 XPERL_CONF_COLOUR_FRAMES_RESET			= "Сброс"
-XPERL_CONF_COLOUR_FRAMES_RESET_DESC		 = "Сброс настроек градиента"
+XPERL_CONF_COLOUR_FRAMES_RESET_DESC		= "Сброс настроек градиента"
 XPERL_CONF_FRAME_APPEARANCE_RESET		= "Сброс"
 XPERL_CONF_FRAME_APPEARANCE_RESET_DESC	= "Сброс настроек вида фреймов"
 
@@ -774,7 +773,7 @@ XPERL_CONF_COLOUR_ENERGY				= ENERGY	-- "Энергия"	Generic WoW localizatio
 XPERL_CONF_COLOUR_ENERGY_DESC			= "Сманить цвет всех полос энергии"
 XPERL_CONF_COLOUR_RAGE					= RAGE		-- "Ярость"	Generic WoW localization
 XPERL_CONF_COLOUR_RAGE_DESC				= "Сманить цвет всех полос ярости"
-XPERL_CONF_COLOUR_FOCUS					= "Фокус"		-- "Фокус"	Generic WoW localization
+XPERL_CONF_COLOUR_FOCUS					= "Фокус"
 XPERL_CONF_COLOUR_FOCUS_DESC			= "Сманить цвет полосы фокуса охотничьего питомца"
 XPERL_CONF_ALPHA						= "Прозрачность"
 XPERL_CONF_ALPHA_DESC					= "Меняет прозрачность"
@@ -833,7 +832,7 @@ XPERL_CONF_RAIDHELP_BACKALPHA_DESC		= "Изменить только прозр�
 XPERL_CONF_RAIDHELP_TOOLTIPS			= "Подсказки"
 XPERL_CONF_RAIDHELP_TOOLTIPS_DESC		= "Включат подсказки над целями в окне целей ГТ"
 XPERL_CONF_RAIDHELP_TOOLTIPS_TARGET		= "Подсказки цели"
-XPERL_CONF_RAIDHELP_TOOLTIPS_TARGET_DESC	= "Показывать подсказки только для цели под курсивом"
+XPERL_CONF_RAIDHELP_TOOLTIPS_TARGET_DESC= "Показывать подсказки только для цели под курсивом"
 XPERL_CONF_RAIDHELP_TOOLTIPS_TANK		= "Подсказки танка"
 XPERL_CONF_RAIDHELP_TOOLTIPS_TANK_DESC	= "Показывать подсказки только для танков из списка"
 XPERL_CONF_RAIDHELP_TOOLTIPS_BOTH		= "Двойная подсказка"

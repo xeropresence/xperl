@@ -457,8 +457,8 @@ function xpHigh:CreateShield(frame)
 
 	s.highlight2 = s:CreateTexture("OVERLAY")
 	s.highlight2:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble2")
-	s.highlight1:SetPoint("TOPLEFT", 20, -8)
-	s.highlight1:SetPoint("BOTTOMRIGHT", -20, 8)
+	s.highlight2:SetPoint("TOPLEFT", 20, -8)
+	s.highlight2:SetPoint("BOTTOMRIGHT", -20, 8)
 	s.highlight2:SetBlendMode("ADD")
 	s.highlight2:SetVertexColor(1, 1, 0.5)
 	s.highlight2:SetTexCoord(rotate(180))
@@ -1000,6 +1000,11 @@ function xpHigh:MendingAnimationOnUpdate(elapsed)
 		if (ma.endCounter >= 5) then
 			self:StopMendingAnimation()
 		end
+	elseif (self.expectingPOM) then
+		if (GetTime() > self.expectingPOM + 2) then
+			self.expectingPOM = nil
+			self:StopMendingAnimation()
+		end
 	end
 end
 
@@ -1393,6 +1398,7 @@ function xpHigh:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, srcGUID, srcName, 
 						self.expectingPOM = nil
 						self.pomSourceGUID = nil
 						self:ClearAll("POM")
+						self:StopMendingAnimation()
 						self:Add(dstGUID, "POM", pomSpells[spellName])
 						self.expectingPOM = nil
 					end
@@ -1542,7 +1548,7 @@ function xpHigh:UNIT_AURA(unit)
 			if (not self:HasMyPomPom(unit)) then
 				self.pomSourceGUID = guid
 				self:Remove(guid, "POM")
-				self.expectingPOM = true
+				self.expectingPOM = GetTime()
 			end
 		end
 
@@ -1552,6 +1558,9 @@ function xpHigh:UNIT_AURA(unit)
 				self.expectingPOM = nil
 				self:Add(findGUID, "POM", timeLeft)
 				self:TriggerMendingAnimation(self.pomSourceGUID, findGUID)
+			elseif (GetTime() > self.expectingPOM + 2) then
+				self.expectingPOM = nil
+				self:StopMendingAnimation()
 			end
 		end
 	end

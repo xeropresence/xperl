@@ -93,7 +93,7 @@ function XPerl_Player_Pet_OnLoad(self)
 	end
 
 	XPerl_UnitEvents(self, XPerl_Player_Pet_Events, {"UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS",
-						"UNIT_AURA",})
+						"UNIT_AURA"})
 	XPerl_RegisterBasics(self, XPerl_Player_Pet_Events)
 
 	self.time = 0

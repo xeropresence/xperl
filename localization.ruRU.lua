@@ -8,7 +8,6 @@ XPerl_ProductName	    = "|cFFD00000X-Perl|r Фреймы Игроков"
 XPerl_Description	    = XPerl_ProductName.." от "..XPerl_Author
 XPerl_Version		    = XPerl_Description.." - "..XPerl_VersionNumber
 XPERL_LongDescription	= "Фреймы Игроков заменяются на новый вид Игроков, Питомцев, Группы, Цели, Целей Цели, Фокуса, Рейда"
-XPERL_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
 
 	XPERL_MINIMAP_HELP1		= "|c00FFFFFFЛевый Клик|r для Опций  (и также |c0000FF00для перемещения фреймов|r)"
 	XPERL_MINIMAP_HELP2		= "|c00FFFFFFПравый клик|r двигать иконку"
@@ -43,7 +42,6 @@ XPERL_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
 	XPERL_LOC_CLASS_WARLOCK		= "Чернокнижник"
 	XPERL_LOC_CLASS_PALADIN		= "Паладин"
 
-	XPERL_LOC_CLASS_PALADINFEM	= "Паладин"
 	XPERL_LOC_CLASS_WARRIORFEM	= "Воин"
 	XPERL_LOC_CLASS_MAGEFEM		= "Маг"
 	XPERL_LOC_CLASS_ROGUEFEM	= "Разбойница"
@@ -52,6 +50,7 @@ XPERL_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
 	XPERL_LOC_CLASS_SHAMANFEM	= "Шаманка"
 	XPERL_LOC_CLASS_PRIESTFEM	= "Жрица"
 	XPERL_LOC_CLASS_WARLOCKFEM	= "Чернокнижница"
+	XPERL_LOC_CLASS_PALADINFEM	= "Паладин"
 	
 	XPERL_LOC_CLASS_PETS		= "Питомцы"
 	XPERL_TYPE_NOT_SPECIFIED	= "Не указанно"
@@ -115,7 +114,7 @@ XPERL_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
 	XPERL_DRAGHINT2	= "|c00FFFFFFShift+Клик|r для изменения размера окна"
 
 -- Usage
-XPerlUsageNameList	= {XPerl = "Основной", 	XPERL_Player = "Игрок", 	XPERL_PlayerPet = "Питомец", 	XPERL_Target = "Цель", 	XPERL_TargetTarget = "Цель Цели", 	XPERL_Party = "Группа", 	XPERL_PartyPet = "Питомци Группы", 	XPERL_RaidFrames = "Фрей Рейда", 	XPERL_RaidHelper = "Помощик Рейда", 	XPERL_RaidAdmin = "Рейд Админ", 	XPERL_TeamSpeak = "Монитор TS", 	XPERL_RaidMonitor = "Рейд Монитор", 	XPERL_RaidPets = "Питомцы Рейда", 	XPERL_ArcaneBar = "Индикатор заклинаний", 	XPERL_PlayerBuffs = "Баффы игрока", 	XPERL_GrimReaper = "Grim Reaper"}
+	XPerlUsageNameList	= {XPerl = "Основной", 	XPERL_Player = "Игрок", 	XPERL_PlayerPet = "Питомец", 	XPERL_Target = "Цель", 	XPERL_TargetTarget = "Цель Цели", 	XPERL_Party = "Группа", 	XPERL_PartyPet = "Питомци Группы", 	XPERL_RaidFrames = "Фрей Рейда", 	XPERL_RaidHelper = "Помощик Рейда", 	XPERL_RaidAdmin = "Рейд Админ", 	XPERL_TeamSpeak = "Монитор TS", 	XPERL_RaidMonitor = "Рейд Монитор", 	XPERL_RaidPets = "Питомцы Рейда", 	XPERL_ArcaneBar = "Индикатор заклинаний", 	XPERL_PlayerBuffs = "Баффы игрока", 	XPERL_GrimReaper = "Grim Reaper"}
 	XPERL_USAGE_MEMMAX	= "UI Макс Пам: %d"
 	XPERL_USAGE_MODULES = "Модули: "
 	XPERL_USAGE_NEWVERSION	= "*Новейшая версия"

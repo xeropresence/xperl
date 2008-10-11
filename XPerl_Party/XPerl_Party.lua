@@ -207,19 +207,18 @@ end
 -- ShowHideValues
 local function ShowHideValues(self)
 	if (pconf.values) then
-        	self.statsFrame.healthBar.text:Show()
-        	self.statsFrame.manaBar.text:Show()
+		self.statsFrame.healthBar.text:Show()
+		self.statsFrame.manaBar.text:Show()
 	else
 		if (not self.hideValues) then
-        		self.statsFrame.healthBar.text:Hide()
-        		self.statsFrame.manaBar.text:Hide()
+			self.statsFrame.healthBar.text:Hide()
+			self.statsFrame.manaBar.text:Hide()
 		end
 	end
 end
 
 -- XPerl_Party_UpdateHealth
 function XPerl_Party_UpdateHealth(self)
-	local numID = strmatch(self.partyid, "party(%d)")			-- TODO - will be wrong later
 	local Partyhealth, Partyhealthmax = XPerl_UnitHealth(self.partyid), UnitHealthMax(self.partyid)
 	local reason
 

@@ -1,7 +1,7 @@
 ﻿## Interface: 20400
-## Title: X-Perl Player Buffs by |cFFFF8080Zek|r
-## Title-ruRU: X-Perl |cFFFF6060Баффы игрока|r
-## Title-zhCN: X-Perl 玩家Buff
+## Title: X-Perl |cffeda55fPlayer Buffs|r by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cffeda55fБаффы игрока|r
+## Title-zhCN: X-Perl |cffeda55f玩家Buff|r
 ## Notes-ruRU: Отображает иконки баффов на фрейме игрока.
 ## Notes: Gives buff icons on the X-Perl player frame.
 ## Author: Zek

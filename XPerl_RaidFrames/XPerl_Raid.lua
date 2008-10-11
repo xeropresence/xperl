@@ -308,7 +308,15 @@ end
 -- XPerl_Raid_ShowFlags
 local function XPerl_Raid_ShowFlags(self, flags)
 	local r, g, b
-	if (flags.bgcolor) then
+	local flag
+	if (type(flags) == "string") then
+		flag = flags
+		flags = nil
+	else
+		flag = flags.flag
+	end
+
+	if (flags and flags.bgcolor) then
 		r, g, b = flags.bgcolor.r, flags.bgcolor.g, flags.bgcolor.b
 	else
 		r, g, b = 0.5, 0.5, 0.5
@@ -316,15 +324,16 @@ local function XPerl_Raid_ShowFlags(self, flags)
 
 	self.statsFrame:SetGrey(r, g, b)
 
-	if (flags.color) then
+	if (flags and flags.color) then
 		r, g, b = flags.color.r, flags.color.g, flags.color.b
 	else
 		r, g, b = 1, 1, 1
 	end
 
-	self.statsFrame.healthBar.text:SetText(flags.flag)
+	self.statsFrame.healthBar.text:SetText(flag)
 	self.statsFrame.healthBar.text:SetTextColor(r, g, b)
 	self.statsFrame.healthBar.text:Show()
+	del(flags)
 end
 
 -- XPerl_Raid_UpdateHealth
@@ -390,13 +399,13 @@ function XPerl_Raid_UpdateHealth(self)
 				XPerl_NoFadeBars()
 			else
 				self.dead = true
-				XPerl_Raid_ShowFlags(self, {flag = XPERL_LOC_DEAD})
+				XPerl_Raid_ShowFlags(self, XPERL_LOC_DEAD)
 				XPerl_Raid_UpdateName(self)
 			end
 
 		elseif (UnitIsGhost(partyid)) then
 			self.dead = true
-			XPerl_Raid_ShowFlags(self, {flag = XPERL_LOC_GHOST})
+			XPerl_Raid_ShowFlags(self, XPERL_LOC_GHOST)
 			XPerl_Raid_UpdateName(self)
 
 		else
@@ -431,7 +440,7 @@ function XPerl_Raid_UpdateHealth(self)
 	else
 		self.disco = true
 		self.dead = nil
-		XPerl_Raid_ShowFlags(self, {flag = XPERL_LOC_OFFLINE})
+		XPerl_Raid_ShowFlags(self, XPERL_LOC_OFFLINE)
 
 		if (name and myRoster and not myRoster.offline) then
 			myRoster.offline = GetTime()
@@ -1588,15 +1597,14 @@ end
 
 -- SetRaidRoster
 local function SetRaidRoster()
-
 	local NewRoster = new()
 
-	if (RaidPositions) then
-		del(RaidPositions)
-	end
+	del(RaidPositions)
 	RaidPositions = new()
 
-	RaidGroupCounts = {0,0,0,0,0,0,0,0,0}
+	del(RaidGroupCounts)
+	RaidGroupCounts = new(0,0,0,0,0,0,0,0,0)
+
 	for i = 1,GetNumRaidMembers() do
 		local name, rank, group, level, class, fileName = GetRaidRosterInfo(i)
 
@@ -1623,15 +1631,12 @@ local function SetRaidRoster()
 				ClassNames[fileName] = class
 			end
 
-			if (XPerl_Roster[name]) then
-				NewRoster[name] = XPerl_Roster[name]
-
-				if (NewRoster[name].afk and not UnitIsAFK(unit)) then
-					NewRoster[name].afk = nil
-				end
-				if (NewRoster[name].dnd and not UnitIsDND(unit)) then
-					NewRoster[name].dnd = nil
-				end
+			local r = XPerl_Roster[name]
+			if (r) then
+				NewRoster[name] = r
+				XPerl_Roster[name] = nil
+				r.afk = UnitIsAFK(unit)
+				r.dnd = UnitIsDND(unit)
 			else
 				NewRoster[name] = new()
 			end
@@ -1644,7 +1649,7 @@ local function SetRaidRoster()
 		XPerl_Raid_Frame:Hide()
 	end
 
-	del(XPerl_Roster)
+	del(XPerl_Roster, true)
 	XPerl_Roster = NewRoster
 end
 
@@ -1972,12 +1977,12 @@ local function GetCombatRezzerList()
 
 	-- We only need to know about battle rezzers if any normal rezzers are in combat
 	if (anyCombat > 0 or anyAlive < 3) then
-		local ret = {}
+		local ret = new()
 		local t = GetTime()
 
 		for i = 1,GetNumRaidMembers() do
 			local raidid = "raid"..i
-         		if (not UnitIsDeadOrGhost(raidid) and UnitIsVisible(raidid)) then
+			if (not UnitIsDeadOrGhost(raidid) and UnitIsVisible(raidid)) then
 				local name, rank, subgroup, level, _, fileName, zone, online, isDead = GetRaidRosterInfo(i)
 
 				local good
@@ -2010,7 +2015,7 @@ local function GetCombatRezzerList()
 			sort(ret, function(a,b) return a.cd < b.cd end)
 
 			local list = ""
-			for k,v in pairs(ret) do
+			for k,v in ipairs(ret) do
 				local name = XPerlColourTable[v.class]..v.name.."|r"
 
 				if (v.cd > 0) then
@@ -2023,9 +2028,10 @@ local function GetCombatRezzerList()
 					list = list..", "..name
 				end
 			end
-
+			del(ret)
 			return list
 		else
+			del(ret)
 			return "|c00FF0000"..NONE.."|r"
 		end
 	end
@@ -2283,7 +2289,7 @@ local function GetNamesWithoutBuff(spellName, tex, with)
 				sort(list, function(a,b) return a.name < b.name end)
 
 				names = (names or "").."|r"..i..": "
-				for i,item in pairs(list) do
+				for i,item in ipairs(list) do
 					names = names..XPerlColourTable[item.class]..item.name.." "
 				end
 				names = names.."|r\r"
@@ -2296,7 +2302,7 @@ local function GetNamesWithoutBuff(spellName, tex, with)
 			if (list) then
 				sort(list)
 
-				for i,name in pairs(list) do
+				for i,name in ipairs(list) do
 					if (i == 1) then
 						names = (names or "")..XPerlColourTable[class]
 					end
@@ -2309,7 +2315,7 @@ local function GetNamesWithoutBuff(spellName, tex, with)
 		end
 	else
 		sort(withList, function(a,b) return a.name < b.name end)
-		for i,item in pairs(withList) do
+		for i,item in ipairs(withList) do
 			names = (names or "")..XPerlColourTable[item.class]..item.name.." "
 		end
 

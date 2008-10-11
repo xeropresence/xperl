@@ -1,7 +1,7 @@
 ﻿## Interface: 20400
-## Title: X-Perl Player by |cFFFF8080Zek|r
-## Title-ruRU: X-Perl |cFFFF6060Игрок|r
-## Title-zhCN: X-Perl 玩家窗口
+## Title: X-Perl |cffeda55fPlayer|r by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cffeda55fИгрок|r
+## Title-zhCN: X-Perl |cffeda55f玩家窗|r
 ## Notes: Replaces the default player frame.
 ## Notes-ruRU: Заменяет стандартный фрейм игрока.
 ## Notes-deDE: Ersetzt den Spielerframe.

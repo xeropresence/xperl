@@ -1,7 +1,7 @@
 ﻿## Interface: 20400
-## Title: X-Perl Player Pet by |cFFFF8080Zek|r
-## Title-ruRU: X-Perl |cFFFF6060Питомец игрока|r
-## Title-zhCN: X-Perl 玩家宠物
+## Title: X-Perl |cffeda55fPlayer Pet|r by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cffeda55fПитомец игрока|r
+## Title-zhCN: X-Perl |cffeda55f玩家宠物|r
 ## Notes: Replaces the default player's pet frame.
 ## Notes-ruRU: Заменяет стандартный фрейм питомца игрока.
 ## Notes-deDE: Ersetzt den Spielerbegleiterframe.

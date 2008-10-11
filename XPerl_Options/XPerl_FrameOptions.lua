@@ -925,7 +925,7 @@ local function SetClassNames(self)
 	for i = 1,9 do
 		local f = getglobal(prefix.."ClassSel"..i.."_EnableText")
 		if (f) then
-	                local class = XPerlDB.raid.class[i].name
+			local class = XPerlDB.raid.class[i].name
 			f:SetText(XPerl_Options_LocalClass(class))
 		end
 	end
@@ -1530,7 +1530,6 @@ function XPerl_Options_ImportOldConfig(old)
 				energy		= old.ColourEnergy		or {r = 1, g = 1, b = 0},
 				rage		= old.ColourRage		or {r = 1, g = 0, b = 0},
 				focus		= old.ColourFocus		or {r = 1, g = 0.5, b = 0.25},
-				runes		= {r = 1, g = 0.25, b = 1},
 			},
 			reaction = {
 				enemy		= old.ColourReactionEnemy	or {r = 1, g = 0, b = 0},
@@ -2466,7 +2465,6 @@ function XPerl_DefaultBarColours()
 		energy		= {r = 1, g = 1, b = 0},
 		rage		= {r = 1, g = 0, b = 0},
 		focus		= {r = 1, g = 0.5, b = 0.25},
-		runes		= {r = 1, g = 0.25, b = 1},			-- WOTLK TODO verify colour
 	}
 end
 
@@ -2936,10 +2934,6 @@ if (XPerl_UpgradeSettings) then
 						old[v].debuffs.size = 20
 					end
 				end
-			end
-
-			if (not old.colour.bar.runes) then
-				old.colour.bar.runes		= {r = 1, g = 0.25, b = 1}
 			end
 
 			if (oldVersion < "2.4.2c") then

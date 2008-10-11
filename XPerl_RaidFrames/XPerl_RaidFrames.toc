@@ -1,7 +1,7 @@
 ﻿## Interface: 20400
-## Title: X-Perl RaidFrames by |cFFFF8080Zek|r
-## Title-ruRU: X-Perl |cFFFF6060Рейд|r
-## Title-zhCN: X-Perl 团队窗口
+## Title: X-Perl |cffeda55fRaidFrames|r by |cFFFF8080Zek|r
+## Title-ruRU: X-Perl |cffeda55fРейд|r
+## Title-zhCN: X-Perl |cffeda55f团队窗|r
 ## Notes: X-Perl Raid frames
 ## Notes-ruRU: Фреймы рейда.
 ## Notes-deDE: X-Perl UnitFrames Schlachtzugframes
