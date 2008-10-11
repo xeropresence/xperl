@@ -2,6 +2,13 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+2.4.3g
+NEW: Proper LibHealComm support, giving pre-emptive estimated health bars. Slightly narrower than main bars, and not quite same colour, should help to distinguish the difference.
+Changed: A few very minor memory improvements to raid frames. Not that it needed it, but every savable byte is worth it to me.
+Fixed: Display issues with POM animation getting stuck.
+Fixed: Small fix for sparkles to hopefully not linger on dead people.
+Fixed: Won't show raid pets when raid told to hide for single group raids.
+
 2.4.3f
 Fixed: Unparsed HEAL comms problem.
 Fixed: Couple of options cosmetics.

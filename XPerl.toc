@@ -1,6 +1,6 @@
 ﻿## Interface: 20400
 ## Title: X-Perl UnitFrames Core by |cFFFF8080Zek|r
-## Version: 2.4.3f
+## Version: 2.4.3g
 ## Title-ruRU: X-Perl UnitFrames |cFFFF6060Основной|r
 ## Author: Zek
 ## Title-zhCN: X-Perl 核心
