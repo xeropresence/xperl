@@ -3516,43 +3516,45 @@ if (LibStub or LoadAddOn("LibStub")) then
 				local guid = UnitGUID(name)
 				local f
 
-				if (healSize and UnitIsUnit("player", healerFullName)) then
-					myHeals[guid] = healSize
-				end
-
-				if (XPerl_Raid_GetUnitFrameByGUID) then
-					f = XPerl_Raid_GetUnitFrameByGUID(guid)
-					if (f) then
-						XPerl_Raid_UpdateHealth(f)
+				if (guid) then
+					if (healSize and UnitIsUnit("player", healerFullName)) then
+						myHeals[guid] = healSize
 					end
-				end
 
-				if (XPerl_Party_GetUnitFrameByGUID) then
-					f = XPerl_Party_GetUnitFrameByGUID(guid)
-					if (f) then
-						XPerl_Party_UpdateHealth(f)
+					if (XPerl_Raid_GetUnitFrameByGUID) then
+						f = XPerl_Raid_GetUnitFrameByGUID(guid)
+						if (f) then
+							XPerl_Raid_UpdateHealth(f)
+						end
 					end
-				end
 
-				if (XPerl_Player_UpdateHealth and guid == playerGUID) then
-					XPerl_Player_UpdateHealth(XPerl_Player)
-				elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
-					XPerl_Player_Pet_UpdateHealth(XPerl_Player)
-				elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
-					f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
-					if (f) then
-						XPerl_Party_Pet_UpdateHealth(f)
+					if (XPerl_Party_GetUnitFrameByGUID) then
+						f = XPerl_Party_GetUnitFrameByGUID(guid)
+						if (f) then
+							XPerl_Party_UpdateHealth(f)
+						end
 					end
-				end
 
-				if (XPerl_Target_SetHealth and guid == targetGUID) then
-					XPerl_Target_SetHealth(XPerl_Target)
-				end
-				if (XPerl_Target_SetHealth and guid == focusGUID) then
-					XPerl_Target_SetHealth(XPerl_Focus)
-				end
-				if (XPerl_Target_SetHealth and guid == targettargetGUID) then
-					XPerl_Target_SetHealth(XPerl_TargetTarget)
+					if (XPerl_Player_UpdateHealth and guid == playerGUID) then
+						XPerl_Player_UpdateHealth(XPerl_Player)
+					elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
+						XPerl_Player_Pet_UpdateHealth(XPerl_Player)
+					elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
+						f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
+						if (f) then
+							XPerl_Party_Pet_UpdateHealth(f)
+						end
+					end
+
+					if (XPerl_Target_SetHealth and guid == targetGUID) then
+						XPerl_Target_SetHealth(XPerl_Target)
+					end
+					if (XPerl_Target_SetHealth and guid == focusGUID) then
+						XPerl_Target_SetHealth(XPerl_Focus)
+					end
+					if (XPerl_Target_SetHealth and guid == targettargetGUID) then
+						XPerl_Target_SetHealth(XPerl_TargetTarget)
+					end
 				end
 			end
 		end
