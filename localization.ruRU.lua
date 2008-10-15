@@ -41,6 +41,7 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_LOC_CLASS_PRIEST		= "Жрец"
 	XPERL_LOC_CLASS_WARLOCK		= "Чернокнижник"
 	XPERL_LOC_CLASS_PALADIN		= "Паладин"
+	XPERL_LOC_CLASS_DEATHKNIGHT = "Рыцарь Смерти"
 
 	XPERL_LOC_CLASS_WARRIORFEM	= "Воин"
 	XPERL_LOC_CLASS_MAGEFEM		= "Маг"
@@ -51,6 +52,7 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_LOC_CLASS_PRIESTFEM	= "Жрица"
 	XPERL_LOC_CLASS_WARLOCKFEM	= "Чернокнижница"
 	XPERL_LOC_CLASS_PALADINFEM	= "Паладин"
+	XPERL_LOC_CLASS_DEATHKNIGHTFEM = "Рыцарь Смерти"
 	
 	XPERL_LOC_CLASS_PETS		= "Питомцы"
 	XPERL_TYPE_NOT_SPECIFIED	= "Не указанно"
