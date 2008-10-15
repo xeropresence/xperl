@@ -15,9 +15,6 @@ XPERL_RAID_TOOLTIP_ANKH		= "Ankh en: %s"
 XPERL_RAID_TOOLTIP_SOULSTONE	= "Piedra de alma activa en: %s"
 
 XPERL_RAID_TOOLTIP_REMAINING	= " restante(s)"
-XPERL_RAID_TOOLTIP_WITHBUFF	= "Con ventaja: (%s)"
-XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Sin ventaja: (%s)"
-XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s ha usado la %s que expira en %s"	-- Name, buff name, time to expire
 
 XPERL_RAID_DROPDOWN_SHOWPET	= "Mostrar mascotas"
 XPERL_RAID_DROPDOWN_SHOWOWNER	= "Mostrar dueños"

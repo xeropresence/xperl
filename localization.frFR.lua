@@ -78,6 +78,10 @@ if (GetLocale() == "frFR") then
 	XPERL_KEY_NOTICE_RAID_NOBUFFS = "Ne pas montrer les debuffs du raid"
 
 	XPerl_DefaultRangeSpells.ANY = {item = "Bandage \195\169pais en \195\169toffe runique"}
+
+	XPERL_RAID_TOOLTIP_WITHBUFF	      = "Avec buffs: (%s)"
+	XPERL_RAID_TOOLTIP_WITHOUTBUFF	      = "Sans buffs: (%s)"
+	XPERL_RAID_TOOLTIP_BUFFEXPIRING	      = "%s's %s expires dans %s"	-- Name, buff name, time to expire
 end
 
 XPERL_LOC_CLASS_PETSHUNTER = XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS

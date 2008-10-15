@@ -80,14 +80,15 @@ function XPerl_Player_Pet_OnLoad(self)
 				end,
 	}
 
-	CombatFeedback_Initialize(self.hitIndicator.text, 30)
+	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
 
 	XPerl_SecureUnitButton_OnLoad(self, "pet", XPerl_ShowGenericMenu)
 	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "pet", XPerl_ShowGenericMenu)
 
 	--RegisterUnitWatch(self)
 
-	local events = {"UNIT_PET", "PET_ATTACK_START", "UNIT_COMBAT", "UNIT_SPELLMISS", "VARIABLES_LOADED"}
+	local events = {"UNIT_PET", "PET_ATTACK_START", "UNIT_COMBAT", "UNIT_SPELLMISS", "VARIABLES_LOADED",
+					"PLAYER_REGEN_ENABLED", "PLAYER_ENTERING_WORLD", "UNIT_ENTERED_VEHICLE", "UNIT_EXITING_VEHICLE"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
@@ -207,7 +208,7 @@ end
 
 -- XPerl_Player_Pet_OnUpdate
 function XPerl_Player_Pet_OnUpdate(self, elapsed)
-	CombatFeedback_OnUpdate(arg1)
+	CombatFeedback_OnUpdate(self, elapsed)
 	if (self.PlayerFlash) then
 		XPerl_Player_Pet_CombatFlash(self, arg1, false)
 	end
@@ -229,7 +230,7 @@ end
 ---------------
 local lastHappy
 function XPerl_Player_Pet_SetHappiness(self)
-	local happiness, damagePercentage, loyaltyRate = GetPetHappiness()
+	local happiness, damagePercentage = GetPetHappiness()
 	if (not happiness) then
 		happiness = 3
 	end
@@ -242,13 +243,6 @@ function XPerl_Player_Pet_SetHappiness(self)
 
 		icon.tooltip = getglobal("PET_HAPPINESS"..happiness)
 		icon.tooltipDamage = format(PET_DAMAGE_PERCENTAGE, damagePercentage)
-		if (loyaltyRate < 0) then
-			icon.tooltipLoyalty = LOSING_LOYALTY
-		elseif (loyaltyRate > 0) then
-			icon.tooltipLoyalty = GAINING_LOYALTY
-		else
-			icon.tooltipLoyalty = nil
-		end
 
 		if (pconf.happiness.flashWhenSad and happiness < 3) then
 			XPerl_FrameFlash(self.happyFrame)
@@ -391,7 +385,7 @@ end
 function XPerl_Player_Pet_Events:UNIT_COMBAT()
 	if (arg1 == self.partyid) then
 		if (pconf.hitIndicator and pconf.portrait) then
-			CombatFeedback_OnCombatEvent(arg2, arg3, arg4, arg5)
+			CombatFeedback_OnCombatEvent(self, arg2, arg3, arg4, arg5)
 		end
 
 		if (arg2 == "HEAL") then
@@ -406,7 +400,7 @@ end
 function XPerl_Player_Pet_Events:UNIT_SPELLMISS()
 	if (arg1 == self.partyid) then
 		if (pconf.hitIndicator and pconf.portrait) then
-			CombatFeedback_OnSpellMissEvent(arg2)
+			CombatFeedback_OnSpellMissEvent(self, arg2)
 		end
 	end
 end
@@ -419,6 +413,48 @@ end
 
 XPerl_Player_Pet_Events.UNIT_FLAGS = XPerl_Player_Pet_Events.UNIT_FACTION
 XPerl_Player_Pet_Events.UNIT_DYNAMIC_FLAGS = XPerl_Player_Pet_Events.UNIT_FACTION
+
+-- PLAYER_REGEN_ENABLED
+function XPerl_Player_Pet_Events:PLAYER_REGEN_ENABLED()
+	if (self:GetAttribute("unit") ~= self.partyid) then
+		self:SetAttribute("unit", self.partyid)
+	end
+end
+
+-- PLAYER_ENTERING_WORLD
+function XPerl_Player_Pet_Events:PLAYER_ENTERING_WORLD()
+	if (UnitHasVehicleUI("player")) then
+		self.partyid = "player"
+		self:SetAttribute("unit", "player")
+	else
+		self.partyid = "pet"
+		self:SetAttribute("unit", "pet")
+	end
+end
+
+-- UNIT_ENTERED_VEHICLE
+function XPerl_Player_Pet_Events:UNIT_ENTERED_VEHICLE(unit, showVehicle)
+	if (unit == "player") then
+		self.partyid = "player"
+		if (not InCombatLockdown()) then
+			self:SetAttribute("unit", "player")
+		end
+		XPerl_Player_Pet_UpdateDisplay(self)
+	else
+		XPerl_Player_Pet_Events.UNIT_EXITING_VEHICLE(self, unit)
+	end
+end
+
+-- UNIT_EXITING_VEHICLE
+function XPerl_Player_Pet_Events:UNIT_EXITING_VEHICLE(unit)
+	if (unit == "player") then
+		self.partyid = "pet"
+		if (not InCombatLockdown()) then
+			self:SetAttribute("unit", "pet")
+		end
+		XPerl_Player_Pet_UpdateDisplay(self)
+	end
+end
 
 -- PLAYER_REGEN_DISABLED
 local virtual

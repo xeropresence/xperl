@@ -43,9 +43,9 @@
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
-		<NormalFont inherits="GameFontHighlightSmall"/>
-		<HighlightFont inherits="GameFontHighlightSmall"/>
-		<DisabledFont inherits="GameFontDisableSmall"/>
+		<NormalFont style="GameFontHighlightSmall"/>
+		<HighlightFont style="GameFontHighlightSmall"/>
+		<DisabledFont style="GameFontDisableSmall"/>
 	</Button>
 
 	<Frame name="XPerl_Globals">
@@ -424,4 +424,68 @@
 			</Layer>
 		</Layers>
 	</Frame>
+	
+	<Frame name="XPerl_ThreatTemplateportraitFrame" virtual="true">
+		<Scripts>
+			<OnLoad>
+				XPerl_ThreatDisplayOnLoad(self, "portraitFrame")
+			</OnLoad>
+		</Scripts>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentbackground" file="Interface\Addons\XPerl\Images\GaugeCircle" setAllPoints="true" blendMode="ADD">
+					<Color r="1" g="1" b="1" a="0.5"/>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentneedle" file="Interface\Addons\XPerl\Images\GaugeCircleNeedle" setAllPoints="true">
+					<Color r="1" g="1" b="1" a="0.8"/>
+				</Texture>
+				<FontString name="$parenttext" inherits="GameFontNormalSmall" text="0">
+					<Anchors>
+						<Anchor point="BOTTOM">
+							<Offset>
+								<AbsDimension x="0" y="3"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>	
+
+	<Frame name="XPerl_ThreatTemplatenameFrame" virtual="true">
+		<Scripts>
+			<OnLoad>
+				XPerl_ThreatDisplayOnLoad(self, "nameFrame")
+			</OnLoad>
+		</Scripts>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentneedle" file="Interface\Addons\XPerl\Images\GaugeBarNeedle">
+					<Size>
+						<AbsDimension x="20" y="20"/>
+					</Size>
+					<Color r="1" g="1" b="1" a="0.8"/>
+					<TexCoords left="0" right="1" top="0" bottom="0.25"/>
+				</Texture>
+				<FontString name="$parenttext" inherits="GameFontNormalSmall" text="0" setAllPoints="true" justifyH="LEFT" justifyV="MIDDLE">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="4" y="0"/>
+							</Offset>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="-4" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>	
 </Ui>

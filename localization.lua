@@ -6,7 +6,7 @@ XPerl_ProductName		= "|cFFD00000X-Perl|r UnitFrames"
 XPerl_ShortProductName	= "|cFFD00000X-Perl|r"
 XPerl_Author			= "|cFFFF8080Zek|r"
 XPerl_Description		= XPerl_ProductName.." by "..XPerl_Author
-XPerl_VersionNumber 	= "2.4.3g"
+XPerl_VersionNumber 	= "3.0.0h"
 XPerl_Version			= XPerl_Description.." - "..XPerl_VersionNumber
 XPerl_LongDescription	= "UnitFrame replacement for new look Player, Pet, Party, Target, Target's Target, Focus, Raid"
 XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
@@ -44,6 +44,8 @@ XPERL_LOC_CLASS_SHAMAN	= "Shaman"
 XPERL_LOC_CLASS_PRIEST	= "Priest"
 XPERL_LOC_CLASS_WARLOCK = "Warlock"
 XPERL_LOC_CLASS_PALADIN = "Paladin"
+XPERL_LOC_CLASS_DEATHKNIGHT = "Death Knight"
+
 XPERL_LOC_CLASS_PETS	= "Pets"
 XPERL_TYPE_NOT_SPECIFIED = "Not specified"
 XPERL_TYPE_PET		= PET			-- "Pet"
@@ -127,6 +129,10 @@ XPERL_CANNOT_DELETE_BADARGS = "Please give realm name and player name"
 XPERL_CONFIG_LIST		= "Config List:"
 XPERL_CONFIG_CURRENT		= " (Current)"
 
+XPERL_RAID_TOOLTIP_WITHBUFF	= "With buff: (%s)"
+XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Without buff: (%s)"
+XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s's %s expires in %s"	-- Name, buff name, time to expire
+
 -- Status highlight spells
 XPERL_HIGHLIGHT_SPELLS = {
 	hotSpells  = {
@@ -141,7 +147,7 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(33076)] = 30			-- Prayer of Mending
 	},
 	shieldSpells = {
-		[GetSpellInfo(25218)] = 30,			-- Power Word: Shield
+		--[GetSpellInfo(25218)] = 30,			-- Power Word: Shield
 		[GetSpellInfo(32594)] = 600			-- Earth Shield			-- TODO change me
 	},
 	healSpells = {

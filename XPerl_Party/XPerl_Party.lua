@@ -40,7 +40,7 @@ local XPerl_Party_HighlightCallback
 function XPerl_Party_Events_OnLoad(self)
 	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBER_ENABLE", "PARTY_MEMBER_DISABLE", "RAID_ROSTER_UPDATED", "PARTY_MEMBERS_CHANGED",
 			"UNIT_COMBAT", "UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_PORTRAIT_UPDATE",
-			"UNIT_TARGET", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA",
+			"UNIT_TARGET", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA", "UNIT_RUNIC_POWER", "UNIT_MAXRUNIC_POWER",
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
 			"RAID_TARGET_UPDATE", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED", "PLAYER_LOGIN"}
 	for i,event in pairs(events) do
@@ -173,7 +173,7 @@ function XPerl_Party_OnLoad(self)
 	PartyFrames[self.partyid] = self
 
 	self.hitIndicator.text:SetPoint("CENTER", self.portraitFrame, "CENTER", 0, 0)
-	CombatFeedback_Initialize(self.hitIndicator.text, 30)
+	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
 
 	XPerl_SecureUnitButton_OnLoad(self, self.partyid, XPerl_ShowGenericMenu)
 	XPerl_SecureUnitButton_OnLoad(self.nameFrame, self.partyid, XPerl_ShowGenericMenu)
@@ -665,7 +665,7 @@ function XPerl_Party_OnUpdate(self, elapsed)
 		return
 	end
 
-	CombatFeedback_OnUpdate(elapsed)
+	CombatFeedback_OnUpdate(self, elapsed)
 
 	if (self.PlayerFlash) then
 		XPerl_Party_CombatFlash(self, arg1, false)
@@ -811,10 +811,7 @@ XPerl_Party_Events.READY_CHECK_FINISHED = XPerl_Party_Events.READY_CHECK
 -- UNIT_COMBAT
 function XPerl_Party_Events:UNIT_COMBAT()
 	if (pconf.hitIndicator and pconf.portrait) then
-		local o = this
-		this = self
-		CombatFeedback_OnCombatEvent(arg2, arg3, arg4, arg5)
-		this = o
+		CombatFeedback_OnCombatEvent(self, arg2, arg3, arg4, arg5)
 	end
 
 	XPerl_Party_UpdateCombat(self)
@@ -828,7 +825,7 @@ end
 -- UNIT_SPELLMISS
 function XPerl_Party_Events:UNIT_SPELLMISS()
 	if (pconf.hitIndicator and pconf.portrait) then
-		CombatFeedback_OnSpellMissEvent(arg2)
+		CombatFeedback_OnSpellMissEvent(self, arg2)
 	end
 end
 
@@ -929,6 +926,8 @@ XPerl_Party_Events.UNIT_RAGE		= XPerl_Party_Events.UNIT_MANA
 XPerl_Party_Events.UNIT_MAXRAGE		= XPerl_Party_Events.UNIT_MANA
 XPerl_Party_Events.UNIT_ENERGY		= XPerl_Party_Events.UNIT_MANA
 XPerl_Party_Events.UNIT_MAXENERGY	= XPerl_Party_Events.UNIT_MANA
+XPerl_Party_Events.UNIT_RUNIC_POWER = XPerl_Party_Events.UNIT_MANA
+XPerl_Party_Events.UNIT_MAXRUNIC_POWER = XPerl_Party_Events.UNIT_MANA
 
 -- UNIT_DISPLAYPOWER
 function XPerl_Party_Events:UNIT_DISPLAYPOWER()

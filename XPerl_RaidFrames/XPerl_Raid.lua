@@ -3,7 +3,7 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 local XPerl_Raid_Events = {}
-local RaidGroupCounts = {0,0,0,0,0,0,0,0,0}
+local RaidGroupCounts = {0,0,0,0,0,0,0,0,0,0}
 local myGroup = 0
 local FrameArray = {}		-- List of raid frames indexed by raid ID
 local RaidPositions = {}	-- Back-matching of unit names to raid ID
@@ -53,8 +53,9 @@ function XPerl_Raid_GetLocalisedClassName(class)
 	return ClassNames[class]
 end
 
-local localGroups = {WARRIOR = XPERL_LOC_CLASS_WARRIOR, MAGE = XPERL_LOC_CLASS_MAGE, PRIEST = XPERL_LOC_CLASS_PRIEST, WARLOCK = XPERL_LOC_CLASS_WARLOCK, DRUID = XPERL_LOC_CLASS_DRUID, ROGUE = XPERL_LOC_CLASS_ROGUE, HUNTER = XPERL_LOC_CLASS_HUNTER, SHAMAN = XPERL_LOC_CLASS_SHAMAN, PALADIN = XPERL_LOC_CLASS_PALADIN}
---local groupIndex = {WARRIOR = 1, MAGE = 2, PRIEST = 3, WARLOCK = 4, DRUID = 5, ROGUE = 6, HUNTER = 7, SHAMAN = 8, PALADIN = 9}
+local localGroups = {WARRIOR = XPERL_LOC_CLASS_WARRIOR, DEATHKNIGHT = XPERL_LOC_CLASS_DEATHKNIGHT, MAGE = XPERL_LOC_CLASS_MAGE, PRIEST = XPERL_LOC_CLASS_PRIEST, WARLOCK = XPERL_LOC_CLASS_WARLOCK, DRUID = XPERL_LOC_CLASS_DRUID, ROGUE = XPERL_LOC_CLASS_ROGUE, HUNTER = XPERL_LOC_CLASS_HUNTER, SHAMAN = XPERL_LOC_CLASS_SHAMAN, PALADIN = XPERL_LOC_CLASS_PALADIN}
+local WoWclassCount = 0
+for k,v in pairs(localGroups) do WoWclassCount = WoWclassCount + 1 end
 
 local resSpells  = {
 	[GetSpellInfo(2006)] = true,			-- ["Resurrection"] = true,
@@ -81,12 +82,11 @@ function XPerl_Raid_OnLoad(self)
 			"READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED", "RAID_TARGET_UPDATE",
 			"PLAYER_LOGIN"
 			}
-			
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
 
-	for i = 1,9 do			-- Fix for WoW 2.1 UNIT_NAME_UPDATE issue
+	for i = 1,WoWclassCount do			-- Fix for WoW 2.1 UNIT_NAME_UPDATE issue
 		getglobal("XPerl_Raid_Grp"..i):UnregisterEvent("UNIT_NAME_UPDATE")
 		tinsert(raidHeaders, getglobal(XPERL_RAIDGRP_PREFIX..i))
 	end
@@ -757,131 +757,6 @@ end
 -- Buffs stuffs --
 ------------------
 
--- Scans a unit's buffs and sets up initial buff time remaining entries
-local debuffTimers = {	Spell_Nature_SpiritArmor = 15 * 60,	-- Mark of Nature
-			Spell_Frost_ChainsOfIce = 15 * 60,	-- Mark of Frost
-			INV_Misc_Bandage_08 = 60,		-- Recently Bandaged
-			Spell_Shadow_DeathScream = 10 * 60,	-- Resurrection Sickness
-			Spell_Holy_RemoveCurse = 60,		-- Forbearance
-}
-
--- CheckRosterBuffs
--- Check buffs exist in roster that we've received, if not then strip them out
-local function CheckRosterBuffs(unitName)
-	local id = RaidPositions[unitName]
-	if (id) then
-		if (UnitIsConnected(id)) then
-			local buffs = XPerl_Roster[unitName].Buffs
-			if (buffs) then
-				for buffName,buffTimeEnd in pairs(buffs) do
-					if (buffTimeEnd < GetTime()) then
-						buffs[buffName] = nil
-					end
-				end
-			end
-
-			buffs = XPerl_Roster[unitName].Debuffs
-			if (buffs) then
-				for buffName,buffTimeEnd in pairs(buffs) do
-					if (buffTimeEnd < GetTime()) then
-						buffs[buffName] = nil
-					end
-				end
-			end
-		end
-	end
-end
-
--- UpdateRosterBuffs
-local function UpdateRosterBuffs(self)
-	local unit = self.partyid
-	if (not unit) then
-		return
-	end
-
-	local myRoster = XPerl_Roster[UnitName(unit)]
-
-	if (myRoster) then
-		if (not myRoster.Buffs) then
-			myRoster.Buffs = new()
-		end
-		if (not myRoster.Debuffs) then
-			myRoster.Debuffs = new()
-		end
-
-		local oldAuras = new()
-		local oldDebuffs = new()
-		for k, v in pairs(myRoster.Buffs) do
-			oldAuras[k] = 1
-		end
-		for k,v in pairs(myRoster.Debuffs) do
-			oldDebuffs[k] = 1
-		end
-
-		local buffName, rank, buff = UnitBuff(unit, 1)
-		local num = 1
-		while (buffName) do
-			oldAuras[buffName] = nil
-			if (not myRoster.Buffs[buffName]) then
-				-- We store the fade time of raid member's buffs
-
-				local ctBuff = XPerl_CTBuffTextures[buffName]
-				if (ctBuff) then
-					local duration = ctBuff[2]
-
-					if (not duration) then
-						duration = 5*60
-					end
-
-					myRoster.Buffs[buffName] = GetTime() + duration
-				end
-			end
-
-			num = num + 1
-			buffName, rank, buff = UnitBuff(unit, num)
-		end
-
-		buffName, rank, buff = UnitDebuff(unit, 1)
-		num = 1
-		while (buffName) do
-			buff = strsub(buff, 17)
-			local duration = debuffTimers[buff]
-
-			if (duration) then
-				oldDebuffs[buff] = nil
-				if (not myRoster.Debuffs[buff]) then
-					myRoster.Debuffs[buff] = GetTime() + duration
-				end
-			end
-
-			num = num + 1
-			buffName, rank, buff = UnitDebuff(unit, num)
-		end
-
-		for k, v in pairs(oldAuras) do
-			myRoster.Buffs[k] = nil
-		end
-		for k,v in pairs(oldDebuffs) do
-			myRoster.Debuffs[k] = nil
-		end
-
-		del(oldAuras)
-		del(oldDebuffs)
-
-		if (not next(myRoster.Debuffs)) then
-			del(myRoster.Debuffs)
-			myRoster.Debuffs = nil
-		end
-
-		if (not next(myRoster.Buffs)) then
-			del(myRoster.Buffs)
-			myRoster.Buffs = nil
-		end
-	end
-
-	CheckRosterBuffs(unit)
-end
-
 -- XPerl_Raid_UpdateCombat
 local function XPerl_Raid_UpdateCombat(self)
 	local partyid = self.partyid
@@ -1089,8 +964,8 @@ function XPerl_Raid_HideShowRaid()
 			singleGroup = XPerl_Party_SingleGroup()
 		end
 	end
-	for i = 1,9 do
-		if (rconf.group[i] == 1 and rconf.enable and (i < 9 or rconf.sortByClass) and not singleGroup) then
+	for i = 1,WoWclassCount do
+		if (rconf.group[i] == 1 and rconf.enable and (i < 10 or rconf.sortByClass) and not singleGroup) then
 			if (not raidHeaders[i]:IsShown()) then
 				raidHeaders[i]:Show()
 			end
@@ -1262,6 +1137,8 @@ XPerl_Raid_Events.UNIT_RAGE      = XPerl_Raid_Events.UNIT_MANA
 XPerl_Raid_Events.UNIT_MAXRAGE   = XPerl_Raid_Events.UNIT_MANA
 XPerl_Raid_Events.UNIT_ENERGY    = XPerl_Raid_Events.UNIT_MANA
 XPerl_Raid_Events.UNIT_MAXENERGY = XPerl_Raid_Events.UNIT_MANA
+XPerl_Raid_Events.UNIT_RUNIC_POWER = XPerl_Raid_Events.UNIT_MANA
+XPerl_Raid_Events.UNIT_MAXRUNIC_POWER = XPerl_Raid_Events.UNIT_MANA
 
 -- UNIT_NAME_UPDATE
 function XPerl_Raid_Events:UNIT_NAME_UPDATE()
@@ -1272,7 +1149,6 @@ end
 -- UNIT_AURA
 function XPerl_Raid_Events:UNIT_AURA()
 	lastNamesList, lastName, lastWith = nil, nil, nil
-	UpdateRosterBuffs(self)
 	UpdateBuffs(self)
 end
 
@@ -1456,47 +1332,6 @@ local function ProcessCTRAMessage(unitName, msg)
 			SetResStatus(unitName, strsub(msg, 5))
 			return
 
- 		elseif (strsub(msg, 1, 3) == "RN ") then
-			-- Buff durations
-			local secsLeft, buffIndex, buffSub = strmatch(msg, "^RN ([^%s]+) ([^%s]+) ([^%s]+)$")
-
-			if (secsLeft and buffIndex and buffSub) then
-				secsLeft = tonumber(secsLeft)
-				buffIndex = tonumber(buffIndex)
-				buffSub = tonumber(buffSub)
-
-				local buff = XPerl_CTBuffArray[buffIndex]
-
-				if (buff) then
-					local buffName, delete
-					-- Shouldn't come with string and sub index > 0, but it does.. Will investigate when and why
-					-- Druid Thorns... /shrug
-					if (buffSub == 0 or type(buff.name) == "string") then
-						buffName = buff.name
-					else
-						buffName = buff.name[buffSub]
-						if (buffSub == 1) then
-							delete = buff.name[2]
-						else
-							delete = buff.name[1]
-						end
-					end
-
-					if (buffName) then
-						if (not myRoster.Buffs) then
-							myRoster.Buffs = new()
-						end
-						myRoster.Buffs[buffName] = GetTime() + secsLeft
-						if (delete) then
-							-- Clear a buff's partner buff (can only have 1 of PWF group vs single for example)
-							myRoster.Buffs[delete] = nil
-						end
-						CheckRosterBuffs(unitName)
-					end
-				end
-			end
-			update = nil
-
 		elseif (strsub(msg, 1, 3) == "CD ") then
 			local num, cooldown = strmatch(msg, "^CD (%d+) (%d+)$")
 			if ( num == "1" ) then
@@ -1603,7 +1438,7 @@ local function SetRaidRoster()
 	RaidPositions = new()
 
 	del(RaidGroupCounts)
-	RaidGroupCounts = new(0,0,0,0,0,0,0,0,0)
+	RaidGroupCounts = new(0,0,0,0,0,0,0,0,0,0)
 
 	for i = 1,GetNumRaidMembers() do
 		local name, rank, group, level, class, fileName = GetRaidRosterInfo(i)
@@ -1617,7 +1452,7 @@ local function SetRaidRoster()
 			end
 
 			if (rconf.sortByClass) then
-				for j = 1,9 do
+				for j = 1,WoWclassCount do
 					if (rconf.class[j].name == fileName and rconf.class[j].enable) then
 						RaidGroupCounts[j] = RaidGroupCounts[j] + 1
 						break
@@ -1762,7 +1597,7 @@ end
 
 -- XPerl_ScaleRaid
 function XPerl_ScaleRaid()
-	for frame = 1,9 do
+	for frame = 1,WoWclassCount do
 		local f = getglobal("XPerl_Raid_Title"..frame)
 		if (f) then
 			f:SetScale(rconf.scale)
@@ -1781,7 +1616,7 @@ function XPerl_RaidTitles()
 	end
 
 	local c
-	for i = 1,9 do		-- NUM_RAID_GROUPS do
+	for i = 1,WoWclassCount do
 		local confClass = rconf.class[i].name
 		local frame = getglobal("XPerl_Raid_Title"..i)
 		local titleFrame = frame.text
@@ -1863,7 +1698,7 @@ end
 
 -- XPerl_EnableRaidMouse()
 function XPerl_EnableRaidMouse()
-	for i = 1,9 do
+	for i = 1,WoWclassCount do
 		local frame = getglobal("XPerl_Raid_Title"..i)
 		if (XPerlLocked == 0) then
 			frame:EnableMouse(true)
@@ -1891,10 +1726,8 @@ function XPerl_Raid_SetBuffTooltip(self)
 			end
 			if (show == "b") then
 				XPerl_TooltipSetUnitBuff(GameTooltip, partyid, self:GetID(), cureCast)
-				XPerl_Raid_AddBuffDuration(self, partyid)
 			elseif (show == "d") then
 				XPerl_TooltipSetUnitDebuff(GameTooltip, partyid, self:GetID(), cureCast)
-				XPerl_Raid_AddDebuffDuration(self, partyid, self:GetID(), cureCast)
 			end
 		end
 	end
@@ -2141,320 +1974,6 @@ function XPerl_RaidTipExtra(unitid)
 	end
 end
 
--- GetNamesWithoutBuff
-local matches = {
-	{"Holy_WordFortitude", "Holy_PrayerOfFortitude"},
-	{"Holy_MagicalSentry", "Holy_ArcaneIntellect"},
-	{"Shadow_AntiShadow", "Holy_PrayerofShadowProtection"},
-	{"Holy_DivineSpirit", "Holy_PrayerofSpirit"},
-	{"Holy_FistOfJustice", "Holy_GreaterBlessingofKings"},
-	{"Holy_SealOfWisdom", "Holy_GreaterBlessingofWisdom"},
-	{"Magic_MageArmor", "Magic_GreaterBlessingofKings"},
-	{"Holy_SealOfSalvation", "Holy_GreaterBlessingofSalvation"},
-	{"Holy_PrayerOfHealing02", "Holy_GreaterBlessingofLight"},
-	{"Nature_LightningShield", "Holy_GreaterBlessingofSanctuary"},
-	{"Nature_Regeneration", "Nature_GiftoftheWild"}
-}
-local classOrder = {"WARRIOR", "ROGUE", "HUNTER", "PRIEST", "DRUID", "SHAMAN", "PALADIN", "MAGE", "WARLOCK"}
-local checkExpiringClass
-local function GetNamesWithoutBuff(spellName, tex, with)
-	if (spellName == lastName and with == lastWith and lastNamesList) then
-		return lastNamesList, lastNamesCount
-	end
-
-	local count = 0
-	local names
-	local unitName
-
-	local class = select(2, UnitClass("player"))
-
-	if (not checkExpiringClass) then
-		if (class == "PRIEST") then
-			checkExpiringClass = {Holy_WordFortitude = 2, Holy_PrayerOfFortitude = 2,
-					Holy_DivineSpirit = 2, Holy_PrayerofSpirit = 2,
-					Shadow_AntiShadow = 2, Holy_PrayerofShadowProtection = 2}
-
-		elseif (class == "DRUID") then
-			checkExpiringClass = {Nature_Regeneration = 2, Nature_GiftoftheWild = 2, Nature_Thorns = 1}
-
-		elseif (class == "MAGE") then
-			checkExpiringClass = {Holy_MagicalSentry = 2, Holy_ArcaneIntellect = 2, Holy_FlashHeal = 2, Nature_AbolishMagic = 2}
-
-		elseif (class == "PALADIN") then
-			checkExpiringClass = {Holy_Excorcism = 2,
-					Holy_FistOfJustice = 1, Holy_GreaterBlessingofKings = 1,
-					Holy_SealOfWisdom = 1, Holy_GreaterBlessingofWisdom = 1,
-					Magic_MageArmor = 1, Magic_GreaterBlessingofKings = 1,
-					Holy_SealOfSalvation = 1, Holy_GreaterBlessingofSalvation = 1,
-					Holy_PrayerOfHealing02 = 1, Holy_GreaterBlessingofLight = 1,
-					Nature_LightningShield = 1, Holy_GreaterBlessingofSanctuary = 1}
-		end
-	end
-
-	if (IsRaidOfficer()) then
-		checkExpiring = {all = 5}
-	else
-		checkExpiring = checkExpiringClass
-	end
-
-	local withList = new()
-	local texNoPath = strsub(tex, 23)
-	for unitid, unitName, unitClass, group, zone, online, dead in XPerl_NextMember do
-		local use
-
-		if (not conf.buffHelper.visible) then
-			use = true
-		else
-			if (rconf.sortByClass) then
-				if (rconf.class[group].enable) then
-					use = unitClass == rconf.class[group].name
-				end
-			else
-				use = rconf.group[group]
-			end
-		end
-
-		if (unitName and use and online and not dead) then
-			local hasBuff
-			for num = 1,25 do
-				local name, rank, buffTexture = UnitBuff(unitid, num)
-				if (not name) then
-					break
-				end
-
-				if (name == spellName) then
-					hasBuff = true
-				else
-					local buffTextureNoPath = strsub(buffTexture, 23)
-					for dups,pair in pairs(matches) do
-						if (texNoPath == pair[1] or texNoPath == pair[2]) then
-							if (buffTextureNoPath == pair[1] or buffTextureNoPath == pair[2]) then
-								hasBuff = true
-								break
-							end
-						end
-					end
-				end
-				if (hasBuff) then
-					if (without and checkExpiring) then
-						local found = checkExpiring.all
-
-						if (not found) then
-							found = checkExpiring[buffTextureNoPath]
-						end
-
-						if (found) then
-							local myRoster = XPerl_Roster[unitName]
-							if (myRoster and myRoster.Buffs) then
-								local expire = myRoster.Buffs[spellName]
-								if (expire and expire <= GetTime() + (found*60)) then
-									GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_BUFFEXPIRING, XPerlColourTable[unitClass]..name.."|c", buffName, SecondsToTime(buff - GetTime())), 1, 0.2, 0)
-								end
-							end
-						end
-					end
-					break
-				end
-			end
-
-			if ((with and hasBuff) or (not with and not hasBuff)) then
-				count = count + 1
-
-				if (conf.buffHelper.sort == "group") then
-					if (not withList[group]) then
-						withList[group] = new()
-					end
-					tinsert(withList[group], {class = unitClass, ["name"] = unitName})
-				elseif (conf.buffHelper.sort == "class") then
-					if (not withList[unitClass]) then
-						withList[unitClass] = new()
-					end
-					tinsert(withList[unitClass], unitName)
-				else
-					local n = new()
-					tinsert(withList, n)
-					n.class = unitClass
-					n.name = unitName
-				end
-			end
-		end
-	end
-
-	-- TODO - Verify the fading buffs part, and sort this too in with this list.
-
-	if (conf.buffHelper.sort == "group") then
-		for i = 1,8 do
-			local list = withList[i]
-			if (list) then
-				sort(list, function(a,b) return a.name < b.name end)
-
-				names = (names or "").."|r"..i..": "
-				for i,item in ipairs(list) do
-					names = names..XPerlColourTable[item.class]..item.name.." "
-				end
-				names = names.."|r\r"
-			end
-			del(list)
-		end
-	elseif (conf.buffHelper.sort == "class") then
-		for j,class in pairs(classOrder) do
-			local list = withList[class]
-			if (list) then
-				sort(list)
-
-				for i,name in ipairs(list) do
-					if (i == 1) then
-						names = (names or "")..XPerlColourTable[class]
-					end
-					names = (names or "")..name.." "
-				end
-
-				names = (names or "").."|r\r"
-			end
-			del(list)
-		end
-	else
-		sort(withList, function(a,b) return a.name < b.name end)
-		for i,item in ipairs(withList) do
-			names = (names or "")..XPerlColourTable[item.class]..item.name.." "
-		end
-
-		names = (names or "").."\r"
-
-		del(item)
-	end
-
-	--for k,v in pairs(withList) do
-	--	if (type(v) == "table") then
-	--		del(v)
-	--		withList[k] = nil
-	--	end
-	--end
-	del(withList)
-
-	lastNamesList = names
-	lastName = spellName
-	lastWith = with
-	lastNamesCount = count
-
-	return names, count
-end
-
--- XPerl_Raid_AddBuffDuration
-function XPerl_Raid_AddBuffDuration(self, partyid, buffID)
-	if (self and GameTooltip:IsOwned(self)) then
-		if (partyid ~= "player") then
-			local left
-			if (buffID) then
-				local name, rank, icon, count, duration, timeLeft = UnitBuff(partyid, buffID)
-				if (duration) then
-					left = timeLeft
-				end
-			end
-
-			if (not left and GetNumRaidMembers() > 0) then
-				local stats = XPerl_Roster[UnitName(partyid)]
-
-				if (stats and stats.Buffs) then
-					local buffName = getglobal("GameTooltipTextLeft1"):GetText()
-					if (buffName) then
-						local buff = stats.Buffs[buffName]
-						if (buff) then
-							if (buff > GetTime()) then
-								left = buff - GetTime()
-							end
-						end
-					end
-				end
-
-				if (left) then
-					GameTooltip:AddLine(SecondsToTime(left)..XPERL_RAID_TOOLTIP_REMAINING, 1, 0.82, 0)
-				end
-			end
-
-		end
-
-		if (GetNumRaidMembers() > 0) then
-			if (conf.buffHelper.enable and partyid and UnitInRaid(partyid)) then
-				local buffName = getglobal("GameTooltipTextLeft1"):GetText()
-				local tex
-				if (partyid == "player" and buffID) then
-					local buffIndex = GetPlayerBuff(buffID, "HELPFUL")
-					if (buffIndex) then
-						tex = GetPlayerBuffTexture(buffIndex)
-					end
-				else
-					local icon = getglobal(self:GetName().."Icon")
-					if (not icon) then
-						icon = self.icon
-					end
-					if (icon) then
-						tex = icon:GetTexture()
-					end
-				end
-
-				if (buffName and tex) then
-					local names, count = GetNamesWithoutBuff(buffName, tex, IsAltKeyDown())
-					if (names) then
-						if (IsAltKeyDown()) then
-							GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_WITHBUFF, count), 0.3, 1, 0.2)
-						else
-							GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_WITHOUTBUFF, count), 1, 0.3, 0.1)
-						end
-
-						if (conf.buffHelper.sort) then
-							GameTooltip:AddLine(names, 0.5, 0.5, 0.5)
-						else
-							GameTooltip:AddLine(names, 0.5, 0.5, 0.5, 1)
-						end
-					end
-				end
-			end
-		end
-
-		GameTooltip:Show()
-	end
-end
-
--- XPerl_Raid_AddDebuffDuration
-function XPerl_Raid_AddDebuffDuration(self, partyid, id, cureCast)
-	if (GameTooltip:IsOwned(self)) then
-		if (partyid ~= "player") then
-			local left
-			if (buffID) then
-				local name, rank, icon, count, debuffType, duration, timeLeft = UnitDebuff(partyid, buffID)
-				if (duration) then
-					left = timeLeft
-				end
-			end
-
-			if (not left and GetNumRaidMembers() > 0) then
-				local stats = XPerl_Roster[UnitName(partyid)]
-
-				if (stats and stats.Debuffs) then
-					local buffName = XPerl_UnitDebuff(partyid, id, cureCast)
-
-					if (buffName) then
-						buffName = strsub(buffName, 17)
-						local buff = stats.Debuffs[buffName]
-						if (buff) then
-							if (buff > GetTime()) then
-								left = buff - GetTime()
-							end
-						end
-					end
-				end
-
-				if (left) then
-					GameTooltip:AddLine(SecondsToTime(left)..XPERL_RAID_TOOLTIP_REMAINING, 1, 0.82, 0)
-				end
-			end
-		end
-
-		GameTooltip:Show()
-	end
-end
-
 -- SetMainHeaderAttributes
 local function SetMainHeaderAttributes(self)
 
@@ -2526,6 +2045,21 @@ function XPerl_Raid_ChangeAttributes()
 
 	rconf.anchor = (rconf and rconf.anchor) or "TOP"
 
+	local function DefaultRaidClasses()
+		return {
+			{enable = true, name = "WARRIOR"},
+			{enable = true, name = "DEATHKNIGHT"},
+			{enable = true, name = "ROGUE"},
+			{enable = true, name = "HUNTER"},
+			{enable = true, name = "MAGE"},
+			{enable = true, name = "WARLOCK"},
+			{enable = true, name = "PRIEST"},
+			{enable = true, name = "DRUID"},
+			{enable = true, name = "SHAMAN"},
+			{enable = true, name = "PALADIN"},
+		}
+	end
+
 	local function GroupFilter(n)
 		if (rconf.sortByClass) then
 			if (rconf.class[n].enable) then
@@ -2538,7 +2072,16 @@ function XPerl_Raid_ChangeAttributes()
 				f = tostring(n)
 			end
 
-			for i = 1,9 do
+			for i = 1,WoWclassCount do
+				if (not rconf.class[i]) then
+					invalid = true
+				end
+			end
+			if (invalid) then
+				rconf.class = DefaultRaidClasses()
+			end
+
+			for i = 1,WoWclassCount do
 				if (rconf.class[i].enable) then
 					if (not f) then
 						f = rconf.class[i].name
@@ -2551,7 +2094,7 @@ function XPerl_Raid_ChangeAttributes()
 		end
 	end
 
-	for i = 1,8 + (rconf.sortByClass or 0) do
+	for i = 1,rconf.sortByClass and WoWclassCount or 8 do
 		local groupHeader = raidHeaders[i]
 
 		-- Hide this when we change attributes, so the whole re-calc is only done once, instead of for every attribute change
@@ -2574,7 +2117,7 @@ function XPerl_Raid_Set_Bits(self)
 
 	XPerl_ScaleRaid()
 
-	for i = 1,9 do
+	for i = 1,WoWclassCount do
 		XPerl_SavePosition(getglobal("XPerl_Raid_Title"..i), true)
 	end
 
@@ -2582,7 +2125,7 @@ function XPerl_Raid_Set_Bits(self)
 		Setup1RaidFrame(frame)
 	end
 
-	local manaEvents = {"UNIT_DISPLAYPOWER", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA"}
+	local manaEvents = {"UNIT_DISPLAYPOWER", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA", "UNIT_RUNIC_POWER", "UNIT_MAXRUNIC_POWER"}
 	for i,event in pairs(manaEvents) do
 		if (rconf.mana) then
 			self:RegisterEvent(event)

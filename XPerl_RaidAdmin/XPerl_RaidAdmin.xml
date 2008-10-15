@@ -85,7 +85,7 @@
 
 	<Button name="XPerlRosterLineTemplate" virtual="true">
 		<ButtonText name="$parentText" setAllPoints="true"/>
-		<NormalFont inherits="GameFontNormalSmall"/>
+		<NormalFont style="GameFontNormalSmall"/>
 		<Size>
 			<AbsDimension x="70" y="12"/>
 		</Size>
@@ -355,10 +355,10 @@
 										</Offset>
 									</Anchor>
 								</Anchors>
-								<NormalFont inherits="GameFontHighlightSmall">
+								<NormalFont style="GameFontHighlightSmall">
 									<Color r="0.8" g="0.2" b="0.2"/>
 								</NormalFont>
-								<HighlightFont inherits="GameFontHighlightSmall">
+								<HighlightFont style="GameFontHighlightSmall">
 									<Color r="1" g="0" b="0"/>
 								</HighlightFont>
 								<Scripts>
@@ -404,10 +404,10 @@
 										</Offset>
 									</Anchor>
 								</Anchors>
-								<NormalFont inherits="GameFontHighlightSmall">
+								<NormalFont style="GameFontHighlightSmall">
 									<Color r="0.2" g="0.8" b="0.2"/>
 								</NormalFont>
-								<HighlightFont inherits="GameFontHighlightSmall">
+								<HighlightFont style="GameFontHighlightSmall">
 									<Color r="0" g="1" b="0"/>
 								</HighlightFont>
 								<Scripts>
@@ -515,7 +515,7 @@
 										</Anchors>
 										<Scripts>
 											<OnVerticalScroll>
-												FauxScrollFrame_OnVerticalScroll(1, XPerl_AdminFrame_Controls.MakeList)
+												FauxScrollFrame_OnVerticalScroll(self, value, 1, XPerl_AdminFrame_Controls.MakeList)
 											</OnVerticalScroll>
 											<OnMouseWheel>
 												local f = getglobal(self:GetName().."ScrollBar")

@@ -2,6 +2,72 @@
 
 	<Script file="XPerl_Player.lua"/>
 
+	<Button name="XPerl_RuneButtonIndividualTemplate" virtual="true" hidden="false">
+		<Size>
+			<AbsDimension x="22" y="22"/>
+		</Size>
+		<Frames>
+			<Cooldown name="$parentCooldown" drawEdge="true" frameStrata="LOW">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+					<Anchor point="BOTTOMRIGHT">
+						<Offset>
+							<AbsDimension x="0" y="1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</Cooldown>
+			<Frame frameStrata="MEDIUM" setAllPoints="true" name="$parentShine">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentTexture" file="Interface\ComboFrame\ComboPoint" alphaMode="ADD" hidden="true">
+							<Size x="60" y="35"/>
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset x="0" y="0"/>
+								</Anchor>
+							</Anchors>
+							<TexCoords left="0.5625" right="1" top="0" bottom="1"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentRune" file="Interface\PlayerFrame\UI-PlayerFrame-Deathknight-Blood">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="1" y="-1"/>
+							</Offset>
+						</Anchor>
+						<Anchor point="BOTTOMRIGHT">
+							<Offset>
+								<AbsDimension x="-1" y="1"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				RuneButton_OnLoad(self)
+			</OnLoad>
+			<OnEnter>
+				RuneButton_OnEnter(self)
+			</OnEnter>
+			<OnLeave>
+				RuneButton_OnLeave(self)
+			</OnLeave>
+		</Scripts>
+	</Button>
+
 	<Button name="XPerl_Player" inherits="SecureUnitButtonTemplate" clampedToScreen="true" frameStrata="LOW" movable="true" parent="UIParent">
 		<Size>
 			<AbsDimension x="220" y="60"/>
@@ -92,9 +158,45 @@
 						<AbsInset left="4" right="4" top="4" bottom="4"/>
 					</BackgroundInsets>
 				</Backdrop>
+				<Frames>
+					<Frame name="$parentpvp" hidden="true">
+						<Scripts>
+							<OnLoad>
+								self:SetScale(0.7)
+								self:SetFrameLevel(self:GetParent():GetFrameLevel() + 2)
+							</OnLoad>
+						</Scripts>
+						<Size>
+							<AbsDimension x="62" y="62"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="-5" y="1"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture name="$parenticon" file="Interface\TargetingFrame\UI-PVP-FFA" setAllPoints="true"/>
+							</Layer>
+							<Layer level="ARTWORK">
+								<FontString name="$parenttimer" inherits="GameFontNormal">
+									<Anchors>
+										<Anchor point="TOPLEFT">
+											<Offset>
+												<AbsDimension x="5" y="-12"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+									<Color r="1" g="1" b="1" />
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+				</Frames>
 				<Layers>
-					<Layer level="BORDER">
-						<!-- PVP Icon -->
+					<!-- Layer level="BORDER">
 						<Texture name="$parentpvpIcon" file="Interface\TargetingFrame\UI-PVP-FFA" hidden="true">
 							<Size>
 								<AbsDimension x="44" y="44"/>
@@ -107,8 +209,7 @@
 								</Anchor>
 							</Anchors>
 						</Texture>
-					</Layer>
-
+					</Layer -->
 					<Layer level="ARTWORK">
 						<!-- Leader Icon -->
 						<Texture name="$parentleaderIcon" file="Interface\GroupFrame\UI-Group-LeaderIcon" hidden="true">

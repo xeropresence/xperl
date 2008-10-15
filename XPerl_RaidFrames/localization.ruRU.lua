@@ -17,9 +17,6 @@ XPERL_RAID_TOOLTIP_ANKH			= "Восстание из мертвых: %s"
 XPERL_RAID_TOOLTIP_SOULSTONE	= "Камень души: %s"
 
 XPERL_RAID_TOOLTIP_REMAINING	= " осталось"
-XPERL_RAID_TOOLTIP_WITHBUFF		= "С баффом: (%s)"
-XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Без баффа: (%s)"
-XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s: %s заканчивается через %s"	-- Name, buff name, time to expire
 
 XPERL_RAID_DROPDOWN_SHOWPET		= "Показ питомцев"
 XPERL_RAID_DROPDOWN_SHOWOWNER	= "Показ хозяинов"

@@ -20,6 +20,8 @@ local UnitName = UnitName
 local cos = math.cos
 local sin = math.sin
 local xperlHealComms = XPERL_COMMS_PREFIX.."Heal"
+local playerGUID
+local band = bit.band
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
@@ -28,6 +30,110 @@ local pomSpells = XPERL_HIGHLIGHT_SPELLS.pomSpells
 local shieldSpells = XPERL_HIGHLIGHT_SPELLS.shieldSpells
 local healSpells = XPERL_HIGHLIGHT_SPELLS.healSpells
 local groupHealSpells = XPERL_HIGHLIGHT_SPELLS.groupHealSpells
+
+local function GetTalentPosition(findName)
+	for i = 1,GetNumTalentTabs() do
+		for j = 1,GetNumTalents(i) do
+			local name = GetTalentInfo(i, j)
+			if (name == findName) then
+				return i, j
+			end
+		end
+	end
+end
+
+local function GetTalentValueByName(name)
+	local tab, index = GetTalentPosition(name)
+	if (index) then
+		local name, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tab, index)
+		return currentRank
+	end
+	return 0
+end
+
+local function getTalentModifier(self)
+	if (self.improved) then
+		local spent = GetTalentValueByName(self.improved.name)
+		return 1 + (self.improved.percentPerRank * spent) / 100
+	end
+	return 1
+end
+
+local function getRankAmount(self, spellId)
+	local amount = self.ranks[spellId]
+	if (amount) then
+		return amount * self:GetModifier()
+	end
+end
+
+local absorbSpells = {
+	[GetSpellInfo(11426)] = {			-- Ice Barrier
+		ranks = {
+			[11426]	= 438,				-- Spell IDs and amounts per rank
+			[13031]	= 549,
+			[13032]	= 678,
+			[13033]	= 818,
+			[27134]	= 925,
+			[33405]	= 1075,
+			[43038]	= 2800,
+			[43039]	= 3300
+		},
+		school = "FROST",
+		class = "MAGE",
+		GetModifier = getTalentModifier,
+		GetRankAmount = getRankAmount,
+	},
+	[GetSpellInfo(1463)] = {			-- Mana Shield
+		ranks = {
+			[1463]	= 120,
+			[8494]	= 210,
+			[8495]	= 300,
+			[10191]	= 390,
+			[10192]	= 480,
+			[10193]	= 570,
+			[27131]	= 715,
+			[43019]	= 1080,
+			[43020]	= 1330
+		},
+		class = "MAGE",
+		school = "ARCANE",
+		improved = {
+			name = GetSpellInfo(12605),
+			ranks = 2,
+			percentPerRank = 10,
+		},
+		GetModifier = getTalentModifier,
+		GetRankAmount = getRankAmount,
+	},
+	[GetSpellInfo(17)] = {				-- Power Word: Shield
+		ranks = {
+			[17]	= 44,
+			[592]	= 88,
+			[600]	= 158,
+			[3747]	= 234,
+			[6065]	= 301,
+			[6066]	= 381,
+			[10898]	= 484,
+			[10899]	= 605,
+			[10900]	= 763,
+			[10901]	= 942,
+			[25217]	= 1125,
+			[25218]	= 1265,
+			[48065]	= 1920,
+			[48066]	= 2230
+		},
+		class = "PRIEST",
+		targetable = true,
+		school = "HOLY",
+		improved = {
+			name = GetSpellInfo(14748),
+			ranks = 3,
+			percentPerRank = 5,
+		},
+		GetModifier = getTalentModifier,
+		GetRankAmount = getRankAmount,
+	},
+}
 
 local colours = {HOT = {r = 0.2, g = 0.4, b = 0.8, canFlash = true},
 		 POM = {r = 0.8, g = 0.6, b = 0.4},
@@ -45,6 +151,7 @@ xpHigh.lastExpireCheck = 0
 xpHigh.flashers = {}
 xpHigh.gettingGUIDsFrom = {}
 xpHigh.mendingIcons = {}
+xpHigh.shields = {}
 
 -- rotate
 -- Positive angle is clockwise rotation
@@ -64,7 +171,6 @@ end
 
 -- XPerl_Highlight:Add
 function xpHigh:Add(guid, highlightType, duration, source)
---self:Print("self:Add(%s, %s, %s)", tostring(guid), tostring(highlightType), tostring(duration))
 	if (not strfind(guid, "^0x")) then
 		guid = self.lookup and self.lookup[guid]
 	end
@@ -299,8 +405,8 @@ function xpHigh:SetHighlight(frame, guid)
 					hotBar = true
 				elseif (k == "HOTSPARKS" and conf.highlight.extraSparkles) then
 					hotSparks = true
-				elseif (k == "SHIELD" and conf.highlight.sparkles and conf.highlight.extraSparkles) then
-					showShield = true
+				--elseif (k == "SHIELD" and conf.highlight.sparkles and conf.highlight.extraSparkles) then
+				--	showShield = true
 				else
 					if (not r1 or t1 == "TARGET") then
 						t1 = k
@@ -342,7 +448,10 @@ function xpHigh:SetHighlight(frame, guid)
 				self:ShowMending(frame, pomActive)
 				self:ShowHotBar(frame, hotBar)
 				self:ShowHotSparks(frame, hotSparks)
-				self:ShowShield(frame, showShield)
+				--self:ShowShield(frame, showShield)
+				--self:ShowShieldBar(frame, showShield)
+
+				self:ShowShieldBar(frame, self.shields[guid])
 				return
 			end
 		end
@@ -353,149 +462,222 @@ function xpHigh:SetHighlight(frame, guid)
 	self:ShowMending(frame, pomActive)
 	self:ShowHotBar(frame, hotBar)
 	self:ShowHotSparks(frame, hotSparks)
-	self:ShowShield(frame, showShield)
+	--self:ShowShield(frame, showShield)
+	--self:ShowShieldBar(frame, showShield)
+
+	self:ShowShieldBar(frame, self.shields[guid])
 end
 
--- shieldOnShow
-local function shieldOnShow(self)
-	self.alpha = 0
-	self.maxWidth = 1.03
-	self.minWidth = 0.98
-	self.width = self:GetParent():GetWidth() * 1.1
-	self.height = self:GetParent():GetHeight() * 1.1
-	self.speed = 0.1 / (self.maxWidth - self.minWidth)
-	self.size = 0.2
-	self.state = "out"
-	self.fading = nil
-	self.highAlpha = 0
-	self.highlightMode = "in"
+-- CreateShieldBar
+function xpHigh:CreateShieldBar(frame)
+	local parent = frame.healthBar
+	if (not parent) then
+		parent = frame.statsFrame and frame.statsFrame.healthBar
+	end
+	if (not parent) then
+		return
+	end
+
+	local f = CreateFrame("StatusBar", nil, parent)
+	frame.highlight.shieldBar = f
+	f:SetPoint("BOTTOMLEFT")
+	f:SetPoint("TOPRIGHT", parent, "BOTTOMRIGHT", 0, 4)
+	f:SetMinMaxValues(0, 0.1)
+	f:Hide()
+
+	f.spark = self:CreateShine(f)
+	f.shine = self:CreateShine(f)
+	f.shine:SetPoint("CENTER", f, "LEFT")
+
+	f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
+	f:SetStatusBarColor(1, 0.4, 1)
+
+	f:SetScript("OnUpdate", hotBarOnUpdate)
+	f:SetScript("OnShow",
+		function(self)
+			self.angle = 0
+			self.alpha = 1
+			self.alphaPulse = "out"
+		end)
+end
+
+-- TotalShield
+function xpHigh:TotalShield(guid)
+	local list = self.shields[guid]
+	if (list) then
+		local total, maxAmount = 0, 0
+		for i,s in pairs(list) do
+			total = total + s.amount
+			maxAmount = maxAmount + s.maxAmount
+		end
+		return total, maxAmount
+	end
+end
+
+-- ShowHotBar
+function xpHigh:ShowShieldBar(frame, show)
+	local h = frame.highlight
+	if (show and conf.highlight.SHIELD and conf.highlight.sparkles) then
+		local unit = SecureButton_GetUnit(frame)
+		local guid = unit and UnitGUID(unit)
+		if (guid) then
+			local shield = self.shields[guid]
+			if (shield) then
+				if (not h.shieldBar) then
+					self:CreateShieldBar(frame)
+				end
+
+				h.shieldBar.unit = unit
+				local cur, max = self:TotalShield(guid)
+				h.shieldBar:SetMinMaxValues(0, max)
+				h.shieldBar:SetValue(cur)
+				h.shieldBar:Show()
+				return
+			end
+		end
+	end
+
+	if (h.shieldBar) then
+		h.shieldBar:Hide()
+		h.shieldBar:SetMinMaxValues(0, 0.1)
+	end
 end
 
 -- pulse
 -- Pulse an alpha value
-local function pulse(self, var, elapsed)
-	local val = self[var]
-	local key = "_"..var
-	if (self[key] == "out") then
-		val = val - elapsed
-		if (val < 0.2) then
-			val = 0.2
-			self[key] = "in"
-		end
-	else
-		val = val + elapsed
-		if (val >= 1) then
-			val = 1
-			self[key] = "out"
-		end
-	end
-	self[var] = val
-end
+--local function pulse(self, var, elapsed)
+--	local val = self[var]
+--	local key = "_"..var
+--	if (self[key] == "out") then
+--		val = val - elapsed
+--		if (val < 0.2) then
+--			val = 0.2
+--			self[key] = "in"
+--		end
+--	else
+--		val = val + elapsed
+--		if (val >= 1) then
+--			val = 1
+--			self[key] = "out"
+--		end
+--	end
+--	self[var] = val
+--end
+
+-- shieldOnShow
+--local function shieldOnShow(self)
+--	self.alpha = 0
+--	self.maxWidth = 1.03
+--	self.minWidth = 0.98
+--	self.width = self:GetParent():GetWidth() * 1.1
+--	self.height = self:GetParent():GetHeight() * 1.1
+--	self.speed = 0.1 / (self.maxWidth - self.minWidth)
+--	self.size = 0.2
+--	self.state = "out"
+--	self.fading = nil
+--	self.highAlpha = 0
+--	self.highlightMode = "in"
+--end
 
 -- shieldOnUpdate
-local function shieldOnUpdate(self, elapsed)
-	pulse(self, "highAlpha", elapsed * 10)
-
-	if (self.fading) then
-		self.alpha = self.alpha - elapsed
-		if (self.alpha <= 0) then
-			self:Hide()
-		end
-		self.size = self.size + elapsed	* self.speed
-	else
-		if (self.alpha < 1) then
-			self.alpha = min(1, self.alpha + elapsed)
-		end
-
-		if (self.state == "bouncein") then
-			self.size = self.size - elapsed	* self.speed
-			if (self.size < self.minWidth) then
-				self.size = self.minWidth
-				self.state = "bounceout"
-			end
-		else
-			self.size = self.size + elapsed	* self.speed
-			if (self.size > self.maxWidth) then
-				self.size = self.maxWidth
-				if (self.state == "out") then
-					self.speed = 0.01 / (self.maxWidth - self.minWidth)
-				end
-				self.state = "bouncein"
-			end
-		end
-	end
-
-	self:SetWidth(self.width * self.size)
-	self:SetHeight(self.height / max(0.98, self.size))
-	self:SetAlpha(self.alpha)
-
-	self.highlight1:SetAlpha(self.highAlpha)
-	self.highlight2:SetAlpha(1 - self.highAlpha)
-end
+--local function shieldOnUpdate(self, elapsed)
+--	pulse(self, "highAlpha", elapsed * 10)
+--
+--	if (self.fading) then
+--		self.alpha = self.alpha - elapsed
+--		if (self.alpha <= 0) then
+--			self:Hide()
+--		end
+--		self.size = self.size + elapsed	* self.speed
+--	else
+--		if (self.alpha < 1) then
+--			self.alpha = min(1, self.alpha + elapsed)
+--		end
+--
+--		if (self.state == "bouncein") then
+--			self.size = self.size - elapsed	* self.speed
+--			if (self.size < self.minWidth) then
+--				self.size = self.minWidth
+--				self.state = "bounceout"
+--			end
+--		else
+--			self.size = self.size + elapsed	* self.speed
+--			if (self.size > self.maxWidth) then
+--				self.size = self.maxWidth
+--				if (self.state == "out") then
+--					self.speed = 0.01 / (self.maxWidth - self.minWidth)
+--				end
+--				self.state = "bouncein"
+--			end
+--		end
+--	end
+--
+--	self:SetWidth(self.width * self.size)
+--	self:SetHeight(self.height / max(0.98, self.size))
+--	self:SetAlpha(self.alpha)
+--
+--	self.highlight1:SetAlpha(self.highAlpha)
+--	self.highlight2:SetAlpha(1 - self.highAlpha)
+--end
 
 -- CreateShield
-function xpHigh:CreateShield(frame)
-	local h = frame.highlight
-	local s = CreateFrame("Frame", nil, frame)
-	h.shield = s
-
-	local l = (frame.statsFrame and frame.statsFrame.healthBar) or frame.healthBar or frame
-	s:SetFrameLevel(l:GetFrameLevel() + 1)
-
-	s.tex = s:CreateTexture(nil, "OVERLAY")
-	s.tex:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble")
-	s.tex:SetAllPoints()
-	s.tex:SetBlendMode("ADD")
-	s.tex:SetVertexColor(1, 1, 0.5)
-
-	s.highlight1 = s:CreateTexture("OVERLAY")
-	s.highlight1:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble2")
-	s.highlight1:SetPoint("TOPLEFT", 15, -10)
-	s.highlight1:SetPoint("BOTTOMRIGHT", -15, 10)
-	s.highlight1:SetBlendMode("ADD")
-	s.highlight1:SetVertexColor(1, 1, 0.5)
-
-	s.highlight2 = s:CreateTexture("OVERLAY")
-	s.highlight2:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble2")
-	s.highlight2:SetPoint("TOPLEFT", 20, -8)
-	s.highlight2:SetPoint("BOTTOMRIGHT", -20, 8)
-	s.highlight2:SetBlendMode("ADD")
-	s.highlight2:SetVertexColor(1, 1, 0.5)
-	s.highlight2:SetTexCoord(rotate(180))
-
-	s:SetPoint("CENTER")
-	s:SetWidth(1)
-	s:SetHeight(1)
-
-	s:SetScript("OnShow", shieldOnShow)
-	s:SetScript("OnUpdate", shieldOnUpdate)
-
-    s:Hide()
-    return s
-end
+--function xpHigh:CreateShield(frame)
+--	local h = frame.highlight
+--	local s = CreateFrame("Frame", nil, frame)
+--	h.shield = s
+--
+--	local l = (frame.statsFrame and frame.statsFrame.healthBar) or frame.healthBar or frame
+--	s:SetFrameLevel(l:GetFrameLevel() + 1)
+--
+--	s.tex = s:CreateTexture(nil, "OVERLAY")
+--	s.tex:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble")
+--	s.tex:SetAllPoints()
+--	s.tex:SetBlendMode("ADD")
+--	s.tex:SetVertexColor(1, 1, 0.5)
+--
+--	s.highlight1 = s:CreateTexture("OVERLAY")
+--	s.highlight1:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble2")
+--	s.highlight1:SetPoint("TOPLEFT", 15, -10)
+--	s.highlight1:SetPoint("BOTTOMRIGHT", -15, 10)
+--	s.highlight1:SetBlendMode("ADD")
+--	s.highlight1:SetVertexColor(1, 1, 0.5)
+--
+--	s.highlight2 = s:CreateTexture("OVERLAY")
+--	s.highlight2:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble2")
+--	s.highlight2:SetPoint("TOPLEFT", 20, -8)
+--	s.highlight2:SetPoint("BOTTOMRIGHT", -20, 8)
+--	s.highlight2:SetBlendMode("ADD")
+--	s.highlight2:SetVertexColor(1, 1, 0.5)
+--	s.highlight2:SetTexCoord(rotate(180))
+--
+--	s:SetPoint("CENTER")
+--	s:SetWidth(1)
+--	s:SetHeight(1)
+--
+--	s:SetScript("OnShow", shieldOnShow)
+--	s:SetScript("OnUpdate", shieldOnUpdate)
+--
+--    s:Hide()
+--    return s
+--end
 
 -- ShowShield
-function xpHigh:ShowShield(frame, show)
-	local h = frame.highlight
-	if (conf.highlight.SHIELD and conf.highlight.sparkles) then
-		if (show) then
-			if (not h.shield) then
-				self:CreateShield(frame)
-			end
-
-			local unit = SecureButton_GetUnit(frame)
-			h.shield.unit = unit
-			--h.shield.endTime = self:HasMyShield(unit) + GetTime()
-
-			h.shield:Show()
-			return
-		end
-	end
-
-	if (h.shield) then
-		h.shield.fading = true
-	end
-end
+--function xpHigh:ShowShield(frame, show)
+--	local h = frame.highlight
+--	if (show and conf.highlight.SHIELD and conf.highlight.sparkles) then
+--		if (not h.shield) then
+--			self:CreateShield(frame)
+--		end
+--		local unit = SecureButton_GetUnit(frame)
+--		h.shield.unit = unit
+--		h.shield:Show()
+--		return
+--	end
+--
+--	if (h.shield) then
+--		h.shield.fading = true
+--	end
+--end
 
 -- fluctuateOnUpdate
 local function fluctuateOnUpdate(self, elapsed)
@@ -535,13 +717,15 @@ end
 function hotBarOnUpdate(self, elapsed)
 	local Min, Max = self:GetMinMaxValues()
 	local val = self:GetValue()
-	val = val - elapsed
-	if (val <= 0) then
-		self:Hide()
-		return
+	if (self.movementMod) then
+		val = val - elapsed
+		if (val <= 0) then
+			self:Hide()
+			return
+		end
+	
+		self:SetValue(val)
 	end
-
-	self:SetValue(val)
 
 	local sparkPosition = self:GetWidth() * (val / Max)
 	self.spark:SetPoint("CENTER", self, "LEFT", sparkPosition, 0)
@@ -607,6 +791,7 @@ function xpHigh:CreateHotBar(frame)
 	f:SetPoint("BOTTOMRIGHT", parent, "TOPRIGHT", 0, -4)
 	f:SetMinMaxValues(0, 0.1)
 	f:Hide()
+	f.movementMod = 1
 
 	f.spark = self:CreateShine(f)
 	f.shine = self:CreateShine(f)
@@ -628,12 +813,13 @@ end
 function xpHigh:GetMyHotTime(unit)
 	local maxDur, maxTimeLeft = 0, 0
 	for i = 1,40 do
-		local name, rank, tex, count, dur, timeLeft = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i)
 		if (not name) then
 			break
 		end
 
-		if (timeLeft and hotSpells[name]) then
+		if (isMine and hotSpells[name]) then
+			local timeLeft = endTime - GetTime()
 			if (timeLeft > maxTimeLeft) then
 				maxDur, maxTimeLeft = dur, timeLeft
 			end
@@ -645,17 +831,16 @@ end
 -- ShowHotBar
 function xpHigh:ShowHotBar(frame, show)
 	local h = frame.highlight
-	if (conf.highlight.HOT and conf.highlight.sparkles) then
-		if (show) then
-			if (not h.hotBar) then
-				self:CreateHotBar(frame)
-			end
-
-			local unit = SecureButton_GetUnit(frame)
-
-			h.hotBar.unit = unit
+	if (show and conf.highlight.HOT and conf.highlight.sparkles) then
+		local unit = SecureButton_GetUnit(frame)
+		if (unit) then
 			local dur, timeLeft = self:GetMyHotTime(unit)
-			if (dur) then
+			if (dur and dur > 0) then
+				if (not h.hotBar) then
+					self:CreateHotBar(frame)
+				end
+
+				h.hotBar.unit = unit
 				h.hotBar:SetMinMaxValues(0, dur)
 				h.hotBar:SetValue(timeLeft)
 				h.hotBar:Show()
@@ -720,14 +905,14 @@ end
 -- GetMyPomEndTime
 function xpHigh:GetMyPomEndTime(unit)
 	for i = 1,40 do
-		local name, rank, tex, count, dur, timeLeft = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i)
 		if (not name) then
 			break
 		end
 
 		if (pomSpells[name]) then
-			if (timeLeft) then
-				return GetTime() + timeLeft
+			if (isMine) then
+				return endTime
 			end
 			break				-- A player can only have 1 POM
 		end
@@ -735,22 +920,20 @@ function xpHigh:GetMyPomEndTime(unit)
 end
 
 -- ShowMending
-function xpHigh:ShowMending(frame, active)
+function xpHigh:ShowMending(frame, show)
 	local h = frame.highlight
 
-	if (conf.highlight.POM and conf.highlight.sparkles) then
-		if (active) then
-			if (not h.mending or not h.mending:GetParent():IsShown()) then
-				self:CreateMendingIcon(frame)
-			end
-
-			if (h.mending) then
-				local unit = SecureButton_GetUnit(frame)
-				h.mending.endTime = self:GetMyPomEndTime(unit) or 30
-				h.mending:Show()
-			end
-			return
+	if (show and conf.highlight.POM and conf.highlight.sparkles) then
+		if (not h.mending or not h.mending:GetParent():IsShown()) then
+			self:CreateMendingIcon(frame)
 		end
+
+		if (h.mending) then
+			local unit = SecureButton_GetUnit(frame)
+			h.mending.endTime = self:GetMyPomEndTime(unit) or 30
+			h.mending:Show()
+		end
+		return
 	end
 
 	if (h.mending) then
@@ -1022,11 +1205,6 @@ function xpHigh:StopMendingAnimation()
 	end
 end
 
-function T()
-	xpHigh:ShowHotSparks(XPerl_Player, true)
-	xpHigh:ShowHotSparks(XPerl_Target, true)
-end
-
 -- SparkleArea
 function xpHigh:SparkleArea(a, duration, mode, ttl)
 	local area
@@ -1239,12 +1417,14 @@ end
 -- ShowHotSparks
 function xpHigh:ShowHotSparks(frame, show)
 	if (show) then
-		local h = frame.healthBar or (frame.statsFrame and frame.statsFrame.healthBar)
-		if (not h) then
-			return
+		if (frame:IsVisible()) then
+			local h = frame.healthBar or (frame.statsFrame and frame.statsFrame.healthBar)
+			if (not h) then
+				return
+			end
+	
+			self:SparkleArea(h, 0.4, "evaporate", 0.1)
 		end
-
-		self:SparkleArea(h, 0.4, "evaporate", 0.1)
 	end
 end
 
@@ -1264,6 +1444,12 @@ end
 
 -- xpHigh:ClearAll
 function xpHigh:ClearAll(clearType)
+	if (clearType == "SHIELD") then
+		for guid,s in pairs(self.shields) do
+			self.shields[guid] = del(self.shields[guid])
+			self:Send(guid)
+		end
+	end
 	for k,v in pairs(self.list) do
 		if (v[clearType]) then
 			v[clearType] = nil
@@ -1291,12 +1477,6 @@ end
 
 -- xpHigh:UNIT_SPELLCAST_SENT
 function xpHigh:UNIT_SPELLCAST_SENT(unit, spell, rank, targetName)
---self:Print("UNIT_SPELLCAST_SENT(%s, %s, %s, %s)", unit, spell, rank, targetName)
-	--if (hotSpells[spell] or shieldSpells[spell] or pomSpells[spell]) then
-	--	self.castSpell = spell
-	--	self.castTarget = targetName
-	--else
-
 	if (unit == "player") then
 		local guid
 		if (UnitName("mouseover") == targetName) then
@@ -1377,53 +1557,193 @@ end
 
 xpHigh.UNIT_SPELLCAST_INTERRUPTED = xpHigh.UNIT_SPELLCAST_FAILED
 
+xpHigh.clEvents = {}
 -- COMBAT_LOG_EVENT_UNFILTERED
 -- Using this instead of UNIT_SPELLCAST_SUCCEEDED so we can use the dstGUID for a guarenteed correct target, rather than implied and not necessarily correct name
 local dstMask = COMBATLOG_OBJECT_AFFILIATION_MINE + COMBATLOG_OBJECT_AFFILIATION_PARTY + COMBATLOG_OBJECT_AFFILIATION_RAID
 function xpHigh:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
-	if (event == "SPELL_CAST_SUCCESS") then
-		if (srcGUID == UnitGUID("player")) then
-			if (bit.band(dstFlags, dstMask) ~= 0) then
-				local spellId, spellName, spellSchool = ...
-				if (hotSpells[spellName]) then
-					if (conf.highlight.HOT) then
-						self:Add(dstGUID, "HOT", hotSpells[spellName])
+	local ev = self.clEvents[event]
+	if (ev) then
+		ev(self, timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	end
+end
+
+-- COMBATLOG:SPELL_CAST_SUCCESS
+function xpHigh.clEvents:SPELL_CAST_SUCCESS(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	if (srcGUID == UnitGUID("player")) then
+		if (band(dstFlags, dstMask) ~= 0) then
+			local spellId, spellName, spellSchool = ...
+			if (hotSpells[spellName]) then
+				if (conf.highlight.HOT) then
+					self:Add(dstGUID, "HOT", hotSpells[spellName])
+				end
+			elseif (shieldSpells[spellName]) then
+				if (conf.highlight.SHIELD) then
+					self:Add(dstGUID, "SHIELD", shieldSpells[spellName])
+				end
+			elseif (pomSpells[spellName]) then
+				if (conf.highlight.POM) then
+					self.expectingPOM = nil
+					self.pomSourceGUID = nil
+					self:ClearAll("POM")
+					self:StopMendingAnimation()
+					self:Add(dstGUID, "POM", pomSpells[spellName])
+					self.expectingPOM = nil
+				end
+			end
+		end
+	end
+end
+
+-- COMBATLOG:SPELL_HEAL
+function xpHigh.clEvents:SPELL_HEAL(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	if (conf.highlight.HEAL and conf.highlight.extraSparkles and srcGUID == UnitGUID("player")) then
+		if (band(dstFlags, dstMask) ~= 0) then
+			-- Pretty sparkles for our healing target
+			self:Add(dstGUID, "HOTSPARKS", 0.1)
+		end
+	end
+end
+
+-- COMBATLOG:SPELL_PERIODIC_HEAL
+function xpHigh.clEvents:SPELL_PERIODIC_HEAL(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	if (conf.highlight.HOT and conf.highlight.extraSparkles and srcGUID == UnitGUID("player")) then
+		if (band(dstFlags, dstMask) ~= 0) then
+			local spellId, spellName, spellSchool, amount = ...
+			if (hotSpells[spellName]) then
+				-- Our HOT actually healed someone, so we'll do something pretty
+				if (self:HasEffect(dstGUID, "HOT")) then
+					self:Add(dstGUID, "HOTSPARKS", 0.1)
+				end
+			end
+		end
+	end
+end
+
+-- COMBATLOG:SPELL_DAMAGE
+function xpHigh.clEvents:SPELL_DAMAGE(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellID, spellName, spellSchool, amount, ...)
+	if (band(dstFlags, dstMask) ~= 0) then
+		local overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
+		if (absorbed) then
+			self:Damage(dstGUID, absorbed)
+		end
+	end
+end
+xpHigh.clEvents.SPELL_PERIODIC_DAMAGE = xpHigh.clEvents.SPELL_DAMAGE
+
+-- COMBATLOG:SPELL_MISSED
+function xpHigh.clEvents:SPELL_MISSED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	if (band(dstFlags, dstMask) ~= 0) then
+		local spellId, spellName, spellSchool, missType, missAmount = ...
+		if (missType == "ABSORB") then
+			self:Damage(dstGUID, missAmount)
+		end
+	end
+end
+xpHigh.clEvents.SPELL_PERIODIC_MISSED = xpHigh.clEvents.SPELL_MISSED
+
+-- COMBATLOG:SWING_DAMAGE
+function xpHigh.clEvents:SWING_DAMAGE(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, amount, ...)
+	if (band(dstFlags, dstMask) ~= 0) then
+		local overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
+		if (absorbed) then
+			self:Damage(dstGUID, absorbed)
+		end
+	end
+end
+
+-- COMBATLOG:SWING_MISSED
+function xpHigh.clEvents:SWING_MISSED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	if (band(dstFlags, dstMask) ~= 0) then
+		local missType, missAmount = ...
+		if (missType == "ABSORB") then
+			self:Damage(dstGUID, missAmount)
+		end
+	end
+end
+
+-- COMBATLOG:SPELL_AURA_APPLIED
+function xpHigh.clEvents:SPELL_AURA_APPLIED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, auraType)
+	if (conf.highlight.SHIELD) then
+		if (srcGUID == playerGUID and band(dstFlags, dstMask) ~= 0) then
+			local def = absorbSpells[spellName]
+			if (def) then
+				local rankAmount = def:GetRankAmount(spellId)
+				if (rankAmount) then
+					if (not self.shields[dstGUID]) then
+						self.shields[dstGUID] = new()
 					end
-				elseif (shieldSpells[spellName]) then
-					if (conf.highlight.SHIELD) then
-						self:Add(dstGUID, "SHIELD", shieldSpells[spellName])
-					end
-				elseif (pomSpells[spellName]) then
-					if (conf.highlight.POM) then
-						self.expectingPOM = nil
-						self.pomSourceGUID = nil
-						self:ClearAll("POM")
-						self:StopMendingAnimation()
-						self:Add(dstGUID, "POM", pomSpells[spellName])
-						self.expectingPOM = nil
+	
+					tinsert(self.shields[dstGUID], 1, {
+						amount = rankAmount,
+						maxAmount = rankAmount,
+						name = spellName,
+						id = spellId,
+					})
+					self:Send(dstGUID)
+				end
+			end
+		end
+	end
+end
+
+-- COMBATLOG:SPELL_AURA_REMOVED
+function xpHigh.clEvents:SPELL_AURA_REMOVED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, auraType, ...)
+	if (conf.highlight.SHIELD) then
+		if (band(dstFlags, dstMask) ~= 0) then
+			local def = absorbSpells[spellName]
+			if (def) then
+				local rankAmount = def:GetRankAmount(spellId)
+				if (rankAmount) then
+					local list = self.shields[dstGUID]
+					if (list) then
+						for i,info in pairs(list) do
+							if (info.id == spellId) then
+								if (event == "SPELL_AURA_REFRESH" and srcGUID == playerGUID) then
+									info.amount = rankAmount
+								else
+									del(tremove(list, i))
+									if (not next(list)) then
+										self.shields[dstGUID] = del(self.shields[dstGUID])
+									end
+								end
+								self:Send(dstGUID)
+								break
+							end
+						end
 					end
 				end
 			end
 		end
+	end
+end
+xpHigh.clEvents.SPELL_AURA_REFRESH = xpHigh.clEvents.SPELL_AURA_REMOVED
 
-	elseif (event == "SPELL_HEAL") then
-		if (conf.highlight.HEAL and conf.highlight.extraSparkles and srcGUID == UnitGUID("player")) then
-			if (bit.band(dstFlags, dstMask) ~= 0) then
-				-- Pretty sparkles for our healing target
-				self:Add(dstGUID, "HOTSPARKS", 0.1)
-			end
-		end
-
-	elseif (event == "SPELL_PERIODIC_HEAL") then
-		if (conf.highlight.HOT and conf.highlight.extraSparkles and srcGUID == UnitGUID("player")) then
-			if (bit.band(dstFlags, dstMask) ~= 0) then
-				local spellId, spellName, spellSchool, amount = ...
-				if (hotSpells[spellName]) then
-					-- Our HOT actually healed someone, so we'll do something pretty
-					if (self:HasEffect(dstGUID, "HOT")) then
-						self:Add(dstGUID, "HOTSPARKS", 0.1)
-					end
+-- Damage
+function xpHigh:Damage(guid, absorbed)
+	local list = self.shields[guid]
+	if (list) then
+		local s = list[1]
+		if (s) then
+			local update
+			if (absorbed >= s.amount) then
+				absorbed = absorbed - s.amount
+				del(tremove(list, 1))
+				if (not next(list)) then
+					self.shields[guid] = del(self.shields[guid])
 				end
+				if (absorbed > 0) then
+					self:Damage(guid, absorbed)			-- Recursion
+				else
+					update = true
+				end
+			else
+				s.amount = s.amount - absorbed
+				update = true
+			end
+
+			if (update) then
+				self:Send(guid)
 			end
 		end
 	end
@@ -1478,13 +1798,13 @@ end
 -- xpHigh:HasMyPomPom(unit)
 function xpHigh:HasMyPomPom(unit)
 	for i = 1,40 do
-		local name, rank, tex, count, dur, timeLeft = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i)
 		if (not name) then
 			break
 		end
 
-		if (timeLeft and pomSpells[name]) then
-			return timeLeft
+		if (isMine and pomSpells[name]) then
+			return endTime - GetTime()
 		end
 	end
 end
@@ -1492,13 +1812,13 @@ end
 -- xpHigh:HasMyShield(unit)
 function xpHigh:HasMyShield(unit)
 	for i = 1,20 do
-		local name, rank, tex, count, dur, timeLeft = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i)
 		if (not name) then
 			break
 		end
 
-		if (timeLeft and shieldSpells[name]) then
-			return timeLeft
+		if (isMine and shieldSpells[name]) then
+			return endTime - GetTime()
 		end
 	end
 end
@@ -1566,7 +1886,7 @@ function xpHigh:UNIT_AURA(unit)
 	end
 
 	-- Check for pre-mature end of shield buff (Power Word: Shield, Earth Shield)
-	if (playerClass == "SHAMAN" or playerClass == "PRIEST") then
+	if (playerClass == "SHAMAN") then	-- or playerClass == "PRIEST") then
 		if (self:HasEffect(guid, "SHIELD")) then
 			if (not self:HasMyShield(unit)) then
 				self:Remove(guid, "SHIELD")
@@ -1712,6 +2032,8 @@ function xpHigh:OptionChange()
 	end
 
 	self:MakeNameToGUIDLookup()
+
+	playerGUID = UnitGUID("player")
 end
 
 XPerl_RegisterOptionChanger(xpHigh.OptionChange, xpHigh)

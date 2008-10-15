@@ -1,4 +1,4 @@
-﻿## Interface: 20400
+﻿## Interface: 30000
 ## Title: X-Perl |cffeda55fRaid Helper|r by |cFFFF8080Zek|r
 ## Title-ruRU: X-Perl |cffeda55fРейд помощник|r
 ## Title-zhCN: X-Perl |cffeda55f团队助手|r

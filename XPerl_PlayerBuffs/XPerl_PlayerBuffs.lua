@@ -80,9 +80,9 @@ local function UpdateBuffsTimeLeft(self)
 		for i = 1,40 do
 			local button = self.buffFrame.buff[i]
 			if (button) then
-				local index, untilCancelled = GetPlayerBuff(i, "HELPFUL")
-				if (index > 0 and untilCancelled == 0) then
-					CheckOneBuff(button, GetPlayerBuffTimeLeft(index))
+				local name, rank, buff, count, _, duration, endTime, myCast = UnitBuff("player", i)
+				if (name and myCast) then
+					CheckOneBuff(button, endTime - duration)
 				else
 					button.expireTime = nil
 				end
@@ -90,9 +90,9 @@ local function UpdateBuffsTimeLeft(self)
 
 			button = self.buffFrame.debuff[i]
 			if (button) then
-				local index, untilCancelled = GetPlayerBuff(i, "HARMFUL")
-				if (index > 0 and untilCancelled == 0) then
-					CheckOneBuff(button, GetPlayerBuffTimeLeft(index))
+				local name, rank, buff, count, _, duration, endTime, myCast = UnitDebuff("player", i)
+				if (name) then
+					CheckOneBuff(button, endTime - duration)
 				else
 					button.expireTime = nil
 				end
@@ -141,7 +141,9 @@ function XPerl_Player_Buffs_Position(self)
 		if (pconf.buffs.above) then
 			self.buffFrame:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 3, 0)
 		else
-			if (pconf.buffs.wrap and ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait)) then
+			if (self.runes and not pconf.hideRunes) then
+				self.buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
+			elseif (pconf.buffs.wrap and ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait)) then
 				self.buffFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
 			else
 				self.buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, 0)
@@ -173,7 +175,7 @@ function XPerl_Player_BuffSetup(self)
 			ev:UnregisterAllEvents()
 
 			BuffFrame:Show()
-			BuffFrame:RegisterEvent("PLAYER_AURAS_CHANGED")
+			BuffFrame:RegisterEvent("UNIT_AURA")
 			TemporaryEnchantFrame:Show()
 
 			BuffFrame_Update()
@@ -238,16 +240,15 @@ function XPerl_Player_BuffSetup(self)
 	XPerl_SetBuffSize(self)
 
 	if (pconf.buffs.hideBlizzard) then
-		BuffFrame:UnregisterEvent("PLAYER_AURAS_CHANGED")
+		BuffFrame:UnregisterEvent("UNIT_AURA")
 		BuffFrame:Hide()
 		TemporaryEnchantFrame:Hide()
 	else
 		BuffFrame:Show()
-		BuffFrame:RegisterEvent("PLAYER_AURAS_CHANGED")
+		BuffFrame:RegisterEvent("UNIT_AURA")
 		TemporaryEnchantFrame:Show()
 	end
 
-	ev:RegisterEvent("PLAYER_AURAS_CHANGED")
 	ev:RegisterEvent("UNIT_AURA")
 	ev:RegisterEvent("UNIT_INVENTORY_CHANGED")
 	self.buffFrame:Show()
@@ -375,9 +376,7 @@ function XPerl_Player_SetBuffTooltip(self)
 	if (conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.hideInCombat or not InCombatLockdown()) then
 			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-			local buffIndex, untilCancelled = GetPlayerBuff(self:GetID(), "HELPFUL")
-			GameTooltip:SetPlayerBuff(buffIndex)
-			XPerl_ToolTip_AddBuffDuration(self, "player")
+			GameTooltip:SetUnitBuff("player", self:GetID())
 		end
 	end
 end
@@ -387,9 +386,7 @@ function XPerl_Player_SetDeBuffTooltip(self)
 	if (conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.hideInCombat or not InCombatLockdown()) then
 			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-			local buffIndex, untilCancelled = GetPlayerBuff(self:GetID(), "HARMFUL")
-			GameTooltip:SetPlayerBuff(buffIndex)
-			XPerl_ToolTip_AddDebuffDuration(self, "player")
+			GameTooltip:SetUnitDebuff("player", self:GetID())
 		end
 	end
 end
@@ -405,17 +402,24 @@ local function PlayerBuffsInit(self)
 			OnEnter = XPerl_Player_SetBuffTooltip,
 			OnUpdate = BuffOnUpdate,
 			OnLeave = XPerl_PlayerTipHide,
-			OnClick = function(self, button)
-				if (button == "RightButton") then
-					local buffIndex = GetPlayerBuff(self:GetID(), "HELPFUL")
-					CancelPlayerBuff(buffIndex)
-				end
-			end,
+			--OnClick = function(self, button)
+			--	if (button == "RightButton") then
+			--		local name, rank, buff, count, _, duration, endTime, myCast = UnitBuff("player", self:GetID())
+			--		CancelPlayerBuff(name)
+			--	end
+			--end,
 		},
 		debuffScripts = {
 			OnEnter = XPerl_Player_SetDeBuffTooltip,
 			OnUpdate = DebuffOnUpdate,
 			OnLeave = XPerl_PlayerTipHide,
+			--OnClick = function(self, button)
+			--	-- Can cancel a few debuffs (mind vision I believe)
+			--	if (button == "RightButton") then
+			--		local name, rank, buff, count, _, duration, endTime, myCast = UnitDebuff("player", self:GetID())
+			--		CancelPlayerBuff(name)
+			--	end
+			--end,
 		},
 		updateTooltipBuff = BuffUpdateTooltip,
 		updateTooltipDebuff = DebuffUpdateTooltip,
@@ -470,7 +474,7 @@ local function PlayerBuffsInit(self)
 		self.buffSpacing.rowWidth = w
 
 		local srs = 0
-		if (not self.conf.buffs.above and pconf.portrait and not pconf.extendPortrait) then
+		if ((not self.runes or pconf.hideRunes) and not self.conf.buffs.above and pconf.portrait and not pconf.extendPortrait) then
 			if (self.statsFrame.xpBar and self.statsFrame.xpBar:IsShown()) then
 				srs = 10
 			end
@@ -499,7 +503,7 @@ end
 local function PlayerBuffsOnEvent(self, event, unit)
 --XPerl_ShowMessage("PlayerBuffs")
 
-	if (event == "PLAYER_AURAS_CHANGED" or (event == "UNIT_AURA" and unit == "player")) then
+	if (event == "UNIT_AURA" and unit == "player") then
 		-- The PLAYER_AURAS_CHANGED event is not given if an own buff is refreshed, hence we don't get expire times updated
 		-- So we intercept UNIT_AURA for this, but will still have to catch PLAYER_AURAS_CHANGED because there's some
 		-- latency between a buff expiring (according to UNIT_BUFF), and the aura fading (according to PLAYER_AURAS_CHANGED).

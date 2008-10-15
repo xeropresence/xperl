@@ -122,6 +122,9 @@ if (GetLocale() == "esES") then
 	XPERL_CONFIG_LIST		= "Lista Configuraci\195\179n:"
 	XPERL_CONFIG_CURRENT		= " (Actual)"
 
+	XPERL_RAID_TOOLTIP_WITHBUFF	= "Con ventaja: (%s)"
+	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Sin ventaja: (%s)"
+	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s ha usado la %s que expira en %s"	-- Name, buff name, time to expire
 end
 
 XPERL_LOC_CLASS_PETSHUNTER  = XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS

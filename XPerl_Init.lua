@@ -153,52 +153,235 @@ function XPerl_pcall(...)
 	end
 end
 
--- Buff Tooltip Hook
-local function XPerl_GameTooltipSetPlayerBuff(self, buffId)
-	if (this.parent and this.parent.buffObject and this.parent.buffObject.type) then
-		-- For CT_BuffMod
-		local parent = this.parent
-		if (parent.buffObject.type == "BUFF" or parent.buffObject.type == "AURA") then
-			XPerl_ToolTip_AddBuffDuration(this, "player", buffId)
+-- GetNamesWithoutBuff
+local matches = {
+	{GetSpellInfo(48161), GetSpellInfo(48162)},				-- Fortitude
+	{GetSpellInfo(42995), GetSpellInfo(43002)},				-- Intellect
+	{GetSpellInfo(26990), GetSpellInfo(26991)},				-- Mark of the Wild
+	{GetSpellInfo(48169), GetSpellInfo(48170)},				-- Shadow Protection
+	{GetSpellInfo(48073), GetSpellInfo(48074)},				-- Spirit
+	{GetSpellInfo(27140), GetSpellInfo(27141)},				-- Blessing of Might
+	{GetSpellInfo(27142), GetSpellInfo(27143)},				-- Blessing of Wisdom
+	{GetSpellInfo(20217), GetSpellInfo(25898)},				-- Blessing of Kings
+	{GetSpellInfo(20911), GetSpellInfo(25899)},				-- Blessing of Sanctuary
+}
+
+local checkExpiring
+local function GetNamesWithoutBuff(spellName, with)
+	if (spellName == lastName and with == lastWith and lastNamesList) then
+		return lastNamesList, lastNamesCount
+	end
+
+	local count = 0
+	local names
+	local unitName
+
+	local class = select(2, UnitClass("player"))
+
+	if (not checkExpiring) then
+		local cet = {}
+
+		if (class == "PRIEST" or IsRaidOfficer()) then
+			cet[GetSpellInfo(48161)] = 2			-- Sta
+			cet[GetSpellInfo(48162)] = 2			-- Sta
+			cet[GetSpellInfo(48073)] = 2			-- Spirit
+			cet[GetSpellInfo(48074)] = 2			-- Spirit
+			cet[GetSpellInfo(48169)] = 2			-- Shadow Prot
+			cet[GetSpellInfo(48170)] = 2			-- Shadow Prot
 		end
-	else
-		local found
-		if (not ElkBuffButton1) then
-			-- Elkano version 1.*
-			-- They no longer assign the buff type (HELPFUL, HARMFUL) to the buff icon, so we have to search for it (as of WoW 2.1.0)
-			local findID = this:GetID()
-			for i = 1,100 do
-				local id = GetPlayerBuff(i, "HELPFUL")
-				if (id == 0) then
-					break
-				elseif (id == findID) then
-					found = true
-					break
+		
+		if (class == "DRUID" or IsRaidOfficer()) then
+			cet[GetSpellInfo(26990)] = 2			-- Mark
+			cet[GetSpellInfo(26991)] = 2			-- Gift
+			cet[GetSpellInfo(53307)] = 1			-- Thorns
+		end
+		
+		if (class == "MAGE" or IsRaidOfficer()) then
+			cet[GetSpellInfo(42995)] = 2			-- Int
+			cet[GetSpellInfo(43002)] = 2			-- Int
+			cet[GetSpellInfo(43015)] = 1			-- Dampen
+			cet[GetSpellInfo(43017)] = 1			-- Amplify
+		end
+
+		if (class == "PALADIN" or IsRaidOfficer()) then
+			cet[GetSpellInfo(27140)] = 2
+			cet[GetSpellInfo(27141)] = 2			-- Blessing of Might
+			cet[GetSpellInfo(27142)] = 2
+			cet[GetSpellInfo(27143)] = 2			-- Blessing of Wisdom
+			cet[GetSpellInfo(20217)] = 2
+			cet[GetSpellInfo(25898)] = 2			-- Blessing of Kings
+			cet[GetSpellInfo(20911)] = 2
+			cet[GetSpellInfo(25899)] = 2			-- Blessing of Sanctuary
+		end
+
+		checkExpiring = cet
+	end
+
+	local withList = XPerl_GetReusableTable()
+	for unitid, unitName, unitClass, group, zone, online, dead in XPerl_NextMember do
+		local use
+
+		if (not conf.buffHelper.visible) then
+			use = true
+		else
+			if (conf.raid.sortByClass) then
+				if (conf.raid.class[group].enable) then
+					use = unitClass == conf.raid.class[group].name
 				end
+			else
+				use = conf.raid.group[group]
 			end
 		end
 
-		if (found or (ElkBuffButton1 and this.type == "BUFF")) then
-			XPerl_ToolTip_AddBuffDuration(this, "player", buffId)
-			return
-		end
+		if (unitName and use and online and not dead) then
+			local hasBuff
+			for num = 1,25 do
+			local name, rank, buffTexture, count, _, fullDuration, endTime, isMine, isStealable = UnitBuff(unitid, num)
+				if (not name) then
+					break
+				end
 
-		if (not this:GetName()) then
-			-- Elkano version 2.*
-			if (this.bar and this.bar.uid and this.bar.data) then
-				if (this.bar.data.type == "BUFF") then
-					XPerl_ToolTip_AddBuffDuration(this, "player", this.bar.data.id or 1)
-					return
+				if (name == spellName) then
+					hasBuff = true
+				else
+					for dups,pair in pairs(matches) do
+						if (name == pair[1] or name == pair[2]) then
+							if (spellName == pair[1] or spellName == pair[2]) then
+								hasBuff = true
+								break
+							end
+						end
+					end
+				end
+				if (hasBuff) then
+					if (without and checkExpiring) then
+						local found = checkExpiring[buffTextureNoPath]
+
+						if (found) then
+							if (endTime and endTime > 0 and endTime <= GetTime() + (found * 60)) then
+								GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_BUFFEXPIRING, XPerlColourTable[unitClass]..name.."|c", buffName, SecondsToTime(endTime - GetTime())), 1, 0.2, 0)
+							end
+						end
+					end
+					break
+				end
+			end
+
+			if ((with and hasBuff) or (not with and not hasBuff)) then
+				count = count + 1
+
+				if (conf.buffHelper.sort == "group") then
+					if (not withList[group]) then
+						withList[group] = XPerl_GetReusableTable()
+					end
+					tinsert(withList[group], {class = unitClass, ["name"] = unitName})
+				elseif (conf.buffHelper.sort == "class") then
+					if (not withList[unitClass]) then
+						withList[unitClass] = XPerl_GetReusableTable()
+					end
+					tinsert(withList[unitClass], unitName)
+				else
+					local n = XPerl_GetReusableTable()
+					tinsert(withList, n)
+					n.class = unitClass
+					n.name = unitName
 				end
 			end
 		end
 	end
+
+	if (conf.buffHelper.sort == "group") then
+		for i = 1,8 do
+			local list = withList[i]
+			if (list) then
+				sort(list, function(a,b) return a.name < b.name end)
+
+				names = (names or "").."|r"..i..": "
+				for i,item in ipairs(list) do
+					names = names..XPerlColourTable[item.class]..item.name.." "
+				end
+				names = names.."|r\r"
+			end
+			XPerl_FreeTable(list)
+		end
+	elseif (conf.buffHelper.sort == "class") then
+		for j,class in ipairs(classOrder) do
+			local list = withList[class]
+			if (list) then
+				sort(list)
+
+				for i,name in ipairs(list) do
+					if (i == 1) then
+						names = (names or "")..XPerlColourTable[class]
+					end
+					names = (names or "")..name.." "
+				end
+
+				names = (names or "").."|r\r"
+			end
+			XPerl_FreeTable(list)
+		end
+	else
+		sort(withList, function(a,b) return a.name < b.name end)
+		for i,item in ipairs(withList) do
+			names = (names or "")..XPerlColourTable[item.class]..item.name.." "
+		end
+
+		names = (names or "").."\r"
+
+		XPerl_FreeTable(item)
+	end
+
+	XPerl_FreeTable(withList)
+
+	lastNamesList = names
+	lastName = spellName
+	lastWith = with
+	lastNamesCount = count
+
+	return names, count
+end
+
+-- XPerl_ToolTip_AddBuffDuration
+local function XPerl_ToolTip_AddBuffDuration(self, partyid, buffID)
+	if (GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0) then
+		if (conf.buffHelper.enable and partyid and (UnitInParty(partyid) or UnitInRaid(partyid))) then
+			local buffName = GameTooltipTextLeft1:GetText()
+			if (buffName) then
+				local names, count = GetNamesWithoutBuff(buffName, IsAltKeyDown())
+				if (names) then
+					if (IsAltKeyDown()) then
+						GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_WITHBUFF, count), 0.3, 1, 0.2)
+					else
+						GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_WITHOUTBUFF, count), 1, 0.3, 0.1)
+					end
+
+					if (conf.buffHelper.sort) then
+						GameTooltip:AddLine(names, 0.5, 0.5, 0.5)
+					else
+						GameTooltip:AddLine(names, 0.5, 0.5, 0.5, 1)
+					end
+				end
+			end
+		end
+	end
+
+	GameTooltip:Show()
+end
+
+-- Buff Tooltip Hook
+local function XPerl_GameTooltipSetUnitAura(self, unitId, buffId, filter)
+	XPerl_ToolTip_AddBuffDuration(self, unitId, buffId)
 end
 
 -- XPerl_Init()
 function XPerl_Init()
 	init_done = true
-	hooksecurefunc(GameTooltip, "SetPlayerBuff", XPerl_GameTooltipSetPlayerBuff)
+	if (GameTooltip.SetUnitAura) then
+		hooksecurefunc(GameTooltip, "SetUnitAura", XPerl_GameTooltipSetUnitAura)
+		hooksecurefunc(GameTooltip, "SetUnitBuff", XPerl_GameTooltipSetUnitAura)
+		hooksecurefunc(GameTooltip, "SetUnitDebuff", XPerl_GameTooltipSetUnitAura)
+	end
 
 	DisableAddOn("XPerl_TeamSpeak")
 
@@ -403,8 +586,10 @@ end
 function XPerl_SetTextTransparency()
 	local t = conf.transparency.text
 	for k,v in pairs(unitText) do
-		local r, g, b = v:GetTextColor()
-		v:SetTextColor(r, g, b, t)
+		if (v.GetTextColor) then
+			local r, g, b = v:GetTextColor()
+			v:SetTextColor(r, g, b, t)
+		end
 	end
 end
 

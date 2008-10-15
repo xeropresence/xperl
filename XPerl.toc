@@ -1,6 +1,6 @@
-﻿## Interface: 20400
+﻿## Interface: 30000
 ## Title: X-Perl UnitFrames by |cFFFF8080Zek|r
-## Version: 2.4.3g
+## Version: 3.0.0h
 ## Title-ruRU: X-Perl UnitFrames |cFFFF6060Основной|r
 ## Author: Zek
 ## Title-zhCN: X-Perl 核心
@@ -13,7 +13,6 @@
 ## X-Donate: PayPal:pussicat AT ntlworld DOT com
 ## X-Category: Interface Enhancements
 ## X-License: GNU GPL v3, 29 June 2007
-## OptionalDeps: MobHealth, MobInfo2, CT_RaidAssist, oRA2, DruidBar, SimpleDruidBar, LibDruidMana-1.0, SmartyCat
 ## SavedVariables: XPerlConfig, XPerlConfig_Global, XPerlConfigNew, XPerlConfigSavePerCharacter
 XPerl_Globals.xml
 XPerl.xml

@@ -438,6 +438,8 @@ cast.UNIT_RAGE = cast.UNIT_MANA
 cast.UNIT_MAXRAGE = cast.UNIT_MANA
 cast.UNIT_ENERGY = cast.UNIT_MANA
 cast.UNIT_MAXENERGY = cast.UNIT_MANA
+cast.UNIT_RUNIC_POWER = cast.UNIT_MANA
+cast.UNIT_MAXRUNIC_POWER = cast.UNIT_MANA
 
 -- cast:PLAYER_REGEN_DISABLED
 function cast:PLAYER_REGEN_DISABLED()
@@ -706,7 +708,7 @@ function cast:Init()
 	self.area:SetAttribute("templateType", "Button")
 	self.area:SetAttribute("sortOrder", "NAME")
 	self.area:SetAttribute("groupBy", "CLASS")		-- For API version 20003
-	self.area:SetAttribute("groupingOrder", "PRIEST,DRUID,SHAMAN,PALADIN,MAGE,WARLOCK,HUNTER,ROGUE,WARRIOR")
+	self.area:SetAttribute("groupingOrder", "PRIEST,DRUID,SHAMAN,PALADIN,MAGE,WARLOCK,HUNTER,ROGUE,WARRIOR,DEATHKNIGHT")
 
 	self.area.initialConfigFunction = function(self)
 		-- This is the only place we're allowed to set attributes whilst in combat

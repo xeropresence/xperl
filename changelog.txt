@@ -2,6 +2,51 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.0i
+Fixed: Shield highlight now also works for Ice Barrier and Mana Shield for mages. (You must have Shield highlight AND sparkles enabled).
+
+3.0.0h
+Changed: Shield highlight changed. Now shows a bar similar to the Hot Bar, which shows the amount of shielding left on the target, based on the damage they've absorbed.
+Changed: Merged changes for version live 2.4.3g version.
+Removed: Pet loyalty indication on tooltip. No longer used.
+Fixed: PVP icon on player frame.
+Fixed: A few minor issues with status highlighting.
+
+3.0.0g (for patch 8982)
+Fixed: Rune problems on player frame (Thanks Scott).
+Fixed: Another error related to missing DKs and raid frames.
+Changed: Merged appropriate changes from 2.4.3a and 2.4.3b in from live code, mostly relating to LibQuickHealth-1.0 support.
+
+3.0.0f (for patch 8970)
+Fixed: Moved the localizations for the buff helper to XPerl core module (fixes the XPerl_Init, line 354 error).
+Fixed: Death Knights weren't showing up in raid frames.
+Fixed: XPerl_Raid's XPerl_Raid_ShowWhoNeedsBuff error.
+Fixed: Various options errors (ones mentioning OptionsFrame_EnableSlider).
+
+3.0.0e (for patch 8926)
+Fixed: Big Buff options working again. Now that the API is explained for that.
+Changed: Druid mana bar behaviour is now implemented without the need for libraries or addons. (ie: You should remove DruidBar, SmallDruidBar, SmartyCat, LibDruidMana-1.0)
+Changed: Buff helper tooltip functionality moved from raid to X-Perl proper, and will therefor work when in a party too now. Hook method also changed to something more globally compatible.
+Removed: Code which pulled buff times from CTRA info. No longer needed.
+
+3.0.0d (for patch 8820)
+Fixed: Combo point issues (combos will also now show for focus frame if applicable).
+
+3.0.0c (for patch 8770)
+NEW: Threat indicator for target frame. 2 display modes (Only shows when grouped).
+Fixed: Five-Second-Rule mana regen indicator.
+Fixed: Buff timer display errors introduced with Patch 8770 (return value changed on UnitBuff/Debuff from maxDuration/timeLeft -> maxDuration/endTime
+Fixed: Minimap icon menu.
+
+3.0.0b (for WotLK patch 8714)
+NEW: Rune Display for Death Knights. Can either be docked with player frame which will attach it to the lower side of the frame, with buffs underneath if player buffs module enabled. Alternatively, you can undock it and move it where you like (when options are open).
+Changed: Player and Pet frames will now behave as blizzard frames, and switch to Vehicle and Player frames when you enter a vehicle. The code's in, but I've not tried it yet. But, there's a large flaw in their method, that it won't work properly when you enter a vehicle in combat. Since you can't change the frame attributes. But they do, cos they run as secure code... :|
+Fixed: Crash bug when loading addons.
+
+3.0.0a - (for WotLK patch 8681)
+Fixed: XPerl_RaidHelper errors.
+Fixed: Problems with buff display.
+
 2.4.3g
 NEW: Proper LibHealComm support, giving pre-emptive estimated health bars. Slightly narrower than main bars, and not quite same colour, should help to distinguish the difference.
 Changed: A few very minor memory improvements to raid frames. Not that it needed it, but every savable byte is worth it to me.
@@ -17,8 +62,7 @@ Fixed: Couple of options cosmetics.
 Fixed: The XPerl_ParseCTRA bug.
 
 2.4.3d
-NEW: Flashy Power Word: Shield graphic when extra sparkles enabled.
-Fixed: Player Pet self error.
+Changed: Rare mobs now have a grey wingless rare graphic, as apposed to the dimmed winged gold elite graphic. Thanks Scott.
 
 2.4.3c
 Note: X-Perl now falls under the GNU General Public Licence version 3. This does not affect users in any way. It's merely to protect against other people making money from my work.
@@ -39,12 +83,7 @@ Fixed: Fixes to LibQuickHealth-1.0 support to reflect changes in library, and no
 Fixed: LibQuickHealth-1.0 support. Oopsie
 
 2.4.3
-NEW: LibQuickHealth-1.0 support. Download this library from wowace and you get fast response time health bars.
 NEW: Russian translation.
-Changed: Added frFR new 2.4 gender based class names.
-Fixed: Problem with mouse getting stuck when you close options window and click it while it was fading away.
-Fixed: A couple of local vars that weren't.
-Fixed: Now disables the old XPerl_GrimReaper and prompts you to get GrimReaper instead from wowace.
 
 2.4.2
 NEW: Custom Highlights Module. Configure via Raid options, allows you to specify monitoring debuffs to splat fat icon onto raid frames of members who suffer from them in specified zones. (Fel Rage, Fatal Attraction etc.). Note that this module will only work inside instances, and there is no validate on instance names that you enter. The default is current zone, and you can click on an existing one when entering a new spell to copy the text.

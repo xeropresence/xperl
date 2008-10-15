@@ -2071,19 +2071,19 @@ function XPerl_Check_Channels_OnLoad()
 	this.displayMode = "MENU"
 	UIDropDownMenu_Initialize(this, XPerl_Check_Channels_Initialize)
 	UIDropDownMenu_SetSelectedID(this, outputChannelSelection)
-	UIDropDownMenu_SetWidth(100, XPerl_CheckButtonChannel)
+	UIDropDownMenu_SetWidth(XPerl_CheckButtonChannel, 100)
 	XPerl_CheckButtonChannelText:SetTextColor(unpack(outputChannelColour))
 end
 
 -- XPerl_Channel_OnClick
-local function XPerl_Channel_OnClick()
-	outputChannel = this.value[1]
-	outputChannelIndex = this.value[1]
-	outputChannelSelection = this:GetID()
+local function XPerl_Channel_OnClick(self)
+	local v = self.value
+	outputChannel = v.channel
+	outputChannelIndex = v.index
+	outputChannelSelection = self:GetID()
 	UIDropDownMenu_SetSelectedID(XPerl_CheckButtonChannel, outputChannelSelection)
 
-	outputChannelColour = {this:GetTextColor()}
-	XPerl_CheckButtonChannelText:SetTextColor(unpack(outputChannelColour))
+	XPerl_CheckButtonChannelText:SetTextColor(v.red, v.green, v.blue)
 end
 
 -- XPerl_Check_Channels_Initialize
@@ -2092,20 +2092,19 @@ function XPerl_Check_Channels_Initialize()
 	channelList = XPerl_GetChannelList()
 
 	for i,entry in pairs(channelList) do
+		local r, g, b = entry.colour.r, entry.colour.g, entry.colour.b
 		if (entry.channel == outputChannel) then
 			if (outputChannel ~= "CHANNEL" or entry.index == outputChannelIndex) then
 				outputChannelSelection = i
-				outputChannelColour = {entry.colour.r, entry.colour.g, entry.colour.b}
+				outputChannelColour = {r, g, b}
 			end
 		end
 
 		local info = UIDropDownMenu_CreateInfo()
 		info.text = entry.display
 		info.func = XPerl_Channel_OnClick
-		info.value = {entry.channel, entry.index}
-		info.textR = entry.colour.r
-		info.textG = entry.colour.g
-		info.textB = entry.colour.b
+		info.value = {channel = entry.channel, index = entry.index, red = r, green = g, blue = b}
+		info.colorCode = format("|cFF%02X%02X%02X", r * 255, g * 255, b * 255)
 		UIDropDownMenu_AddButton(info)
 	end
 end

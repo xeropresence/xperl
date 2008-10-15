@@ -182,9 +182,9 @@
 	<Button name="XPerlOptionsButtonTemplate" virtual="true">
 		<Size><AbsDimension x="90" y="21"/></Size>
 		<ButtonText name="$parentText" setAllPoints="true"/>
-		<NormalFont inherits="GameFontNormal"/>
-		<HighlightFont inherits="GameFontHighlight"/>
-		<DisabledFont inherits="GameFontDisable"/>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<DisabledFont style="GameFontDisable"/>
 		<NormalTexture inherits="UIPanelButtonUpTexture"/>
 		<PushedTexture inherits="UIPanelButtonDownTexture"/>
 		<DisabledTexture inherits="UIPanelButtonDisabledTexture"/>
@@ -579,9 +579,9 @@
 				<Anchor point="CENTER"/>
 			</Anchors>
 		</ButtonText>
-		<NormalFont inherits="GameFontNormalSmall"/>
-		<HighlightFont inherits="GameFontHighlightSmall"/>
-		<DisabledFont inherits="GameFontDisableSmall"/>
+		<NormalFont style="GameFontNormalSmall"/>
+		<HighlightFont style="GameFontHighlightSmall"/>
+		<DisabledFont style="GameFontDisableSmall"/>
 		<HighlightTexture name="$parentHighlightTexture" file="Interface\AddOns\XPerl_Options\images\XPerl_Tabs" alphaMode="ADD">
 			<TexCoords left="0" right="1" top="0.75" bottom="1"/>
 			<Anchors>
@@ -1188,13 +1188,13 @@
 						self.bar = getglobal(self:GetName().."ScrollBar")
 					</OnLoad>
 					<OnVerticalScroll>
-						FauxScrollFrame_OnVerticalScroll(1, self:GetParent().UpdateFunction)
+						FauxScrollFrame_OnVerticalScroll(self, offset, 1, self:GetParent().UpdateFunction)
 					</OnVerticalScroll>
 					<OnMouseWheel>
 						if (arg1 > 0) then
-						        self.bar:SetValue(self.bar:GetValue() - 1)
+							self.bar:SetValue(self.bar:GetValue() - 1)
 						else
-						        self.bar:SetValue(self.bar:GetValue() + 1)
+							self.bar:SetValue(self.bar:GetValue() + 1)
 						end
 					</OnMouseWheel>
 				</Scripts>
@@ -1281,7 +1281,7 @@
 					<OnLoad>
 						self:SetID(self:GetParent():GetID())
 						self.tooltipText = XPERL_CONF_RAID_CLASS_DOWN
-						if (self:GetID() == 9) then
+						if (self:GetID() == 10) then
 							self:Hide()
 						end
 					</OnLoad>
@@ -1671,7 +1671,7 @@
 	</Frame>
 
 	<Button name="XPerlLayoutLineTemplate" virtual="true">
-		<NormalFont inherits="GameFontNormalSmall"/>
+		<NormalFont style="GameFontNormalSmall"/>
 		<ButtonText name="$parentText" justifyH="LEFT" setAllPoints="true"/>
 		<Size>
 			<AbsDimension x="120" y="12"/>
@@ -1685,8 +1685,7 @@
 				self.master.line[self:GetID()] = self
 			</OnLoad>
 			<OnClick>
-				local text = self:GetText()
-				XPerl_Options_Layout_Name:SetText(text)
+				XPerl_Options_Layout_Name:SetText(self.raw)
 				self.master.selection = self:GetID() + self.master.start - 1
 				self.master:FillList()
 			</OnClick>
@@ -2072,7 +2071,6 @@
 				</Anchors>
 				<Scripts>
 					<OnShow>
-						XPerl_SetModuleRevision("$Revision$")
 						if (not IsAddOnLoaded("XPerl_PartyPet")) then
 							getglobal(self:GetName().."_ScalePets"):Hide()
 						end
@@ -2664,12 +2662,6 @@
 							<AbsDimension x="105" y="24"/>
 						</Size>
 						<Scripts>
-							<OnEditFocusGained>
-								self.editing = true
-							</OnEditFocusGained>
-							<OnEditFocusLost>
-								self.editing = nil
-							</OnEditFocusLost>
 							<OnTextChanged>
 								local me = format("%s(%s)", GetRealmName(), UnitName("player"))
 								local t = self:GetText()
@@ -2841,6 +2833,18 @@
 							<Button name="$parent12" inherits="XPerlLayoutLineTemplate" text="Line" id="12">
 								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent11" relativePoint="BOTTOMLEFT"/></Anchors>
 							</Button>
+							<Button name="$parent13" inherits="XPerlLayoutLineTemplate" text="Line" id="13">
+								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent12" relativePoint="BOTTOMLEFT"/></Anchors>
+							</Button>
+							<Button name="$parent14" inherits="XPerlLayoutLineTemplate" text="Line" id="14">
+								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent13" relativePoint="BOTTOMLEFT"/></Anchors>
+							</Button>
+							<Button name="$parent15" inherits="XPerlLayoutLineTemplate" text="Line" id="15">
+								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent14" relativePoint="BOTTOMLEFT"/></Anchors>
+							</Button>
+							<Button name="$parent16" inherits="XPerlLayoutLineTemplate" text="Line" id="16">
+								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent15" relativePoint="BOTTOMLEFT"/></Anchors>
+							</Button>
 							<ScrollFrame name="$parentScrollBar" inherits="FauxScrollFrameTemplate">
 								<Size>
 									<AbsDimension x="20" y="24"/>
@@ -2855,7 +2859,7 @@
 								</Anchors>
 								<Scripts>
 									<OnVerticalScroll>
-										FauxScrollFrame_OnVerticalScroll(1, function() XPerl_Options_LayoutFill(XPerl_Options_Layout) end)
+										FauxScrollFrame_OnVerticalScroll(self, offset, 1, function() XPerl_Options_LayoutFill(XPerl_Options_Layout) end)
 									</OnVerticalScroll>
 									<OnMouseWheel>
 										local f = getglobal(self:GetName().."ScrollBar")
@@ -3442,16 +3446,13 @@
 									XPerl_Options_EnableSibling("HighlightShields")
 									XPerl_Options_EnableSibling("HighlightHotcount")
 									XPerl_Options_EnableSibling("HighlightTarget")
-									XPerl_Options_EnableSibling("HighlightMending")
-									XPerl_Options_EnableSibling("HighlightSparkles")
-									XPerl_Options_EnableSibling("ExtraSparkles")
 
 									local _, class = UnitClass("player")
 									if (class ~= "DRUID" and class ~= "PRIEST") then
 										XPerlDB.highlight.HOT = nil
 										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightHoTs"), false)
 									end
-									if (class ~= "PRIEST" and class ~= "SHAMAN") then
+									if (class ~= "PRIEST" and class ~= "SHAMAN" and class ~= "MAGE") then
 										XPerlDB.highlight.SHIELD = nil
 										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightShields"), false)
 									end
@@ -4462,6 +4463,9 @@
 				</Anchors>
 
 				<Scripts>
+					<OnLoad>
+						self:SetScale(0.95)
+					</OnLoad>
 					<OnShow>
 						if (not IsAddOnLoaded("XPerl_ArcaneBar")) then
 							local n = self:GetName().."_"
@@ -4546,8 +4550,8 @@
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
-
-					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
+					
+					<CheckButton name="$parent_ShowRunes" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPRIGHT" relativeTo="$parent_HitIndicator" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
@@ -4555,6 +4559,55 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
+								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") then
+									self:Hide()
+								end
+
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_SHOW_RUNES")
+								self.configBase = "XPerlDB.player"
+								self.configIndex = "showRunes"
+								self.configClick = XPerl_Player_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling("DockRunes")
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+					
+					<CheckButton name="$parent_DockRunes" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_ShowRunes" relativePoint="TOPRIGHT">
+								<Offset><AbsDimension x="85" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>  
+								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") then
+									self:Hide()
+								end
+
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_DOCKRUNES")
+								self.configBase = "XPerlDB.player"
+								self.configIndex = "dockRunes"
+								self.configClick = XPerl_Player_Reset
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_ShowRunes" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") then
+									self:ClearAllPoints()
+									self:SetPoint("TOPLEFT", XPerl_Options_Player_Options_ShowRunes, "TOPLEFT")
+								end
+
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ARCANE_BAR")
 								self.configBase = "XPerlDB.player.castBar"
 								self.configIndex = "enable"
@@ -6124,7 +6177,7 @@
 
 				<Scripts>
 					<OnLoad>
-						self:SetScale(0.95)
+						self:SetScale(0.92)
 					</OnLoad>
 					<OnShow>
 						if (not IsAddOnLoaded("XPerl_ArcaneBar")) then
@@ -6240,9 +6293,66 @@
 						</Scripts>
 					</CheckButton>
 
-					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
+					<CheckButton name="$parent_Threat" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPRIGHT" relativeTo="$parent_OnlyMine" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGET_THREAT")
+								self.configBase = "XPerlDB.target"
+								self.configIndex = "threat"
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ThreatName" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent_Threat" relativePoint="RIGHT">
+								<Offset><AbsDimension x="45" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGET_THREAT_NAME")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.target.threatMode == "nameFrame")
+							</OnShow>
+							<OnClick>
+								XPerlDB.target.threatMode = "nameFrame"
+								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Target_UpdateDisplay(XPerl_Target)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ThreatPortrait" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent_ThreatName" relativePoint="RIGHT">
+								<Offset><AbsDimension x="45" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGET_THREAT_PORTRAIT")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.target.threatMode == "portraitFrame")
+							</OnShow>
+							<OnClick>
+								XPerlDB.target.threatMode = "portraitFrame"
+								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Target_UpdateDisplay(XPerl_Target)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_Threat" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -7565,9 +7675,66 @@
 						</Scripts>
 					</CheckButton>
 
-					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
+					<CheckButton name="$parent_Threat" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPRIGHT" relativeTo="$parent_OnlyMine" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_THREAT")
+								self.configBase = "XPerlDB.focus"
+								self.configIndex = "threat"
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ThreatName" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent_Threat" relativePoint="RIGHT">
+								<Offset><AbsDimension x="45" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_THREAT_NAME")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.focus.threatMode == "nameFrame")
+							</OnShow>
+							<OnClick>
+								XPerlDB.focus.threatMode = "nameFrame"
+								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Target_UpdateDisplay(XPerl_Focus)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ThreatPortrait" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent_ThreatName" relativePoint="RIGHT">
+								<Offset><AbsDimension x="45" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_THREAT_PORTRAIT")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.focus.threatMode == "portraitFrame")
+							</OnShow>
+							<OnClick>
+								XPerlDB.focus.threatMode = "portraitFrame"
+								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Target_UpdateDisplay(XPerl_Focus)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_Threat" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -9734,6 +9901,11 @@
 					</CheckButton>
 
 					<Frame name="$parent_Groups">
+						<Scripts>
+							<OnLoad>
+								self:SetScale(0.9)
+							</OnLoad>
+						</Scripts>
 						<Backdrop edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
 							<EdgeSize>
 								<AbsValue val="6"/>
@@ -9922,6 +10094,23 @@
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
+							<CheckButton name="$parent_Grp10" inherits="XPerlCheckButtonTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_Grp9" relativePoint="BOTTOMLEFT">
+										<Offset><AbsDimension x="0" y="6"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										getglobal(self:GetName().."Text"):SetText("10")
+										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
+										self.configBase = "XPerlDB.raid.group"
+										self.configIndex = 10
+										self.configClick = function() XPerl_Raid_ChangeAttributes() XPerl_Raid_OptionActions() end
+										XPerl_Options_RegisterProtected(self)
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
 
 							<Frame name="$parent_Title2">
 								<Size>
@@ -9975,13 +10164,16 @@
 							<Frame name="$parent_ClassSel9" inherits="XPerl_OptClassSelTemplate" id="9">
 								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_ClassSel8" relativePoint="BOTTOMLEFT"/></Anchors>
 							</Frame>
+							<Frame name="$parent_ClassSel10" inherits="XPerl_OptClassSelTemplate" id="10">
+								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_ClassSel9" relativePoint="BOTTOMLEFT"/></Anchors>
+							</Frame>
 
 							<Button name="$parent_All" inherits="XPerlButtonTemplate">
 								<Size>
 									<AbsDimension x="70" y="24"/>
 								</Size>
 								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="$parent_Grp8" relativePoint="BOTTOMLEFT">
+									<Anchor point="TOPLEFT" relativeTo="$parent_Grp9" relativePoint="BOTTOMLEFT">
 										<Offset><AbsDimension x="3" y="-22"/></Offset>
 									</Anchor>
 								</Anchors>
@@ -12701,12 +12893,33 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_DeathKnight" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_Warrior" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_MONITOR_DEATHKNIGHT")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlRaidMonConfig.classes.DEATHKNIGHT)
+							</OnShow>
+							<OnClick>
+								XPerlRaidMonConfig.classes.DEATHKNIGHT = not XPerlRaidMonConfig.classes.DEATHKNIGHT
+								XPerl_RaidMonitor_Frame:Init()
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
 					<Slider name="$parent_LowMana" inherits="XPerlSlider">
 						<Size>
 							<AbsDimension x="75" y="16"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_Warrior" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeTo="$parent_DeathKnight" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="-10"/>
 								</Offset>
@@ -13006,7 +13219,7 @@
 	</Frame>
 
 	<Button name="XPerlCustomLineTemplate" virtual="true">
-		<NormalFont inherits="GameFontNormalSmall"/>
+		<NormalFont style="GameFontNormalSmall"/>
 		<ButtonText name="$parentText" justifyH="LEFT" setAllPoints="true">
 			<Color r="1" g="1" b="1"/>
 		</ButtonText>
@@ -13132,7 +13345,7 @@
 				</Anchors>
 				<Scripts>
 					<OnVerticalScroll>
-						FauxScrollFrame_OnVerticalScroll(1, function() GetParent():FillList() end)
+						FauxScrollFrame_OnVerticalScroll(self, value, 1, function() GetParent():FillList() end)
 					</OnVerticalScroll>
 					<OnMouseWheel>
 						local f = getglobal(self:GetName().."ScrollBar")

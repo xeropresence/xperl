@@ -185,11 +185,6 @@ local function XPerl_Defaults()
 
 	DefaultVar("BorderColour",		{r = 0.5, g = 0.5, b = 0.5, a = 1})
 	DefaultVar("BackgroundColour",		{r = 0, g = 0, b = 0, a = 1})
-
-	-- Old unused vars
-	XPerlConfigHelper.ThreatBar		= nil
-	XPerlConfigHelper.Scale_AssistsFrame	= nil
-	XPerlConfigHelper.Targets_Scale		= nil
 end
 
 -- XPerl_Startup

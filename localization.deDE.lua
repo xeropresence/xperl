@@ -66,6 +66,9 @@ if (GetLocale() == "deDE") then
 	XPERL_KEY_NOTICE_RAID_NOBUFFS = "Keine Raid-Buffs zeigen"
 
 	XPerl_DefaultRangeSpells.ANY = {item = "Schwerer Runenstoffverband"}
+
+	XPERL_RAID_TOOLTIP_WITHBUFF      = "Mit Buff: (%s)"
+	XPERL_RAID_TOOLTIP_WITHOUTBUFF   = "Ohne Buff: (%s)"
 end
 
 XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS

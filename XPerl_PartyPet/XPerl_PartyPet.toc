@@ -1,4 +1,4 @@
-﻿## Interface: 20400
+﻿## Interface: 30000
 ## Title: X-Perl |cffeda55fParty Pet|r by |cFFFF8080Zek|r
 ## Title-ruRU: X-Perl |cffeda55fПитомци группы|r
 ## Title-zhCN: X-Perl |cffeda55f队友宠物窗|r

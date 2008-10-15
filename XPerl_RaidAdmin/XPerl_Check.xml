@@ -254,9 +254,9 @@
 								<Anchor point="BOTTOMRIGHT"/>
 							</Anchors>
 						</ButtonText>
-						<NormalFont inherits="GameFontNormal"/>
-						<HighlightFont inherits="GameFontHighlight"/>
-						<DisabledFont inherits="GameFontDisable"/>
+						<NormalFont style="GameFontNormal"/>
+						<HighlightFont style="GameFontHighlight"/>
+						<DisabledFont style="GameFontDisable"/>
 						<HighlightTexture file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD"/>
 						<Scripts>
 							<OnClick>
@@ -277,9 +277,9 @@
 								<Anchor point="BOTTOMRIGHT"/>
 							</Anchors>
 						</ButtonText>
-						<NormalFont inherits="GameFontNormal"/>
-						<HighlightFont inherits="GameFontHighlight"/>
-						<DisabledFont inherits="GameFontDisable"/>
+						<NormalFont style="GameFontNormal"/>
+						<HighlightFont style="GameFontHighlight"/>
+						<DisabledFont style="GameFontDisable"/>
 						<HighlightTexture file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD"/>
 						<Scripts>
 							<OnClick>
@@ -304,9 +304,9 @@
 								<Anchor point="BOTTOMRIGHT"/>
 							</Anchors>
 						</ButtonText>
-						<NormalFont inherits="GameFontNormal"/>
-						<HighlightFont inherits="GameFontHighlight"/>
-						<DisabledFont inherits="GameFontDisable"/>
+						<NormalFont style="GameFontNormal"/>
+						<HighlightFont style="GameFontHighlight"/>
+						<DisabledFont style="GameFontDisable"/>
 						<HighlightTexture file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD"/>
 						<Scripts>
 							<OnClick>
@@ -495,9 +495,9 @@
 								<Anchor point="BOTTOMRIGHT"/>
 							</Anchors>
 						</ButtonText>
-						<NormalFont inherits="GameFontNormal"/>
-						<HighlightFont inherits="GameFontHighlight"/>
-						<DisabledFont inherits="GameFontDisable"/>
+						<NormalFont style="GameFontNormal"/>
+						<HighlightFont style="GameFontHighlight"/>
+						<DisabledFont style="GameFontDisable"/>
 						<HighlightTexture file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD"/>
 						<Scripts>
 							<OnClick>
@@ -585,7 +585,7 @@
 				</Anchors>
 				<Scripts>
 					<OnVerticalScroll>
-						FauxScrollFrame_OnVerticalScroll(1, XPerl_Check_UpdatePlayerList)
+						FauxScrollFrame_OnVerticalScroll(self, value, 1, XPerl_Check_UpdatePlayerList)
 					</OnVerticalScroll>
 					<OnMouseWheel>
 						XPerl_CheckMouseWheel("Players", arg1)
@@ -744,7 +744,7 @@
 				</Anchors>
 				<Scripts>
 					<OnVerticalScroll>
-						FauxScrollFrame_OnVerticalScroll(1, XPerl_Check_UpdateItemList)
+						FauxScrollFrame_OnVerticalScroll(self, value, 1, XPerl_Check_UpdateItemList)
 					</OnVerticalScroll>
 					<OnMouseWheel>
 						XPerl_CheckMouseWheel("Items", arg1)

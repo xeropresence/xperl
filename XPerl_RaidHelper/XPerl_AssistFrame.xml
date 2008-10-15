@@ -220,7 +220,8 @@
 		<Size>
 			<AbsDimension x="27" y="20"/>
 		</Size>
-		<ButtonText inherits="GameFontNormalSmall" setAllPoints="true"/>
+		<NormalFont style="GameFontNormalSmall"/>
+		<ButtonText name="$parenttext" setAllPoints="true"/>
 		<HighlightTexture file="Interface\Addons\XPerl\Images\XPerl_Highlight" alphaMode="ADD">
 			<TexCoords left="0" right="0.25" top="0" bottom="0.5"/>
 		</HighlightTexture>
@@ -281,7 +282,8 @@
 		<Size>
 			<AbsDimension x="27" y="20"/>
 		</Size>
-		<ButtonText inherits="GameFontNormalSmall" setAllPoints="true"/>
+		<NormalFont style="GameFontNormalSmall"/>
+		<ButtonText name="$parenttext" setAllPoints="true"/>
 		<HighlightTexture file="Interface\Addons\XPerl\Images\XPerl_Highlight" alphaMode="ADD">
 			<TexCoords left="0" right="0.25" top="0" bottom="0.5"/>
 		</HighlightTexture>

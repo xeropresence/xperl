@@ -9,7 +9,6 @@ local conf, pconf
 XPerl_RequestConfig(function(new) conf = new pconf = conf.player if (XPerl_Player) then XPerl_Player.conf = conf.player end end, "$Revision$")
 local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%d"..PERCENT_SYMBOL
-local libDruidMana = LibStub and LibStub("LibDruidMana-1.0", true)
 
 local format = format
 local GetNumRaidMembers = GetNumRaidMembers
@@ -20,7 +19,10 @@ local UnitIsAFK = UnitIsAFK
 local UnitMana = UnitMana
 local UnitManaMax = UnitManaMax
 local UnitName = UnitName
+local UnitPower = UnitPower
 local UnitPowerType = UnitPowerType
+
+local XPerl_Player_InitDK
 
 local XPerl_PlayerStatus_OnUpdate
 local XPerl_Player_HighlightCallback
@@ -34,16 +36,27 @@ function XPerl_Player_OnLoad(self)
 
 	XPerl_BlizzFrameDisable(PlayerFrame)
 
-	CombatFeedback_Initialize(self.hitIndicator.text, 30)
+	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
 
 	XPerl_SecureUnitButton_OnLoad(self, "player", XPerl_ShowGenericMenu)
 	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", XPerl_ShowGenericMenu)
 
 	self:RegisterEvent("VARIABLES_LOADED")
 
-	XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
-			"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED"})
-	XPerl_RegisterBasics(self, XPerl_Player_Events)
+	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",
+			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
+			"UNIT_SPELLCAST_SUCCEEDED", "UNIT_THREAT_SITUATION_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITING_VEHICLE",
+			"UNIT_SPELLCAST_SENT"}
+
+	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
+	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED", 
+	--						"UNIT_THREAT_SITUATION_UPDATE"})
+	--XPerl_RegisterBasics(self, XPerl_Player_Events)
+
+	for i,e in pairs(events) do
+		self:RegisterEvent(e)
+	end
 
 	self.EnergyLast = 0
 	self.tutorialPage = 2
@@ -52,14 +65,32 @@ function XPerl_Player_OnLoad(self)
 	self:SetScript("OnShow", XPerl_Unit_UpdatePortrait)
 	self.time = 0
 
+	self.nameFrame.pvp:SetScript("OnUpdate",
+		function(self, elapsed)
+			if (IsPVPTimerRunning()) then
+				local timeLeft = GetPVPTimer()
+				if (timeLeft > 0 and timeLeft < 300000) then		-- 5 * 60 * 1000
+					timeLeft = floor(timeLeft / 1000)
+					self.timer:Show()
+					self.timer:SetFormattedText("%d:%02d", timeLeft / 60, timeLeft % 60)
+					return
+				end
+			end
+			self.timer:Hide()
+		end)
+
+	XPerl_Player_InitDK(self)
+	XPerl_Player_SetupDK(self)
+
 	XPerl_RegisterHighlight(self.highlight, 3)
-	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame})
+	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
 
 	if (XPerl_ArcaneBar_RegisterFrame) then
 		XPerl_ArcaneBar_RegisterFrame(self.nameFrame, "player")
 	end
 
-	self.FlashFrames = {self.portraitFrame, self.nameFrame, self.levelFrame, self.statsFrame}
+	self.FlashFrames = {self.portraitFrame, self.nameFrame,
+				self.levelFrame, self.statsFrame, self.runes}
 
 	XPerl_RegisterOptionChanger(XPerl_Player_Set_Bits, self)
 	XPerl_Highlight:Register(XPerl_Player_HighlightCallback, self)
@@ -296,10 +327,10 @@ local function XPerl_Player_UpdatePVP(self)
 	end
 
 	if (pconf.pvpIcon and UnitIsPVP("player")) then
-		nf.pvpIcon:Show()
-		nf.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..UnitFactionGroup("player"))
+		nf.pvp.icon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..(UnitIsPVPFreeForAll("player") and "FFA" or UnitFactionGroup("player")))
+		nf.pvp:Show()
 	else
-		nf.pvpIcon:Hide()
+		nf.pvp:Hide()
 	end
 end
 
@@ -308,39 +339,14 @@ local function XPerl_Player_DruidBarUpdate(self)
 	local manaPct
 	local druidBar = self.statsFrame.druidBar
 
-	if (libDruidMana) then
-		local maxMana = libDruidMana:GetMaximumMana()
-		local currMana = libDruidMana:GetCurrentMana()
-		manaPct = floor(currMana / maxMana * 100)
+	local maxMana = UnitPowerMax("player", 0)
+	local currMana = UnitPower("player", 0)
 
-		druidBar:SetMinMaxValues(0, maxMana or 1)
-		druidBar:SetValue(currMana or 0)
-		druidBar.text:SetFormattedText("%d/%d", ceil(currMana or 0), maxMana or 1)
+	druidBar:SetMinMaxValues(0, maxMana or 1)
+	druidBar:SetValue(currMana or 0)
+	druidBar.text:SetFormattedText("%d/%d", ceil(currMana or 0), maxMana or 1)
 
-	elseif (SmartyCat) then
-		local maxMana = SmartyCat:GetMaxMana()
-		local currMana = SmartyCat:GetCurrMana()
-		manaPct = SmartyCat:GetManaPercent()
-
-		druidBar:SetMinMaxValues(0, maxMana or 1)
-		druidBar:SetValue(currMana or 0)
-		druidBar.text:SetFormattedText("%d/%d", ceil(currMana or 0), maxMana or 1)
- 	elseif (SimpleDruidBar) then
-		druidBar:SetMinMaxValues(0, SimpleDruidBar.MaxMana or 1)
-		druidBar:SetValue(SimpleDruidBar.CurrMana or 0)
-		manaPct = ((SimpleDruidBar.CurrMana or 0) * 100.0) / (SimpleDruidBar.MaxMana or 1)
-		druidBar.text:SetFormattedText("%d/%d", ceil(SimpleDruidBar.CurrMana or 0), SimpleDruidBar.MaxMana or 1)
-
-		-- Doesn't hide the frame, but makes it not appear on screen. The code in SimpleDruidBar relies on IsShown() to function
-		SimpleDruidBar.DISPLAY_BAR:ClearAllPoints()
-	else
-		druidBar:SetMinMaxValues(0, DruidBarKey.maxmana or 1)
-		druidBar:SetValue(DruidBarKey.keepthemana or 0)
-		manaPct = ((DruidBarKey.keepthemana or 0) * 100.0) / (DruidBarKey.maxmana or 1)
-		druidBar.text:SetFormattedText("%d/%d", DruidBarKey.keepthemana or 0, DruidBarKey.maxmana or 1)
-	end
-
-	druidBar.percent:SetFormattedText(percD, manaPct)
+	druidBar.percent:SetFormattedText(percD, currMana * 100 / maxMana)
 
 	local druidBarExtra
 	if (UnitPowerType(self.partyid) > 0) then
@@ -382,10 +388,8 @@ local function XPerl_Player_UpdateMana(self)
 		mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
 	end
 
-	if (libDruidMana or SmartyCat or DruidBarKey or SimpleDruidBar) then
-		if (playerClass == "DRUID") then
-			XPerl_Player_DruidBarUpdate(self)
-		end
+	if (playerClass == "DRUID") then
+		XPerl_Player_DruidBarUpdate(self)
 	end
 end
 
@@ -474,10 +478,13 @@ end
 
 -- XPerl_Player_OnUpdate
 function XPerl_Player_OnUpdate(self, elapsed)
-	CombatFeedback_OnUpdate(elapsed)
+	CombatFeedback_OnUpdate(self, elapsed)
 	if (self.PlayerFlash) then
 		XPerl_Player_CombatFlash(self, elapsed, false)
 	end
+
+	XPerl_Player_UpdateMana(self)
+	--XPerl_Player_UpdateHealth(self)
 end
 
 -- XPerl_Player_UpdateBuffs
@@ -485,10 +492,7 @@ local function XPerl_Player_UpdateBuffs(self)
 	XPerl_CheckDebuffs(self, self.partyid)
 
 	if (playerClass == "DRUID") then
-		if (libDruidMana or SmartyCat or DruidBarKey or SimpleDruidBar) then
-			-- For DruidBar addon, we update the mana bar on shapeshift
-			XPerl_Player_UpdateMana(self)
-		end
+		XPerl_Player_UpdateMana(self)
 	end
 
 	if (pconf.fullScreen.enable) then
@@ -512,6 +516,7 @@ function XPerl_Player_UpdateDisplay (self)
 	XPerl_Player_UpdateHealth(self)
 	XPerl_Player_UpdateBuffs(self)
 	XPerl_Unit_UpdatePortrait(self)
+	--XPerl_Unit_ThreatStatus(self)
 end
 
 -- EVENTS AND STUFF
@@ -520,52 +525,51 @@ end
 -- Event Handler --
 -------------------
 function XPerl_Player_OnEvent(self, event, arg1, ...)
-	XPerl_Player_Events[event](self, arg1, ...)
---	local func = XPerl_Player_Events[event]
---	if (func) then
---		func(self, a, b, c, d)
---	else
---XPerl_ShowMessage("EXTRA EVENT")
---	end
+	if (strsub(event, 1, 5) == "UNIT_") then
+	 	if (arg1 == "player" or arg1 == "vehicle") then
+			XPerl_Player_Events[event](self, ...)
+		end
+	else
+		XPerl_Player_Events[event](self, arg1, ...)
+	end
 end
 
 -- PLAYER_ENTERING_WORLD
 function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
-	local _
-	_, playerClass = UnitClass("player")
-	playerName = UnitName("player")
+	if (UnitHasVehicleUI("player")) then
+		self.partyid = "vehicle"
+		self:SetAttribute("unit", "vehicle")
+	else
+		self.partyid = "player"
+		self:SetAttribute("unit", "player")
+	end
+
 	XPerl_Player_UpdateDisplay(self)
 end
 
 -- UNIT_COMBAT
 function XPerl_Player_Events:UNIT_COMBAT()
- 	if (arg1 == "player") then
-		if (pconf.hitIndicator and pconf.portrait) then
-			CombatFeedback_OnCombatEvent(arg2, arg3, arg4, arg5)
-		end
+	if (pconf.hitIndicator and pconf.portrait) then
+		CombatFeedback_OnCombatEvent(self, arg2, arg3, arg4, arg5)
+	end
 
-		if (arg2 == "HEAL") then
-			XPerl_Player_CombatFlash(self, elapsed, true, true)
-		elseif (arg4 and arg4 > 0) then
-			XPerl_Player_CombatFlash(self, elapsed, true)
-		end
+	if (arg2 == "HEAL") then
+		XPerl_Player_CombatFlash(self, elapsed, true, true)
+	elseif (arg4 and arg4 > 0) then
+		XPerl_Player_CombatFlash(self, elapsed, true)
 	end
 end
 
 -- UNIT_SPELLMISS
 function XPerl_Player_Events:UNIT_SPELLMISS()
-	if (arg1 == "player") then
-		if (pconf.hitIndicator and pconf.portrait) then
-			CombatFeedback_OnSpellMissEvent(arg2)
-		end
+	if (pconf.hitIndicator and pconf.portrait) then
+		CombatFeedback_OnSpellMissEvent(self, arg2)
 	end
 end
 
 -- UNIT_PORTRAIT_UPDATE
 function XPerl_Player_Events:UNIT_PORTRAIT_UPDATE()
-	if (arg1 == "player") then
-		XPerl_Unit_UpdatePortrait(self)
-	end
+	XPerl_Unit_UpdatePortrait(self)
 end
 
 -- VARIABLES_LOADED
@@ -576,7 +580,7 @@ function XPerl_Player_Events:VARIABLES_LOADED()
 	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBERS_CHANGED", "PARTY_LEADER_CHANGED",
 			"PARTY_LOOT_METHOD_CHANGED", "RAID_ROSTER_UPDATE", "PLAYER_UPDATE_RESTING", "PLAYER_REGEN_ENABLED",
 			"PLAYER_REGEN_DISABLED", "PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_DEAD",
-			"UPDATE_FACTION", "PLAYER_AURAS_CHANGED", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
+			"UPDATE_FACTION", "UNIT_AURA", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
 			"UNIT_COMBAT"}
 
 	for i,event in pairs(events) do
@@ -601,8 +605,15 @@ end
 XPerl_Player_Events.UNIT_MAXHEALTH = XPerl_Player_Events.UNIT_HEALTH
 XPerl_Player_Events.PLAYER_DEAD    = XPerl_Player_Events.UNIT_HEALTH
 
+function XPerl_Player_Events:UNIT_SPELLCAST_SENT(spell, rank, targetName, castID)
+	if (pconf.energyTicker and spell and UnitPowerType(self.partyid) == 0) then
+		self.tickerPrevMana = UnitMana(self.partyid)
+		self:RegisterEvent("UNIT_MANA")
+	end
+end
+
 -- UNIT_SPELLCAST_SUCCEEDED
-function XPerl_Player_Events:UNIT_SPELLCAST_SUCCEEDED(unit, spell, rank)
+function XPerl_Player_Events:UNIT_SPELLCAST_SUCCEEDED(spell, rank, castID)
 	if (pconf.energyTicker and spell and UnitPowerType(self.partyid) == 0) then
 		self.waitForManaReduction = true
 		self.tickerPrevMana = UnitMana(self.partyid)
@@ -628,6 +639,7 @@ function XPerl_Player_Events:UNIT_MANA()
 		self.waitForManaReduction = nil
 		self.tickerPrevMana = nil
 		self.tickerCastTime = nil
+		self:UnregisterEvent("UNIT_MANA")
 	end
 end
 
@@ -636,21 +648,25 @@ function XPerl_Player_Events:UNIT_MAXMANA()
 	XPerl_Player_UpdateMana(self)
 end
 
-XPerl_Player_Events.UNIT_RAGE		= XPerl_Player_Events.UNIT_MAXMANA
-XPerl_Player_Events.UNIT_MAXRAGE	= XPerl_Player_Events.UNIT_MAXMANA
+XPerl_Player_Events.UNIT_RAGE			= XPerl_Player_Events.UNIT_MAXMANA
+XPerl_Player_Events.UNIT_MAXRAGE		= XPerl_Player_Events.UNIT_RAGE
+XPerl_Player_Events.UNIT_RUNIC_POWER	= XPerl_Player_Events.UNIT_MAXMANA
+XPerl_Player_Events.UNIT_MAXRUNIC_POWER	= XPerl_Player_Events.UNIT_RUNIC_POWER
+XPerl_Player_Events.UNIT_ENERGY			= XPerl_Player_Events.UNIT_MAXMANA
+XPerl_Player_Events.UNIT_MAXENERGY		= XPerl_Player_Events.UNIT_ENERGY
 
-function XPerl_Player_Events:UNIT_ENERGY()
-	XPerl_Player_UpdateMana(self)
-
-	local e = UnitMana(self.partyid)
-	if (e == self.EnergyLast + 20 and self.statsFrame.energyTicker) then
-		self.statsFrame.energyTicker.EnergyTime = GetTime()
-	end
-	self.EnergyLast = e
-
-	XPerl_Player_TickerShowHide(self)
-end
-XPerl_Player_Events.UNIT_MAXENERGY       = XPerl_Player_Events.UNIT_ENERGY
+--function XPerl_Player_Events:UNIT_ENERGY()
+--	XPerl_Player_UpdateMana(self)
+--
+--	local e = UnitMana(self.partyid)
+--	if (e == self.EnergyLast + 20 and self.statsFrame.energyTicker) then
+--		self.statsFrame.energyTicker.EnergyTime = GetTime()
+--	end
+--	self.EnergyLast = e
+--
+--	XPerl_Player_TickerShowHide(self)
+--end
+--XPerl_Player_Events.UNIT_MAXENERGY       = XPerl_Player_Events.UNIT_ENERGY
 
 -- UNIT_DISPLAYPOWER
 function XPerl_Player_Events:UNIT_DISPLAYPOWER()
@@ -710,14 +726,23 @@ function XPerl_Player_Events:PLAYER_ENTER_COMBAT()
 end
 XPerl_Player_Events.PLAYER_LEAVE_COMBAT = XPerl_Player_Events.PLAYER_ENTER_COMBAT
 
--- PLAYER_REGEN_ENABLED, PLAYER_REGEN_DISABLED
+-- PLAYER_REGEN_ENABLED
 function XPerl_Player_Events:PLAYER_REGEN_ENABLED()
 	XPerl_Player_UpdateCombat(self)
-end
-XPerl_Player_Events.PLAYER_REGEN_DISABLED = XPerl_Player_Events.PLAYER_REGEN_ENABLED
-XPerl_Player_Events.PLAYER_UPDATE_RESTING = XPerl_Player_Events.PLAYER_REGEN_ENABLED
 
-function XPerl_Player_Events:PLAYER_AURAS_CHANGED()
+	if (self:GetAttribute("unit") ~= self.partyid) then
+		self:SetAttribute("unit", self.partyid)
+	end
+end
+
+-- PLAYER_REGEN_DISABLED
+function XPerl_Player_Events:PLAYER_REGEN_DISABLED()
+	XPerl_Player_UpdateCombat(self)
+end
+
+XPerl_Player_Events.PLAYER_UPDATE_RESTING = XPerl_Player_Events.PLAYER_REGEN_DISABLED
+
+function XPerl_Player_Events:UNIT_AURA()
 	XPerl_Player_UpdateBuffs(self)
 end
 
@@ -734,6 +759,28 @@ function XPerl_Player_Events:PLAYER_CONTROL_GAINED()
 	if (pconf.fullScreen.enable) then
 		XPerl_PlayerStatus_OnUpdate(self)
 	end
+end
+
+-- UNIT_ENTERED_VEHICLE
+function XPerl_Player_Events:UNIT_ENTERED_VEHICLE(showVehicle)
+	self.partyid = "vehicle"
+	if (not InCombatLockdown()) then
+		self:SetAttribute("unit", "vehicle")
+	end
+	XPerl_Player_UpdateDisplay(self)
+end
+
+-- UNIT_EXITING_VEHICLE
+function XPerl_Player_Events:UNIT_EXITING_VEHICLE()
+	self.partyid = "player"
+	if (not InCombatLockdown()) then
+		self:SetAttribute("unit", "player")
+	end
+	XPerl_Player_UpdateDisplay(self)
+end
+
+function XPerl_Player_Events:UNIT_THREAT_SITUATION_UPDATE()
+--	XPerl_Unit_ThreatStatus(self)
 end
 
 -- XPerl_Player_Energy_TickWatch
@@ -957,7 +1004,7 @@ function XPerl_Player_Set_Bits(self)
 		MakeEnergyTicker = nil
 	end
 
-	if (playerClass == "DRUID" and not self.statsFrame.druidBar and (libDruidMana or SmartyCat or DruidBarKey or SimpleDruidBar)) then
+	if (playerClass == "DRUID" and not self.statsFrame.druidBar) then
 		MakeDruidBar(self)
 	else
 		MakeDruidBar = nil
@@ -1009,7 +1056,7 @@ function XPerl_Player_Set_Bits(self)
 	self:SetHeight(max(h1, h2))
 
 	self.highlight:ClearAllPoints()
-	if (pconf.extendPortrait) then
+	if (pconf.extendPortrait or (self.runes and pconf.showRunes and pconf.dockRunes)) then
 		self.portraitFrame:SetHeight(62 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 		--self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 		--self.highlight:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, 0)
@@ -1018,6 +1065,8 @@ function XPerl_Player_Set_Bits(self)
 		--self.highlight:SetPoint("BOTTOMLEFT", self.classFrame, "BOTTOMLEFT", -2, -2)
 		--self.highlight:SetPoint("TOPRIGHT", self.nameFrame, "TOPRIGHT", 0, 0)
 	end
+
+	XPerl_Player_SetupDK(self)
 
 	self.highlight:ClearAllPoints()
 	if (not pconf.level and not pconf.classIcon and (not XPerlConfigHelper or XPerlConfigHelper.ShowTargetCounters == 0)) then
@@ -1052,5 +1101,130 @@ function XPerl_Player_Set_Bits(self)
 
 	if (XPerl_Voice) then
 		XPerl_Voice:Register(self)
+	end
+end
+
+-- XPerl_Player_InitDK
+function XPerl_Player_InitDK(self)
+	if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
+		if (not RuneFrame or RuneFrame:GetParent() ~= UIParent or not RuneFrame:IsShown()) then
+			-- Only hijack runes if not already done so by another mod
+			return
+		end
+
+		local p, f, r, x, y = RuneFrame:GetPoint(1)
+		if (f ~= PlayerFrame or p ~= "TOP" or r ~= "BOTTOM") then
+			-- More safety checking before we fudge it
+			return
+		end
+
+		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
+		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
+
+		self.runes:SetMovable(true)
+		self.runes:RegisterForDrag("LeftButton")
+		self.runes:SetScript("OnDragStart",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StartMoving()
+				end
+			end)
+		self.runes:SetScript("OnDragStop",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StopMovingOrSizing()
+					XPerl_SavePosition(self)
+				end
+			end)
+
+		local bgDef = {bgFile = "Interface\\Addons\\XPerl\\Images\\XPerl_FrameBack",
+				edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+				tile = true, tileSize = 32, edgeSize = 12,
+				insets = { left = 3, right = 3, top = 3, bottom = 3 }
+			}
+		self.runes:SetBackdrop(bgDef)
+		self.runes:SetBackdropColor(0, 0, 0, 0.8)
+		self.runes:SetBackdropBorderColor(1, 1, 1, 1)
+		self.runes.list = {}
+
+		RuneFrame:SetParent(self.runes)
+		RuneFrame:ClearAllPoints()
+		RuneFrame:SetPoint("TOPLEFT", 5, -5)
+		RuneFrame:SetPoint("BOTTOMRIGHT", -5, 5)
+
+		for i = 1,6 do
+			local rune = RuneFrame.runes[i]
+			if (rune) then
+				rune:Hide()
+			end
+		end
+
+		RuneFrame.runes = {}
+
+		local prev
+		local idSwitch = {1, 2, 5, 6, 3, 4}		-- Non sequential rune IDs.. gg
+		for i = 1,6 do
+			local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, RuneFrame, "XPerl_RuneButtonIndividualTemplate")
+			self.runes.list[i] = rune
+			rune:EnableMouse(false)
+
+			-- god only knows why blizzard did this...
+			rune:SetID(idSwitch[i])
+
+			if (i > 1) then
+				rune:SetPoint("LEFT", prev, "RIGHT", 4 + ((i % 2) * 16), 0)
+			else
+				rune:SetPoint("LEFT", 10, 0)
+			end
+			prev = rune
+		end
+	end
+	
+	XPerl_Player_InitDK = nil
+end
+
+-- XPerl_Player_SetupDK
+function XPerl_Player_SetupDK(self)
+	if (self.runes) then
+		if (not pconf or pconf.showRunes) then
+			self.runes:Show()
+
+			self.runes:ClearAllPoints()
+			if (not pconf or pconf.dockRunes) then
+				self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+				self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
+			else
+				self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+				self.runes:SetWidth(214)
+				self.runes:SetHeight(32)
+				XPerl_RestorePosition(self.runes)
+			end
+
+			for i = 1,6 do
+				local rune = getglobal("XPerl_RuneButtonIndividual"..i)
+				self.runes.list[i] = rune
+				rune:ClearAllPoints()
+				rune:SetWidth(22)
+				rune:SetHeight(22)
+
+				if (self.runes:GetWidth() >= 200) then	-- pconf.portrait) then
+					if (i > 1) then
+						rune:SetPoint("LEFT", prev, "RIGHT", 4 + ((i % 2) * 16), 0)
+					else
+						rune:SetPoint("LEFT", 10, 0)
+					end
+				else
+					if (i > 1) then
+						rune:SetPoint("LEFT", prev, "RIGHT", 1 + ((i % 2) * 5), 0)
+					else
+						rune:SetPoint("LEFT", 1, 0)
+					end
+				end
+				prev = rune
+			end
+		else
+			self.runes:Hide()
+		end
 	end
 end

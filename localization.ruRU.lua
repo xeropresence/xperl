@@ -128,6 +128,10 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_CONFIG_LIST	= "Список настроек:"
 	XPERL_CONFIG_CURRENT	= " (текущий)"
 
+	XPERL_RAID_TOOLTIP_WITHBUFF		= "С баффом: (%s)"
+	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Без баффа: (%s)"
+	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s's %s заканчивается через %s"	-- Name, buff name, time to expire
+
 end
 
 XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS

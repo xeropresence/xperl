@@ -67,30 +67,6 @@
 				<BarColor r="0" g="0.8" b="0"/>
 			</StatusBar>
 
-			<StatusBar name="$parentexpectedHealth" drawLayer="OVERLAY" hidden="true" setAllPoints="true">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parenthealthBar">
-						<Offset>
-							<AbsDimension x="0" y="-2"/>
-						</Offset>
-					</Anchor>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parenthealthBar">
-						<Offset>
-							<AbsDimension x="0" y="2"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<BarTexture name="$parenttex" file="Interface\TargetingFrame\UI-StatusBar"/>
-				<BarColor r="0" g="1" b="1"/>
-				<Scripts>
-					<OnLoad>
-						XPerl_SetChildMembers(self)
-						XPerl_RegisterBar(self)
-						self:SetFrameLevel(getglobal(self:GetParent():GetName().."healthBar"):GetFrameLevel() - 1)
-					</OnLoad>
-				</Scripts>
-			</StatusBar>
-
 			<Frame name="$parentHighlight" inherits="XPerl_HighlightTemplate" setAllPoints="true"/>
 		</Frames>
 	</Button>

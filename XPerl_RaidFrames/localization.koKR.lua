@@ -16,9 +16,6 @@ if ( GetLocale() == "koKR" ) then
 	XPERL_RAID_TOOLTIP_SOULSTONE	= "영혼석부활: %s"
 
 	XPERL_RAID_TOOLTIP_REMAINING	= " 남아있는"
-	XPERL_RAID_TOOLTIP_WITHBUFF	= "버프있음: (%s)"
-	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "버프없음: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s의 %s 사라짐까지 %s"	-- Name, buff name, time to expire
 
 	XPERL_RAID_DROPDOWN_SHOWPET	= "소환수 표시"
 	XPERL_RAID_DROPDOWN_SHOWOWNER	= "소유자 표시"

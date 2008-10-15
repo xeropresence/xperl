@@ -15,9 +15,6 @@ if ( GetLocale() == "frFR" ) then
 	XPERL_RAID_TOOLTIP_SOULSTONE	= "Pierre d'\195\162me dans: "
 
 	XPERL_RAID_TOOLTIP_REMAINING	= " Restant"
-	XPERL_RAID_TOOLTIP_WITHBUFF		= "Avec buffs: (%s)"
-	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Sans buffs: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s's %s expires dans %s"	-- Name, buff name, time to expire
 
 	XPERL_RAID_DROPDOWN_SHOWPET		= "Montrer les familiers"
 	XPERL_RAID_DROPDOWN_SHOWOWNER	= "Montrer les propri\195\169taires"

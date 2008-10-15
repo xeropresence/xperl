@@ -62,9 +62,9 @@
 	<Button name="XPerlRosterTextOptionsButtonTemplate" virtual="true">
 		<Size><AbsDimension x="90" y="21"/></Size>
 		<ButtonText name="$parentText" setAllPoints="true"/>
-		<NormalFont inherits="GameFontNormal"/>
-		<HighlightFont inherits="GameFontHighlight"/>
-		<DisabledFont inherits="GameFontDisable"/>
+		<NormalFont style="GameFontNormal"/>
+		<HighlightFont style="GameFontHighlight"/>
+		<DisabledFont style="GameFontDisable"/>
 		<NormalTexture inherits="UIPanelButtonUpTexture"/>
 		<PushedTexture inherits="UIPanelButtonDownTexture"/>
 		<DisabledTexture inherits="UIPanelButtonDisabledTexture"/>

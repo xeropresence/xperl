@@ -572,11 +572,11 @@ function XPerl_UpdateAssists()
 				end
 
 				if (targettingCount == 0) then
-					XPerl_Player_TargettingFrame:SetTextColor(1,0.5,0.5)
+					XPerl_Player_TargettingFrametext:SetTextColor(1,0.5,0.5)
 				elseif (targettingCount > 5) then
-					XPerl_Player_TargettingFrame:SetTextColor(0.5,1,0.5)
+					XPerl_Player_TargettingFrametext:SetTextColor(0.5,1,0.5)
 				else
-					XPerl_Player_TargettingFrame:SetTextColor(0.5,0.5,1)
+					XPerl_Player_TargettingFrametext:SetTextColor(0.5,0.5,1)
 				end
 
 				XPerl_Player_TargettingFrame:SetText(targettingCount)
@@ -589,11 +589,11 @@ function XPerl_UpdateAssists()
 		if (XPerl_Target_AssistFrame) then
 			if (XPerl_Target) then
 				if (assistCount < 2) then
-					XPerl_Target_AssistFrame:SetTextColor(1,0.5,0.5)
+					XPerl_Target_AssistFrametext:SetTextColor(1,0.5,0.5)
 				elseif (assistCount > (#friendlyUnitList / 2)) then
-					XPerl_Target_AssistFrame:SetTextColor(0.5,1,0.5)
+					XPerl_Target_AssistFrametext:SetTextColor(0.5,1,0.5)
 				else
-					XPerl_Target_AssistFrame:SetTextColor(0.5,0.5,1)
+					XPerl_Target_AssistFrametext:SetTextColor(0.5,0.5,1)
 				end
 
 				if (targetname) then

@@ -38,12 +38,13 @@ local mobhealth
 function XPerl_Target_OnLoad(self, partyid)
 	XPerl_SetChildMembers(self)
 
-	CombatFeedback_Initialize(self.hitIndicator.text, 30)
+	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
+
 	self.hitIndicator.text:SetPoint("CENTER", self.portraitFrame, "CENTER", 0, 0)
 
 	local events = {"UNIT_COMBAT", "PLAYER_FLAGS_CHANGED",
 		"PARTY_MEMBER_DISABLE", "PARTY_MEMBER_ENABLE", "RAID_TARGET_UPDATE", "PARTY_MEMBERS_CHANGED",
-		"PARTY_LEADER_CHANGED", "PARTY_LOOT_METHOD_CHANGED"}
+		"PARTY_LEADER_CHANGED", "PARTY_LOOT_METHOD_CHANGED", "UNIT_THREAT_LIST_UPDATE"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
@@ -59,17 +60,21 @@ function XPerl_Target_OnLoad(self, partyid)
 		self.tutorialPage = 3
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
-		self:RegisterEvent("PLAYER_COMBO_POINTS")
 		self:RegisterEvent("VARIABLES_LOADED")
 		self:RegisterEvent("INSPECT_TALENT_READY")
 		self.combatMask = 0x00010000
 	else
+		XPerl_BlizzFrameDisable(FocusFrame)
+
 		self.tutorialPage = 10
 		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
 		--self:SetScript("OnShow", XPerl_Target_UpdateDisplay)
 		self.combatMask = 0x00020000
 	end
+	self:RegisterEvent("UNIT_COMBO_POINTS")			-- Not a standard unit event, becuase we want events for "player" even tho it's "target" or "focus" unit frame
+	self:RegisterEvent("PLAYER_REGEN_ENABLED")
+	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 
 	self.nameFrame.cpMeter:SetMinMaxValues(0, 5)
 
@@ -197,27 +202,25 @@ end
 -- Combo Points
 ---------------
 local function XPerl_Target_UpdateCombo(self)
-	if (self == XPerl_Target) then
-		local combopoints = GetComboPoints()
-		local r, g, b = GetComboColour(combopoints)
-		if (tconf.combo.enable) then
-			self.cpFrame:Hide()
-			self.nameFrame.cpMeter:SetValue(combopoints)
-			self.nameFrame.cpMeter:Show()
-			if (r) then
-				self.nameFrame.cpMeter:SetStatusBarColor(r, g, b, 0.7)
-			else
-				self.nameFrame.cpMeter:Hide()
-			end
-		elseif (not tconf.combo.blizzard) then
+	local combopoints = GetComboPoints("player", self.partyid)
+	local r, g, b = GetComboColour(combopoints)
+	if (tconf.combo.enable) then
+		self.cpFrame:Hide()
+		self.nameFrame.cpMeter:SetValue(combopoints)
+		self.nameFrame.cpMeter:Show()
+		if (r) then
+			self.nameFrame.cpMeter:SetStatusBarColor(r, g, b, 0.7)
+		else
 			self.nameFrame.cpMeter:Hide()
-			self.cpFrame:Show()
-			self.cpFrame.text:SetText(combopoints)
-			if (r) then
-				self.cpFrame.text:SetTextColor(r, g, b)
-			else
-				self.cpFrame:Hide()
-			end
+		end
+	elseif (not tconf.combo.blizzard) then
+		self.nameFrame.cpMeter:Hide()
+		self.cpFrame:Show()
+		self.cpFrame.text:SetText(combopoints)
+		if (r) then
+			self.cpFrame.text:SetTextColor(r, g, b)
+		else
+			self.cpFrame:Hide()
 		end
 	end
 end
@@ -241,43 +244,42 @@ end
 ---------------------
 local function XPerl_Target_DebuffUpdate(self)
 	local partyid = self.partyid
-	if (self == XPerl_Target) then
-		if (GetComboPoints() == 0) then
-			local numDebuffs = 0
-			if (playerClass == "WARRIOR") then
-				numDebuffs = TargetDebuffInformation(XPERL_SPELL_SUNDER)
-			elseif (playerClass == "PRIEST") then
-				numDebuffs = TargetDebuffInformation(XPERL_SPELL_SHADOWV)
-			elseif (playerClass == "MAGE") then
+	if (GetComboPoints("player", partyid) == 0) then
+		local numDebuffs = 0
+		if (playerClass == "WARRIOR") then
+			numDebuffs = TargetDebuffInformation(XPERL_SPELL_SUNDER)
+		elseif (playerClass == "PRIEST") then
+			numDebuffs = TargetDebuffInformation(XPERL_SPELL_SHADOWV)
+		elseif (playerClass == "MAGE") then
+			if (select(3,GetTalentTabInfo(3)) > select(3,GetTalentTabInfo(2))) then
+				numDebuffs = TargetDebuffInformation(XPERL_SPELL_WINTERCH)
+			else
 				numDebuffs = TargetDebuffInformation(XPERL_SPELL_FIREV)
-				if (numDebuffs == 0) then
-					numDebuffs = TargetDebuffInformation(XPERL_SPELL_WINTERCH)
-				end
 			end
+		end
 
-			local r, g, b = GetComboColour(numDebuffs)
-			if (tconf.combo.enable) then
-				self.cpFrame:Hide()
-				self.nameFrame.cpMeter:SetValue(numDebuffs)
-				if (r) then
-					self.nameFrame.cpMeter:Show()
-					self.nameFrame.cpMeter:SetStatusBarColor(r, g, b, 0.4)
-				else
-					self.nameFrame.cpMeter:Hide()
-				end
+		local r, g, b = GetComboColour(numDebuffs)
+		if (tconf.combo.enable) then
+			self.cpFrame:Hide()
+			self.nameFrame.cpMeter:SetValue(numDebuffs)
+			if (r) then
+				self.nameFrame.cpMeter:Show()
+				self.nameFrame.cpMeter:SetStatusBarColor(r, g, b, 0.4)
 			else
 				self.nameFrame.cpMeter:Hide()
-				self.cpFrame.text:SetText(numDebuffs)
-				if (r) then
-					self.cpFrame:Show()
-					self.cpFrame.text:SetTextColor(r, g, b)
-				else
-					self.cpFrame:Hide()
-				end
 			end
 		else
-			XPerl_Target_UpdateCombo(self)
+			self.nameFrame.cpMeter:Hide()
+			self.cpFrame.text:SetText(numDebuffs)
+			if (r) then
+				self.cpFrame:Show()
+				self.cpFrame.text:SetTextColor(r, g, b)
+			else
+				self.cpFrame:Hide()
+			end
 		end
+	else
+		XPerl_Target_UpdateCombo(self)
 	end
 end
 
@@ -946,6 +948,7 @@ function XPerl_Target_UpdateDisplay(self)
 		XPerl_Target_SetMana(self)
 		XPerl_Target_UpdateHealth(self)
 		XPerl_Target_Update_Combat(self)
+		XPerl_Unit_ThreatStatus(self, "player", true)
 
 		RaidTargetUpdate(self)
 
@@ -989,7 +992,7 @@ end
 
 -- XPerl_Target_OnUpdate
 function XPerl_Target_OnUpdate(self, elapsed)
-	CombatFeedback_OnUpdate(elapsed)
+	CombatFeedback_OnUpdate(self, elapsed)
 
 	self.RangeUpdate = self.RangeUpdate + elapsed
 	if (self.RangeUpdate > 0.2) then
@@ -1043,6 +1046,14 @@ function XPerl_Target_Events:VARIABLES_LOADED()
 
 		XPerl_Target_Events.VARIABLES_LOADED = nil
 	end
+end
+
+function XPerl_Target_Events:PLAYER_REGEN_ENABLED()
+	XPerl_Unit_ThreatStatus(self, "player")
+end
+
+function XPerl_Target_Events:PLAYER_REGEN_DISABLED()
+	XPerl_Unit_ThreatStatus(self, "player")
 end
 
 -- PLAYER_ENTERING_WORLD
@@ -1140,7 +1151,7 @@ function XPerl_Target_Events:UNIT_COMBAT()
 
 		if (not self.conf.ownDamageOnly) then
 			if (self.conf.hitIndicator and self.conf.portrait) then
-				CombatFeedback_OnCombatEvent(arg2, arg3, arg4, arg5)
+				CombatFeedback_OnCombatEvent(self, arg2, arg3, arg4, arg5)
 			end
 		end
 
@@ -1155,7 +1166,7 @@ end
 -- UNIT_SPELLMISS
 function XPerl_Target_Events:UNIT_SPELLMISS()
 	if (self.conf.hitIndicator and self.conf.portrait) then
-		CombatFeedback_OnSpellMissEvent(arg2)
+		CombatFeedback_OnSpellMissEvent(self, arg2)
 	end
 end
 
@@ -1220,6 +1231,8 @@ XPerl_Target_Events.UNIT_ENERGY		= XPerl_Target_Events.UNIT_MANA
 XPerl_Target_Events.UNIT_MAXENERGY	= XPerl_Target_Events.UNIT_MANA
 XPerl_Target_Events.UNIT_FOCUS		= XPerl_Target_Events.UNIT_MANA
 XPerl_Target_Events.UNIT_MAXFOCUS	= XPerl_Target_Events.UNIT_MANA
+XPerl_Target_Events.UNIT_RUNIC_POWER = XPerl_Target_Events.UNIT_MANA
+XPerl_Target_Events.UNIT_MAXRUNIC_POWER = XPerl_Target_Events.UNIT_MANA
 
 -- UNIT_DISPLAYPOWER
 function XPerl_Target_Events:UNIT_DISPLAYPOWER()
@@ -1251,8 +1264,10 @@ function XPerl_Target_Events:UNIT_CLASSIFICATION_CHANGED()
 end
 
 -- PLAYER_COMBO_POINTS
-function XPerl_Target_Events:PLAYER_COMBO_POINTS()
-	XPerl_Target_UpdateCombo(self)
+function XPerl_Target_Events:UNIT_COMBO_POINTS(unit)
+	if (unit == "player") then
+		XPerl_Target_UpdateCombo(self)
+	end
 end
 
 -- UNIT_AURA
@@ -1316,6 +1331,12 @@ function XPerl_Target_Events:INSPECT_TALENT_READY()
 			XPerl_Target_UpdateTalents(self)
 		end
 		lastInspectInvalid = nil
+	end
+end
+
+function XPerl_Target_Events:UNIT_THREAT_LIST_UPDATE(unit)
+	if (unit == self.partyid) then
+		XPerl_Unit_ThreatStatus(self, "player")
 	end
 end
 

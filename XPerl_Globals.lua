@@ -238,12 +238,18 @@ local function XPerl_UnitEvent(unit, event, a, b, c, d)
 end
 
 -- XPerl_RegisterBasics
-function XPerl_RegisterBasics(self, events)
-	local events2 = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY",
-			"UNIT_MANA", "UNIT_MAXMANA", "UNIT_HEALTH", "UNIT_MAXHEALTH",
+function XPerl_RegisterBasics(self, eventArray)
+	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY",
+			"UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER", "UNIT_HEALTH", "UNIT_MAXHEALTH",
 			"UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
 
-	XPerl_UnitEvents(self, events, events2)
+	if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
+		tinsert(events, "UNIT_MANA")
+		tinsert(events, "UNIT_ENERGY")
+		tinsert(events, "UNIT_RUNIC_POWER")
+	end
+
+	XPerl_UnitEvents(self, eventArray, events)
 end
 
 -- onEventPostSetup

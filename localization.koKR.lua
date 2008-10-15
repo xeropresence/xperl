@@ -101,6 +101,10 @@ if (GetLocale() == "koKR") then
 	XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r : 다운로드 가능"
 
 	XPerl_DefaultRangeSpells.ANY = {item = "두꺼운 황천매듭 붕대"}
+
+	XPERL_RAID_TOOLTIP_WITHBUFF	= "버프있음: (%s)"
+	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "버프없음: (%s)"
+	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s의 %s 사라짐까지 %s"	-- Name, buff name, time to expire
 end
 
 XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS

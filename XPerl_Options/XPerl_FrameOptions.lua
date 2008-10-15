@@ -4,6 +4,23 @@
 
 XPerl_SetModuleRevision("$Revision$")
 
+function XPerl_OptionsFrame_DisableSlider(slider)
+	local name = slider:GetName();
+	getmetatable(slider).__index.Disable(slider);
+	getglobal(name.."Text"):SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+	getglobal(name.."Low"):SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+	getglobal(name.."High"):SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+end
+
+function XPerl_OptionsFrame_EnableSlider(slider)
+	local name = slider:GetName();
+	getmetatable(slider).__index.Enable(slider);
+	getglobal(name.."Text"):SetVertexColor(NORMAL_FONT_COLOR.r , NORMAL_FONT_COLOR.g , NORMAL_FONT_COLOR.b);
+	getglobal(name.."Low"):SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	getglobal(name.."High"):SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+end
+
+
 function XPerl_Options_SetupFunc(self)
 	XPerl_DoGradient(self, true)
 	self:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
@@ -321,14 +338,14 @@ function XPerl_SliderSetup(self, percent)
 	end
 	self.DisableSlider = function(self)
 	        self.xperlSliderEnabled = false
-	        OptionsFrame_DisableSlider(self)
+	        XPerl_OptionsFrame_DisableSlider(self)
 	        getglobal(self:GetName().."Current"):SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
 		self:EnableMouse(false)
 		self:EnableMouseWheel(false)
 	end
 	self.EnableSlider = function(self)
 	        self.xperlSliderEnabled = true
-	        OptionsFrame_EnableSlider(self)
+	        XPerl_OptionsFrame_EnableSlider(self)
 	        getglobal(self:GetName().."Current"):SetVertexColor(0.4, 0.4, 0.80)
 		self:EnableMouse(true)
 		self:EnableMouseWheel(true)
@@ -521,7 +538,7 @@ end
 function XPerl_Options_LoadSettings_OnLoad(self)
 	self.displayMode = "MENU"
 	UIDropDownMenu_Initialize(self, XPerl_Options_LoadSettings_Initialize)
-	UIDropDownMenu_SetWidth(140, self)
+	UIDropDownMenu_SetWidth(self, 140)
 	if (MyIndex == 0) then
 		XPerl_Options_DropDown_LoadSettingsText:SetText("")
 	else
@@ -546,7 +563,7 @@ function XPerl_Options_Anchor_OnLoad(self)
 	self.displayMode = "MENU"
 	UIDropDownMenu_Initialize(self, XPerl_Options_Anchor_Initialize)
 	UIDropDownMenu_SetSelectedID(self, MyIndex, 1)
-	UIDropDownMenu_SetWidth(100, self)
+	UIDropDownMenu_SetWidth(self, 100)
 end
 
 -- XPerl_Options_Anchor_OnLoad
@@ -894,35 +911,74 @@ function XPerl_Options_LocalClass(class)
 			SHAMAN	= XPERL_LOC_CLASS_SHAMAN,
 			PRIEST	= XPERL_LOC_CLASS_PRIEST,
 			WARLOCK	= XPERL_LOC_CLASS_WARLOCK,
-			PALADIN	= XPERL_LOC_CLASS_PALADIN}
+			PALADIN	= XPERL_LOC_CLASS_PALADIN,
+			DEATHKNIGHT = XPERL_LOC_CLASS_DEATHKNIGHT}
 	return list[class]
 end
 
+-- DefaultRaidClasses
+local function DefaultRaidClasses()
+	return {
+		{enable = true, name = "WARRIOR"},
+		{enable = true, name = "DEATHKNIGHT"},
+		{enable = true, name = "ROGUE"},
+		{enable = true, name = "HUNTER"},
+		{enable = true, name = "MAGE"},
+		{enable = true, name = "WARLOCK"},
+		{enable = true, name = "PRIEST"},
+		{enable = true, name = "DRUID"},
+		{enable = true, name = "SHAMAN"},
+		{enable = true, name = "PALADIN"},
+	}
+end
+
 -- ValidateClassNames
-local function ValidateClassNames(self)
+local function ValidateClassNames(part)
 	-- This should never happen, but I'm sure someone will find a way to break it
 
 	local list = {WARRIOR = false, MAGE = false, ROGUE = false, DRUID = false,
-			HUNTER = false, SHAMAN = false, PRIEST = false,	WARLOCK = false, PALADIN = false}
+			HUNTER = false, SHAMAN = false, PRIEST = false,	WARLOCK = false, PALADIN = false, DEATHKNIGHT = false}
 
-	for i = 1,9 do
-		list[XPerlDB.raid.class[i].name] = true
+	local valid
+	if (part.class) then
+		local classCount = 0
+		for i,info in pairs(part.class) do
+			if (type(info) == "table" and info.name) then
+				classCount = classCount + 1
+			end
+		end
+		if (classCount == 10) then
+			valid = true
+		end
+
+		if (valid) then
+			for i = 1,10 do
+				if (part.class[i]) then
+					list[part.class[i].name] = true
+				end
+			end
+		end
 	end
 
-	for k,v in pairs(list) do
-		if (not v) then
-			XPerl_DefaultRaidClasses(true)
-			return
+	if (valid) then
+		for k,v in pairs(list) do
+			if (not v) then
+				valid = nil
+			end
 		end
+	end
+
+	if (not valid) then
+		part.class = DefaultRaidClasses(true)
 	end
 end
 
 -- SetClassNames
 local function SetClassNames(self)
-	ValidateClassNames(self)
+	ValidateClassNames(XPerlDB.raid)
 
 	local prefix = self:GetParent():GetParent():GetName().."_"
-	for i = 1,9 do
+	for i = 1,10 do
 		local f = getglobal(prefix.."ClassSel"..i.."_EnableText")
 		if (f) then
 			local class = XPerlDB.raid.class[i].name
@@ -936,6 +992,8 @@ end
 function XPerl_Options_MoveRaidClassUp(self)
 	local i = self:GetID()
 
+	ValidateClassNames(XPerlDB.raid)
+
 	local save = XPerlDB.raid.class[i].name
 	XPerlDB.raid.class[i].name = XPerlDB.raid.class[i - 1].name
 	XPerlDB.raid.class[i - 1].name = save
@@ -946,6 +1004,8 @@ end
 -- XPerl_Options_MoveRaidClassDown
 function XPerl_Options_MoveRaidClassDown(self)
 	local i = self:GetID()
+
+	ValidateClassNames(XPerlDB.raid)
 
 	local save = XPerlDB.raid.class[i]
 	XPerlDB.raid.class[i] = XPerlDB.raid.class[i + 1]
@@ -960,7 +1020,7 @@ function XPerl_Options_RaidSelectAll(self, enable)
 	local val
 	local prefix = self:GetParent():GetName().."_"
 
-	for i = 1,9 do
+	for i = 1,10 do
 		local f = getglobal(prefix.."Grp"..i)
 		if (f) then
 			f:SetChecked(enable)
@@ -1185,15 +1245,15 @@ local function InterestingFrames()
 	local ret = {}
 
 	if (interest == "all") then
-		for i = 1,9 do
+		for i = 1,10 do
 			tinsert(ret, getglobal("XPerl_Raid_Title"..i))
 		end
 	elseif (interest == "odd") then
-		for i = 1,9,2 do
+		for i = 1,10,2 do
 			tinsert(ret, getglobal("XPerl_Raid_Title"..i))
 		end
 	elseif (interest == "even") then
-		for i = 2,9,2 do
+		for i = 2,10,2 do
 			tinsert(ret, getglobal("XPerl_Raid_Title"..i))
 		end
 	elseif (interest == "first4") then
@@ -1432,14 +1492,12 @@ function XPerl_Options_LayoutFill(self, setName)
 			break
 		end
 
-		self.line[line]:SetText(list[i])
+		self.line[line].raw = list[i]
 
 		if (strsub(list[i], strlen(list[i])) == ")") then
-			self.line[line]:SetTextColor(0.4, 0.4, 0.7)
-			self.line[line]:SetHighlightTextColor(0.7, 0.7, 1)
+			self.line[line]:SetText("|cFF6060A0"..list[i])
 		else
-			self.line[line]:SetTextColor(0.7, 0.7, 0.7)
-			self.line[line]:SetHighlightTextColor(1, 1, 1)
+			self.line[line]:SetText(list[i])
 		end
 
 		self.line[line]:Show()
@@ -1463,24 +1521,16 @@ function XPerl_Options_LayoutFill(self, setName)
 		end
 	end
 
-        local offset = self.scrollBar.bar:GetValue()
-        if (FauxScrollFrame_Update(self.scrollBar, #list, 12, 1)) then
-                self.scrollBar:Show()
-        else
-                self.scrollBar:Hide()
-        end
+	local offset = self.scrollBar.bar:GetValue()
+	
+	--frame, numItems, numToDisplay, valueStep, button, smallWidth, bigWidth, highlightFrame, smallHighlightWidth, bigHighlightWidth, alwaysShowScrollBar )
 
+	if (FauxScrollFrame_Update(self.scrollBar, #list, 16, 1)) then
+		self.scrollBar:Show()
+	else
+		self.scrollBar:Hide()
+	end
 end
-
-
-
-
-
-
-
-
-
-
 
 ---------------------------------------------------------------------
 -------------------------- CONFIG IMPORT ----------------------------
@@ -1530,6 +1580,7 @@ function XPerl_Options_ImportOldConfig(old)
 				energy		= old.ColourEnergy		or {r = 1, g = 1, b = 0},
 				rage		= old.ColourRage		or {r = 1, g = 0, b = 0},
 				focus		= old.ColourFocus		or {r = 1, g = 0.5, b = 0.25},
+				runic_power	= {r = PowerBarColor and PowerBarColor["RUNIC_POWER"].r or 1, g = PowerBarColor and PowerBarColor["RUNIC_POWER"].g or 1, b = PowerBarColor and PowerBarColor["RUNIC_POWER"].b or 1},
 			},
 			reaction = {
 				enemy		= old.ColourReactionEnemy	or {r = 1, g = 0, b = 0},
@@ -1952,6 +2003,7 @@ function XPerl_Options_ImportOldConfig(old)
 				{enable = Convert(old.RaidClass7Enable), name = old.RaidClass7 or "DRUID"},
 				{enable = Convert(old.RaidClass8Enable), name = old.RaidClass8 or "SHAMAN"},
 				{enable = Convert(old.RaidClass9Enable), name = old.RaidClass9 or "PALADIN"},
+				{enable = true, name = "DEATHKNIGHT"},
 			},
 			titles			= Convert(old.ShowRaidTitles),
 			percent			= Convert(old.ShowRaidPercents),
@@ -2386,6 +2438,7 @@ local function XPerl_Raid_ConfigDefault(default)
 			{enable = 1, name = "DRUID"},
 			{enable = 1, name = "SHAMAN"},
 			{enable = 1, name = "PALADIN"},
+			{enable = 1, name = "DEATHKNIGHT"},
 		},
 		titles			= 1,
 		percent			= 1,
@@ -2465,6 +2518,7 @@ function XPerl_DefaultBarColours()
 		energy		= {r = 1, g = 1, b = 0},
 		rage		= {r = 1, g = 0, b = 0},
 		focus		= {r = 1, g = 0.5, b = 0.25},
+		runic_power	= {r = 0, g = 0.82, b = 1},
 	}
 end
 
@@ -2934,6 +2988,28 @@ if (XPerl_UpgradeSettings) then
 						old[v].debuffs.size = 20
 					end
 				end
+			end
+
+			if (not old.colour.bar.runic_power) then
+				if (PowerBarColor) then
+					old.colour.bar.runic_power	= {PowerBarColor["RUNIC_POWER"].r, PowerBarColor["RUNIC_POWER"].g, PowerBarColor["RUNIC_POWER"].b}
+				else
+					old.colour.bar.runic_power	= {r = 1, g = 0.25, b = 1}
+				end
+			end
+
+			ValidateClassNames(old.raid)
+
+			if (oldVersion < "3.0.0c") then
+				old.target.threat = 1
+				old.target.threatMode = "portraitFrame"
+				old.focus.threat = 1
+				old.focus.threatMode = "portraitFrame"
+			end
+
+			if (oldVersion < "3.0.0") then
+				old.player.showRunes = 1
+				old.player.dockRunes = 1
 			end
 
 			if (oldVersion < "2.4.2c") then

@@ -98,18 +98,6 @@ if (not XPerl_Tutorial) then
 	end
 end
 
-if not UIDropDownMenu_CreateInfo then
-	local UIDropDownMenu_ButtonInfo
-	function UIDropDownMenu_CreateInfo()
-		-- Reuse the same table to prevent memory churn
-		local info = UIDropDownMenu_ButtonInfo
-		for k,v in pairs(info) do
-			info[k] = nil
-		end
-		return UIDropDownMenu_ButtonInfo
-	end
-end
-
 --XPerl_Percent = setmetatable({},
 --	{__mode = "kv",
 --	__index = function(self, i)
@@ -171,6 +159,9 @@ XPerl_AnchorList = {"TOP", "LEFT", "BOTTOM", "RIGHT"}
 -- FindABandage()
 local function FindABandage()
 	local bandages = {
+		-- [34723] = true, -- Dense Frostweave Bandage ?????????? check ID
+		[34722] = true, -- Heavy Frostweave Bandage
+		[34721] = true,	-- Frostweave Bandage
 		[21991] = true, -- Heavy Netherweave Bandage
 		[21990] = true, -- Netherweave Bandage
 		[14530] = true, -- Heavy Runecloth Bandage
@@ -721,6 +712,12 @@ function XPerl_UnlockFrames()
 		XPerl_AggroAnchor:Enable()
 	end
 
+	if (XPerl_Player) then
+		if (XPerl_Player.runes) then
+			XPerl_Player.runes:EnableMouse(true)
+		end
+	end
+
 	if (XPerl_Options) then
 		XPerl_Tutorial(7)
 		XPerl_Options:Show()
@@ -755,6 +752,12 @@ function XPerl_LockFrames()
 		XPerl_AggroAnchor:Disable()
 	end
 
+	if (XPerl_Player) then
+		if (XPerl_Player.runes) then
+			XPerl_Player.runes:EnableMouse(false)
+		end
+	end
+
 	if (XPerl_RaidTitles) then
 		XPerl_RaidTitles()
 		if (XPerl_RaidPets_Titles) then
@@ -781,7 +784,7 @@ function XPerl_MinimapMenu_OnLoad(self)
 end
 
 -- XPerl_MinimapMenu_Initialize
-function XPerl_MinimapMenu_Initialize(level)
+function XPerl_MinimapMenu_Initialize(self, level)
 	local info
 
 	if (level == 2) then
@@ -1095,13 +1098,14 @@ end
 
 
 -- XPerl_SetManaBarType
-local ManaColours = {		-- "mana", "rage", "focus", "energy", "runes"}
-	[SPELL_POWER_MANA] = "mana",
-	[SPELL_POWER_RAGE] = "rage",
-	[SPELL_POWER_FOCUS] = "focus",
-	[SPELL_POWER_ENERGY] = "energy",
-	[SPELL_POWER_HAPPINESS] = "happiness",
-	[SPELL_POWER_RUNES] = "runes",
+local ManaColours = {
+	[0] = "mana",
+	[1] = "rage",
+	[2] = "focus",
+	[3] = "energy",
+	[4] = "happiness",
+	[5] = "runes",
+	[6] = "runic_power",
 }
 function XPerl_SetManaBarType(self)
 	local m = self.statsFrame.manaBar
@@ -1214,20 +1218,6 @@ function XPerl_PlayerTipHide()
 		GameTooltip:FadeOut()
 	else
 		GameTooltip:Hide()
-	end
-end
-
--- XPerl_ToolTip_AddBuffDuration
-function XPerl_ToolTip_AddBuffDuration(self, partyid, buffID)
-	if (XPerl_Raid_AddBuffDuration) then
-		XPerl_Raid_AddBuffDuration(self, partyid, buffID)
-	end
-end
-
--- XPerl_ToolTip_AddBuffDuration
-function XPerl_ToolTip_AddDebuffDuration(self, partyid, index, cureCast)
-	if (XPerl_Raid_AddDebuffDuration) then
-		XPerl_Raid_AddDebuffDuration(self, partyid, index, cureCast)
 	end
 end
 
@@ -1730,14 +1720,14 @@ local DebuffExceptions = {
 -- BuffException
 --local showInfo
 local function BuffException(unit, index, flag, func, exceptions)
-	local name, rank, buff, count, debuffType, dur, max
+	local name, rank, buff, count, debuffType, dur, max, isMine, isStealable
 	if (not flag or flag == 0 or flag == "0") then
 		-- Not filtered, just return it
-		name, rank, buff, count, debuffType, dur, max = func(unit, index)
-		return name, rank, buff, count, debuffType, dur, max, index
+		name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, index)
+		return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index
 	end
 
-	name, rank, buff, count, debuffType, dur, max = func(unit, index, 1)
+	name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, index, 1)
 	if (buff) then
 		-- We need the index of the buff unfiltered later for tooltips
 		for i = 1,40 do
@@ -1751,7 +1741,7 @@ local function BuffException(unit, index, flag, func, exceptions)
 			end
 		end
 
-		return name, rank, buff, count, debuffType, dur, max, index
+		return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index
 	end
 
 	-- See how many filtered buffs WoW has returned by default
@@ -1770,7 +1760,7 @@ local function BuffException(unit, index, flag, func, exceptions)
 	local classExceptions = exceptions[playerClass]
 	local allExceptions = exceptions.ALL
 	for i = 1,40 do
-		name, rank, buff, count, debuffType, dur, max = func(unit, i)
+		name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, i)
 		if (not buff) then
 			break
 		end
@@ -1800,24 +1790,16 @@ local function BuffException(unit, index, flag, func, exceptions)
 			if (good) then
 				foundValid = foundValid + 1
 				if (foundValid + normalBuffFilterCount == index) then
-					return name, rank, buff, count, debuffType, dur, max, i
+					return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, i
 				end
 			end
 		end
 	end
 end
 
--- Fix the odd difference in return values introduced with WoW 2.1.0
--- UnitBuff returns:   Name, Rank, Buff, Count, Duration, MaxDuration
--- UnitDebuff returns: Name, Rank, Buff, Count, debuffType, Duration, MaxDuration
-local function XUnitBuff(unit, num, cureCast)
-	local name, rank, buff, count, dur, max = UnitBuff(unit, num, cureCast)
-	return name, rank, buff, count, "", dur, max
-end
-
 -- XPerl_UnitBuff
 function XPerl_UnitBuff(unit, index, flag)
-	return BuffException(unit, index, flag, XUnitBuff, BuffExceptions)
+	return BuffException(unit, index, flag, UnitBuff, BuffExceptions)
 end
 
 -- XPerl_UnitBuff
@@ -1828,7 +1810,7 @@ end
 -- XPerl_TooltipSetUnitBuff
 -- Retreives the index of the actual unfiltered buff, and uses this on unfiltered tooltip call
 function XPerl_TooltipSetUnitBuff(self, unit, ind, flag)
-	local name, rank, buff, count, _, dur, max, index = BuffException(unit, ind, flag, UnitBuff, BuffExceptions)
+	local name, rank, buff, count, _, dur, max, isMine, isStealable, index = BuffException(unit, ind, flag, UnitBuff, BuffExceptions)
 	if (name and index) then
 		self:SetUnitBuff(unit, index)
 	end
@@ -1837,7 +1819,7 @@ end
 -- XPerl_TooltipSetUnitDebuff
 -- Retreives the index of the actual unfiltered debuff, and uses this on unfiltered tooltip call
 function XPerl_TooltipSetUnitDebuff(self, unit, ind, flag)
-	local name, rank, buff, count, debuffType, dur, max, index = BuffException(unit, ind, flag, UnitDebuff, DebuffExceptions)
+	local name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index = BuffException(unit, ind, flag, UnitDebuff, DebuffExceptions)
 	if (name and index) then
 		self:SetUnitDebuff(unit, index)
 	end
@@ -1853,6 +1835,7 @@ local colourList = {
 	[XPERL_LOC_CLASS_PRIEST]	= "PRIEST",
 	[XPERL_LOC_CLASS_WARLOCK]	= "WARLOCK",
 	[XPERL_LOC_CLASS_PALADIN]	= "PALADIN",
+	[XPERL_LOC_CLASS_DEATHKNIGHT] = "DEATHKNIGHT",
 	[XPERL_LOC_CLASS_WARRIORFEM or XPERL_LOC_CLASS_WARRIOR]	= "WARRIOR",
 	[XPERL_LOC_CLASS_MAGEFEM or XPERL_LOC_CLASS_MAGE]		= "MAGE",
 	[XPERL_LOC_CLASS_ROGUEFEM or XPERL_LOC_CLASS_ROGUE]		= "ROGUE",
@@ -1862,6 +1845,7 @@ local colourList = {
 	[XPERL_LOC_CLASS_PRIESTFEM or XPERL_LOC_CLASS_PRIEST]	= "PRIEST",
 	[XPERL_LOC_CLASS_WARLOCKFEM or XPERL_LOC_CLASS_WARLOCK] = "WARLOCK",
 	[XPERL_LOC_CLASS_PALADINFEM or XPERL_LOC_CLASS_PALADIN]	= "PALADIN",
+	[XPERL_LOC_CLASS_DEATHKNIGHTFEM or XPERL_LOC_CLASS_DEATHKNIGHT] = "DEATHKNIGHT",
 }
 
 -- XPerl_GuildStatusUpdate()
@@ -2250,6 +2234,8 @@ function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent)
 
 		if (setup.rightClickable) then
 			button:RegisterForClicks("RightButtonUp")
+			button:SetAttribute("type", "cancelaura")
+			button:SetAttribute("index", "number")
 		end
 
 		local size = self.conf.buffs.size
@@ -2572,6 +2558,61 @@ function XPerl_Unit_BuffPositions(self, buffList1, buffList2, size1, size2)
 	end
 end
 
+do
+	local stealFrame
+
+	local function stealOnUpdate(self, elapsed)
+		for frame in pairs(steals) do
+			local r, g, b = frame.tex:GetVertexColor()
+			r = r + (frame.redOut and elapsed or -elapsed)
+			g = g + (frame.greenOut and elapsed or -elapsed)
+			b = b + (frame.blueOut and elapsed or -elapsed)
+
+			if (r > 1) then
+				frame.redOut = true
+				r = 1
+			elseif (r < 0) then
+				frame.redOut = nil
+				r = 0
+			end
+			if (g > 1) then
+				frame.greenOut = true
+				g = 1
+			elseif (g < 0) then
+				frame.greenOut = nil
+				g = 0
+			end
+			if (b > 1) then
+				frame.blueOut = true
+				b = 1
+			elseif (b < 0) then
+				frame.blueOut = nil
+				b = 0
+			end
+
+			frame.tex:SetVertexColor(r, g, b)
+		end
+	end
+
+	local steals = {}
+	local function RegisterStealable(self)
+		steals[self] = true
+		self.steal.tex:SetVertexColor(1, 0.5, 0)
+		if (not stealFrame) then
+			stealFrame = CreateFrame("Frame")
+		end
+		stealFrame:SetScript("OnUpdate", stealOnUpdate)
+	end
+
+	local function UnregisterStealable(self)
+		steals[self] = nil
+
+		if (not next(steals)) then
+			stealFrame:SetScript("OnUpdate", nil)
+		end
+	end
+end
+
 -- XPerl_Unit_UpdateBuffs(self)
 function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curableOnly)
 	local buffs, debuffs, buffsMine, debuffsMine = 0, 0, 0, 0
@@ -2586,85 +2627,63 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 		XPerl_GetBuffButton(self, 1, 1, true)
 
 		if (self.conf.buffs.enable and maxBuffs and maxBuffs > 0) then
+			local buffIconIndex = 1
 			self.buffFrame:Show()
-			for buffnum = 1,maxBuffs do
-				local name, rank, buff, count, duration, timeLeft
-				if (partyid == "player") then
-					local buffIndex, untilCancelled = GetPlayerBuff(buffnum, "HELPFUL")
-					if (buffIndex > 0) then
-						name, rank = GetPlayerBuffName(buffIndex)
-						if (name) then
-							buff = GetPlayerBuffTexture(buffIndex)
-							count = GetPlayerBuffApplications(buffIndex)
-							timeLeft = GetPlayerBuffTimeLeft(buffIndex)
-							duration = timeLeft
+			for mine = 1,2 do
+				-- Two passes here now since 3.0.1, cos they did away with the GetPlayerBuff function
+				-- in favor of all in UnitBuff instead. We still want our big buffs first in the list,
+				-- so we have to scan thru twice.
+				for buffnum = 1,maxBuffs do
+					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly)
+	
+					if (buff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
+						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true)
+						button:SetAlpha(1)
 
-							if (conf.buffs.countdown) then
-								-- We don't get full time duration from the API, but for our own cast buffs we can from UnitBuff
-								local match = name.."_"..rank.."_"..buff
-								for k = 1,40 do
-									local name2, rank2, buff2, count2, duration2, timeLeft2 = UnitBuff(partyid, k)
-									if (not name2) then
-										break
-									end
-									local match2 = name2.."_"..rank2.."_"..buff2
-									if (match == match2) then
-										duration = duration2
-										break
-									end
-								end
+						buffs = buffs + 1
+	
+						button.icon:SetTexture(buff)
+						if (count > 1) then
+							button.count:SetText(count)
+							button.count:Show()
+						else
+							button.count:Hide()
+						end
+	
+						-- Handle cooldowns
+						if (button.cooldown) then
+							if (duration and conf.buffs.cooldown) then
+								local start = endTime - duration
+								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1)
+							else
+								button.cooldown:Hide()
 							end
 						end
-					end
-				else
-					local _
-					name, rank, buff, count, _, duration, timeLeft = XPerl_UnitBuff(partyid, buffnum, castableOnly)
-				end
-
-				if (buff) then
-					local button = XPerl_GetBuffButton(self, buffnum, 0, true)
-					button:SetAlpha(1)
-
-					buffs = buffs + 1
-
-					button.icon:SetTexture(buff)
-					if (count > 1) then
-						button.count:SetText(count)
-						button.count:Show()
-					else
-						button.count:Hide()
-					end
-
-					-- Handle cooldowns
-					if (button.cooldown) then
-						if (duration and conf.buffs.cooldown) then
-							local start = GetTime() - (duration - timeLeft)
-							XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1)
+	
+						lastIcon = buffIconIndex
+						button:Show()
+	
+						if (self.conf.buffs.big and isMine) then
+							buffsMine = buffsMine + 1
+							button.big = true
+							button:SetScale((self.conf.buffs.size * 2) / 32)
 						else
-							button.cooldown:Hide()
+							button.big = nil
+							button:SetScale(self.conf.buffs.size / 32)
 						end
-					end
-
-					lastIcon = buffnum
-					button:Show()
-
-					if (self.conf.buffs.big and duration) then
-						buffsMine = buffsMine + 1
-						button.big = true
-						button:SetScale((self.conf.buffs.size * 2) / 32)
+						buffIconIndex = buffIconIndex + 1
 					else
-						button.big = nil
-						button:SetScale(self.conf.buffs.size / 32)
-					end
-				else
-					local button = self.buffFrame.buff and self.buffFrame.buff[buffnum]
-					if (button) then
-						lastIcon = buffnum
-						button.expireTime = nil
-						button.big = nil
-						button:Hide()
-					else
-						break
+						if (mine == 2) then
+							local button = self.buffFrame.buff and self.buffFrame.buff[buffIconIndex]
+							if (button) then
+								lastIcon = buffIconIndex
+								button.expireTime = nil
+								button.big = nil
+								button:Hide()
+							else
+								break
+							end
+						end
 					end
 				end
 			end
@@ -2682,90 +2701,84 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 		end
 
 		if (self.conf.debuffs.enable and maxDebuffs and maxDebuffs > 0) then
+			local buffIconIndex = 1
 			self.debuffFrame:Show()
 			lastIcon = 0
-			for buffnum = 1,maxDebuffs do
-				--local name, rank, debuff, debuffApplications, debuffType, duration, timeLeft = UnitDebuff(partyid, buffnum, curableOnly)
-
-				local name, rank, debuff, debuffApplications, debuffType, duration, timeLeft
-				if (partyid == "player") then
-					local buffIndex, untilCancelled = GetPlayerBuff(buffnum, "HARMFUL")
-					if (buffIndex > 0) then
-						name, rank = GetPlayerBuffName(buffIndex)
-						if (name) then
-							debuff = GetPlayerBuffTexture(buffIndex)
-							debuffApplications = GetPlayerBuffApplications(buffIndex)
-							debuffType = GetPlayerBuffDispelType(buffIndex)
-							timeLeft = GetPlayerBuffTimeLeft(buffIndex)
-							duration = timeLeft
-
-							if (conf.buffs.countdown) then
-								local match = format("%s_%s_%s", name, rank, debuff)
-								for k = 1,40 do
-									local name2, rank2, debuff2, debuffApplications2, debuffType2, duration2, timeLeft2 = UnitDebuff(partyid, k)
-									if (not name2) then
-										break
-									end
-									local match2 = format("%s_%s_%s", name2, rank2, debuff2)
-									if (match == match2) then
-										duration = duration2
-										break
-									end
-								end
+			for mine = 1,2 do
+				for buffnum = 1,maxDebuffs do
+					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, curableOnly)
+	
+					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
+						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true)
+						button:SetAlpha(1)
+	
+						debuffs = debuffs + 1
+	
+						button.icon:SetTexture(debuff)
+						if ((debuffApplications or 0) > 1) then
+							button.count:SetText(debuffApplications)
+							button.count:Show()
+						else
+							button.count:Hide()
+						end
+	
+						local borderColor = DebuffTypeColor[(debuffType or "none")]
+						button.border:SetVertexColor(borderColor.r, borderColor.g, borderColor.b)
+	
+						-- Handle cooldowns
+						if (button.cooldown) then
+							if (duration and conf.buffs.cooldown) then
+								local start = endTime - duration
+								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1)
+							else
+								button.cooldown:Hide()
 							end
 						end
-					end
-				else
-					name, rank, debuff, debuffApplications, debuffType, duration, timeLeft = XPerl_UnitDebuff(partyid, buffnum, curableOnly)
-				end
+						
+						if (isStealable) then		--  and UnitCanAttack("player", partyid)
+							if (not button.steal) then
+								button.steal = CreateFrame("Frame", nil, button)
+								button.steal:SetPoint("TOPLEFT", -2, 2)
+								button.steal:SetPoint("BOTTOMRIGHT", 2, -2)
+								button.steal:SetScript("OnShow", function(self) RegisterStealable(self) end)
+								button.steal:SetScript("OnHide", function(self) UnregisterStealable(self) end)
 
-				if (debuff) then
-					local button = XPerl_GetBuffButton(self, buffnum, 1, true)
-					button:SetAlpha(1)
+								button.steal.tex = button.steal:CreateTexture(nil, "OVERLAY")
+								button.steal.tex:SetAllPoints()
+								button.steal.tex:SetTexture("XPerl\\Images\\StealMe")
+							end
 
-					debuffs = debuffs + 1
-
-					button.icon:SetTexture(debuff)
-					if ((debuffApplications or 0) > 1) then
-						button.count:SetText(debuffApplications)
-						button.count:Show()
-					else
-						button.count:Hide()
-					end
-
-					local borderColor = DebuffTypeColor[(debuffType or "none")]
-					button.border:SetVertexColor(borderColor.r, borderColor.g, borderColor.b)
-
-					-- Handle cooldowns
-					if (button.cooldown) then
-						if (duration and conf.buffs.cooldown) then
-							local start = GetTime() - (duration - timeLeft)
-							XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1)
+							button.steal:Show()					-- TODO TEST
 						else
-							button.cooldown:Hide()
+							if (button.steal) then
+								button.steal:Hide()
+							end
 						end
-					end
-
-					lastIcon = buffnum
-					button:Show()
-
-					if (self.conf.debuffs.big and duration) then
-						debuffsMine = debuffsMine + 1
-						button.big = true
-						button:SetScale((self.conf.debuffs.size * 2) / 32)
+	
+						lastIcon = buffIconIndex
+						button:Show()
+	
+						if (self.conf.debuffs.big and isMine) then
+							debuffsMine = debuffsMine + 1
+							button.big = true
+							button:SetScale((self.conf.debuffs.size * 2) / 32)
+						else
+							button.big = nil
+							button:SetScale(self.conf.debuffs.size / 32)
+						end
+						buffIconIndex = buffIconIndex + 1
 					else
-						button.big = nil
-						button:SetScale(self.conf.debuffs.size / 32)
-					end
-				else
-					local button = self.buffFrame.debuff and self.buffFrame.debuff[buffnum]
-					if (button) then
-						lastIcon = buffnum
-						button.big = nil
-						button.expireTime = nil
-						button:Hide()
-					else
-						break
+						if (mine == 1) then
+							local button = self.buffFrame.debuff and self.buffFrame.debuff[buffIconIndex]
+							if (button) then
+								lastIcon = buffIconIndex
+								button.big = nil
+								button.expireTime = nil
+								button:Hide()
+							else
+								break
+							end
+						end
 					end
 				end
 			end
@@ -3089,7 +3102,6 @@ function XPerl_Unit_SetBuffTooltip(self)
 			if (partyid) then
 				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT",0,0)
 				XPerl_TooltipSetUnitBuff(GameTooltip, partyid, self:GetID(), frame.conf.buffs.castable)
-				XPerl_ToolTip_AddBuffDuration(self, partyid, self:GetID())
 			end
 		end
 	end
@@ -3104,7 +3116,6 @@ function XPerl_Unit_SetDeBuffTooltip(self)
 			if (partyid) then
 				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT",0,0)
 				XPerl_TooltipSetUnitDebuff(GameTooltip, partyid, self:GetID(), frame.conf.debuffs.curable)
-				XPerl_ToolTip_AddDebuffDuration(self, partyid, self:GetID(), frame.conf.debuffs.curable)
 			end
 		end
 	end
@@ -3516,45 +3527,43 @@ if (LibStub or LoadAddOn("LibStub")) then
 				local guid = UnitGUID(name)
 				local f
 
-				if (guid) then
-					if (healSize and UnitIsUnit("player", healerFullName)) then
-						myHeals[guid] = healSize
-					end
+				if (healSize and UnitIsUnit("player", healerFullName)) then
+					myHeals[guid] = healSize
+				end
 
-					if (XPerl_Raid_GetUnitFrameByGUID) then
-						f = XPerl_Raid_GetUnitFrameByGUID(guid)
-						if (f) then
-							XPerl_Raid_UpdateHealth(f)
-						end
+				if (XPerl_Raid_GetUnitFrameByGUID) then
+					f = XPerl_Raid_GetUnitFrameByGUID(guid)
+					if (f) then
+						XPerl_Raid_UpdateHealth(f)
 					end
+				end
 
-					if (XPerl_Party_GetUnitFrameByGUID) then
-						f = XPerl_Party_GetUnitFrameByGUID(guid)
-						if (f) then
-							XPerl_Party_UpdateHealth(f)
-						end
+				if (XPerl_Party_GetUnitFrameByGUID) then
+					f = XPerl_Party_GetUnitFrameByGUID(guid)
+					if (f) then
+						XPerl_Party_UpdateHealth(f)
 					end
+				end
 
-					if (XPerl_Player_UpdateHealth and guid == playerGUID) then
-						XPerl_Player_UpdateHealth(XPerl_Player)
-					elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
-						XPerl_Player_Pet_UpdateHealth(XPerl_Player)
-					elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
-						f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
-						if (f) then
-							XPerl_Party_Pet_UpdateHealth(f)
-						end
+				if (XPerl_Player_UpdateHealth and guid == playerGUID) then
+					XPerl_Player_UpdateHealth(XPerl_Player)
+				elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
+					XPerl_Player_Pet_UpdateHealth(XPerl_Player)
+				elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
+					f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
+					if (f) then
+						XPerl_Party_Pet_UpdateHealth(f)
 					end
+				end
 
-					if (XPerl_Target_SetHealth and guid == targetGUID) then
-						XPerl_Target_SetHealth(XPerl_Target)
-					end
-					if (XPerl_Target_SetHealth and guid == focusGUID) then
-						XPerl_Target_SetHealth(XPerl_Focus)
-					end
-					if (XPerl_Target_SetHealth and guid == targettargetGUID) then
-						XPerl_Target_SetHealth(XPerl_TargetTarget)
-					end
+				if (XPerl_Target_SetHealth and guid == targetGUID) then
+					XPerl_Target_SetHealth(XPerl_Target)
+				end
+				if (XPerl_Target_SetHealth and guid == focusGUID) then
+					XPerl_Target_SetHealth(XPerl_Focus)
+				end
+				if (XPerl_Target_SetHealth and guid == targettargetGUID) then
+					XPerl_Target_SetHealth(XPerl_TargetTarget)
 				end
 			end
 		end
@@ -3612,3 +3621,158 @@ if (LibStub or LoadAddOn("LibStub")) then
 	end
 end
 -- End of HealComm/LibQuickHealth
+
+-- Threat Dislay
+local cos, sin, abs = cos, sin, math.abs
+
+local function rotate(angle)
+	local A = cos(angle)
+	local B = sin(angle)
+	local ULx, ULy = -0.5 * A - -0.5 * B, -0.5 * B + -0.5 * A
+	local LLx, LLy = -0.5 * A - 0.5 * B, -0.5 * B + 0.5 * A
+	local URx, URy = 0.5 * A - -0.5 * B, 0.5 * B + -0.5 * A
+	local LRx, LRy = 0.5 * A - 0.5 * B, 0.5 * B + 0.5 * A
+	return ULx+0.5, ULy+0.5, LLx+0.5, LLy+0.5, URx+0.5, URy+0.5, LRx+0.5, LRy+0.5
+end
+
+local function DrawHand(self, percent)
+	local angle = 360 - (percent * 2.7 - 135)
+	local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = rotate(angle)
+	self.needle:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
+end
+
+local function DrawSlider(self, percent)
+	local offset = (self:GetWidth() - 9) / 100 * percent
+	self.needle:ClearAllPoints()
+	self.needle:SetPoint("CENTER", self, "TOPLEFT", offset + 5, -2)
+
+	if (percent <= 70) then
+		r, g, b = 0, 1, 0
+	else
+		r, g, b = smoothColor(abs((percent - 100) / 30))
+	end
+
+	self.needle:SetVertexColor(r, g, b)
+end
+
+-- XPerl_ThreatDisplayOnLoad
+function XPerl_ThreatDisplayOnLoad(self, mode)
+	XPerl_SetChildMembers(self)
+	self:SetFrameLevel(self:GetParent():GetFrameLevel() + 4)
+	self.text:SetWidth(100)
+	self.current, self.target = 0, 0
+	self.mode = mode
+	
+	if (mode == "nameFrame") then
+		self.Draw = DrawSlider
+	else
+		self.Draw = DrawHand
+	end
+end
+
+-- threatOnUpdate
+local function threatOnUpdate(self, elapsed)
+	--local isTanking, state, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation(self.one, self.two)
+	--if (not scaledPercent or scaledPercent == 0) then
+	--	self:Hide()
+	--	return
+	--end
+
+	--local threatPercent = floor(scaledPercent / pullAggro * 100 + 0.5)
+	--self.text:SetFormattedText("%d%%", threatPercent)
+	--self.target = threatPercent
+
+	local diff = (self.target - self.current) * 0.2
+	self.current = min(100, max(0, self.current + diff))
+	if (abs(self.current - self.target) <= 0.01) then
+		self.current = self.target
+		self:SetScript("OnUpdate", nil)
+	end
+
+	self:Draw(self.current)
+end
+
+-- XPerl_Unit_ThreatStatus
+function XPerl_Unit_ThreatStatus(self, relative, immediate)
+	if (not self.partyid) then
+		return
+	end
+
+	local mode = self.conf.threatMode or "portraitFrame"
+	local t = self.threatFrames and self.threatFrames[mode]
+	if (not self.conf.threat or (GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0)) then
+		if (t) then
+			t:Hide()
+		end
+		return
+	end
+
+	if (not t) then
+		if (self.threatFrames) then
+			for mode,frame in pairs(self.threatFrames) do
+				frame:SetScript("OnUpdate", nil)
+				frame.current, frame.target = 0, 0
+				frame:Hide()
+			end
+		else
+			self.threatFrames = {}
+		end
+		if (self[mode]) then		-- If desired parent frame exists
+			t = CreateFrame("Frame", self:GetName()..mode, self[mode], "XPerl_ThreatTemplate"..mode)
+			t:SetAllPoints()
+			self.threatFrames[mode] = t
+		end
+
+		self.threat = self.threatFrames[mode]
+	end
+
+	if (t) then
+		local isTanking, state, scaledPercent, rawPercent, threatValue
+		local one, two
+		if (UnitAffectingCombat(self.partyid) or (relative and UnitAffectingCombat(relative))) then
+			if (relative and UnitCanAttack(relative, self.partyid)) then
+				one, two = relative, self.partyid
+			else
+				if (UnitExists("target") and UnitCanAttack(self.partyid, "target")) then
+					one, two = self.partyid, "target"
+				elseif (UnitCanAttack(self.partyid, self.partyid.."target")) then
+					one, two = self.partyid, self.partyid.."target"
+				end
+			end
+
+			if (one) then
+				isTanking, state, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation(one, two)
+			end
+		end
+
+		if (scaledPercent) then
+			if (scaledPercent ~= t.target) then
+				t.target = scaledPercent
+				if (immediate) then
+					t.current = scaledPercent
+				end
+				t.one = one
+				t.two = two
+				t:SetScript("OnUpdate", threatOnUpdate)
+			end				
+
+			t.text:SetFormattedText("%d%%", scaledPercent)
+			local r, g, b = smoothColor(scaledPercent)
+			t.text:SetTextColor(r, g, b)
+
+			t:Show()
+			return
+		end
+
+		t:Hide()
+	end
+end
+
+function XT(x)
+	t = XPerl_Target.threat
+	if (t) then
+		t.target = x
+		t:SetScript("OnUpdate", threatOnUpdate)
+		t:Show()
+	end
+end

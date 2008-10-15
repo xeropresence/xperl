@@ -15,8 +15,6 @@ if ( GetLocale() == "deDE" ) then
 	XPERL_RAID_TOOLTIP_SOULSTONE     = "Seelenstein verf\195\188gbar in: %s"
 
 	XPERL_RAID_TOOLTIP_REMAINING     = " verbleibend"
-	XPERL_RAID_TOOLTIP_WITHBUFF      = "Mit Buff: (%s)"
-	XPERL_RAID_TOOLTIP_WITHOUTBUFF   = "Ohne Buff: (%s)"
 
 	XPERL_RAID_DROPDOWN_SHOWPET	= "Zeige die Begleiter"
 	XPERL_RAID_DROPDOWN_SHOWOWNER	= "Zeige das Inhaber"
