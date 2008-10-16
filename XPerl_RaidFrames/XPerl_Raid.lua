@@ -2062,6 +2062,9 @@ function XPerl_Raid_ChangeAttributes()
 
 	local function GroupFilter(n)
 		if (rconf.sortByClass) then
+			if (not rconf.class[n]) then
+				rconf.class = DefaultRaidClasses()
+			end
 			if (rconf.class[n].enable) then
 				return rconf.class[n].name
 			end
