@@ -823,13 +823,13 @@ local function XPerl_Raid_UpdatePlayerFlags(self, partyid)
 end
 
 -- XPerl_Raid_ShowRaidGroup
-local function XPerl_Raid_ShowRaidGroup(show)
-	if (rconf.group[show] and rconf.enable and (show < 9 or rconf.sortByClass)) then
-		raidHeaders[show]:Show()
-	else
-		raidHeaders[show]:Hide()
-	end
-end
+--local function XPerl_Raid_ShowRaidGroup(show)
+--	if (rconf.group[show] and rconf.enable and (show < 9 or rconf.sortByClass)) then
+--		raidHeaders[show]:Show()
+--	else
+--		raidHeaders[show]:Hide()
+--	end
+--end
 
 -- XPerl_Raid_OnUpdate
 function XPerl_Raid_OnUpdate(self, elapsed)
@@ -965,7 +965,7 @@ function XPerl_Raid_HideShowRaid()
 		end
 	end
 	for i = 1,WoWclassCount do
-		if (rconf.group[i] == 1 and rconf.enable and (i < 10 or rconf.sortByClass) and not singleGroup) then
+		if (rconf.group[i] == 1 and rconf.enable and (i < 9 or rconf.sortByClass) and not singleGroup) then
 			if (not raidHeaders[i]:IsShown()) then
 				raidHeaders[i]:Show()
 			end

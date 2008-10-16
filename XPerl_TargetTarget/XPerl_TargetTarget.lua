@@ -162,8 +162,6 @@ end
 -- XPerl_TargetTarget_UpdateDisplay
 function XPerl_TargetTarget_UpdateDisplay(self,force)
 
-	XPerl_Highlight:RemoveHighlight(self)
-
 	local partyid = self.partyid
 	if (self.conf.enable and UnitExists(self.parentid) and UnitIsConnected(partyid)) then
 		self.targetname = UnitName(partyid)
@@ -172,6 +170,7 @@ function XPerl_TargetTarget_UpdateDisplay(self,force)
 			if (not force and t < self.lastUpdate + 0.3) then
 				return
 			end
+			XPerl_Highlight:RemoveHighlight(self)
 			self.lastUpdate = t
 
 			XPerl_TargetTarget_UpdatePVP(self)
@@ -234,12 +233,11 @@ function XPerl_TargetTarget_UpdateDisplay(self,force)
 			XPerl_UpdateSpellRange(self, partyid)
 			XPerl_Highlight:SetHighlight(self, UnitGUID(partyid))
 			return
-		else
-			self.targetname = ""
 		end
-	else
-		self.targetname = ""
 	end
+
+	self.targetname = ""
+	XPerl_Highlight:RemoveHighlight(self)
 end
 
 -- XPerl_TargetTarget_Update_Control
@@ -277,10 +275,10 @@ function XPerl_TargetTarget_OnUpdate(self, elapsed)
 		XPerl_TargetTarget_UpdateDisplay(self)
 	else
 		self.time = elapsed + self.time
-        	if (self.time >= 0.2) then
-		        XPerl_TargetTarget_Update_Combat(self)
+       	if (self.time >= 0.2) then
+			XPerl_TargetTarget_Update_Combat(self)
 			XPerl_TargetTarget_Update_Control(self)
-		        XPerl_TargetTarget_UpdatePVP(self)
+			XPerl_TargetTarget_UpdatePVP(self)
 			XPerl_TargetTarget_Buff_UpdateAll(self)
 			XPerl_SetUnitNameColor(self.nameFrame.text, partyid)
 			XPerl_UpdateSpellRange(self, partyid)
