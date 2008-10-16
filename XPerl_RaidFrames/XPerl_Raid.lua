@@ -170,6 +170,100 @@ local function Setup1RaidFrame(self)
 	end
 end
 
+-- XPerl_MainTankSet_OnClick
+function XPerl_MainTankSet_OnClick(self, value)
+	if (self.value[1] == "Main Tanks") then				-- Must be 'this'
+		if (self.value[4]) then
+			SendAddonMessage("CTRA", "R "..self.value[2], "RAID")
+		else
+			SendAddonMessage("CTRA", "SET "..self.value[3].." "..self.value[2], "RAID")
+		end
+	end
+	CloseMenus()
+end
+
+-- XPerl_RaidFrameDropDown_Initialize
+function XPerl_RaidFrameDropDown_Initialize(self, ct)
+	if (type(ct) ~= "table") then
+		ct = nil
+	end
+
+	local info
+	if (XPerl_MainTanks and type(UIDROPDOWNMENU_MENU_VALUE) == "table" and UIDROPDOWNMENU_MENU_VALUE[1] == "Main Tanks") then
+		info = UIDropDownMenu_CreateInfo()
+		info.text = XPERL_RAID_DROPDOWN_MAINTANKS
+		info.isTitle = 1
+		info.notCheckable = 1
+		UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+		for i = 1,10 do
+			info = UIDropDownMenu_CreateInfo()
+			info.notCheckable = 1
+			if (XPerl_MainTanks[i] and XPerl_MainTanks[i][2] == UIDROPDOWNMENU_MENU_VALUE[2]) then
+				info.text = format("|c00FFFF80"..XPERL_RAID_DROPDOWN_REMOVEMT.."|r", i)
+				info.value = {UIDROPDOWNMENU_MENU_VALUE[1], UIDROPDOWNMENU_MENU_VALUE[2], i, 1}
+			else
+				info.text = format(XPERL_RAID_DROPDOWN_SETMT, i)
+				info.value = {UIDROPDOWNMENU_MENU_VALUE[1], UIDROPDOWNMENU_MENU_VALUE[2], i}
+			end
+			info.func = XPerl_MainTankSet_OnClick
+			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
+		end
+		return
+	end
+
+	RaidFrameDropDown_Initialize(self)
+
+	if (UIDROPDOWNMENU_MENU_LEVEL > 1) then
+		return
+	end
+
+	local titleDone
+	if (DropDownList1.numButtons == 0 and (IsRaidOfficer() or (ct and CT_RATab_AutoPromotions))) then
+		titleDone = true
+		info = UIDropDownMenu_CreateInfo()
+		info.text = this.name
+		if (this.server) then
+			info.text = info.text.."-"..this.server
+		end
+		info.isTitle = 1
+		info.notCheckable = 1
+		UIDropDownMenu_AddButton(info)
+	end
+
+	if (IsRaidOfficer() and XPerl_MainTanks) then
+		if (not titleDone and DropDownList1.numButtons > 0) then
+			-- We want our MT option above the Cancel option, so we trick the menu into thinking it's got 1 less button
+			DropDownList1.numButtons = DropDownList1.numButtons - 1
+		end
+
+		info = UIDropDownMenu_CreateInfo()
+		info.text = XPERL_RAID_DROPDOWN_MAINTANKS
+		info.value = {"Main Tanks", self.name, self.id}			-- Must be 'this'
+		info.hasArrow = 1
+		info.dist = 0
+		info.notCheckable = 1
+		UIDropDownMenu_AddButton(info)
+
+		-- Re-add the cancel button after our MT option
+		info = UIDropDownMenu_CreateInfo()
+		info.text = XPERL_CANCEL
+		info.value = "CANCEL"
+		info.owner = "RAID"
+		info.func = UnitPopup_OnClick
+		info.notCheckable = 1
+		UIDropDownMenu_AddButton(info)
+	end
+
+	if (ct and CT_RATab_AutoPromotions) then
+		info = UIDropDownMenu_CreateInfo()
+		info.text = XPERL_RAID_AUTOPROMOTE
+		info.checked = CT_RATab_AutoPromotions[this.name]	-- Must be 'this'
+		info.value = this.id					-- Must be 'this'
+		info.func = CT_RATab_AutoPromote_OnClick
+		UIDropDownMenu_AddButton(info)
+	end
+end
+
 -- ShowPopup
 function XPerl_Raid_ShowPopup(self)
 	local me = self
@@ -182,11 +276,18 @@ function XPerl_Raid_ShowPopup(self)
 	FriendsDropDown.displayMode = "MENU"
 
 	-- Must use 'this' for these:
-	this.unit = SecureButton_GetUnit(me)
-	this.name, this.server = UnitName(this.unit)
-	this.id = strmatch(this.unit, "(%d+)")
-
+	FriendsDropDown.unit = SecureButton_GetUnit(me)
+	FriendsDropDown.name, FriendsDropDown.server = UnitName(FriendsDropDown.unit)
+	FriendsDropDown.id = tonumber(strmatch(FriendsDropDown.unit, "(%d+)"))
 	ToggleDropDownMenu(1, nil, FriendsDropDown, me.statsFrame:GetName(), 0, 0)
+
+	--local unit = SecureButton_GetUnit(me)
+	--local name, server = UnitName(this.unit)
+	--if (server and server ~= "") then
+	--	name = name.."-"..server
+	--end
+	--local id = tonumber(strmatch(this.unit, "(%d+)"))
+	--UnitPopup_ShowMenu(FriendsDropDown, "RAID", this.unit, name, id)
 
 	-- this.unit, this.name, this.server, this.id = nil, nil, nil, nil
 end
@@ -1506,94 +1607,6 @@ end
 --------------------
 -- Click Handlers --
 --------------------
-function XPerl_RaidFrameDropDown_Initialize(ct)
-	if (type(ct) ~= "table") then
-		ct = nil
-	end
-
-	local info
-	if (XPerl_MainTanks and type(UIDROPDOWNMENU_MENU_VALUE) == "table" and UIDROPDOWNMENU_MENU_VALUE[1] == "Main Tanks") then
-		info = UIDropDownMenu_CreateInfo()
-		info.text = XPERL_RAID_DROPDOWN_MAINTANKS
-		info.isTitle = 1
-		info.notCheckable = 1
-		UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-		for i = 1,10 do
-			info = UIDropDownMenu_CreateInfo()
-			info.notCheckable = 1
-			if (XPerl_MainTanks[i] and XPerl_MainTanks[i][2] == UIDROPDOWNMENU_MENU_VALUE[2]) then
-				info.text = format("|c00FFFF80"..XPERL_RAID_DROPDOWN_REMOVEMT.."|r", i)
-				info.value = {UIDROPDOWNMENU_MENU_VALUE[1], UIDROPDOWNMENU_MENU_VALUE[2], i, 1}
-			else
-				info.text = format(XPERL_RAID_DROPDOWN_SETMT, i)
-				info.value = {UIDROPDOWNMENU_MENU_VALUE[1], UIDROPDOWNMENU_MENU_VALUE[2], i}
-			end
-			info.func = XPerl_MainTankSet_OnClick
-			UIDropDownMenu_AddButton(info, UIDROPDOWNMENU_MENU_LEVEL)
-		end
-		return
-	end
-
-	RaidFrameDropDown_Initialize()
-
-	local titleDone
-	if (DropDownList1.numButtons == 0 and (IsRaidOfficer() or (ct and CT_RATab_AutoPromotions))) then
-		titleDone = true
-		info = UIDropDownMenu_CreateInfo()
-		info.text = this.name
-		if (this.server) then
-			info.text = info.text.."-"..this.server
-		end
-		info.isTitle = 1
-		info.notCheckable = 1
-		UIDropDownMenu_AddButton(info)
-	end
-
-	if (IsRaidOfficer() and XPerl_MainTanks) then
-		if (not titleDone and DropDownList1.numButtons > 0) then
-			-- We want our MT option above the Cancel option, so we trick the menu into thinking it's got 1 less button
-			DropDownList1.numButtons = DropDownList1.numButtons - 1
-		end
-
-		info = UIDropDownMenu_CreateInfo()
-		info.text = XPERL_RAID_DROPDOWN_MAINTANKS
-		info.value = {"Main Tanks", this.name}			-- Must be 'this'
-		info.hasArrow = 1
-		info.dist = 0
-		info.notCheckable = 1
-		UIDropDownMenu_AddButton(info)
-
-		-- Re-add the cancel button after our MT option
-		info = UIDropDownMenu_CreateInfo()
-		info.text = XPERL_CANCEL
-		info.value = "CANCEL"
-		info.owner = "RAID"
-		info.func = UnitPopup_OnClick
-		info.notCheckable = 1
-		UIDropDownMenu_AddButton(info)
-	end
-
-	if (ct and CT_RATab_AutoPromotions) then
-		info = UIDropDownMenu_CreateInfo()
-		info.text = XPERL_RAID_AUTOPROMOTE
-		info.checked = CT_RATab_AutoPromotions[this.name]	-- Must be 'this'
-		info.value = this.id					-- Must be 'this'
-		info.func = CT_RATab_AutoPromote_OnClick
-		UIDropDownMenu_AddButton(info)
-	end
-end
-
--- XPerl_MainTankSet_OnClick
-function XPerl_MainTankSet_OnClick()
-	if (this.value[1] == "Main Tanks") then				-- Must be 'this'
-		if (this.value[4]) then
-			SendAddonMessage("CTRA", "R "..this.value[2], "RAID")
-		else
-			SendAddonMessage("CTRA", "SET "..this.value[3].." "..this.value[2], "RAID")
-		end
-	end
-	CloseMenus()
-end
 
 -- XPerl_ScaleRaid
 function XPerl_ScaleRaid()
