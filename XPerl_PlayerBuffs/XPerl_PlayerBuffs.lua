@@ -402,24 +402,24 @@ local function PlayerBuffsInit(self)
 			OnEnter = XPerl_Player_SetBuffTooltip,
 			OnUpdate = BuffOnUpdate,
 			OnLeave = XPerl_PlayerTipHide,
-			--OnClick = function(self, button)
-			--	if (button == "RightButton") then
-			--		local name, rank, buff, count, _, duration, endTime, myCast = UnitBuff("player", self:GetID())
-			--		CancelPlayerBuff(name)
-			--	end
-			--end,
+			OnClick = function(self, button)
+				if (button == "RightButton") then
+					local name, rank, buff, count, _, duration, endTime, myCast = UnitBuff("player", self:GetID())
+					CancelUnitBuff("player", name)
+				end
+			end,
 		},
 		debuffScripts = {
 			OnEnter = XPerl_Player_SetDeBuffTooltip,
 			OnUpdate = DebuffOnUpdate,
 			OnLeave = XPerl_PlayerTipHide,
-			--OnClick = function(self, button)
-			--	-- Can cancel a few debuffs (mind vision I believe)
-			--	if (button == "RightButton") then
-			--		local name, rank, buff, count, _, duration, endTime, myCast = UnitDebuff("player", self:GetID())
-			--		CancelPlayerBuff(name)
-			--	end
-			--end,
+			OnClick = function(self, button)
+				-- Can cancel a few debuffs (Mind Vision for example)
+				if (button == "RightButton") then
+					local name, rank, buff, count, _, duration, endTime, myCast = UnitDebuff("player", self:GetID())
+					CancelUnitBuff("player", name)
+				end
+			end,
 		},
 		updateTooltipBuff = BuffUpdateTooltip,
 		updateTooltipDebuff = DebuffUpdateTooltip,

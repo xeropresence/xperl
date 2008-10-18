@@ -2234,8 +2234,8 @@ function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent)
 
 		if (setup.rightClickable) then
 			button:RegisterForClicks("RightButtonUp")
-			button:SetAttribute("type", "cancelaura")
-			button:SetAttribute("index", "number")
+			--button:SetAttribute("type", "cancelaura")
+			--button:SetAttribute("index", "number")
 		end
 
 		local size = self.conf.buffs.size
