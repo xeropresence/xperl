@@ -238,7 +238,7 @@ function XPerl_Player_Pet_SetHappiness(self)
 	local icon = self.happyFrame.icon
 	icon.tex:SetTexCoord(0.5625 - (0.1875 * happiness), 0.75 - (0.1875 * happiness), 0, 0.359375)
 
-	if (pconf.happiness.enabled and (not pconf.happiness.onlyWhenSad or happiness < 3)) then
+	if (pconf.happiness.enable and (not pconf.happiness.onlyWhenSad or happiness < 3)) then
 		self.happyFrame:Show()
 
 		icon.tooltip = getglobal("PET_HAPPINESS"..happiness)
