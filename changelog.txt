@@ -2,6 +2,14 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.1
+NEW: Option to only show cooldown for your own buffs and debuffs.
+Fixed: Player buffs can now be clicked off.
+Fixed: Happiness indicator. Thanks Whitetooth.
+Fixed: Minor fix for missing buffs tooltip.
+Fixed: Error on raid frames menus.
+Fixed: Problems with extra raid frames.
+
 3.0.0i
 Fixed: Shield highlight now also works for Ice Barrier and Mana Shield for mages. (You must have Shield highlight AND sparkles enabled).
 

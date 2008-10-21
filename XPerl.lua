@@ -1196,6 +1196,12 @@ function XPerl_PlayerTip(self, unitid)
 			end
 			any = true
 
+			if (xpUsage.revision) then
+				xp = xp.." "..xpUsage.revision
+			elseif (UnitIsUnit("player", unitid)) then
+				xp = xp.." "..XPerl_GetRevision()
+			end
+
 			if (xpUsage.mods and IsShiftKeyDown()) then
 				local modList = XPerl_DecodeModuleList(xpUsage.mods)
 				if (modList) then
@@ -1690,21 +1696,21 @@ end
 
 -- true indicates the buff is valid on anyone, otherwise a class string dictates we only count it if the player with the buff matches
 local BuffExceptions = {
-	--ALL = {Spell_Misc_Food = true},	-- Enable this for food
-	PRIEST = {Spell_Nature_ResistNature = true, Spell_Nature_Rejuvenation = true, Spell_Holy_PrayerOfMendingtga = true},
-	DRUID = {Spell_Holy_Renew = true},		-- Priest regens
-	WARLOCK = {Spell_Shadow_SoulGem = true},	-- Soulstone Resurrection
-	HUNTER = {Spell_Nature_RavenForm = "HUNTER", Ability_Mount_JungleTiger = "HUNTER", Ability_Mount_WhiteTiger = true, Ability_Mount_PinkTiger = "HUNTER", Ability_Hunter_AspectOfTheMonkey = "HUNTER", Spell_Nature_ProtectionformNature = true, Ability_Rogue_FeignDeath = "HUNTER", Ability_Hunter_RunningShot = "HUNTER", Ability_TrueShot = true, Ability_Hunter_BeastTraining = "WARRIOR"},
-	ROGUE = {Ability_Stealth = "ROGUE", Spell_Shadow_ShadowWard = "ROGUE", Ability_Vanish = "ROGUE", Ability_Rogue_Sprint = "ROGUE"},
-	SHAMAN = {Spell_Nature_ManaRegenTotem = true, Spell_Nature_UndyingStrength = true, Spell_Nature_SkinOfEarth = true,
-		Spell_Nature_GroundingTotem = true, Spell_Nature_InvisibilityTotem = true, Spell_Nature_ManaRegenTotem = true,
-		Spell_Nature_StoneSkinTotem = true, Spell_Nature_SlowingTotem = true, Spell_Nature_EarthBindTotem = true,
-		Spell_Nature_HealingWay = true, Spell_Nature_NatureResistanceTotem = true, Spell_FrostResistanceTotem_01 = true,
-		Spell_FireResistanceTotem_01 = true, Spell_Nature_Brilliance = true, Spell_Nature_EarthBind = true,
-		INV_Spear_04 = true, Spell_Nature_HealingWay = true},
-	PALADIN = {Spell_Holy_DevotionAura = true, Spell_Holy_AuraOfLight = true, Spell_Holy_MindSooth = true,
-		Spell_Shadow_SealOfKings = true, Spell_Holy_MindVision = true, Spell_Frost_WizardMark = true,
-		Spell_Fire_SealOfFire = true, Spell_Holy_CrusaderAura = true},
+							--ALL = {Spell_Misc_Food = true},	-- Enable this for food
+	--PRIEST = {Spell_Nature_ResistNature = true, Spell_Nature_Rejuvenation = true, Spell_Holy_PrayerOfMendingtga = true},
+	--DRUID = {Spell_Holy_Renew = true},		-- Priest regens
+	--WARLOCK = {Spell_Shadow_SoulGem = true},	-- Soulstone Resurrection
+	--HUNTER = {Spell_Nature_RavenForm = "HUNTER", Ability_Mount_JungleTiger = "HUNTER", Ability_Mount_WhiteTiger = true, Ability_Mount_PinkTiger = "HUNTER", Ability_Hunter_AspectOfTheMonkey = "HUNTER", Spell_Nature_ProtectionformNature = true, Ability_Rogue_FeignDeath = "HUNTER", Ability_Hunter_RunningShot = "HUNTER", Ability_TrueShot = true, Ability_Hunter_BeastTraining = "WARRIOR"},
+	--ROGUE = {Ability_Stealth = "ROGUE", Spell_Shadow_ShadowWard = "ROGUE", Ability_Vanish = "ROGUE", Ability_Rogue_Sprint = "ROGUE"},
+	--SHAMAN = {Spell_Nature_ManaRegenTotem = true, Spell_Nature_UndyingStrength = true, Spell_Nature_SkinOfEarth = true,
+	--	Spell_Nature_GroundingTotem = true, Spell_Nature_InvisibilityTotem = true, Spell_Nature_ManaRegenTotem = true,
+	--	Spell_Nature_StoneSkinTotem = true, Spell_Nature_SlowingTotem = true, Spell_Nature_EarthBindTotem = true,
+	--	Spell_Nature_HealingWay = true, Spell_Nature_NatureResistanceTotem = true, Spell_FrostResistanceTotem_01 = true,
+	--	Spell_FireResistanceTotem_01 = true, Spell_Nature_Brilliance = true, Spell_Nature_EarthBind = true,
+	--	INV_Spear_04 = true, Spell_Nature_HealingWay = true},
+	--PALADIN = {Spell_Holy_DevotionAura = true, Spell_Holy_AuraOfLight = true, Spell_Holy_MindSooth = true,
+	--	Spell_Shadow_SealOfKings = true, Spell_Holy_MindVision = true, Spell_Frost_WizardMark = true,
+	--	Spell_Fire_SealOfFire = true, Spell_Holy_CrusaderAura = true},
 }
 
 local DebuffExceptions = {
@@ -2634,7 +2640,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				-- in favor of all in UnitBuff instead. We still want our big buffs first in the list,
 				-- so we have to scan thru twice.
 				for buffnum = 1,maxBuffs do
-					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly)
+					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly and "RAID")
 	
 					if (buff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true)
@@ -2652,7 +2658,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 	
 						-- Handle cooldowns
 						if (button.cooldown) then
-							if (duration and conf.buffs.cooldown) then
+							if (duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
 								local start = endTime - duration
 								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1)
 							else
@@ -2706,8 +2712,8 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			lastIcon = 0
 			for mine = 1,2 do
 				for buffnum = 1,maxDebuffs do
-					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, curableOnly)
-	
+					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, curableOnly and "RAID")
+
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true)
 						button:SetAlpha(1)
@@ -2727,7 +2733,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 	
 						-- Handle cooldowns
 						if (button.cooldown) then
-							if (duration and conf.buffs.cooldown) then
+							if (duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
 								local start = endTime - duration
 								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1)
 							else

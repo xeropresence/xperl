@@ -50,6 +50,13 @@ function mod:TooltipInfo(tooltip, unitid)
 			end
 			any = true
 
+			if (xpUsage.revision) then
+				local r = "r"..xpUsage.revision
+				xp = format("%s |cFF%s%s", xp, r == XPerl_GetRevision() and "80FF80" or "FF8080", r)
+			elseif (UnitIsUnit("player", unitid)) then
+				xp = xp.." |cFF80FF80"..XPerl_GetRevision()
+			end
+
 			if (xpUsage.mods and IsShiftKeyDown()) then
 				local modList = self:DecodeModuleList(xpUsage.mods)
 				if (modList) then
@@ -124,7 +131,7 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 	elseif (msg == "S") then
 		if (channel == "WHISPER") then
 			-- Version only sent, so ask for rest
-			SendAddonMessage(XPERL_COMMS_PREFIX, "ASK", chan, target)
+			SendAddonMessage(XPERL_COMMS_PREFIX, "ASK", channel, sender)
 		end
 
 	elseif (msg == "ASK") then
