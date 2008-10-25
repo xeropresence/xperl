@@ -3373,6 +3373,7 @@
 								self.Validate = function()
 									XPerl_Options_EnableSibling("BuffCooldownAny")
 									XPerl_Options_EnableSibling("BuffCountdown")
+									XPerl_Options_EnableSibling("BuffCountdownAny", "BuffCountdown")
 									XPerl_Options_EnableSibling("BuffCountdownStart", "BuffCountdown")
 								end
 							</OnLoad>
@@ -3380,6 +3381,7 @@
 					</CheckButton>
 
 					<CheckButton name="$parent_BuffCooldownAny" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_BuffCooldown" relativePoint="TOPRIGHT">
 								<Offset><AbsDimension x="90" y="0"/></Offset>
@@ -3410,7 +3412,25 @@
 								self.configClick = XPerl_OptionActions
 								self.Validate = function()
 									XPerl_Options_EnableSibling("BuffCountdownStart")
+									XPerl_Options_EnableSibling("BuffCountdownAny", "BuffCooldown")
 								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_BuffCountdownAny" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_BuffCountdown" relativePoint="TOPRIGHT">
+								<Offset><AbsDimension x="90" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_BUFFCOUNTDOWNANY")
+								self.configBase = "XPerlDB.buffs"
+								self.configIndex = "countdownAny"
+								self.configClick = XPerl_OptionActions
 							</OnLoad>
 						</Scripts>
 					</CheckButton>

@@ -459,20 +459,24 @@ function XPerl_PlayerStatus_OnUpdate(self, val, max)
 			elseif ( (test >= testHigh and XPerl_LowHealthFrame.frameFlash) or UnitIsDeadOrGhost(self.partyid) ) then
 				XPerl_FrameFlashStop(XPerl_LowHealthFrame, "out")
 			end
+			return
 		else
-			if (isOutOfControl and not XPerl_OutOfControlFrame.frameFlash and not UnitOnTaxi(self.partyid)) then
-				XPerl_FrameFlash(XPerl_OutOfControlFrame)
-			elseif (not isOutOfControl and XPerl_OutOfControlFrame.frameFlash) then
-				XPerl_FrameFlashStop(XPerl_OutOfControlFrame, "out")
+			if (not UnitOnTaxi("player")) then
+				if (isOutOfControl and not XPerl_OutOfControlFrame.frameFlash and not UnitOnTaxi(self.partyid)) then
+					XPerl_FrameFlash(XPerl_OutOfControlFrame)
+				elseif (not isOutOfControl and XPerl_OutOfControlFrame.frameFlash) then
+					XPerl_FrameFlashStop(XPerl_OutOfControlFrame, "out")
+				end
+				return
 			end
 		end
-	else
-		if (XPerl_LowHealthFrame.frameFlash) then
-			XPerl_FrameFlashStop(XPerl_LowHealthFrame)
-		end
-		if (XPerl_OutOfControlFrame.frameFlash) then
-			XPerl_FrameFlashStop(XPerl_OutOfControlFrame)
-		end
+	end
+
+	if (XPerl_LowHealthFrame.frameFlash) then
+		XPerl_FrameFlashStop(XPerl_LowHealthFrame)
+	end
+	if (XPerl_OutOfControlFrame.frameFlash) then
+		XPerl_FrameFlashStop(XPerl_OutOfControlFrame)
 	end
 end
 

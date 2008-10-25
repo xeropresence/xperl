@@ -1681,6 +1681,10 @@ function xpHigh.clEvents:SPELL_AURA_APPLIED(timestamp, event, srcGUID, srcName, 
 						id = spellId,
 					})
 					self:Send(dstGUID)
+--@debug@
+				else
+					self:Print("Did not get rankAmount for spell |cFFFFFF80%s (Rank %s)", spellName, tostring(spellId))
+--@end-debug@
 				end
 			end
 		end

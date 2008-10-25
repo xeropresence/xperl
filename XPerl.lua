@@ -31,7 +31,7 @@ local UnitReaction = UnitReaction
 local GetNumRaidMembers = GetNumRaidMembers
 local GetNumPartyMembers = GetNumPartyMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
-
+local ldbSource
 local largeNumDiv = XPERL_LOC_LARGENUMDIV
 local largeNumTag = XPERL_LOC_LARGENUMTAG
 
@@ -770,6 +770,7 @@ end
 
 -- Minimap Icon
 function XPerl_MinimapButton_OnClick(self, button)
+	GameTooltip:Hide()
 	if (button == "LeftButton") then
 		XPerl_Toggle()
 	elseif (button == "RightButton") then
@@ -918,7 +919,7 @@ function XPerl_MinimapMenu(self)
 		XPerl_MinimapMenu_OnLoad(XPerl_Minimap_Dropdown)
 	end
 
-	ToggleDropDownMenu(1, nil, XPerl_Minimap_Dropdown, self:GetName(), 0, 0)
+	ToggleDropDownMenu(1, nil, XPerl_Minimap_Dropdown, "cursor", 0, 0)
 end
 
 local xpModList = {"XPerl", "XPerl_Player", "XPerl_PlayerBuffs", "XPerl_PlayerPet", "XPerl_Target", "XPerl_TargetTarget", "XPerl_Party", "XPerl_PartyPet", "XPerl_ArcaneBar", "XPerl_HUD", "XPerl_RaidFrames", "XPerl_RaidHelper", "XPerl_RaidAdmin", "XPerl_RaidMonitor", "XPerl_RaidPets", "XPerl_GrimReaper"}
@@ -946,6 +947,20 @@ function XPerl_MinimapButton_Init(self)
 	end
 
 	self.UpdateTooltip = XPerl_MinimapButton_OnEnter
+
+	ldbSource = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("X-Perl UnitFrames", {
+		type = "data source",
+		text = XPerl_Version,
+		icon = XPerl_ModMenuIcon,
+	})
+
+	if (ldbSource) then
+		function ldbSource:Update()
+			self.text = XPerl_Version
+		end
+		ldbSource.OnClick = XPerl_MinimapButton_OnClick
+		ldbSource.OnTooltipShow = XPerl_MinimapButton_Details
+	end
 
 	XPerl_MinimapButton_Init = nil
 end
@@ -1016,25 +1031,30 @@ function XPerl_MinimapButton_OnEnter(self)
 
 	XPerl_Tutorial(1)			-- Minimap Icon/Options
 
-	GameTooltip:SetOwner(self, "ANCHOR_LEFT")
-	GameTooltip:SetText(XPerl_Version.." "..XPerl_GetRevision(), 1, 1, 1)
-	GameTooltip:AddLine(XPERL_MINIMAP_HELP1)
-	GameTooltip:AddLine(XPERL_MINIMAP_HELP2)
+	GameTooltip:SetOwner(self or UIParent, "ANCHOR_LEFT")
+	XPerl_MinimapButton_Details(GameTooltip)
+end
+
+-- XPerl_MinimapButton_Details
+function XPerl_MinimapButton_Details(tt)
+	tt:SetText(XPerl_Version.." "..XPerl_GetRevision(), 1, 1, 1)
+	tt:AddLine(XPERL_MINIMAP_HELP1)
+	tt:AddLine(XPERL_MINIMAP_HELP2)
 	if (UpdateAddOnMemoryUsage) then
 		if (IsAltKeyDown()) then
-			GameTooltip:AddLine(XPERL_MINIMAP_HELP6)
+			tt:AddLine(XPERL_MINIMAP_HELP6)
 		elseif (not IsShiftKeyDown()) then
-			GameTooltip:AddLine(XPERL_MINIMAP_HELP5)
+			tt:AddLine(XPERL_MINIMAP_HELP5)
 		end
 	end
 
 	if (GetRealNumRaidMembers) then
 		if (GetNumRaidMembers() > 0 and GetRealNumRaidMembers() > 0) then
 			if (select(2, IsInInstance()) == "pvp") then
-				GameTooltip:AddLine(format(XPERL_MINIMAP_HELP3, GetRealNumRaidMembers(), GetRealNumPartyMembers()))
+				tt:AddLine(format(XPERL_MINIMAP_HELP3, GetRealNumRaidMembers(), GetRealNumPartyMembers()))
 
 				if (IsRealPartyLeader()) then
-					GameTooltip:AddLine(XPERL_MINIMAP_HELP4)
+					tt:AddLine(XPERL_MINIMAP_HELP4)
 				end
 			end
 		end
@@ -1067,9 +1087,9 @@ function XPerl_MinimapButton_OnEnter(self)
 				if (showDiff) then
 					diff = usedKB - xpStartupMemory[v]
 					diffKB = diffKB + diff
-					GameTooltip:AddDoubleLine(format(" %s", v), format("%.1fkb (%s%.1fkb|r)%s", usedKB, DiffColour(diff / 500), diff, cpuText), 1, 1, 0.5, 1, 1, 1)
+					tt:AddDoubleLine(format(" %s", v), format("%.1fkb (%s%.1fkb|r)%s", usedKB, DiffColour(diff / 500), diff, cpuText), 1, 1, 0.5, 1, 1, 1)
 				else
-					GameTooltip:AddDoubleLine(format(" %s", v), format("%.1fkb%s", usedKB, cpuText), 1, 1, 0.5, 1, 1, 1)
+					tt:AddDoubleLine(format(" %s", v), format("%.1fkb%s", usedKB, cpuText), 1, 1, 0.5, 1, 1, 1)
 				end
 			end
 		end
@@ -1077,23 +1097,23 @@ function XPerl_MinimapButton_OnEnter(self)
 		if (showDiff) then
 			local color = DiffColour(diffKB / 2000)
 
-			GameTooltip:AddDoubleLine("Total", format("%.1fkb (%s%.1fkb|r)", totalKB, color, diffKB), 1, 1, 1, 1, 1, 1)
+			tt:AddDoubleLine("Total", format("%.1fkb (%s%.1fkb|r)", totalKB, color, diffKB), 1, 1, 1, 1, 1, 1)
 		else
-			GameTooltip:AddDoubleLine("Total", format("%.1fkb", totalKB), 1, 1, 1, 1, 1, 1)
+			tt:AddDoubleLine("Total", format("%.1fkb", totalKB), 1, 1, 1, 1, 1, 1)
 		end
 
 		local usedKB = GetAddOnMemoryUsage("XPerl_Options")
 		if ((usedKB or 0) > 0) then
-			GameTooltip:AddDoubleLine(" XPerl_Options", format("%.1fkb", usedKB), 0.5, 0.5, 0.5, 0.5, 0.5, 0.5)
+			tt:AddDoubleLine(" XPerl_Options", format("%.1fkb", usedKB), 0.5, 0.5, 0.5, 0.5, 0.5, 0.5)
 		end
 
 		if (totalCPU > 0) then
-			GameTooltip:AddDoubleLine(" XPerl CPU Usage Comparison", format("%.2f%%", 100 * (totalCPU / allAddonsCPU)), 0.5, 0.5, 1, 0.5, 0.5, 1)
+			tt:AddDoubleLine(" XPerl CPU Usage Comparison", format("%.2f%%", 100 * (totalCPU / allAddonsCPU)), 0.5, 0.5, 1, 0.5, 0.5, 1)
 		end
 	end
 
-	GameTooltip:Show()
-	GameTooltip.updateTooltip = 1
+	tt:Show()
+	tt.updateTooltip = 1
 end
 
 
@@ -2303,12 +2323,12 @@ local function BuffCooldownDisplay(self)
 end
 
 -- XPerl_CooldownFrame_SetTimer(self, start, duration, enable)
-function XPerl_CooldownFrame_SetTimer(self, start, duration, enable)
+function XPerl_CooldownFrame_SetTimer(self, start, duration, enable, mine)
 	if ( start > 0 and duration > 0 and enable > 0) then
 		self:SetCooldown(start, duration)
 		self.endTime = start + duration
 
-		if (conf.buffs.countdown) then
+		if (conf.buffs.countdown and (mine or conf.buffs.countdownAny)) then
 			self:SetScript("OnUpdate", BuffCooldownDisplay)
 		else
 			self:SetScript("OnUpdate", nil)
@@ -2660,7 +2680,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						if (button.cooldown) then
 							if (duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
 								local start = endTime - duration
-								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1)
+								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1, isMine)
 							else
 								button.cooldown:Hide()
 							end
@@ -2735,7 +2755,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						if (button.cooldown) then
 							if (duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
 								local start = endTime - duration
-								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1)
+								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1, isMine)
 							else
 								button.cooldown:Hide()
 							end
@@ -3431,7 +3451,7 @@ if (LibStub or LoadAddOn("LibStub")) then
 	LoadAddOn("LibHealComm-3.0")
 	local HealComm = LibStub("LibHealComm-3.0", true)
 
-	if (HealComm) then
+	if (HealComm and HealComm.UnitIncomingHealGet) then
 		local myHeals = {}
 		local hcMiniFrame = CreateFrame("Frame", nil)
 		hcMiniFrame:RegisterEvent("RAID_ROSTER_UPDATE")

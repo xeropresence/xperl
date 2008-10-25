@@ -34,13 +34,21 @@ local function XPerl_GameTooltipSetUnit(tooltip, unitid)
 end
 hooksecurefunc(GameTooltip, "SetUnit", XPerl_GameTooltipSetUnit)
 
+local function UnitFullName(unit)
+	local n,s = UnitName(unit)
+	if (s and s ~= "") then
+		return n.."-"..s
+	end
+	return n
+end
+
 function mod:UPDATE_MOUSEOVER_UNIT()
 	self:TooltipInfo(GameTooltip, "mouseover")
 end
 
 function mod:TooltipInfo(tooltip, unitid)
 	if (conf and conf.tooltip.xperlInfo and not strmatch(unitid, "pet")) then
-		local xpUsage = XPerl_GetUsage(UnitName(unitid), unitid)
+		local xpUsage = XPerl_GetUsage(UnitFullName(unitid), unitid)
 		if (xpUsage) then
 			local xp, any = "|cFFD00000X-Perl|r "
 			if (xpUsage.version) then

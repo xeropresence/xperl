@@ -65,6 +65,10 @@ function ch:DefaultZoneData()
 		["Sunwell Plateau"] =
 			{
 				[45141] = true,								-- Burn (Brutallus)
+				[45662] = true,								-- Encapsulate (Felmyst)
+				[45855] = true,								-- Gas Nova (Felmyst)
+				[45342] = true,								-- Conflagration (Grand Warlock Alythess)
+				[45641] = true,								-- Fire Bloom (Kil'Jaeden)
 			},
 		}
 end

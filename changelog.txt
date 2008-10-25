@@ -2,6 +2,11 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.1a
+NEW: LDB support. If you're using an LDB display (ButtonBin, Fortress etc.) you can disable the Minimap Icon and use the one on your LDB display instead.
+NEW: Added second option for buff cooldowns, so you can set either cooldowns and/or countdowns to show for all/mine only.
+Fixed: Stopped blue flashing out of control frame from showing when on a taxi.
+
 3.0.1
 NEW: Option to only show cooldown for your own buffs and debuffs.
 Fixed: Player buffs can now be clicked off.

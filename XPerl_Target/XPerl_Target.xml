@@ -117,6 +117,8 @@
 							</Anchors>
 							<TexCoords left="0" right="1" top="0" bottom="0.4" />
 						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
 						<!-- PVP Icon -->
 						<Texture name="$parentpvpIcon" file="Interface\TargetingFrame\UI-PVP-FFA" hidden="true">
 							<Size>
@@ -131,17 +133,6 @@
 							</Anchors>
 						</Texture>
 
-						<!-- PVP Rank -->
-						<!--Texture name="$parentpvpRankIcon">
-							<Size><AbsDimension x="32" y="32"/></Size>
-							<Anchors>
-								<Anchor point="TOP">
-									<Offset><AbsDimension x="-40" y="3"/></Offset>
-								</Anchor>
-							</Anchors>
-						</Texture-->
-					</Layer>
-					<Layer level="OVERLAY">
 						<!-- Warning Icon -->
 						<Texture name="$parentwarningIcon" file="Interface\Minimap\Ping\ping6" alphaMode="ADD" hidden="true">
 							<Size>
