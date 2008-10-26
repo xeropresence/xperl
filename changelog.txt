@@ -2,6 +2,9 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.1b
+Changed: Special case for You're Infected! debuff to show a minimum max time of 2 mins, so it's easier to see when it's expiring.
+
 3.0.1a
 NEW: LDB support. If you're using an LDB display (ButtonBin, Fortress etc.) you can disable the Minimap Icon and use the one on your LDB display instead.
 NEW: Added second option for buff cooldowns, so you can set either cooldowns and/or countdowns to show for all/mine only.

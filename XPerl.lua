@@ -1715,140 +1715,144 @@ function XPerl_RestoreAllPositions()
 end
 
 -- true indicates the buff is valid on anyone, otherwise a class string dictates we only count it if the player with the buff matches
-local BuffExceptions = {
-							--ALL = {Spell_Misc_Food = true},	-- Enable this for food
-	--PRIEST = {Spell_Nature_ResistNature = true, Spell_Nature_Rejuvenation = true, Spell_Holy_PrayerOfMendingtga = true},
-	--DRUID = {Spell_Holy_Renew = true},		-- Priest regens
-	--WARLOCK = {Spell_Shadow_SoulGem = true},	-- Soulstone Resurrection
-	--HUNTER = {Spell_Nature_RavenForm = "HUNTER", Ability_Mount_JungleTiger = "HUNTER", Ability_Mount_WhiteTiger = true, Ability_Mount_PinkTiger = "HUNTER", Ability_Hunter_AspectOfTheMonkey = "HUNTER", Spell_Nature_ProtectionformNature = true, Ability_Rogue_FeignDeath = "HUNTER", Ability_Hunter_RunningShot = "HUNTER", Ability_TrueShot = true, Ability_Hunter_BeastTraining = "WARRIOR"},
-	--ROGUE = {Ability_Stealth = "ROGUE", Spell_Shadow_ShadowWard = "ROGUE", Ability_Vanish = "ROGUE", Ability_Rogue_Sprint = "ROGUE"},
-	--SHAMAN = {Spell_Nature_ManaRegenTotem = true, Spell_Nature_UndyingStrength = true, Spell_Nature_SkinOfEarth = true,
-	--	Spell_Nature_GroundingTotem = true, Spell_Nature_InvisibilityTotem = true, Spell_Nature_ManaRegenTotem = true,
-	--	Spell_Nature_StoneSkinTotem = true, Spell_Nature_SlowingTotem = true, Spell_Nature_EarthBindTotem = true,
-	--	Spell_Nature_HealingWay = true, Spell_Nature_NatureResistanceTotem = true, Spell_FrostResistanceTotem_01 = true,
-	--	Spell_FireResistanceTotem_01 = true, Spell_Nature_Brilliance = true, Spell_Nature_EarthBind = true,
-	--	INV_Spear_04 = true, Spell_Nature_HealingWay = true},
-	--PALADIN = {Spell_Holy_DevotionAura = true, Spell_Holy_AuraOfLight = true, Spell_Holy_MindSooth = true,
-	--	Spell_Shadow_SealOfKings = true, Spell_Holy_MindVision = true, Spell_Frost_WizardMark = true,
-	--	Spell_Fire_SealOfFire = true, Spell_Holy_CrusaderAura = true},
-}
-
-local DebuffExceptions = {
-	ALL = {INV_Misc_Bandage_08 = true},		-- Recently Bandaged
-	PRIEST = {Spell_Holy_AshesToAshes = true},	-- Weakened Soul
-	PALADIN = {Spell_Holy_RemoveCurse = true}	-- Forbearance
-}
-
+--local BuffExceptions = {
+--							--ALL = {Spell_Misc_Food = true},	-- Enable this for food
+--	PRIEST = {Spell_Nature_ResistNature = true, Spell_Nature_Rejuvenation = true, Spell_Holy_PrayerOfMendingtga = true},
+--	DRUID = {Spell_Holy_Renew = true},		-- Priest regens
+--	WARLOCK = {Spell_Shadow_SoulGem = true},	-- Soulstone Resurrection
+--	HUNTER = {Spell_Nature_RavenForm = "HUNTER", Ability_Mount_JungleTiger = "HUNTER", Ability_Mount_WhiteTiger = true, Ability_Mount_PinkTiger = "HUNTER", Ability_Hunter_AspectOfTheMonkey = "HUNTER", Spell_Nature_ProtectionformNature = true, Ability_Rogue_FeignDeath = "HUNTER", Ability_Hunter_RunningShot = "HUNTER", Ability_TrueShot = true, Ability_Hunter_BeastTraining = "WARRIOR"},
+--	ROGUE = {Ability_Stealth = "ROGUE", Spell_Shadow_ShadowWard = "ROGUE", Ability_Vanish = "ROGUE", Ability_Rogue_Sprint = "ROGUE"},
+--	SHAMAN = {Spell_Nature_ManaRegenTotem = true, Spell_Nature_UndyingStrength = true, Spell_Nature_SkinOfEarth = true,
+--		Spell_Nature_GroundingTotem = true, Spell_Nature_InvisibilityTotem = true, Spell_Nature_ManaRegenTotem = true,
+--		Spell_Nature_StoneSkinTotem = true, Spell_Nature_SlowingTotem = true, Spell_Nature_EarthBindTotem = true,
+--		Spell_Nature_HealingWay = true, Spell_Nature_NatureResistanceTotem = true, Spell_FrostResistanceTotem_01 = true,
+--		Spell_FireResistanceTotem_01 = true, Spell_Nature_Brilliance = true, Spell_Nature_EarthBind = true,
+--		INV_Spear_04 = true, Spell_Nature_HealingWay = true},
+--	PALADIN = {Spell_Holy_DevotionAura = true, Spell_Holy_AuraOfLight = true, Spell_Holy_MindSooth = true,
+--		Spell_Shadow_SealOfKings = true, Spell_Holy_MindVision = true, Spell_Frost_WizardMark = true,
+--		Spell_Fire_SealOfFire = true, Spell_Holy_CrusaderAura = true},
+--}
+--
+--local DebuffExceptions = {
+--	ALL = {INV_Misc_Bandage_08 = true},		-- Recently Bandaged
+--	PRIEST = {Spell_Holy_AshesToAshes = true},	-- Weakened Soul
+--	PALADIN = {Spell_Holy_RemoveCurse = true}	-- Forbearance
+--}
+--
 --local SeasonalDebuffs = {				-- TODO Ignore these option
 --	INV_Misc_Branch_01,				-- Mistletoe
 --}
 
 -- BuffException
 --local showInfo
-local function BuffException(unit, index, flag, func, exceptions)
-	local name, rank, buff, count, debuffType, dur, max, isMine, isStealable
-	if (not flag or flag == 0 or flag == "0") then
-		-- Not filtered, just return it
-		name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, index)
-		return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index
-	end
-
-	name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, index, 1)
-	if (buff) then
-		-- We need the index of the buff unfiltered later for tooltips
-		for i = 1,40 do
-			local name1, rank1, buff1, count1, debuffType1, dur1, max1 = func(unit, i)
-			if (not name1) then
-				break
-			end
-			if (name == name1 and rank == rank1 and buff == buff1 and count == count1) then
-				index = i
-				break
-			end
-		end
-
-		return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index
-	end
-
-	-- See how many filtered buffs WoW has returned by default
-	local normalBuffFilterCount = 0
-	for i = 1,40 do
-		name = func(unit, i, 1)
-		if (not name) then
-			normalBuffFilterCount = i - 1
-			break
-		end
-	end
-
-	-- Nothing found by default, so look for exceptions
-	local unitClass = select(2, UnitClass(unit))
-	local foundValid = 0
-	local classExceptions = exceptions[playerClass]
-	local allExceptions = exceptions.ALL
-	for i = 1,40 do
-		name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, i)
-		if (not buff) then
-			break
-		end
-
-		if (strsub(buff, 1, 16) == "Interface\\Icons\\") then
-			local test = strsub(buff, 17)
-			local good
-
-			if (classExceptions) then
-				good = classExceptions[test]
-			end
-			if (not good and allExceptions) then
-				good = allExceptions[test]
-			end
-
-			-- Enable this for potions
-			--if (not good) then
-			--	if (exceptions == BuffExceptions and strsub(test, 1, 11) == "INV_Potion_") then
-			--		good = true
-			--	end
-			--end
-
-			if (good and type(good) == "string" and good ~= unitClass) then
-				good = nil
-			end
-
-			if (good) then
-				foundValid = foundValid + 1
-				if (foundValid + normalBuffFilterCount == index) then
-					return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, i
-				end
-			end
-		end
-	end
-end
+--local function BuffException(unit, index, flag, func, exceptions)
+--	local name, rank, buff, count, debuffType, dur, max, isMine, isStealable
+--	if (not flag or flag == 0 or flag == "0") then
+--		-- Not filtered, just return it
+--		name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, index)
+--		return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index
+--	end
+--
+--	name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, index, 1)
+--	if (buff) then
+--		-- We need the index of the buff unfiltered later for tooltips
+--		for i = 1,40 do
+--			local name1, rank1, buff1, count1, debuffType1, dur1, max1 = func(unit, i)
+--			if (not name1) then
+--				break
+--			end
+--			if (name == name1 and rank == rank1 and buff == buff1 and count == count1) then
+--				index = i
+--				break
+--			end
+--		end
+--
+--		return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index
+--	end
+--
+--	-- See how many filtered buffs WoW has returned by default
+--	local normalBuffFilterCount = 0
+--	for i = 1,40 do
+--		name = func(unit, i, 1)
+--		if (not name) then
+--			normalBuffFilterCount = i - 1
+--			break
+--		end
+--	end
+--
+--	-- Nothing found by default, so look for exceptions
+--	local unitClass = select(2, UnitClass(unit))
+--	local foundValid = 0
+--	local classExceptions = exceptions[playerClass]
+--	local allExceptions = exceptions.ALL
+--	for i = 1,40 do
+--		name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, i)
+--		if (not buff) then
+--			break
+--		end
+--
+--		if (strsub(buff, 1, 16) == "Interface\\Icons\\") then
+--			local test = strsub(buff, 17)
+--			local good
+--
+--			if (classExceptions) then
+--				good = classExceptions[test]
+--			end
+--			if (not good and allExceptions) then
+--				good = allExceptions[test]
+--			end
+--
+--			-- Enable this for potions
+--			--if (not good) then
+--			--	if (exceptions == BuffExceptions and strsub(test, 1, 11) == "INV_Potion_") then
+--			--		good = true
+--			--	end
+--			--end
+--
+--			if (good and type(good) == "string" and good ~= unitClass) then
+--				good = nil
+--			end
+--
+--			if (good) then
+--				foundValid = foundValid + 1
+--				if (foundValid + normalBuffFilterCount == index) then
+--					return name, rank, buff, count, debuffType, dur, max, isMine, isStealable, i
+--				end
+--			end
+--		end
+--	end
+--end
 
 -- XPerl_UnitBuff
 function XPerl_UnitBuff(unit, index, flag)
-	return BuffException(unit, index, flag, UnitBuff, BuffExceptions)
+	return UnitBuff(unit, index)
+	--return BuffException(unit, index, flag, UnitBuff, BuffExceptions)
 end
 
 -- XPerl_UnitBuff
 function XPerl_UnitDebuff(unit, index, flag)
-	return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
+	return UnitDebuff(unit, index)
+	--return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
 end
 
 -- XPerl_TooltipSetUnitBuff
 -- Retreives the index of the actual unfiltered buff, and uses this on unfiltered tooltip call
 function XPerl_TooltipSetUnitBuff(self, unit, ind, flag)
-	local name, rank, buff, count, _, dur, max, isMine, isStealable, index = BuffException(unit, ind, flag, UnitBuff, BuffExceptions)
-	if (name and index) then
-		self:SetUnitBuff(unit, index)
-	end
+	self:SetUnitBuff(unit, ind)
+	--local name, rank, buff, count, _, dur, max, isMine, isStealable, index = BuffException(unit, ind, flag, UnitBuff, BuffExceptions)
+	--if (name and index) then
+	--	self:SetUnitBuff(unit, index)
+	--end
 end
 
 -- XPerl_TooltipSetUnitDebuff
 -- Retreives the index of the actual unfiltered debuff, and uses this on unfiltered tooltip call
 function XPerl_TooltipSetUnitDebuff(self, unit, ind, flag)
-	local name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index = BuffException(unit, ind, flag, UnitDebuff, DebuffExceptions)
-	if (name and index) then
-		self:SetUnitDebuff(unit, index)
-	end
+	self:SetUnitDebuff(unit, ind)
+	--local name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index = BuffException(unit, ind, flag, UnitDebuff, DebuffExceptions)
+	--if (name and index) then
+	--	self:SetUnitDebuff(unit, index)
+	--end
 end
 
 local colourList = {
@@ -2639,6 +2643,8 @@ do
 	end
 end
 
+local youreInfected = GetSpellInfo(43958)
+
 -- XPerl_Unit_UpdateBuffs(self)
 function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curableOnly)
 	local buffs, debuffs, buffsMine, debuffsMine = 0, 0, 0, 0
@@ -2661,7 +2667,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				-- so we have to scan thru twice.
 				for buffnum = 1,maxBuffs do
 					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly and "RAID")
-	
+
 					if (buff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true)
 						button:SetAlpha(1)
@@ -2737,7 +2743,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true)
 						button:SetAlpha(1)
-	
+
 						debuffs = debuffs + 1
 	
 						button.icon:SetTexture(debuff)
@@ -2753,6 +2759,10 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 	
 						-- Handle cooldowns
 						if (button.cooldown) then
+							if (name == youreInfected) then
+								duration = max(120, duration)
+							end
+
 							if (duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
 								local start = endTime - duration
 								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1, isMine)
