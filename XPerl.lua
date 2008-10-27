@@ -78,6 +78,17 @@ end
 
 local new, del = XPerl_GetReusableTable, XPerl_FreeTable
 
+local cos, sin, abs = math.cos, math.sin, math.abs
+local function rotate(angle)
+	local A = cos(angle)
+	local B = sin(angle)
+	local ULx, ULy = -0.5 * A - -0.5 * B, -0.5 * B + -0.5 * A
+	local LLx, LLy = -0.5 * A - 0.5 * B, -0.5 * B + 0.5 * A
+	local URx, URy = 0.5 * A - -0.5 * B, 0.5 * B + -0.5 * A
+	local LRx, LRy = 0.5 * A - 0.5 * B, 0.5 * B + 0.5 * A
+	return ULx+0.5, ULy+0.5, LLx+0.5, LLy+0.5, URx+0.5, URy+0.5, LRx+0.5, LRy+0.5
+end
+
 -- meta table for string based colours. Allows for other mods changing class colours and things all working
 XPerlColourTable = setmetatable({},{
 	__index = function(self, class)
@@ -2588,8 +2599,10 @@ function XPerl_Unit_BuffPositions(self, buffList1, buffList2, size1, size2)
 	end
 end
 
+local RegisterStealable, UnregisterStealable
 do
 	local stealFrame
+	local steals = {}
 
 	local function stealOnUpdate(self, elapsed)
 		for frame in pairs(steals) do
@@ -2599,45 +2612,52 @@ do
 			b = b + (frame.blueOut and elapsed or -elapsed)
 
 			if (r > 1) then
-				frame.redOut = true
+				frame.redOut = nil
 				r = 1
 			elseif (r < 0) then
-				frame.redOut = nil
+				frame.redOut = true
 				r = 0
 			end
 			if (g > 1) then
-				frame.greenOut = true
+				frame.greenOut = nil
 				g = 1
 			elseif (g < 0) then
-				frame.greenOut = nil
+				frame.greenOut = true
 				g = 0
 			end
 			if (b > 1) then
-				frame.blueOut = true
+				frame.blueOut = nil
 				b = 1
 			elseif (b < 0) then
-				frame.blueOut = nil
+				frame.blueOut = true
 				b = 0
 			end
 
 			frame.tex:SetVertexColor(r, g, b)
+
+			self.angle = self.angle - elapsed
+			if (self.angle < 0) then
+				self.angle = self.angle + 360
+			end
+			local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = rotate(self.angle)
+			frame.tex:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
 		end
 	end
 
-	local steals = {}
-	local function RegisterStealable(self)
+	function RegisterStealable(self)
 		steals[self] = true
-		self.steal.tex:SetVertexColor(1, 0.5, 0)
+		self.tex:SetVertexColor(1, 0.5, 0)
 		if (not stealFrame) then
 			stealFrame = CreateFrame("Frame")
+			stealFrame.angle = 0
 		end
 		stealFrame:SetScript("OnUpdate", stealOnUpdate)
 	end
 
-	local function UnregisterStealable(self)
+	function UnregisterStealable(self)
 		steals[self] = nil
 
-		if (not next(steals)) then
+		if (stealFrame and not next(steals)) then
 			stealFrame:SetScript("OnUpdate", nil)
 		end
 	end
@@ -2668,7 +2688,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				for buffnum = 1,maxBuffs do
 					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly and "RAID")
 
-					if (buff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
+					if (buff and (((mine == 1) and (isMine or isStealable)) or ((mine == 2) and not (isMine or isStealable)))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true)
 						button:SetAlpha(1)
 
@@ -2691,11 +2711,31 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 								button.cooldown:Hide()
 							end
 						end
-	
+
+						if (isStealable) then		--  and UnitCanAttack("player", partyid)
+							if (not button.steal) then
+								button.steal = CreateFrame("Frame", nil, button)
+								button.steal:SetPoint("TOPLEFT", -2, 2)
+								button.steal:SetPoint("BOTTOMRIGHT", 2, -2)
+								button.steal:SetScript("OnShow", RegisterStealable)
+								button.steal:SetScript("OnHide", UnregisterStealable)
+
+								button.steal.tex = button.steal:CreateTexture(nil, "OVERLAY")
+								button.steal.tex:SetAllPoints()
+								button.steal.tex:SetTexture("Interface\\Addons\\XPerl\\Images\\StealMe")
+							end
+
+							button.steal:Show()					-- TODO TEST
+						else
+							if (button.steal) then
+								button.steal:Hide()
+							end
+						end
+
 						lastIcon = buffIconIndex
 						button:Show()
 	
-						if (self.conf.buffs.big and isMine) then
+						if ((self.conf.buffs.big and isMine) or (self.conf.buffs.bigStealable and isStealable)) then
 							buffsMine = buffsMine + 1
 							button.big = true
 							button:SetScale((self.conf.buffs.size * 2) / 32)
@@ -2770,27 +2810,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 								button.cooldown:Hide()
 							end
 						end
-						
-						if (isStealable) then		--  and UnitCanAttack("player", partyid)
-							if (not button.steal) then
-								button.steal = CreateFrame("Frame", nil, button)
-								button.steal:SetPoint("TOPLEFT", -2, 2)
-								button.steal:SetPoint("BOTTOMRIGHT", 2, -2)
-								button.steal:SetScript("OnShow", function(self) RegisterStealable(self) end)
-								button.steal:SetScript("OnHide", function(self) UnregisterStealable(self) end)
 
-								button.steal.tex = button.steal:CreateTexture(nil, "OVERLAY")
-								button.steal.tex:SetAllPoints()
-								button.steal.tex:SetTexture("XPerl\\Images\\StealMe")
-							end
-
-							button.steal:Show()					-- TODO TEST
-						else
-							if (button.steal) then
-								button.steal:Hide()
-							end
-						end
-	
 						lastIcon = buffIconIndex
 						button:Show()
 	
@@ -3661,17 +3681,6 @@ end
 -- End of HealComm/LibQuickHealth
 
 -- Threat Dislay
-local cos, sin, abs = cos, sin, math.abs
-
-local function rotate(angle)
-	local A = cos(angle)
-	local B = sin(angle)
-	local ULx, ULy = -0.5 * A - -0.5 * B, -0.5 * B + -0.5 * A
-	local LLx, LLy = -0.5 * A - 0.5 * B, -0.5 * B + 0.5 * A
-	local URx, URy = 0.5 * A - -0.5 * B, 0.5 * B + -0.5 * A
-	local LRx, LRy = 0.5 * A - 0.5 * B, 0.5 * B + 0.5 * A
-	return ULx+0.5, ULy+0.5, LLx+0.5, LLy+0.5, URx+0.5, URy+0.5, LRx+0.5, LRy+0.5
-end
 
 local function DrawHand(self, percent)
 	local angle = 360 - (percent * 2.7 - 135)

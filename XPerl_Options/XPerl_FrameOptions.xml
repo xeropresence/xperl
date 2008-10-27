@@ -7460,6 +7460,24 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_BigBuffsStealable" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_Above" relativePoint="TOPRIGHT">
+								<Offset><AbsDimension x="80" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGET_BIGSTEALABLE")
+								self.flashFrame = XPerl_Target_BuffFrame
+								self.configBase = "XPerlDB.target.buffs"
+								self.configIndex = "bigStealable"
+								self.configClick = XPerl_Target_Reset
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_BigBuffs" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_Above" relativePoint="BOTTOMLEFT">

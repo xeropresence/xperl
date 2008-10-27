@@ -183,10 +183,18 @@ function mod:GeneralTooltip(name, anchor)
 			GameTooltip:SetOwner(anchor, "ANCHOR_BOTTOMRIGHT")
 			GameTooltip:ClearLines()
 
+			local str
+			if (xpUsage.revision) then
+				local r = "r"..xpUsage.revision
+				str = format("%s %s |cFF%s%s", XPerl_ProductName, ver, r == XPerl_GetRevision() and "80FF80" or "FF8080", r)
+			elseif (name == UnitName(player)) then
+				str = format("%s %s |cFF80FF80%s", XPerl_ProductName, ver, XPerl_GetRevision())
+			end
+
 			if (xpUsage.locale) then
-				GameTooltip:AddDoubleLine(XPerl_ProductName.." "..ver, xpUsage.locale, 1, 1, 1, 0.5, 0.5, 0.5)
+				GameTooltip:AddDoubleLine(str, xpUsage.locale, 1, 1, 1, 0.5, 0.5, 0.5)
 			else
-				GameTooltip:SetText(XPerl_ProductName.." "..ver, 1, 1, 1)
+				GameTooltip:SetText(str, 1, 1, 1)
 			end
 
 			if (xpUsage.version and self:CheckForNewerVersion(xpUsage.version)) then
@@ -287,7 +295,7 @@ function mod:RAID_ROSTER_UPDATE()
 	if (GetNumRaidMembers() > 0) then
 		if (not self.inRaid) then
 			self.inRaid = true
-			self:SendModules("RAID")			-- Let other X-Perl users know which version we're running
+			self:SendModules()
 		end
 	else
 		self.inRaid = nil
