@@ -653,7 +653,7 @@ function XPerl_Options_TextureSelect_Onload(self)
 	self.scrollBar = getglobal(self:GetName().."scrollBar")
 	self.list = XPerl_AllBarTextures()
 	self.Selection = 1
-	self.scrollBar.bar:SetValue(max(0, min(self.Selection - 4, #self.list - 8)))
+	self.scrollBar.bar:SetValue(max(0, min(self.Selection - 5, #self.list - 8)))
 
 	self.UpdateFunction = function()
 		this:GetParent():SetBarColours()
@@ -2999,6 +2999,10 @@ if (XPerl_UpgradeSettings) then
 			end
 
 			ValidateClassNames(old.raid)
+
+			if (old.bar.texture[1] == "X-Perl 2") then
+				old.bar.texture[1] = "BantoBar"
+			end
 
 			if (oldVersion < "3.0.0c") then
 				old.target.threat = 1

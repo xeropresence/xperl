@@ -1080,6 +1080,7 @@
 					end
 				end
 
+				self.scrollBar.bar:SetValue(max(0, min(self.Selection - 5, #self.list - 8)))
 				self:SetBarColours()
 				self:Setup()
 

@@ -449,35 +449,54 @@ function XPerl_SetChildMembers(self)
 	end
 end
 
--- XPerl_AllBarTextures
-function XPerl_AllBarTextures(short)
+do
+	local list
 
-	local list = {
-		{"Blizzard", "Interface\\TargetingFrame\\UI-StatusBar"},
-		{"Perl", "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"},
-	}
+	-- XPerl_AllBarTextures
+	function XPerl_AllBarTextures(short)
+		if (not list) then
+			local temp = {
+				{"Blizzard", "Interface\\TargetingFrame\\UI-StatusBar"},
+				{"Perl v2", "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"},
+			}
 
-	for i = 1,9 do
-		tinsert(list, {"X-Perl "..i, "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"..(i + 1)})
-	end
+			for i = 1,9 do
+				local name = i == 2 and "BantoBar" or "X-Perl "..i
+				tinsert(temp, {name, "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"..(i + 1)})
+			end
 
-	if (not short and LibStub) then
-		local media = LibStub("LibSharedMedia-3.0", true)
-		if (not media) then
-			media = LibStub("SharedMedia-2.0", true)
-			if (not media) then
-				media = LibStub("SharedMedia-1.0", true)
+			if (short) then
+				return temp
+			end
+
+			if (LibStub) then
+				local media = LibStub("LibSharedMedia-3.0", true)
+				if (not media) then
+					media = LibStub("SharedMedia-2.0", true)
+					if (not media) then
+						media = LibStub("SharedMedia-1.0", true)
+					end
+				end
+				if (media) then
+					for i = 1,#temp do
+						media:Register("statusbar", temp[i][1], temp[i][2])
+					end
+
+					list = {}
+					local smlBars = media:List("statusbar")
+					for k,v in pairs(smlBars) do
+						tinsert(list, {v, media:Fetch("statusbar", v)})
+					end
+				else
+					list = temp
+				end
+			else
+				list = temp
 			end
 		end
-		if (media) then
-			local smlBars = media:List("statusbar")
-			for k,v in pairs(smlBars) do
-				tinsert(list, {v, media:Fetch("statusbar", v)})
-			end
-		end
-	end
 
-	return list
+		return list
+	end
 end
 
 -- XPerl_GetBarTexture
@@ -961,7 +980,7 @@ function XPerl_MinimapButton_Init(self)
 
 	ldbSource = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("X-Perl UnitFrames", {
 		type = "data source",
-		text = XPerl_Version,
+		text = XPerl_ShortProductName,
 		icon = XPerl_ModMenuIcon,
 	})
 
@@ -2605,6 +2624,12 @@ do
 	local steals = {}
 
 	local function stealOnUpdate(self, elapsed)
+		self.angle = self.angle - elapsed
+		if (self.angle < 0) then
+			self.angle = self.angle + 360
+		end
+		local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = rotate(self.angle)
+
 		for frame in pairs(steals) do
 			local r, g, b = frame.tex:GetVertexColor()
 			r = r + (frame.redOut and elapsed or -elapsed)
@@ -2634,12 +2659,6 @@ do
 			end
 
 			frame.tex:SetVertexColor(r, g, b)
-
-			self.angle = self.angle - elapsed
-			if (self.angle < 0) then
-				self.angle = self.angle + 360
-			end
-			local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = rotate(self.angle)
 			frame.tex:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
 		end
 	end
@@ -2649,16 +2668,17 @@ do
 		self.tex:SetVertexColor(1, 0.5, 0)
 		if (not stealFrame) then
 			stealFrame = CreateFrame("Frame")
+			stealFrame:SetScript("OnUpdate", stealOnUpdate)
 			stealFrame.angle = 0
 		end
-		stealFrame:SetScript("OnUpdate", stealOnUpdate)
+		stealFrame:Show()
 	end
 
 	function UnregisterStealable(self)
 		steals[self] = nil
 
 		if (stealFrame and not next(steals)) then
-			stealFrame:SetScript("OnUpdate", nil)
+			stealFrame:Hide()
 		end
 	end
 end
@@ -2778,7 +2798,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			lastIcon = 0
 			for mine = 1,2 do
 				for buffnum = 1,maxDebuffs do
-					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, curableOnly and "RAID")
+					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, curableOnly and "PLAYER")
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true)
