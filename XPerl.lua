@@ -450,48 +450,52 @@ function XPerl_SetChildMembers(self)
 end
 
 do
+	local shortlist
 	local list
+	local media
+
+	-- XPerl_RegisterSMBarTextures
+	function XPerl_RegisterSMBarTextures()
+		if (LibStub) then
+			media = LibStub("LibSharedMedia-3.0", true)
+			if (not media) then
+				media = LibStub("SharedMedia-2.0", true)
+				if (not media) then
+					media = LibStub("SharedMedia-1.0", true)
+				end
+			end
+		end
+
+		if (media) then
+			shortlist = {
+				{"Perl v2", "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"},
+			}
+			for i = 1,9 do
+				local name = i == 2 and "BantoBar" or "X-Perl "..i
+				tinsert(shortlist, {name, "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"..(i + 1)})
+			end
+
+			for k,v in pairs(shortlist) do
+				media:Register("statusbar", v[1], v[2])
+			end
+		end
+	end
 
 	-- XPerl_AllBarTextures
 	function XPerl_AllBarTextures(short)
 		if (not list) then
-			local temp = {
-				{"Blizzard", "Interface\\TargetingFrame\\UI-StatusBar"},
-				{"Perl v2", "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"},
-			}
-
-			for i = 1,9 do
-				local name = i == 2 and "BantoBar" or "X-Perl "..i
-				tinsert(temp, {name, "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"..(i + 1)})
-			end
-
 			if (short) then
-				return temp
+				return shortlist
 			end
 
-			if (LibStub) then
-				local media = LibStub("LibSharedMedia-3.0", true)
-				if (not media) then
-					media = LibStub("SharedMedia-2.0", true)
-					if (not media) then
-						media = LibStub("SharedMedia-1.0", true)
-					end
-				end
-				if (media) then
-					for i = 1,#temp do
-						media:Register("statusbar", temp[i][1], temp[i][2])
-					end
-
-					list = {}
-					local smlBars = media:List("statusbar")
-					for k,v in pairs(smlBars) do
-						tinsert(list, {v, media:Fetch("statusbar", v)})
-					end
-				else
-					list = temp
+			if (media) then
+				list = {}
+				local smlBars = media:List("statusbar")
+				for k,v in pairs(smlBars) do
+					tinsert(list, {v, media:Fetch("statusbar", v)})
 				end
 			else
-				list = temp
+				list = shortlist
 			end
 		end
 

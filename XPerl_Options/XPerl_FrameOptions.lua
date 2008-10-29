@@ -2134,7 +2134,7 @@ local function XPerl_Global_ConfigDefault(default)
 	local list = XPerl_AllBarTextures(true)
 
 	default.bar = {
-		texture		= list[4],
+		texture		= list[1],
 		background	= 1,
 --		fading		= nil,		-- 1.8.9
 		fadeTime	= 0.5,		-- 1.9.1
