@@ -297,6 +297,27 @@ local function onEventPostSetup(self, event, unit, ...)
 	end
 end
 
+-- XPerl_RegisterLDB
+local function XPerl_RegisterLDB()
+	local LDB = LibStub and LibStub("LibDataBroker-1.1", true)
+	if (LDB) then
+		local ldbSource = LDB:NewDataObject("X-Perl UnitFrames", {
+			type = "data source",
+			text = XPerl_ShortProductName,
+			icon = XPerl_ModMenuIcon,
+		})
+
+		if (ldbSource) then
+			function ldbSource:Update()
+				self.text = XPerl_Version
+			end
+			ldbSource.OnClick = XPerl_MinimapButton_OnClick
+			ldbSource.OnTooltipShow = XPerl_MinimapButton_Details
+		end
+	end
+	XPerl_RegisterLDB = nil
+end
+
 -- XPerl_Globals_OnEvent
 function XPerl_Globals_OnEvent(self, event, ...)
 
@@ -378,6 +399,7 @@ function XPerl_Globals_OnEvent(self, event, ...)
 
 		XPerl_Init()
 		XPerl_BlizzFrameDisable = nil
+		XPerl_RegisterLDB()
 
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		self:UnregisterEvent(event)

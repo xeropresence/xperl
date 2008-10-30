@@ -31,7 +31,6 @@ local UnitReaction = UnitReaction
 local GetNumRaidMembers = GetNumRaidMembers
 local GetNumPartyMembers = GetNumPartyMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
-local ldbSource
 local largeNumDiv = XPERL_LOC_LARGENUMDIV
 local largeNumTag = XPERL_LOC_LARGENUMTAG
 
@@ -981,23 +980,6 @@ function XPerl_MinimapButton_Init(self)
 	end
 
 	self.UpdateTooltip = XPerl_MinimapButton_OnEnter
-
-	local LDB = LibStub and LibStub("LibDataBroker-1.1", true)
-	if (LDB) then
-		ldbSource = LDB:NewDataObject("X-Perl UnitFrames", {
-			type = "data source",
-			text = XPerl_ShortProductName,
-			icon = XPerl_ModMenuIcon,
-		})
-
-		if (ldbSource) then
-			function ldbSource:Update()
-				self.text = XPerl_Version
-			end
-			ldbSource.OnClick = XPerl_MinimapButton_OnClick
-			ldbSource.OnTooltipShow = XPerl_MinimapButton_Details
-		end
-	end
 
 	XPerl_MinimapButton_Init = nil
 end
@@ -3643,10 +3625,10 @@ if (LibStub or LoadAddOn("LibStub")) then
 					if (XPerl_Target_SetHealth and guid == targetGUID) then
 						XPerl_Target_SetHealth(XPerl_Target)
 					end
-					if (XPerl_Target_SetHealth and guid == focusGUID) then
+					if (XPerl_Target_SetHealth and XPerl_Focus and guid == focusGUID) then
 						XPerl_Target_SetHealth(XPerl_Focus)
 					end
-					if (XPerl_Target_SetHealth and guid == targettargetGUID) then
+					if (XPerl_Target_SetHealth and XPerl_TargetTarget and guid == targettargetGUID) then
 						XPerl_Target_SetHealth(XPerl_TargetTarget)
 					end
 				end
