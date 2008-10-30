@@ -653,7 +653,11 @@ function XPerl_Options_TextureSelect_Onload(self)
 	self.scrollBar = getglobal(self:GetName().."scrollBar")
 	self.list = XPerl_AllBarTextures()
 	self.Selection = 1
-	self.scrollBar.bar:SetValue(max(0, min(self.Selection - 5, #self.list - 8)))
+	if (self.list) then
+		self.scrollBar.bar:SetValue(max(0, min(self.Selection - 5, #self.list - 8)))
+	else
+		self.scrollBar.bar:SetValue(1)
+	end
 
 	self.UpdateFunction = function()
 		this:GetParent():SetBarColours()

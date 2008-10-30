@@ -1072,6 +1072,9 @@
 				XPerl_Options_TextureSelect_Onload(self)
 			</OnLoad>
 			<OnShow>
+				if (not self.list) then
+					self.list = XPerl_AllBarTextures()
+				end
 				if (XPerlDB and XPerlDB.bar.texture) then
 					for k,v in pairs(self.list) do
 						if (XPerlDB.bar.texture[1] == v[1] and XPerlDB.bar.texture[2] == v[2]) then

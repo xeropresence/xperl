@@ -2,6 +2,9 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.1d
+Fixed: Upgrade error. Oops
+
 3.0.1c
 Fixed: the Power Word: Shield highlight not working on first login.
 Fixed: Circle of Healing no longer highlights target group, because of change of spell behaviour.
