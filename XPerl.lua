@@ -982,18 +982,21 @@ function XPerl_MinimapButton_Init(self)
 
 	self.UpdateTooltip = XPerl_MinimapButton_OnEnter
 
-	ldbSource = LibStub:GetLibrary("LibDataBroker-1.1"):NewDataObject("X-Perl UnitFrames", {
-		type = "data source",
-		text = XPerl_ShortProductName,
-		icon = XPerl_ModMenuIcon,
-	})
+	local LDB = LibStub and LibStub("LibDataBroker-1.1", true)
+	if (LDB) then
+		ldbSource = LDB:NewDataObject("X-Perl UnitFrames", {
+			type = "data source",
+			text = XPerl_ShortProductName,
+			icon = XPerl_ModMenuIcon,
+		})
 
-	if (ldbSource) then
-		function ldbSource:Update()
-			self.text = XPerl_Version
+		if (ldbSource) then
+			function ldbSource:Update()
+				self.text = XPerl_Version
+			end
+			ldbSource.OnClick = XPerl_MinimapButton_OnClick
+			ldbSource.OnTooltipShow = XPerl_MinimapButton_Details
 		end
-		ldbSource.OnClick = XPerl_MinimapButton_OnClick
-		ldbSource.OnTooltipShow = XPerl_MinimapButton_Details
 	end
 
 	XPerl_MinimapButton_Init = nil

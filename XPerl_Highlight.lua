@@ -1495,7 +1495,7 @@ function xpHigh:UNIT_SPELLCAST_SENT(unit, spell, rank, targetName)
 			self.castTarget = targetName
 			self.castGUID = guid
 			if (conf.highlight.HEAL) then
-				self:Add(guid or targetName, "HEAL", max(2, t), "player")
+				self:Add(guid or targetName, "HEAL", max(0.5, t), "player")
 			end
 			if (self.distribution) then
 				if (guid) then
@@ -1681,10 +1681,6 @@ function xpHigh.clEvents:SPELL_AURA_APPLIED(timestamp, event, srcGUID, srcName, 
 						id = spellId,
 					})
 					self:Send(dstGUID)
---@debug@
-				else
-					self:Print("Did not get rankAmount for spell |cFFFFFF80%s (Rank %s)", spellName, tostring(spellId))
---@end-debug@
 				end
 			end
 		end
@@ -1934,6 +1930,13 @@ function xpHigh:PLAYER_TARGET_CHANGED()
 	end
 end
 
+-- PLAYER_ENTERING_WORLD
+function xpHigh:PLAYER_ENTERING_WORLD()
+	self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+	playerGUID = UnitGUID("player")
+	self.PLAYER_ENTERING_WORLD = nil
+end
+
 -- xpHigh:RefreshAllAuras
 function xpHigh:RefreshAllAuras()
 	self.expectingPOM = nil
@@ -2038,6 +2041,9 @@ function xpHigh:OptionChange()
 	self:MakeNameToGUIDLookup()
 
 	playerGUID = UnitGUID("player")
+	if (not playerGUID and self.PLAYER_ENTERING_WORLD) then
+		self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	end
 end
 
 XPerl_RegisterOptionChanger(xpHigh.OptionChange, xpHigh)

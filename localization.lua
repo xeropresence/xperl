@@ -160,7 +160,8 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(25396)] = 3,			-- Healing Wave
 		[GetSpellInfo(25420)] = 2,			-- Lesser Healing Wave
 		[GetSpellInfo(27137)] = 1.5,		-- Flash of Light
-		[GetSpellInfo(27136)] = 2.5			-- Holy Light
+		[GetSpellInfo(27136)] = 2.5,		-- Holy Light
+		[GetSpellInfo(34866)] = 0.5,		-- Circle of Healing
 	},
 	buffSpells = {
 		PRIEST = {
@@ -178,7 +179,6 @@ XPERL_HIGHLIGHT_SPELLS = {
 	},
 	groupHealSpells = {
 		[GetSpellInfo(25308)] = 3,			-- Prayer of Healing
-		[GetSpellInfo(34866)] = -1			-- Circle of Healing		Negative means any group
 	},
 }
 
