@@ -2,6 +2,10 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.1e
+Fixed: Whacky minimap button and threat dial on target frame. Oops on that.
+Fixed: 5-second rule mana regen indication for player frame.
+
 3.0.1d
 Fixed: Upgrade error. Oops
 
