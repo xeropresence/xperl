@@ -9,6 +9,7 @@ local percD	= "%d"..PERCENT_SYMBOL
 -- Some local copies for speed
 local strsub = strsub
 local format = format
+local cos, sin, abs = cos, sin, abs
 local max = math.max
 local min = math.min
 local IsItemInRange = IsItemInRange
@@ -77,18 +78,14 @@ end
 
 local new, del = XPerl_GetReusableTable, XPerl_FreeTable
 
-local rotate
-do
-	local cos, sin, abs = math.cos, math.sin, math.abs
-	function rotate(angle)
-		local A = cos(angle)
-		local B = sin(angle)
-		local ULx, ULy = -0.5 * A - -0.5 * B, -0.5 * B + -0.5 * A
-		local LLx, LLy = -0.5 * A - 0.5 * B, -0.5 * B + 0.5 * A
-		local URx, URy = 0.5 * A - -0.5 * B, 0.5 * B + -0.5 * A
-		local LRx, LRy = 0.5 * A - 0.5 * B, 0.5 * B + 0.5 * A
-		return ULx+0.5, ULy+0.5, LLx+0.5, LLy+0.5, URx+0.5, URy+0.5, LRx+0.5, LRy+0.5
-	end
+local function rotate(angle)
+	local A = cos(angle)
+	local B = sin(angle)
+	local ULx, ULy = -0.5 * A - -0.5 * B, -0.5 * B + -0.5 * A
+	local LLx, LLy = -0.5 * A - 0.5 * B, -0.5 * B + 0.5 * A
+	local URx, URy = 0.5 * A - -0.5 * B, 0.5 * B + -0.5 * A
+	local LRx, LRy = 0.5 * A - 0.5 * B, 0.5 * B + 0.5 * A
+	return ULx+0.5, ULy+0.5, LLx+0.5, LLy+0.5, URx+0.5, URy+0.5, LRx+0.5, LRy+0.5
 end
 
 -- meta table for string based colours. Allows for other mods changing class colours and things all working
