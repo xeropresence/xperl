@@ -903,13 +903,9 @@ function XPerl_Player_Set_Bits(self)
 		end
 	end
 
-	if (UnitPowerMax("player", 0) == 0) then
-		MakeEnergyTicker = nil
-	else
-		if (pconf.energyTicker) then
-			if (not self.statsFrame.energyTicker) then
-				MakeEnergyTicker(self)
-			end
+	if (pconf.energyTicker) then
+		if (not self.statsFrame.energyTicker) then
+			MakeEnergyTicker(self)
 		end
 	end
 
