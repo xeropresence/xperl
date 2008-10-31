@@ -576,17 +576,30 @@ XPerl_Player_Events.UNIT_MAXHEALTH = XPerl_Player_Events.UNIT_HEALTH
 XPerl_Player_Events.PLAYER_DEAD    = XPerl_Player_Events.UNIT_HEALTH
 
 function XPerl_Player_Events:UNIT_SPELLCAST_SENT(spell, rank, targetName, castID)
-	if (pconf.energyTicker and spell and UnitPowerType(self.partyid) == 0) then
-		self.tickerPrevMana = UnitMana(self.partyid)
-		self:RegisterEvent("UNIT_MANA")
+	if (pconf.energyTicker and spell and UnitPowerMax(self.partyid, 0) > 0) then
+		self.tickerPrevMana = UnitPower(self.partyid, 0)
+		self:UnregisterEvent("UNIT_MANA")
+	end
+end
+
+-- checkUsedMana
+local function checkUsedMana(self)
+	if (UnitPower(self.partyid, 0) < self.tickerPrevMana) then
+		local diffTime = GetTime() - self.tickerCastTime
+		self.statsFrame.energyTicker:SetValue(diffTime)
+		self.statsFrame.energyTicker:Show()
+		return true
 	end
 end
 
 -- UNIT_SPELLCAST_SUCCEEDED
 function XPerl_Player_Events:UNIT_SPELLCAST_SUCCEEDED(spell, rank, castID)
-	if (pconf.energyTicker and spell and UnitPowerType(self.partyid) == 0) then
-		self.waitForManaReduction = true
+	if (pconf.energyTicker and spell and UnitPowerMax(self.partyid, 0) > 0) then
 		self.tickerCastTime = GetTime()
+		if (not checkUsedMana(self)) then
+			self.waitForManaReduction = true
+			self:RegisterEvent("UNIT_MANA")
+		end
 	end
 end
 
@@ -595,14 +608,7 @@ function XPerl_Player_Events:UNIT_MANA()
 	XPerl_Player_UpdateMana(self)
 
 	if (self.waitForManaReduction) then
-		if (UnitMana(self.partyid) < self.tickerPrevMana) then
-			local diffTime = GetTime() - self.tickerCastTime
-
-			if (diffTime < 1) then
-				self.statsFrame.energyTicker:SetValue(diffTime)
-				self.statsFrame.energyTicker:Show()
-			end
-		end
+		checkUsedMana(self)
 
 		self.waitForManaReduction = nil
 		self.tickerPrevMana = nil
