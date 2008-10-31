@@ -4861,7 +4861,6 @@
 								self.configIndex = "energyTicker"
 								self.configClick = function()
 									XPerl_Player_SetWidth(XPerl_Player)
-									XPerl_Player_TickerShowHide(XPerl_Player)
 								end
 							</OnLoad>
 						</Scripts>

@@ -120,42 +120,9 @@ local function XPerl_Player_CombatFlash(self, elapsed, argNew, argGreen)
 	end
 end
 
--- SetupTickerColour
-local function SetupTickerColour(self)
-	local t = self.statsFrame.energyTicker
-	if (t) then
-		local p = UnitPowerType(self.partyid)
-
-		if (p ~= t.type) then
-			t.type = p
-			if (p == 0) then
-				t:Hide()
-				t:SetStatusBarColor(0.4, 0.7, 1)
-				t.spark:SetVertexColor(0.4, 0.7, 1)
-				t:SetMinMaxValues(0, 5)
-			else
-				t:SetStatusBarColor(1, 1, 0.5)
-				t.spark:SetVertexColor(1, 1, 0.5)
-				t:SetMinMaxValues(0, 2)
-			end
-		end
-	end
-end
-
 -- XPerl_Player_UpdateManaType
 local function XPerl_Player_UpdateManaType(self)
 	XPerl_SetManaBarType(self)
-
-	if (UnitPowerType(self.partyid) == 3) then
-		self.EnergyEnabled = true
-		if (self.statsFrame.energyTicker) then
-			self.statsFrame.energyTicker.fsrEnabled = nil
-		end
-	else
-		self.EnergyEnabled = nil
-	end
-	SetupTickerColour(self)
-	XPerl_Player_TickerShowHide(self)
 end
 
 -- XPerl_Player_UpdateLeader()
@@ -244,7 +211,6 @@ local function XPerl_Player_UpdateRep(self)
 		else
 			rb.text:SetFormattedText("%d/%d", value, max)
 		end
-		--rb.text:SetText(name)
 	end
 end
 
@@ -620,7 +586,6 @@ end
 function XPerl_Player_Events:UNIT_SPELLCAST_SUCCEEDED(spell, rank, castID)
 	if (pconf.energyTicker and spell and UnitPowerType(self.partyid) == 0) then
 		self.waitForManaReduction = true
-		self.tickerPrevMana = UnitMana(self.partyid)
 		self.tickerCastTime = GetTime()
 	end
 end
@@ -634,7 +599,6 @@ function XPerl_Player_Events:UNIT_MANA()
 			local diffTime = GetTime() - self.tickerCastTime
 
 			if (diffTime < 1) then
-				self.statsFrame.energyTicker.fsrEnabled = true
 				self.statsFrame.energyTicker:SetValue(diffTime)
 				self.statsFrame.energyTicker:Show()
 			end
@@ -659,24 +623,10 @@ XPerl_Player_Events.UNIT_MAXRUNIC_POWER	= XPerl_Player_Events.UNIT_RUNIC_POWER
 XPerl_Player_Events.UNIT_ENERGY			= XPerl_Player_Events.UNIT_MAXMANA
 XPerl_Player_Events.UNIT_MAXENERGY		= XPerl_Player_Events.UNIT_ENERGY
 
---function XPerl_Player_Events:UNIT_ENERGY()
---	XPerl_Player_UpdateMana(self)
---
---	local e = UnitMana(self.partyid)
---	if (e == self.EnergyLast + 20 and self.statsFrame.energyTicker) then
---		self.statsFrame.energyTicker.EnergyTime = GetTime()
---	end
---	self.EnergyLast = e
---
---	XPerl_Player_TickerShowHide(self)
---end
---XPerl_Player_Events.UNIT_MAXENERGY       = XPerl_Player_Events.UNIT_ENERGY
-
 -- UNIT_DISPLAYPOWER
 function XPerl_Player_Events:UNIT_DISPLAYPOWER()
 	XPerl_Player_UpdateManaType(self)
 	XPerl_Player_UpdateMana(self)
-	XPerl_Player_TickerShowHide(self)
 end
 
 -- UNIT_NAME_UPDATE
@@ -694,11 +644,6 @@ XPerl_Player_Events.PLAYER_LEVEL_UP = XPerl_Player_Events.UNIT_LEVEL
 -- PLAYER_XP_UPDATE
 function XPerl_Player_Events:PLAYER_XP_UPDATE()
 	XPerl_Player_UpdateXP(self)
-end
-
--- UPDATE_STEALTH
-function XPerl_Player_Events:UPDATE_STEALTH()
-	XPerl_Player_TickerShowHide(self)
 end
 
 -- UPDATE_FACTION
@@ -790,49 +735,16 @@ end
 -- XPerl_Player_Energy_TickWatch
 function XPerl_Player_Energy_OnUpdate(self, elapsed)
 	local sparkPosition
-	if (self.fsrEnabled) then
-		local val = self:GetValue() + elapsed
-		if (val > 5) then
-			self:Hide()
-			self.fsrEnabled = false
-		else
-			self:SetValue(val)
-			sparkPosition = self:GetWidth() * (val / 5)
-		end
+
+	local val = self:GetValue() + elapsed
+	if (val > 5) then
+		self:Hide()
 	else
-		local remainder = (GetTime() - self.EnergyTime) % 2
-		self:SetValue(remainder)
-		sparkPosition = self:GetWidth() * (remainder / 2)
+		self:SetValue(val)
+		sparkPosition = self:GetWidth() * (val / 5)
 	end
 
 	self.spark:SetPoint("CENTER", self, "LEFT", sparkPosition, 0)
-end
-
--- XPerl_Player_TickerShowHide
-function XPerl_Player_TickerShowHide(self)
-	local f = self.statsFrame.energyTicker
-	if (f) then
-		local t = UnitPowerType(self.partyid)
-		local show
-
-		if (pconf.energyTicker and self.EnergyEnabled and not UnitIsDeadOrGhost(self.partyid)) then
-			if (t == 3) then
-				local e, m = UnitMana(self.partyid), UnitManaMax(self.partyid)
-				show = (e < m or UnitAffectingCombat(self.partyid) or IsStealthed()) and not UnitIsDeadOrGhost(self.partyid)
-			end
-		end
-
-		if (show) then
-			if (t == 0) then
-				f:SetStatusBarColor(0.4, 0.7, 1)
-			else
-				f:SetStatusBarColor(1, 1, 0.5)
-			end
-			f:Show()
-		else
-			f:Hide()
-		end
-	end
 end
 
 -- XPerl_Player_SetWidth
@@ -906,7 +818,9 @@ local function MakeEnergyTicker(self)
 	f.spark:SetHeight(12)
 	f.spark:SetPoint("CENTER", 0, 0)
 
-	SetupTickerColour(self)
+	f:SetStatusBarColor(0.4, 0.7, 1)
+	f.spark:SetVertexColor(0.4, 0.7, 1)
+	f:SetMinMaxValues(0, 5)
 
 	f.EnergyTime = 0
 	f:SetScript("OnUpdate", XPerl_Player_Energy_OnUpdate)
@@ -930,9 +844,6 @@ local function MakeXPBars(self)
 
 	f2:SetPoint("TOPLEFT", f, "TOPLEFT", 0, 0)
 	f2:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", 0, 0)
-
-	--f:SetStatusBarColor(0, 0.8, 0)
-	--f2:SetStatusBarColor(0, 0.8, 0)
 
 	MakeXPBars = nil
 end
@@ -992,20 +903,14 @@ function XPerl_Player_Set_Bits(self)
 		end
 	end
 
-	if (playerClass ~= "WARRIOR") then
+	if (UnitPowerMax("player", 0) == 0) then
+		MakeEnergyTicker = nil
+	else
 		if (pconf.energyTicker) then
 			if (not self.statsFrame.energyTicker) then
 				MakeEnergyTicker(self)
 			end
-
-			if (playerClass == "ROGUE" or playerClass == "DRUID") then
-				self:RegisterEvent("UPDATE_STEALTH")
-			end
-		else
-			self:UnregisterEvent("UPDATE_STEALTH")
 		end
-	else
-		MakeEnergyTicker = nil
 	end
 
 	if (playerClass == "DRUID" and not self.statsFrame.druidBar) then
