@@ -584,7 +584,7 @@ end
 
 -- checkUsedMana
 local function checkUsedMana(self)
-	if (UnitPower(self.partyid, 0) < self.tickerPrevMana) then
+	if (self.tickerPrevMana and UnitPower(self.partyid, 0) < self.tickerPrevMana) then
 		local diffTime = GetTime() - self.tickerCastTime
 		self.statsFrame.energyTicker:SetValue(diffTime)
 		self.statsFrame.energyTicker:Show()
