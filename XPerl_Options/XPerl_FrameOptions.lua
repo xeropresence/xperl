@@ -2136,7 +2136,7 @@ local function XPerl_Global_ConfigDefault(default)
 	}
 
 	default.bar = {
-		texture		= {"Blizzard", "Interface\\TargetingFrame\\UI-StatusBar"},
+		texture		= {"Perl v2", "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"},
 		background	= 1,
 --		fading		= nil,		-- 1.8.9
 		fadeTime	= 0.5,		-- 1.9.1
