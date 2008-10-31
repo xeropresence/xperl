@@ -2135,10 +2135,8 @@ local function XPerl_Global_ConfigDefault(default)
 		gradient	= XPerl_DefaultGradientColours(),
 	}
 
-	local list = XPerl_AllBarTextures(true)
-
 	default.bar = {
-		texture		= list[1],
+		texture		= {"Blizzard", "Interface\\TargetingFrame\\UI-StatusBar"},
 		background	= 1,
 --		fading		= nil,		-- 1.8.9
 		fadeTime	= 0.5,		-- 1.9.1
