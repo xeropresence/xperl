@@ -187,7 +187,7 @@ function mod:GeneralTooltip(name, anchor)
 			if (xpUsage.revision) then
 				local r = "r"..xpUsage.revision
 				str = format("%s %s |cFF%s%s", XPerl_ProductName, ver, r == XPerl_GetRevision() and "80FF80" or "FF8080", r)
-			elseif (name == UnitName(player)) then
+			elseif (name == UnitName("player")) then
 				str = format("%s %s |cFF80FF80%s", XPerl_ProductName, ver, XPerl_GetRevision())
 			end
 
