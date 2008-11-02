@@ -386,6 +386,8 @@ function xpHigh:SetHighlight(frame, guid)
 		unitid = SecureButton_GetUnit(frame)
 		if (unitid) then
 			guid = UnitGUID(unitid)
+		else
+			return
 		end
 	end
 
@@ -930,8 +932,10 @@ function xpHigh:ShowMending(frame, show)
 
 		if (h.mending) then
 			local unit = SecureButton_GetUnit(frame)
-			h.mending.endTime = self:GetMyPomEndTime(unit) or 30
-			h.mending:Show()
+			if (unit) then
+				h.mending.endTime = self:GetMyPomEndTime(unit) or 30
+				h.mending:Show()
+			end
 		end
 		return
 	end
