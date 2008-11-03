@@ -794,6 +794,7 @@ function XPerl_Player_SetWidth(self)
 	end
 
 	XPerl_SavePosition(self, true)
+	XPerl_RestorePosition(self)
 end
 
 -- CreateBar(self, name)
