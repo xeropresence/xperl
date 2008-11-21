@@ -202,7 +202,7 @@ end
 -- Combo Points
 ---------------
 local function XPerl_Target_UpdateCombo(self)
-	local combopoints = GetComboPoints("player", self.partyid)
+	local combopoints = GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player", self.partyid)
 	local r, g, b = GetComboColour(combopoints)
 	if (tconf.combo.enable) then
 		self.cpFrame:Hide()
@@ -244,7 +244,7 @@ end
 ---------------------
 local function XPerl_Target_DebuffUpdate(self)
 	local partyid = self.partyid
-	if (GetComboPoints("player", partyid) == 0) then
+	if (GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player", partyid) == 0) then
 		local numDebuffs = 0
 		if (playerClass == "WARRIOR") then
 			numDebuffs = TargetDebuffInformation(XPERL_SPELL_SUNDER)
@@ -1263,9 +1263,9 @@ function XPerl_Target_Events:UNIT_CLASSIFICATION_CHANGED()
 	XPerl_Target_UpdateClassification(self)
 end
 
--- PLAYER_COMBO_POINTS
+-- UNIT_COMBO_POINTS
 function XPerl_Target_Events:UNIT_COMBO_POINTS(unit)
-	if (unit == "player") then
+	if (unit == "player") or (unit == "vehicle") then
 		XPerl_Target_UpdateCombo(self)
 	end
 end
@@ -1491,10 +1491,10 @@ function XPerl_Target_Set_BlizzCPFrame(self)
 		end
 
 		ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-		ComboFrame:RegisterEvent("PLAYER_COMBO_POINTS")
+		ComboFrame:RegisterEvent("UNIT_COMBO_POINTS")
 	else
 		ComboFrame:Hide()
 		ComboFrame:UnregisterEvent("PLAYER_TARGET_CHANGED")
-		ComboFrame:UnregisterEvent("PLAYER_COMBO_POINTS")
+		ComboFrame:UnregisterEvent("UNIT_COMBO_POINTS")
 	end
 end
