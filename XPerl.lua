@@ -668,12 +668,16 @@ function XPerl_SetHealthBar(self, hp, Max)
 		if (self.conf.healerMode.enable and self.conf.healerMode.type ~= 2) then
 			if (self.conf.healerMode.type == 1) then
 				if (Max > 100000) then
-					hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+					if (hp < 100000) then
+						hbt:SetFormattedText("%d/%d%s", (hp - Max), Max / largeNumDiv, largeNumTag)
+					else
+						hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+					end
 				else
 					hbt:SetFormattedText("%d/%d", hp - Max, Max)
 				end
 			else
-				if (Max > 100000) then
+				if (Max > 100000 and hp > 100000) then
 					hbt:SetFormattedText("%d%s", (hp - Max) / largeNumDiv, largeNumTag)
 				else
 					hbt:SetFormattedText("%d", hp - Max)
@@ -681,7 +685,11 @@ function XPerl_SetHealthBar(self, hp, Max)
 			end
 		else
 			if (Max > 100000) then
-				hbt:SetFormattedText("%.1f%s/%.1f%s", hp / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+				if (hp < 100000) then
+					hbt:SetFormattedText("%d/%.1f%s", hp, Max / largeNumDiv, largeNumTag)
+				else
+					hbt:SetFormattedText("%.1f%s/%.1f%s", hp / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+				end
 			else
 				hbt:SetFormattedText("%d/%d", hp, Max)
 			end
@@ -1357,19 +1365,6 @@ function XPerl_SetUnitNameColor(self, unit)
 	self:SetTextColor(color.r, color.g, color.b, conf.transparency.text)
 end
 
--- XPerl_HasBuff(unit, buffName)
-function XPerl_HasBuff(unit, buffName)
-	for i = 1,40 do
-		local name = UnitBuff(unit, i)
-		if (not name) then
-			break
-		end
-		if (name == buffName) then
-			return true
-		end
-	end
-end
-
 -- XPerl_CombatFlashSet
 function XPerl_CombatFlashSet(self, elapsed, argNew, argGreen)
 	if (not conf.combatFlash) then
@@ -1482,7 +1477,7 @@ function XPerl_DebufHighlightInit()
 			if (not conf.highlightDebuffs.class) then
 				show = Curses.Magic or Curses.Curse or Curses.Poison or Curses.Disease
 			end
-			return Curses.Poison or Curses.Disease or show
+			return Curses.Curse or Curses.Poison or Curses.Disease or show
 		end
 
 	elseif (playerClass == "ROGUE") then
@@ -3057,7 +3052,7 @@ local function XPerlSetPortrait3D(self, argUnit)
 	self:SetUnit(argUnit)
 
 	-- Workaround for the Dragonmaw illusion. They set the cameras wrong. 1 is 0, 0 is 1
-	if (strfind(UnitName(argUnit), "Dragonmaw Peon") or strfind(UnitName(argUnit), "Dragonmaw Transporter") or XPerl_HasBuff(argUnit, "Dragonmaw Illusion")) then
+	if (strfind(UnitName(argUnit), "Dragonmaw Peon") or strfind(UnitName(argUnit), "Dragonmaw Transporter") or UnitBuff(argUnit, "Dragonmaw Illusion")) then
 		self:SetCamera(1)
 	else
 		self:SetCamera(0)
@@ -3481,7 +3476,11 @@ if (LibStub or LoadAddOn("LibStub")) then
 			XPerl_UnitHealth = QuickHealth.UnitHealth
 		else
 			function XPerl_UnitHealth(...)
-				return QuickHealth:UnitHealth(...)
+				if (UnitCanAttack("player", ...)) then
+					return UnitHealth(...)
+				else
+					return QuickHealth:UnitHealth(...)
+				end
 			end
 		end
 	end
@@ -3754,9 +3753,9 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 		return
 	end
 
-	local mode = self.conf.threatMode or "portraitFrame"
+	local mode = self.conf.threatMode or (self.conf.portrait and "portraitFrame" or "nameFrame")
 	local t = self.threatFrames and self.threatFrames[mode]
-	if (not self.conf.threat or (GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0)) then
+	if (not self.conf.threat) then	-- or (GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0)) then
 		if (t) then
 			t:Hide()
 		end
@@ -3774,7 +3773,7 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 			self.threatFrames = {}
 		end
 		if (self[mode]) then		-- If desired parent frame exists
-			t = CreateFrame("Frame", self:GetName()..mode, self[mode], "XPerl_ThreatTemplate"..mode)
+			t = CreateFrame("Frame", self:GetName().."Threat"..mode, self[mode], "XPerl_ThreatTemplate"..mode)
 			t:SetAllPoints()
 			self.threatFrames[mode] = t
 		end

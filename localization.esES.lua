@@ -2,7 +2,7 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-if (GetLocale() == "esES") then
+if (GetLocale() == "esES" or GetLocale() == "esMX") then
 
 	-- Thanks Hastings for translations
 	XPerl_LongDescription	= "Reemplazo para los marcos de unidades, con nuevo aspecto para Jugador, Mascota, Grupo, Objetivo, Objetivo del Objetivo, Foco y Banda"
