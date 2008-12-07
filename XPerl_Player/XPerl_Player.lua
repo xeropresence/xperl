@@ -46,12 +46,11 @@ function XPerl_Player_OnLoad(self)
 	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
-			"UNIT_SPELLCAST_SUCCEEDED", "UNIT_THREAT_SITUATION_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITING_VEHICLE",
+			"UNIT_SPELLCAST_SUCCEEDED", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE",
 			"UNIT_SPELLCAST_SENT"}
 
 	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
-	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED", 
-	--						"UNIT_THREAT_SITUATION_UPDATE"})
+	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED"})
 	--XPerl_RegisterBasics(self, XPerl_Player_Events)
 
 	for i,e in pairs(events) do
@@ -420,15 +419,15 @@ function XPerl_PlayerStatus_OnUpdate(self, val, max)
 		if (val and max) then
 			local test = val / max
 
-			if ( test <= testLow and not XPerl_LowHealthFrame.frameFlash and not UnitIsDeadOrGhost(self.partyid)) then
+			if ( test <= testLow and not XPerl_LowHealthFrame.frameFlash and not UnitIsDeadOrGhost("player")) then
 				XPerl_FrameFlash(XPerl_LowHealthFrame)
-			elseif ( (test >= testHigh and XPerl_LowHealthFrame.frameFlash) or UnitIsDeadOrGhost(self.partyid) ) then
+			elseif ( (test >= testHigh and XPerl_LowHealthFrame.frameFlash) or UnitIsDeadOrGhost("player") ) then
 				XPerl_FrameFlashStop(XPerl_LowHealthFrame, "out")
 			end
 			return
 		else
 			if (not UnitOnTaxi("player")) then
-				if (isOutOfControl and not XPerl_OutOfControlFrame.frameFlash and not UnitOnTaxi(self.partyid)) then
+				if (isOutOfControl and not XPerl_OutOfControlFrame.frameFlash and not UnitOnTaxi("player")) then
 					XPerl_FrameFlash(XPerl_OutOfControlFrame)
 				elseif (not isOutOfControl and XPerl_OutOfControlFrame.frameFlash) then
 					XPerl_FrameFlashStop(XPerl_OutOfControlFrame, "out")
@@ -486,7 +485,6 @@ function XPerl_Player_UpdateDisplay (self)
 	XPerl_Player_UpdateHealth(self)
 	XPerl_Player_UpdateBuffs(self)
 	XPerl_Unit_UpdatePortrait(self)
-	--XPerl_Unit_ThreatStatus(self)
 end
 
 -- EVENTS AND STUFF
@@ -687,6 +685,7 @@ function XPerl_Player_Events:PLAYER_REGEN_ENABLED()
 
 	if (self:GetAttribute("unit") ~= self.partyid) then
 		self:SetAttribute("unit", self.partyid)
+		XPerl_Player_UpdateDisplay(self)
 	end
 end
 
@@ -718,24 +717,24 @@ end
 
 -- UNIT_ENTERED_VEHICLE
 function XPerl_Player_Events:UNIT_ENTERED_VEHICLE(showVehicle)
-	self.partyid = "vehicle"
-	if (not InCombatLockdown()) then
-		self:SetAttribute("unit", "vehicle")
+	if (showVehicle) then
+		self.partyid = "vehicle"
+		if (not InCombatLockdown()) then
+			self:SetAttribute("unit", "vehicle")
+		end
+		XPerl_Player_UpdateDisplay(self)
 	end
-	XPerl_Player_UpdateDisplay(self)
 end
 
--- UNIT_EXITING_VEHICLE
-function XPerl_Player_Events:UNIT_EXITING_VEHICLE()
-	self.partyid = "player"
-	if (not InCombatLockdown()) then
-		self:SetAttribute("unit", "player")
+-- UNIT_EXITED_VEHICLE
+function XPerl_Player_Events:UNIT_EXITED_VEHICLE()
+	if (self.partyid ~= "player") then
+		self.partyid = "player"
+		if (not InCombatLockdown()) then
+			self:SetAttribute("unit", "player")
+		end
+		XPerl_Player_UpdateDisplay(self)
 	end
-	XPerl_Player_UpdateDisplay(self)
-end
-
-function XPerl_Player_Events:UNIT_THREAT_SITUATION_UPDATE()
---	XPerl_Unit_ThreatStatus(self)
 end
 
 -- XPerl_Player_Energy_TickWatch

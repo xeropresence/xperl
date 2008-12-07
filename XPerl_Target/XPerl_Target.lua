@@ -948,7 +948,7 @@ function XPerl_Target_UpdateDisplay(self)
 		XPerl_Target_SetMana(self)
 		XPerl_Target_UpdateHealth(self)
 		XPerl_Target_Update_Combat(self)
-		XPerl_Unit_ThreatStatus(self, "player", true)
+		XPerl_Unit_ThreatStatus(self, self.partyid == "target" and "player" or nil, true)
 
 		RaidTargetUpdate(self)
 
@@ -1049,11 +1049,11 @@ function XPerl_Target_Events:VARIABLES_LOADED()
 end
 
 function XPerl_Target_Events:PLAYER_REGEN_ENABLED()
-	XPerl_Unit_ThreatStatus(self, "player")
+	XPerl_Unit_ThreatStatus(self, self.partyid == "target" and "player" or nil)
 end
 
 function XPerl_Target_Events:PLAYER_REGEN_DISABLED()
-	XPerl_Unit_ThreatStatus(self, "player")
+	XPerl_Unit_ThreatStatus(self, self.partyid == "target" and "player" or nil)
 end
 
 -- PLAYER_ENTERING_WORLD
@@ -1335,8 +1335,10 @@ function XPerl_Target_Events:INSPECT_TALENT_READY()
 end
 
 function XPerl_Target_Events:UNIT_THREAT_LIST_UPDATE(unit)
-	if (unit == self.partyid) then
-		XPerl_Unit_ThreatStatus(self, "player")
+	if (UnitCanAttack("player", self.partyid)) then
+		XPerl_Unit_ThreatStatus(self, self.partyid == "target" and "player" or nil)
+	else
+		XPerl_Unit_ThreatStatus(self)
 	end
 end
 
@@ -1492,6 +1494,41 @@ function XPerl_Target_Set_BlizzCPFrame(self)
 
 		ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
 		ComboFrame:RegisterEvent("UNIT_COMBO_POINTS")
+
+		function ComboFrame_Update()
+			local comboPoints = GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player", "target")
+			local comboPoint, comboPointHighlight, comboPointShine;
+			if ( comboPoints > 0 ) then
+				if ( not ComboFrame:IsShown() ) then
+					ComboFrame:Show();
+					UIFrameFadeIn(ComboFrame, COMBOFRAME_FADE_IN);
+				end
+
+				local fadeInfo = {};
+				for i=1, MAX_COMBO_POINTS do
+					comboPointHighlight = getglobal("ComboPoint"..i.."Highlight");
+					comboPointShine = getglobal("ComboPoint"..i.."Shine");
+					if ( i <= comboPoints ) then
+						if ( i > COMBO_FRAME_LAST_NUM_POINTS ) then
+							-- Fade in the highlight and set a function that triggers when it is done fading
+							fadeInfo.mode = "IN";
+							fadeInfo.timeToFade = COMBOFRAME_HIGHLIGHT_FADE_IN;
+							fadeInfo.finishedFunc = ComboPointShineFadeIn;
+							fadeInfo.finishedArg1 = comboPointShine;
+							UIFrameFade(comboPointHighlight, fadeInfo);
+						end
+					else
+						comboPointHighlight:SetAlpha(0);
+						comboPointShine:SetAlpha(0);
+					end
+				end
+			else
+				ComboPoint1Highlight:SetAlpha(0);
+				ComboPoint1Shine:SetAlpha(0);
+				ComboFrame:Hide();
+			end
+			COMBO_FRAME_LAST_NUM_POINTS = comboPoints;
+		end
 	else
 		ComboFrame:Hide()
 		ComboFrame:UnregisterEvent("PLAYER_TARGET_CHANGED")

@@ -2,6 +2,12 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.2
+NEW: Threat display for party and focus frames, to work based on your target.
+Fixed: A few issues with vehicles (will only now show intended vehicles, and not ones such as being in the air at Malygos' Vortex, or on a Hog/Mammoth).
+Fixed: Combo points now show correctly for vehicles.
+Changed: Health display of large numbers improved to cater for VERY large numbers (Like Sappiron's 13 million). Will now show 13.0M/13.0M. At lower 'current' HP values, the suffix will change and you'll get 123.4K/13.0M, until it's under 100k and then it's shown as 12345/13.0M. So now instead of seeing you wiped at 1%, you'll be able to gauge the precise amount by which you sucked.
+
 3.0.1f
 Fixed: New install error.
 

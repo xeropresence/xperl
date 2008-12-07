@@ -87,15 +87,19 @@ function XPerl_Player_Pet_OnLoad(self)
 
 	--RegisterUnitWatch(self)
 
-	local events = {"UNIT_PET", "PET_ATTACK_START", "UNIT_COMBAT", "UNIT_SPELLMISS", "VARIABLES_LOADED",
-					"PLAYER_REGEN_ENABLED", "PLAYER_ENTERING_WORLD", "UNIT_ENTERED_VEHICLE", "UNIT_EXITING_VEHICLE"}
+	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",
+					"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+					"UNIT_MANA", "UNIT_ENERGY", "UNIT_RUNIC_POWER", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
+					"UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS", "UNIT_AURA",
+					"UNIT_PET", "PET_ATTACK_START", "UNIT_COMBAT", "UNIT_SPELLMISS", "VARIABLES_LOADED",
+					"PLAYER_REGEN_ENABLED", "PLAYER_ENTERING_WORLD", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
 
-	XPerl_UnitEvents(self, XPerl_Player_Pet_Events, {"UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS",
-						"UNIT_AURA"})
-	XPerl_RegisterBasics(self, XPerl_Player_Pet_Events)
+	--XPerl_UnitEvents(self, XPerl_Player_Pet_Events, {"UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS",
+	--					"UNIT_AURA"})
+	--XPerl_RegisterBasics(self, XPerl_Player_Pet_Events)
 
 	self.time = 0
 
@@ -294,10 +298,18 @@ end
 -------------------
 -- Event Handler --
 -------------------
-function XPerl_Player_Pet_OnEvent(self, event, ...)
+function XPerl_Player_Pet_OnEvent(self, event, unit, ...)
 	local func = XPerl_Player_Pet_Events[event]
 	if (func) then
-		func(self, ...)
+		if (strfind(event, "^UNIT_")) then
+			if (unit == self.partyid and not strfind(event, "VEHICLE")) then
+				func(self, ...)
+			else
+				func(self, unit, ...)
+			end
+		else
+			func(self, unit, ...)
+		end
 	else
 XPerl_ShowMessage("EXTRA EVENT")
 	end
@@ -348,13 +360,15 @@ function XPerl_Player_Pet_Events:UNIT_RAGE()
 	XPerl_Player_Pet_UpdateMana(self)
 end
 
-XPerl_Player_Pet_Events.UNIT_MAXRAGE	= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_ENERGY	= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_MAXENERGY	= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_MANA	= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_MAXMANA	= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_FOCUS	= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_MAXFOCUS	= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_MAXRAGE		= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_ENERGY			= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_MAXENERGY		= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_MANA			= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_MAXMANA		= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_FOCUS			= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_MAXFOCUS		= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_MAXRUNIC_POWER	= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_RUNIC_POWER	= XPerl_Player_Pet_Events.UNIT_RAGE
 
 -- UNIT_LEVEL
 function XPerl_Player_Pet_Events:UNIT_LEVEL()
@@ -434,25 +448,27 @@ end
 
 -- UNIT_ENTERED_VEHICLE
 function XPerl_Player_Pet_Events:UNIT_ENTERED_VEHICLE(unit, showVehicle)
-	if (unit == "player") then
+	if (unit == "player" and showVehicle) then
 		self.partyid = "player"
 		if (not InCombatLockdown()) then
 			self:SetAttribute("unit", "player")
 		end
 		XPerl_Player_Pet_UpdateDisplay(self)
 	else
-		XPerl_Player_Pet_Events.UNIT_EXITING_VEHICLE(self, unit)
+		XPerl_Player_Pet_Events.UNIT_EXITED_VEHICLE(self, unit)
 	end
 end
 
--- UNIT_EXITING_VEHICLE
-function XPerl_Player_Pet_Events:UNIT_EXITING_VEHICLE(unit)
+-- UNIT_EXITED_VEHICLE
+function XPerl_Player_Pet_Events:UNIT_EXITED_VEHICLE(unit)
 	if (unit == "player") then
-		self.partyid = "pet"
-		if (not InCombatLockdown()) then
-			self:SetAttribute("unit", "pet")
+		if (self.partyid ~= "pet") then
+			self.partyid = "pet"
+			if (not InCombatLockdown()) then
+				self:SetAttribute("unit", "pet")
+			end
+			XPerl_Player_Pet_UpdateDisplay(self)
 		end
-		XPerl_Player_Pet_UpdateDisplay(self)
 	end
 end
 

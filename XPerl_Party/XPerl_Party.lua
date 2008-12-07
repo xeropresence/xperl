@@ -42,7 +42,8 @@ function XPerl_Party_Events_OnLoad(self)
 			"UNIT_COMBAT", "UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_PORTRAIT_UPDATE",
 			"UNIT_TARGET", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA", "UNIT_RUNIC_POWER", "UNIT_MAXRUNIC_POWER",
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
-			"RAID_TARGET_UPDATE", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED", "PLAYER_LOGIN"}
+			"RAID_TARGET_UPDATE", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED", "PLAYER_LOGIN", "UNIT_THREAT_LIST_UPDATE",
+			"PLAYER_TARGET_CHANGED"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
@@ -763,7 +764,7 @@ end
 function XPerl_Party_OnEvent(self, event, unit, ...)
 	local func = XPerl_Party_Events[event]
 	if (func) then
-		if (strfind(event, "^UNIT_")) then
+		if (strfind(event, "^UNIT_") and event ~= "UNIT_THREAT_LIST_UPDATE") then
 			local f = PartyFrames[unit]
 			if (f) then
 				func(f, ...)
@@ -856,6 +857,24 @@ function XPerl_Party_Events:UNIT_MAXHEALTH()
 	XPerl_Party_UpdateHealth(self)
 	XPerl_Unit_UpdateLevel(self)	-- Level not available until we've received maxhealth
 	XPerl_Party_UpdateClass(self)
+end
+
+local function updatePartyThreat()
+	for unitid,frame in pairs(PartyFrames) do
+		if (frame:IsShown()) then
+			XPerl_Unit_ThreatStatus(frame)
+		end
+	end
+end
+
+function XPerl_Party_Events:UNIT_THREAT_LIST_UPDATE(unit)
+	if (unit == "target") then
+		updatePartyThreat()
+	end
+end
+
+function XPerl_Party_Events:PLAYER_TARGET_CHANGED()
+	updatePartyThreat()
 end
 
 -- PLAYER_ENTERING_WORLD
@@ -965,6 +984,7 @@ function XPerl_Party_Events:UNIT_FACTION(unit)
 	XPerl_Party_UpdateName(self)
 	XPerl_Party_UpdateCombat(self)
 	XPerl_Party_UpdatePVP(self)
+	XPerl_Unit_ThreatStatus(self)
 end
 
 XPerl_Party_Events.UNIT_FLAGS = XPerl_Party_Events.UNIT_FACTION
@@ -972,6 +992,7 @@ XPerl_Party_Events.UNIT_DYNAMIC_FLAGS = XPerl_Party_Events.UNIT_FACTION
 
 function XPerl_Party_Events:UNIT_TARGET()
 	XPerl_Party_UpdateTarget(self)
+	updatePartyThreat()
 end
 
 ---- Moving stuff ----

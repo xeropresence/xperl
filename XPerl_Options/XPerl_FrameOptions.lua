@@ -3006,6 +3006,13 @@ if (XPerl_UpgradeSettings) then
 				old.bar.texture[1] = "BantoBar"
 			end
 
+			if (oldVersion < "3.0.2") then
+				old.focus.threat = old.target.threat
+				old.focus.threatMode = old.focus.portrait and old.target.threatMode or "nameFrame"
+				old.party.threat = old.target.threat
+				old.party.threatMode = old.party.portait and old.target.threatMode or "nameFrame"
+			end
+
 			if (oldVersion < "3.0.0c") then
 				old.target.threat = 1
 				old.target.threatMode = "portraitFrame"

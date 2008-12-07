@@ -6,7 +6,7 @@ XPerl_ProductName		= "|cFFD00000X-Perl|r UnitFrames"
 XPerl_ShortProductName	= "|cFFD00000X-Perl|r"
 XPerl_Author			= "|cFFFF8080Zek|r"
 XPerl_Description		= XPerl_ProductName.." by "..XPerl_Author
-XPerl_VersionNumber 	= "3.0.1f"
+XPerl_VersionNumber 	= "3.0.2"
 XPerl_Version			= XPerl_Description.." - "..XPerl_VersionNumber
 XPerl_LongDescription	= "UnitFrame replacement for new look Player, Pet, Party, Target, Target's Target, Focus, Raid"
 XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
@@ -87,6 +87,8 @@ XPERL_CANCEL		= "Cancel"
 
 XPERL_LOC_LARGENUMDIV	= 1000
 XPERL_LOC_LARGENUMTAG	= "K"
+XPERL_LOC_HUGENUMDIV	= 1000000
+XPERL_LOC_HUGENUMTAG	= "M"
 
 BINDING_HEADER_XPERL = XPerl_ProductName
 BINDING_NAME_TOGGLERAID = "Toggle Raid Windows"

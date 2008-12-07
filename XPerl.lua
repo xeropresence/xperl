@@ -34,6 +34,10 @@ local GetNumPartyMembers = GetNumPartyMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
 local largeNumDiv = XPERL_LOC_LARGENUMDIV
 local largeNumTag = XPERL_LOC_LARGENUMTAG
+local hugeNumDiv = XPERL_LOC_HUGENUMDIV
+local hugeNumTag = XPERL_LOC_HUGENUMTAG
+local hugeNumDiv10 = hugeNumDiv * 10
+local largeNumDiv100 = largeNumDiv * 100
 
 ------------------------------------------------------------------------------
 -- Re-usable tables
@@ -127,8 +131,10 @@ function XPerl_ShowMessage(cMsg)
 	local theEnd
 	if (arg1 and (arg1 == "player" or arg1 == "pet" or arg1 == "target" or arg1 =="focus" or strfind(arg1, "^raid") or strfind(arg1, "^party"))) then
 		local class = select(2, UnitClass(arg1))
-		str = str..", |c00808080"..tostring(arg1).."("..XPerlColourTable[class]..UnitName(arg1).."|c00808080)|r"
-		theEnd = 2
+		if (class) then
+			str = str..", |c00808080"..tostring(arg1).."("..XPerlColourTable[class]..UnitName(arg1).."|c00808080)|r"
+			theEnd = 2
+		end
 	else
 		theEnd = 1
 	end
@@ -667,31 +673,69 @@ function XPerl_SetHealthBar(self, hp, Max)
 		local hbt = bar.text
 		if (self.conf.healerMode.enable and self.conf.healerMode.type ~= 2) then
 			if (self.conf.healerMode.type == 1) then
-				if (Max > 100000) then
-					if (hp < 100000) then
-						hbt:SetFormattedText("%d/%d%s", (hp - Max), Max / largeNumDiv, largeNumTag)
+				if (Max >= hugeNumDiv10) then
+					if (hp < largeNumDiv100) then
+						-- 123/12M
+						hbt:SetFormattedText("%d/%d%s", (hp - Max), Max / hugeNumDiv, hugeNumTag)
 					else
-						hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+						if (hp >= hugeNumDiv10) then
+							-- 2M/12M
+							hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / hugeNumDiv, hugeNumTag, Max / hugeNumDiv, hugeNumTag)
+						else
+							-- 12K/12M
+							hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / largeNumDiv, largeNumTag, Max / hugeNumDiv, hugeNumTag)
+						end
 					end
 				else
-					hbt:SetFormattedText("%d/%d", hp - Max, Max)
+					if (Max > largeNumDiv100) then
+						if (hp < largeNumDiv100) then
+							-- 123/123K
+							hbt:SetFormattedText("%d/%d%s", (hp - Max), Max / largeNumDiv, largeNumTag)
+						else
+							-- 12K/123K
+							hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+						end
+					else
+						-- 1234/1234
+						hbt:SetFormattedText("%d/%d", hp - Max, Max)
+					end
 				end
 			else
-				if (Max > 100000 and hp > 100000) then
+				if (hp >= hugeNumDiv10) then
+					hbt:SetFormattedText("%d%s", (hp - Max) / hugeNumDiv, hugeNumTag)
+				elseif (hp >= largeNumDiv100) then
 					hbt:SetFormattedText("%d%s", (hp - Max) / largeNumDiv, largeNumTag)
 				else
 					hbt:SetFormattedText("%d", hp - Max)
 				end
 			end
 		else
-			if (Max > 100000) then
-				if (hp < 100000) then
-					hbt:SetFormattedText("%d/%.1f%s", hp, Max / largeNumDiv, largeNumTag)
+			if (Max >= hugeNumDiv) then
+				if (hp < largeNumDiv100) then
+					-- 123/12.3M
+					hbt:SetFormattedText("%d/%.1f%s", hp, Max / hugeNumDiv, hugeNumTag)
 				else
-					hbt:SetFormattedText("%.1f%s/%.1f%s", hp / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+					if (hp >= hugeNumDiv) then
+						-- 1.2M/12.3M
+						hbt:SetFormattedText("%.1f%s/%.1f%s", hp / hugeNumDiv, hugeNumTag, Max / hugeNumDiv, hugeNumTag)
+					else
+						-- 12.3K/12.3M
+						hbt:SetFormattedText("%.1f%s/%.1f%s", hp / largeNumDiv, largeNumTag, Max / hugeNumDiv, hugeNumTag)
+					end
 				end
 			else
-				hbt:SetFormattedText("%d/%d", hp, Max)
+				if (Max > largeNumDiv100) then
+					if (hp < largeNumDiv100) then
+						-- 123/123.4K
+						hbt:SetFormattedText("%d/%.1f%s", hp, Max / largeNumDiv, largeNumTag)
+					else
+						-- 12345/123.4K
+						hbt:SetFormattedText("%.1f%s/%.1f%s", hp / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+					end
+				else
+					-- 12345/12345
+					hbt:SetFormattedText("%d/%d", hp, Max)
+				end
 			end
 		end
 	end
@@ -1157,7 +1201,7 @@ local ManaColours = {
 function XPerl_SetManaBarType(self)
 	local m = self.statsFrame.manaBar
 	if (m and not self.statsFrame.greyMana) then
-		local unit = SecureButton_GetUnit(self)
+		local unit = self.partyid		-- SecureButton_GetUnit(self)
 		if (unit) then
 			local p = UnitPowerType(unit)
 			if (p) then
@@ -3717,12 +3761,13 @@ function XPerl_ThreatDisplayOnLoad(self, mode)
 	self.text:SetWidth(100)
 	self.current, self.target = 0, 0
 	self.mode = mode
-	
+
 	if (mode == "nameFrame") then
 		self.Draw = DrawSlider
 	else
 		self.Draw = DrawHand
 	end
+	self:Draw(0)
 end
 
 -- threatOnUpdate
@@ -3820,14 +3865,5 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 		end
 
 		t:Hide()
-	end
-end
-
-function XT(x)
-	t = XPerl_Target.threat
-	if (t) then
-		t.target = x
-		t:SetScript("OnUpdate", threatOnUpdate)
-		t:Show()
 	end
 end
