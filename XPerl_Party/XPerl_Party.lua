@@ -859,10 +859,10 @@ function XPerl_Party_Events:UNIT_MAXHEALTH()
 	XPerl_Party_UpdateClass(self)
 end
 
-local function updatePartyThreat()
+local function updatePartyThreat(immediate)
 	for unitid,frame in pairs(PartyFrames) do
 		if (frame:IsShown()) then
-			XPerl_Unit_ThreatStatus(frame)
+			XPerl_Unit_ThreatStatus(frame, nil, immediate)
 		end
 	end
 end
@@ -874,7 +874,7 @@ function XPerl_Party_Events:UNIT_THREAT_LIST_UPDATE(unit)
 end
 
 function XPerl_Party_Events:PLAYER_TARGET_CHANGED()
-	updatePartyThreat()
+	updatePartyThreat(true)
 end
 
 -- PLAYER_ENTERING_WORLD
@@ -992,7 +992,7 @@ XPerl_Party_Events.UNIT_DYNAMIC_FLAGS = XPerl_Party_Events.UNIT_FACTION
 
 function XPerl_Party_Events:UNIT_TARGET()
 	XPerl_Party_UpdateTarget(self)
-	updatePartyThreat()
+	updatePartyThreat(true)
 end
 
 ---- Moving stuff ----

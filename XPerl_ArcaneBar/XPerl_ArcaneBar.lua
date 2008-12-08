@@ -424,26 +424,33 @@ local function XPerl_MakePreCast(self)
 end
 
 -- XPerl_ArcaneBar_RegisterFrame
-function XPerl_ArcaneBar_RegisterFrame(frame, unit)
-	local frameName = frame:GetName().."CastBar"
-	local newFrame = getglobal(frameName)
-	if (not newFrame) then
-		newFrame = CreateFrame("StatusBar", frameName, frame, "XPerl_ArcaneBarTemplate")
+function XPerl_ArcaneBar_RegisterFrame(self, unit)
+	local f = self.castBar
+	if (not f) then
+		f = CreateFrame("StatusBar", self:GetName().."CastBar", self, "XPerl_ArcaneBarTemplate")
+		self.castBar = f
 	end
 
 	if (unit == "player") then
-		XPerl_MakePreCast(newFrame)
+		XPerl_MakePreCast(f)
 	end
 
-	newFrame.unit = unit
-	newFrame.showTradeSkills = true
-	newFrame.barParentName = frame.text
-	newFrame:SetPoint("TOPLEFT", 4, -4)
-	newFrame:SetPoint("BOTTOMRIGHT", -4, 4)
+	f.unit = unit
+	f.showTradeSkills = true
+	f.barParentName = self.text
+	f:SetPoint("TOPLEFT", 4, -4)
+	f:SetPoint("BOTTOMRIGHT", -4, 4)
 
-	SetArcaneBar(unit, {bar = newFrame, optFrame = frame:GetParent()})
+	SetArcaneBar(unit, {bar = f, optFrame = self:GetParent()})
 
 	XPerl_ArcaneBar_Set()
+end
+
+-- XPerl_ArcaneBar_SetUnit
+function XPerl_ArcaneBar_SetUnit(self, unit)
+	if (self.castBar) then
+		self.castBar.unit = unit
+	end
 end
 
 XPerl_RegisterOptionChanger(XPerl_ArcaneBar_Set)

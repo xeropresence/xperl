@@ -85,7 +85,7 @@ function XPerl_Player_OnLoad(self)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
 
 	if (XPerl_ArcaneBar_RegisterFrame) then
-		XPerl_ArcaneBar_RegisterFrame(self.nameFrame, "player")
+		XPerl_ArcaneBar_RegisterFrame(self.nameFrame, UnitHasVehicleUI("player") and "vehicle" or "player")
 	end
 
 	self.FlashFrames = {self.portraitFrame, self.nameFrame,
@@ -719,6 +719,9 @@ end
 function XPerl_Player_Events:UNIT_ENTERED_VEHICLE(showVehicle)
 	if (showVehicle) then
 		self.partyid = "vehicle"
+		if (XPerl_ArcaneBar_SetUnit) then
+			XPerl_ArcaneBar_SetUnit(self.nameFrame, "vehicle")
+		end
 		if (not InCombatLockdown()) then
 			self:SetAttribute("unit", "vehicle")
 		end
@@ -730,6 +733,9 @@ end
 function XPerl_Player_Events:UNIT_EXITED_VEHICLE()
 	if (self.partyid ~= "player") then
 		self.partyid = "player"
+		if (XPerl_ArcaneBar_SetUnit) then
+			XPerl_ArcaneBar_SetUnit(self.nameFrame, "player")
+		end
 		if (not InCombatLockdown()) then
 			self:SetAttribute("unit", "player")
 		end

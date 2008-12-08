@@ -92,7 +92,8 @@ function XPerl_Player_Pet_OnLoad(self)
 					"UNIT_MANA", "UNIT_ENERGY", "UNIT_RUNIC_POWER", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
 					"UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS", "UNIT_AURA",
 					"UNIT_PET", "PET_ATTACK_START", "UNIT_COMBAT", "UNIT_SPELLMISS", "VARIABLES_LOADED",
-					"PLAYER_REGEN_ENABLED", "PLAYER_ENTERING_WORLD", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE"}
+					"PLAYER_REGEN_ENABLED", "PLAYER_ENTERING_WORLD", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE",
+					"UNIT_THREAT_LIST_UPDATE", "PLAYER_TARGET_CHANGED", "UNIT_TARGET"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
@@ -117,7 +118,7 @@ function XPerl_Player_Pet_OnLoad(self)
 	end
 
 	if (XPerl_ArcaneBar_RegisterFrame) then
-		XPerl_ArcaneBar_RegisterFrame(self.nameFrame, "pet")
+		XPerl_ArcaneBar_RegisterFrame(self.nameFrame, UnitHasVehicleUI("player") and "player" or "pet")
 	end
 
 	XPerl_RegisterHighlight(self.highlight, 2)
@@ -302,7 +303,7 @@ function XPerl_Player_Pet_OnEvent(self, event, unit, ...)
 	local func = XPerl_Player_Pet_Events[event]
 	if (func) then
 		if (strfind(event, "^UNIT_")) then
-			if (unit == self.partyid and not strfind(event, "VEHICLE")) then
+			if (unit == self.partyid and not strfind(event, "VEHICLE") and event ~= "UNIT_THREAT_LIST_UPDATE") then
 				func(self, ...)
 			else
 				func(self, unit, ...)
@@ -450,6 +451,9 @@ end
 function XPerl_Player_Pet_Events:UNIT_ENTERED_VEHICLE(unit, showVehicle)
 	if (unit == "player" and showVehicle) then
 		self.partyid = "player"
+		if (XPerl_ArcaneBar_SetUnit) then
+			XPerl_ArcaneBar_SetUnit(self.nameFrame, "player")
+		end
 		if (not InCombatLockdown()) then
 			self:SetAttribute("unit", "player")
 		end
@@ -464,6 +468,9 @@ function XPerl_Player_Pet_Events:UNIT_EXITED_VEHICLE(unit)
 	if (unit == "player") then
 		if (self.partyid ~= "pet") then
 			self.partyid = "pet"
+			if (XPerl_ArcaneBar_SetUnit) then
+				XPerl_ArcaneBar_SetUnit(self.nameFrame, "pet")
+			end
 			if (not InCombatLockdown()) then
 				self:SetAttribute("unit", "pet")
 			end
@@ -471,6 +478,17 @@ function XPerl_Player_Pet_Events:UNIT_EXITED_VEHICLE(unit)
 		end
 	end
 end
+
+function XPerl_Player_Pet_Events:UNIT_THREAT_LIST_UPDATE(unit)
+	if (unit == "target") then
+		XPerl_Unit_ThreatStatus(self)
+	end
+end
+
+function XPerl_Player_Pet_Events:PLAYER_TARGET_CHANGED()
+	XPerl_Unit_ThreatStatus(self, nil, true)
+end
+XPerl_Player_Pet_Events.UNIT_TARGET = XPerl_Player_Pet_Events.PLAYER_TARGET_CHANGED
 
 -- PLAYER_REGEN_DISABLED
 local virtual

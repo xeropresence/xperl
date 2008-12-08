@@ -5489,9 +5489,66 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_Threat" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_HitIndicator" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_PET_THREAT")
+								self.configBase = "XPerlDB.pet"
+								self.configIndex = "threat"
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ThreatName" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent_Threat" relativePoint="RIGHT">
+								<Offset><AbsDimension x="45" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_PET_THREAT_NAME")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.pet.threatMode == "nameFrame")
+							</OnShow>
+							<OnClick>
+								XPerlDB.pet.threatMode = "nameFrame"
+								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Target_UpdateDisplay(XPerl_Target)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_ThreatPortrait" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent_ThreatName" relativePoint="RIGHT">
+								<Offset><AbsDimension x="45" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_PET_THREAT_PORTRAIT")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.pet.threatMode == "portraitFrame")
+							</OnShow>
+							<OnClick>
+								XPerlDB.pet.threatMode = "portraitFrame"
+								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Target_UpdateDisplay(XPerl_Target)
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPRIGHT" relativeTo="$parent_HitIndicator" relativePoint="BOTTOM">
+							<Anchor point="TOPLEFT" relativeTo="$parent_Threat" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>

@@ -672,41 +672,43 @@ function XPerl_SetHealthBar(self, hp, Max)
 	if (bar.text) then
 		local hbt = bar.text
 		if (self.conf.healerMode.enable and self.conf.healerMode.type ~= 2) then
+			local health = hp - Max
+			local Ahealth = abs(health)
 			if (self.conf.healerMode.type == 1) then
 				if (Max >= hugeNumDiv10) then
-					if (hp < largeNumDiv100) then
+					if (Ahealth < largeNumDiv100) then
 						-- 123/12M
-						hbt:SetFormattedText("%d/%d%s", (hp - Max), Max / hugeNumDiv, hugeNumTag)
+						hbt:SetFormattedText("%d/%d%s", health, Max / hugeNumDiv, hugeNumTag)
 					else
-						if (hp >= hugeNumDiv10) then
+						if (Ahealth >= hugeNumDiv) then
 							-- 2M/12M
-							hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / hugeNumDiv, hugeNumTag, Max / hugeNumDiv, hugeNumTag)
+							hbt:SetFormattedText("%d%s/%d%s", health / hugeNumDiv, hugeNumTag, Max / hugeNumDiv, hugeNumTag)
 						else
 							-- 12K/12M
-							hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / largeNumDiv, largeNumTag, Max / hugeNumDiv, hugeNumTag)
+							hbt:SetFormattedText("%d%s/%d%s", health / largeNumDiv, largeNumTag, Max / hugeNumDiv, hugeNumTag)
 						end
 					end
 				else
 					if (Max > largeNumDiv100) then
-						if (hp < largeNumDiv100) then
+						if (Ahealth < largeNumDiv100) then
 							-- 123/123K
-							hbt:SetFormattedText("%d/%d%s", (hp - Max), Max / largeNumDiv, largeNumTag)
+							hbt:SetFormattedText("%d/%d%s", health, Max / largeNumDiv, largeNumTag)
 						else
 							-- 12K/123K
-							hbt:SetFormattedText("%d%s/%d%s", (hp - Max) / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
+							hbt:SetFormattedText("%d%s/%d%s", health / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
 						end
 					else
 						-- 1234/1234
-						hbt:SetFormattedText("%d/%d", hp - Max, Max)
+						hbt:SetFormattedText("%d/%d", health, Max)
 					end
 				end
 			else
-				if (hp >= hugeNumDiv10) then
-					hbt:SetFormattedText("%d%s", (hp - Max) / hugeNumDiv, hugeNumTag)
-				elseif (hp >= largeNumDiv100) then
-					hbt:SetFormattedText("%d%s", (hp - Max) / largeNumDiv, largeNumTag)
+				if (Ahealth >= hugeNumDiv10) then
+					hbt:SetFormattedText("%d%s", health / hugeNumDiv, hugeNumTag)
+				elseif (Ahealth >= largeNumDiv100) then
+					hbt:SetFormattedText("%d%s", health / largeNumDiv, largeNumTag)
 				else
-					hbt:SetFormattedText("%d", hp - Max)
+					hbt:SetFormattedText("%d", health)
 				end
 			end
 		else

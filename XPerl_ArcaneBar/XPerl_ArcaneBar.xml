@@ -66,11 +66,8 @@ C:\Projects\WoW\Bin\Interface\FrameXML\UI.xsd">
 			<OnLoad>
 				self.unit = "player"
 				XPerl_ArcaneBar_OnLoad(self)
-				--self:SetScript("OnEvent", XPerl_ArcaneBar_OnEvent)
+				self:SetScript("OnEvent", XPerl_ArcaneBar_OnEvent)
 			</OnLoad>
-			<OnEvent>
-				XPerl_ArcaneBar_OnEvent(self, event, arg1)
-			</OnEvent>
 		</Scripts>
 	</StatusBar>
 </Ui>
