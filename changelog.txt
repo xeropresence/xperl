@@ -2,6 +2,9 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.2a
+Fixed: Raid pets functionality improved and fixed overall. Vehicles now will all show up correctly (giving the name of the player in <>, rather than their mount). Should help you all immensely for Malygos, which we killed tonight despite my coding efforts.. :)
+
 3.0.2
 NEW: Threat display for party and focus frames, to work based on your target.
 Fixed: A few issues with vehicles (will only now show intended vehicles, and not ones such as being in the air at Malygos' Vortex, or on a Hog/Mammoth).

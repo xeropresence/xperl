@@ -1930,7 +1930,7 @@ xpHigh.PARTY_MEMBERS_CHANGED = xpHigh.RAID_ROSTER_UPDATE
 function xpHigh:PLAYER_TARGET_CHANGED()
 	self:ClearAll("TARGET")
 	if (UnitExists("target") and UnitPlayerOrPetInParty("target") or UnitPlayerOrPetInRaid("target")) then
-		self:Add(UnitName("target"), "TARGET", 0)
+		self:Add(UnitGUID("target"), "TARGET", 0)
 	end
 end
 
