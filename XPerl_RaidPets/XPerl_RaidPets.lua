@@ -38,7 +38,7 @@ local function XPerl_RaidPets_OnUpdate(self, elapsed)
 	end
 end
 
---local XPerl_RaidPets_HighlightCallback
+local XPerl_RaidPets_HighlightCallback
 do
 	local guids
 	-- XPerl_RaidPet_UpdateGUIDs
@@ -91,25 +91,11 @@ function XPerl_RaidPets_OnLoad(self)
 	XPerl_RaidPets_OnLoad = nil
 end
 
--- IsBlacklistedMobID
-local IsBlacklistedMobID
-do
-	local blackListMobIDs = {
-		[32640] = true,		-- Mammoth
-		[29929] = true,		-- Mechano-hog
-	}
-
-	function IsBlacklistedMobID(guid)
-		return blackListMobIDs[tonumber(strsub(guid, -12, -7), 16)] == true
-	end	
-end
-
 -- XPerl_RaidPet_UpdateName
 local function XPerl_RaidPet_UpdateName(self)
 	local partyid = SecureButton_GetUnit(self)
 	local name
-	local guid = partyid and UnitGUID(partyid)
-	if ((self.ownerid and UnitHasVehicleUI(self.ownerid)) or (guid and IsBlacklistedMobID(guid))) then
+	if (self.ownerid and (UnitInVehicle(self.ownerid) or UnitHasVehicleUI(self.ownerid))) then
 		name = UnitName(self.ownerid)
 		if (name) then
 			self.text:SetFormattedText("<%s>", name)
