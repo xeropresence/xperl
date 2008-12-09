@@ -238,8 +238,8 @@ end
 local function onAttrChanged(self, name, value)
 	if (name == "unit") then
 		if (value) then
-			SetFrameArray(self, "raidpet"..strmatch(value, "^raid(%d+)"))
-			self.ownerid = value
+			SetFrameArray(self, value)		-- "raidpet"..strmatch(value, "^raid(%d+)"))
+			self.ownerid = value:gsub("(%a+)pet(%d+)", "%1%2")
 
 			if (self.lastName ~= UnitName(self.partyid)) then
 				XPerl_RaidPets_UpdateDisplay(self)
@@ -270,15 +270,14 @@ local function SetMainHeaderAttributes(self)
 
 	self:Hide()
 
-	local classes = {}
-	if (rconf.hunter) then
-		tinsert(classes, "HUNTER")
-	end
-	if (rconf.warlock) then
-		tinsert(classes, "WARLOCK")
-	end
-
-	self:SetAttribute("groupFilter", table.concat(classes, ","))
+	--local classes = {}
+	--if (rconf.hunter) then
+	--	tinsert(classes, "HUNTER")
+	--end
+	--if (rconf.warlock) then
+	--	tinsert(classes, "WARLOCK")
+	--end
+	--self:SetAttribute("groupFilter", "PET")	--table.concat(classes, ","))
 
 	self:SetAttribute("unitsPerColumn", 5)			-- Don't grow taller than a standard raid group
 	self:SetAttribute("columnAnchorPoint", "LEFT")
@@ -310,9 +309,9 @@ local function SetMainHeaderAttributes(self)
 
 	self.initialConfigFunction = function(self)
 		-- This is the only place we're allowed to set attributes whilst in combat
-		self:SetAttribute("unitsuffix", "pet")
+		--self:SetAttribute("unitsuffix", "pet")
 		self:SetAttribute("*type1", "target")
-		self:SetAttribute("initial-height", 35)
+		self:SetAttribute("initial-height", 30)
 		XPerl_RaidPets_UpdateDisplay(self)
 	end
 end
@@ -382,32 +381,33 @@ end
 
 -- XPerl_RaidPets_Titles
 function XPerl_RaidPets_Titles()
-	if (rconf.hunter) then
-		if (rconf.warlock) then
+	--if (rconf.hunter) then
+	--	if (rconf.warlock) then
 			XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETS)
-		else
-			XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETSHUNTER)
-		end
-	elseif (rconf.warlock) then
-		XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETSWARLOCK)
-	end
+	--	else
+	--		XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETSHUNTER)
+	--	end
+	--elseif (rconf.warlock) then
+	--	XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETSWARLOCK)
+	--end
 
-	local show
-	for i = 1,GetNumRaidMembers() do
-		local unitName, rank, group, level, _, unitClass = GetRaidRosterInfo(i)
-		if (unitClass == "HUNTER" or unitClass == "WARLOCK") then
-			show = true
-			break
-		end
-	end
+	--local show
+	--for i = 1,GetNumRaidMembers() do
+	--	local unitName, rank, group, level, _, unitClass = GetRaidRosterInfo(i)
+	--	if (unitClass == "HUNTER" or unitClass == "WARLOCK") then
+	--		show = true
+	--		break
+	--	end
+	--end
 
+	XPerl_ProtectedCall(XPerl_RaidPets_HideShow)
+
+	local show = XPerl_Raid_GrpPetsUnitButton1 and XPerl_Raid_GrpPetsUnitButton1:IsShown()
 	if (XPerlLocked == 0 or (rconf.enable and show and conf.raid.titles)) then
 		XPerl_Raid_TitlePets.text:Show()
 	else
 		XPerl_Raid_TitlePets.text:Hide()
 	end
-
-	XPerl_ProtectedCall(XPerl_RaidPets_HideShow)
 end
 
 -- XPerl_RaidPets_OptionActions

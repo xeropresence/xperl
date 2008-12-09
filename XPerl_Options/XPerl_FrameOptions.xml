@@ -9639,46 +9639,10 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_RaidPets_OptionActions
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Huntards")
-									XPerl_Options_EnableSibling("Moredots")
+									--XPerl_Options_EnableSibling("Huntards")
+									--XPerl_Options_EnableSibling("Moredots")
 									XPerl_Options_EnableSibling("AlignToRaid")
 								end
-								XPerl_Options_RegisterProtected(self)
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_Huntards" inherits="XPerlCheckButtonTemplate">
-						<Size><AbsDimension x="26" y="26"/></Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_RaidPets" relativePoint="BOTTOM">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_PETS_HUNTERS")
-								self.configBase = "XPerlDB.raidpet"
-								self.configIndex = "hunter"
-								self.configClick = XPerl_RaidPets_OptionActions
-								XPerl_Options_RegisterProtected(self)
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_Moredots" inherits="XPerlCheckButtonTemplate">
-						<Size><AbsDimension x="26" y="26"/></Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_Huntards" relativePoint="TOPRIGHT">
-								<Offset><AbsDimension x="60" y="0"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_PETS_WARLOCKS")
-								self.configBase = "XPerlDB.raidpet"
-								self.configIndex = "warlock"
-								self.configClick = XPerl_RaidPets_OptionActions
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
 						</Scripts>
@@ -9687,7 +9651,7 @@
 					<CheckButton name="$parent_AlignToRaid" inherits="XPerlCheckButtonTemplate">
 						<Size><AbsDimension x="26" y="26"/></Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_Huntards" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeTo="$parent_RaidPets" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -9712,14 +9676,14 @@
 							<OnShow>
 								if (IsAddOnLoaded("XPerl_RaidPets")) then
 									XPerl_Options_GetSibling("RaidPets"):Show()
-									XPerl_Options_GetSibling("Huntards"):Show()
-									XPerl_Options_GetSibling("Moredots"):Show()
+									--XPerl_Options_GetSibling("Huntards"):Show()
+									--XPerl_Options_GetSibling("Moredots"):Show()
 									XPerl_Options_GetSibling("AlignToRaid"):Show()
 									self:SetPoint("TOP", XPerl_Options_GetSibling("AlignToRaid"), "BOTTOMLEFT", 0, 6)
 								else
 									XPerl_Options_GetSibling("RaidPets"):Hide()
-									XPerl_Options_GetSibling("Huntards"):Hide()
-									XPerl_Options_GetSibling("Moredots"):Hide()
+									--XPerl_Options_GetSibling("Huntards"):Hide()
+									--XPerl_Options_GetSibling("Moredots"):Hide()
 									XPerl_Options_GetSibling("AlignToRaid"):Hide()
 									self:SetPoint("TOPLEFT", XPerl_Options_GetSibling("Enable"), "BOTTOMLEFT", 0, 6)
 								end

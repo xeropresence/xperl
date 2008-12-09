@@ -17,17 +17,17 @@
 			</OnLeave>
 		</Scripts>
 
-		<Size><AbsDimension x="80" y="35"/></Size>
+		<Size><AbsDimension x="80" y="30"/></Size>
 
-		<Backdrop bgFile="Interface\AddOns\XPerl\images\XPerl_FrameBack" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
+		<Backdrop bgFile="Interface\AddOns\XPerl\images\XPerl_FrameBack" edgeFile="Interface\Addons\XPerl\Images\XPerl_ThinEdge" tile="true">
 			<EdgeSize>
-				<AbsValue val="16"/>
+				<AbsValue val="10"/>
 			</EdgeSize>
 			<TileSize>
-				<AbsValue val="16"/>
+				<AbsValue val="256"/>
 			</TileSize>
 			<BackgroundInsets>
-				<AbsInset left="5" right="5" top="5" bottom="5"/>
+				<AbsInset left="2" right="2" top="2" bottom="2"/>
 			</BackgroundInsets>
 		</Backdrop>
 
@@ -37,12 +37,12 @@
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="4" y="-4"/>
+								<AbsDimension x="2" y="-2"/>
 							</Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT">
 							<Offset>
-								<AbsDimension x="-4" y="-10"/>
+								<AbsDimension x="-2" y="-6"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -55,12 +55,12 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="5" y="-16"/>
+							<AbsDimension x="3" y="-12"/>
 						</Offset>
 					</Anchor>
 					<Anchor point="BOTTOMRIGHT">
 						<Offset>
-							<AbsDimension x="-5" y="5"/>
+							<AbsDimension x="-3" y="3"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -79,7 +79,8 @@
 		</Anchors>
 	</Frame>
 
-	<Frame name="XPerl_Raid_GrpPets" parent="XPerl_Raid_TitlePets" inherits="XPerl_Raid_TitleFrameTemplate" id="1">
+	<Frame name="XPerl_Raid_GrpPets" parent="XPerl_Raid_TitlePets" inherits="SecureRaidPetHeaderTemplate" clampedToScreen="true" frameStrata="LOW" hidden="true" id="1">
+		<Size><AbsDimension x="80" y="10"/></Size>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT"/>
 		</Anchors>

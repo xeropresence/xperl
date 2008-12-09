@@ -288,7 +288,9 @@ function mod:PLAYER_ENTERING_WORLD()
 		end
 
 		self:SendModules()			-- No channel given will detect BG, RAID, PARTY
-		self:SendModules("GUILD")
+		if (IsInGuild()) then
+			self:SendModules("GUILD")
+		end
 	end
 end
 

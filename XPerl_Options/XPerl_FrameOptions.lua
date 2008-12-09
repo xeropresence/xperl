@@ -3002,7 +3002,7 @@ if (XPerl_UpgradeSettings) then
 
 			ValidateClassNames(old.raid)
 
-			if (old.bar.texture[1] == "X-Perl 2") then
+			if (old.bar and old.bar.texture and old.bar.texture[1] == "X-Perl 2") then
 				old.bar.texture[1] = "BantoBar"
 			end
 
