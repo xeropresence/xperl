@@ -1507,7 +1507,7 @@ function XPerl_Target_Set_BlizzCPFrame(self)
 		end
 
 		function ComboFrame_Update()
-			local comboPoints = GetComboPoints("target")	--UnitHasVehicleUI("player") and "vehicle" or "player", "target")
+			local comboPoints = GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player")
 			local comboPoint, comboPointHighlight, comboPointShine;
 			if ( comboPoints > 0 ) then
 				if ( not ComboFrame:IsShown() ) then
