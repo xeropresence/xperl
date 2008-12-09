@@ -38,7 +38,7 @@ local function XPerl_RaidPets_OnUpdate(self, elapsed)
 	end
 end
 
-local XPerl_RaidPets_HighlightCallback
+--local XPerl_RaidPets_HighlightCallback
 do
 	local guids
 	-- XPerl_RaidPet_UpdateGUIDs
@@ -59,10 +59,10 @@ do
 	end
 	
 	-- XPerl_RaidPets_HighlightCallback
-	function XPerl_RaidPets_HighlightCallback(self, updateGUID)
+	function XPerl_RaidPets_HighlightCallback(self, guid)
 		local f = guids and guids[guid]
 		if (f) then
-			XPerl_Highlight:SetHighlight(f, updateGUID)
+			XPerl_Highlight:SetHighlight(f, guid)
 		end
 	end
 end
@@ -81,7 +81,7 @@ function XPerl_RaidPets_OnLoad(self)
 	self.time = 0
 	self.Array = {}
 
-	XPerl_Raid_GrpPets:UnregisterEvent("UNIT_NAME_UPDATE")		-- Fix for WoW 2.1 UNIT_NAME_UPDATE issue
+	--XPerl_Raid_GrpPets:UnregisterEvent("UNIT_NAME_UPDATE")		-- Fix for WoW 2.1 UNIT_NAME_UPDATE issue
 
 	self:SetScript("OnEvent", XPerl_RaidPets_OnEvent)
 	self:SetScript("OnUpdate", XPerl_RaidPets_OnUpdate)
@@ -115,9 +115,8 @@ local function XPerl_RaidPet_UpdateName(self)
 
 	self.text:SetText(name)
 
-	local partyid = self:GetAttribute("unit")			-- The OWNER unit, not the pet
-	if (partyid) then
-		local c = XPerl_GetClassColour(select(2, UnitClass(partyid)))
+	if (self.ownerid) then
+		local c = XPerl_GetClassColour(select(2, UnitClass(self.ownerid)))
 		self.text:SetTextColor(c.r, c.g, c.b)
 	else
 		self.text:SetTextColor(1, 1, 1)
@@ -260,6 +259,10 @@ function XPerl_RaidPet_Single_OnLoad(self)
 	XPerl_RegisterClickCastFrame(self)
 	XPerl_RegisterHighlight(self.highlight, 2)
 
+	self.edgeFile = "Interface\\Addons\\XPerl\\images\\XPerl_ThinEdge"
+	self.edgeSize = 10
+	self.edgeInsets = 2
+
 	self.FlashFrames = {self}
 
 	self:SetScript("OnShow", XPerl_RaidPets_UpdateDisplay)
@@ -279,7 +282,7 @@ local function SetMainHeaderAttributes(self)
 	--end
 	--self:SetAttribute("groupFilter", "PET")	--table.concat(classes, ","))
 
-	self:SetAttribute("unitsPerColumn", 5)			-- Don't grow taller than a standard raid group
+	self:SetAttribute("unitsPerColumn", 6)			-- Don't grow taller than a standard raid group
 	self:SetAttribute("columnAnchorPoint", "LEFT")
 
 	self:SetAttribute("point", conf.raid.anchor)
@@ -290,18 +293,18 @@ local function SetMainHeaderAttributes(self)
 	if (conf.raid.anchor == "TOP") then
 		self:SetPoint("TOP", titleFrame, "BOTTOM", 0, 0)
 		self:SetAttribute("xOffset", 0)
-		self:SetAttribute("yOffset", 2 + -conf.raid.spacing)
+		self:SetAttribute("yOffset", -conf.raid.spacing)
 	elseif (conf.raid.anchor == "LEFT") then
 		self:SetPoint("TOPLEFT", titleFrame, "BOTTOMLEFT", 0, 0)
-		self:SetAttribute("xOffset", -2 + conf.raid.spacing)
+		self:SetAttribute("xOffset", conf.raid.spacing)
 		self:SetAttribute("yOffset", 0)
 	elseif (conf.raid.anchor == "BOTTOM") then
 		self:SetPoint("BOTTOM", titleFrame, "TOP", 0, 0)
 		self:SetAttribute("xOffset", 0)
-		self:SetAttribute("yOffset", -2 + conf.raid.spacing)
+		self:SetAttribute("yOffset", conf.raid.spacing)
 	elseif (conf.raid.anchor == "RIGHT") then
 		self:SetPoint("TOPRIGHT", titleFrame, "BOTTOMRIGHT", 0, 0)
-		self:SetAttribute("xOffset", 2 + -conf.raid.spacing)
+		self:SetAttribute("xOffset", -conf.raid.spacing)
 		self:SetAttribute("yOffset", 0)
 	end
 	self:SetAttribute("template", "XPerl_RaidPet_FrameTemplate")
@@ -341,10 +344,12 @@ function XPerl_RaidPets_HideShow()
 		end
 	end
 
-	if (rconf.enable and GetNumRaidMembers() > 0 and not singleGroup) then
-		XPerl_RaidPets_Frame:Show()
-		XPerl_Raid_TitlePets:Show()
+	if (rconf.enable and not singleGroup) then
 		XPerl_Raid_GrpPets:Show()
+		XPerl_RaidPets_Frame:Show()
+		if (GetNumRaidMembers() > 0) then
+			XPerl_Raid_TitlePets:Show()
+		end
 	else
 		XPerl_RaidPets_Frame:Hide()
 		XPerl_Raid_TitlePets:Hide()
@@ -368,7 +373,7 @@ function XPerl_RaidPets_Align()
 		if (lastUsed > 0) then
 			local relative = getglobal("XPerl_Raid_Title"..lastUsed)
 			if (relative) then
-				XPerl_Raid_TitlePets:SetPoint("TOPLEFT", relative, "TOPRIGHT", raidconf.spacing - 2, 2)
+				XPerl_Raid_TitlePets:SetPoint("TOPLEFT", relative, "TOPRIGHT", raidconf.spacing, 0)
 				XPerl_Raid_TitlePets:SetUserPlaced(true)
 			end
 		end
