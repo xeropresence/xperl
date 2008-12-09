@@ -91,29 +91,37 @@ function XPerl_RaidPets_OnLoad(self)
 	XPerl_RaidPets_OnLoad = nil
 end
 
+-- IsBlacklistedMobID
+local IsBlacklistedMobID
+do
+	local blackListMobIDs = {
+		[32640] = true,		-- Mammoth
+		[29929] = true,		-- Mechano-hog
+	}
+
+	function IsBlacklistedMobID(guid)
+		return blackListMobIDs[tonumber(strsub(guid, -12, -7), 16)] == true
+	end	
+end
+
 -- XPerl_RaidPet_UpdateName
 local function XPerl_RaidPet_UpdateName(self)
 	local partyid = SecureButton_GetUnit(self)
 	local name
-	if (partyid) then
-		name = UnitName(partyid)
+	local guid = partyid and UnitGUID(partyid)
+	if ((self.ownerid and UnitHasVehicleUI(self.ownerid)) or (guid and IsBlacklistedMobID(guid))) then
+		name = UnitName(self.ownerid)
+		if (name) then
+			self.text:SetFormattedText("<%s>", name)
+		end
 	end
-	--local color
+	if (not name and partyid) then
+		name = UnitName(partyid)
+		self.text:SetText(name)
+	end
 
 	self.lastName = name
-
-	if (not name or name == UNKNOWNOBJECT) then
-		name = "no pet"
-		--color = conf.ColourTapped
-		self:SetAlpha(0.1)
-		self.healthBar:SetValue(0)
-		XPerl_SetSmoothBarColor(self.healthBar, 0)
-	else
-		--color = conf.ColourReactionNone
-		self:SetAlpha(conf.transparency.frame)
-	end
-
-	self.text:SetText(name)
+	self:SetAlpha(conf.transparency.frame)
 
 	if (self.ownerid) then
 		local c = XPerl_GetClassColour(select(2, UnitClass(self.ownerid)))
@@ -283,6 +291,7 @@ local function SetMainHeaderAttributes(self)
 	--self:SetAttribute("groupFilter", "PET")	--table.concat(classes, ","))
 
 	self:SetAttribute("unitsPerColumn", 6)			-- Don't grow taller than a standard raid group
+	self:SetAttribute("maxColumns", 7)
 	self:SetAttribute("columnAnchorPoint", "LEFT")
 
 	self:SetAttribute("point", conf.raid.anchor)
@@ -291,7 +300,7 @@ local function SetMainHeaderAttributes(self)
 	local titleFrame = self:GetParent()
 	self:ClearAllPoints()
 	if (conf.raid.anchor == "TOP") then
-		self:SetPoint("TOP", titleFrame, "BOTTOM", 0, 0)
+		self:SetPoint("TOPLEFT", titleFrame, "BOTTOMLEFT", 0, 0)
 		self:SetAttribute("xOffset", 0)
 		self:SetAttribute("yOffset", -conf.raid.spacing)
 	elseif (conf.raid.anchor == "LEFT") then
@@ -299,7 +308,7 @@ local function SetMainHeaderAttributes(self)
 		self:SetAttribute("xOffset", conf.raid.spacing)
 		self:SetAttribute("yOffset", 0)
 	elseif (conf.raid.anchor == "BOTTOM") then
-		self:SetPoint("BOTTOM", titleFrame, "TOP", 0, 0)
+		self:SetPoint("BOTTOMLEFT", titleFrame, "TOPLEFT", 0, 0)
 		self:SetAttribute("xOffset", 0)
 		self:SetAttribute("yOffset", conf.raid.spacing)
 	elseif (conf.raid.anchor == "RIGHT") then
