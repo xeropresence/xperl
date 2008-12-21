@@ -1,6 +1,6 @@
 ﻿## Interface: 30000
 ## Title: X-Perl |cffeda55fParty Pet|r by |cFFFF8080Zek|r
-## Title-ruRU: X-Perl |cffeda55fПитомци группы|r
+## Title-ruRU: X-Perl |cffeda55fПитомцы группы|r
 ## Title-zhCN: X-Perl |cffeda55f队友宠物窗|r
 ## Notes: Replaces the default party's pet frames.
 ## Notes-ruRU: Заменяет стандартные фреймы питомцев группы.

@@ -3,7 +3,7 @@
 ## Title-ruRU: X-Perl |cffeda55fУчебное пособие|r |cFF40FF40(LoadOnDemand)|r
 ## Title-zhCN: X-Perl |cffeda55f教程|r
 ## Notes: Give Tutorial tips for new users.
-## Notes-ruRU: Обеспечивает нового пользователя советами.
+## Notes-ruRU: Отображает подсказки по настройке фреймов.
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## RequiredDeps: XPerl

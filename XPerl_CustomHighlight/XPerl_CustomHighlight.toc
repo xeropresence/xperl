@@ -3,7 +3,7 @@
 ## Title-ruRU: X-Perl |cffeda55fВыделение|r
 ## Title-zhCN: X-Perl |cffeda55f自定义Debuff高亮|r
 ## Notes: Custom highlights module allowing definition of frame by frame indicator of important debuffs.
-## Notes-ruRU: Модуль Выделений позволяет выявлять в индекаторе фрейма важные дебаффы.
+## Notes-ruRU: Модуль выделений - позволяет выделять важные дебаффы.
 ## Author: Zek
 ## RequiredDeps: XPerl
 ## X-License: GNU GPL v3, 29 June 2007

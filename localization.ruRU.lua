@@ -9,8 +9,8 @@ XPerl_Description	    = XPerl_ProductName.." от "..XPerl_Author
 XPerl_Version		    = XPerl_Description.." - "..XPerl_VersionNumber
 XPERL_LongDescription	= "Фреймы Игроков заменяются на новый вид Игроков, Питомцев, Группы, Цели, Целей Цели, Фокуса, Рейда"
 
-	XPERL_MINIMAP_HELP1		= "|c00FFFFFFЛевый Клик|r для Опций  (и также |c0000FF00для перемещения фреймов|r)"
-	XPERL_MINIMAP_HELP2		= "|c00FFFFFFПравый клик|r двигать иконку"
+	XPERL_MINIMAP_HELP1		= "|c00FFFFFFЛевый rлик|r - опции  (а также |c0000FF00перемещение фреймов|r)"
+	XPERL_MINIMAP_HELP2		= "|c00FFFFFFПравый клик|r - перемещение иконки"
 	XPERL_MINIMAP_HELP3		= "\rУчастники рейда: |c00FFFF80%d|r\rУчастники рейда: |c00FFFF80%d|r"
 	XPERL_MINIMAP_HELP4		= "\rВы лидер группы/рейда"
 	XPERL_MINIMAP_HELP5		= "|c00FFFFFFAlt|r для просмотра потребления памяти X-Perl'ом"
@@ -118,16 +118,16 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_DRAGHINT2	= "|c00FFFFFFShift+Клик|r для изменения размера окна"
 
 -- Usage
-	XPerlUsageNameList	= {XPerl = "Основной", 	XPERL_Player = "Игрок", 	XPERL_PlayerPet = "Питомец", 	XPERL_Target = "Цель", 	XPERL_TargetTarget = "Цель Цели", 	XPERL_Party = "Группа", 	XPERL_PartyPet = "Питомци Группы", 	XPERL_RaidFrames = "Фрей Рейда", 	XPERL_RaidHelper = "Помощик Рейда", 	XPERL_RaidAdmin = "Рейд Админ", 	XPERL_TeamSpeak = "Монитор TS", 	XPERL_RaidMonitor = "Рейд Монитор", 	XPERL_RaidPets = "Питомцы Рейда", 	XPERL_ArcaneBar = "Индикатор заклинаний", 	XPERL_PlayerBuffs = "Баффы игрока", 	XPERL_GrimReaper = "Grim Reaper"}
+	XPerlUsageNameList	= {XPerl = "Основной", 	XPERL_Player = "Игрок", 	XPERL_PlayerPet = "Питомец", 	XPERL_Target = "Цель", 	XPERL_TargetTarget = "Цель цели", 	XPERL_Party = "Группа", 	XPERL_PartyPet = "Питомцы группы", 	XPERL_RaidFrames = "Фреймы рейда", 	XPERL_RaidHelper = "Помощник рейда", 	XPERL_RaidAdmin = "Рейд-админ", 	XPERL_TeamSpeak = "Монитор TS", 	XPERL_RaidMonitor = "Рейд-монитор", 	XPERL_RaidPets = "Питомцы рейда", 	XPERL_ArcaneBar = "Индикатор заклинаний", 	XPERL_PlayerBuffs = "Баффы игрока", 	XPERL_GrimReaper = "Grim Reaper"}
 	XPERL_USAGE_MEMMAX	= "UI Макс Пам: %d"
 	XPERL_USAGE_MODULES = "Модули: "
 	XPERL_USAGE_NEWVERSION	= "*Новейшая версия"
 	XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r доступна для скачивания"
 
 	XPERL_CMD_HELP	= "|c00FFFF80Используйте: |c00FFFFFF/xperl menu | lock | unlock | config list | config delete <сервер> <имя>"
-	XPERL_CANNOT_DELETE_CURRENT = "Невозможна удалить ваши текущие настройки"
+	XPERL_CANNOT_DELETE_CURRENT = "Невозможно удалить ваши текущие настройки"
 	XPERL_CONFIG_DELETED	= "Настройки для %s/%s удалены"
-	XPERL_CANNOT_FIND_DELETE_TARGET = "Нету настроек для удаления (%s/%s)"
+	XPERL_CANNOT_FIND_DELETE_TARGET = "Нет настроек для удаления (%s/%s)"
 	XPERL_CANNOT_DELETE_BADARGS = "Введите реалм и ник игрока"
 	XPERL_CONFIG_LIST	= "Список настроек:"
 	XPERL_CONFIG_CURRENT	= " (текущий)"

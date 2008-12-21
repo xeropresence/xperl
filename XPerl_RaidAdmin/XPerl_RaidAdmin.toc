@@ -3,7 +3,7 @@
 ## Title-ruRU: X-Perl |cffeda55fРейд админ|r
 ## Title-zhCN: X-Perl |cffeda55f团队管理|r
 ## Notes: Provides useful raid admin tools for todays raid leader.
-## Notes-ruRU: Обеспечивает рейд лидера, полезными инструментами рейд админа.
+## Notes-ruRU: Обеспечивает рейд лидера полезными инструментами рейд админа.
 ## Notes-deDE: Bietet Schlachtzugsleitern nützliche Einstellungsmöglichkeiten.
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007

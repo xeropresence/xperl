@@ -5,7 +5,7 @@
 ## Author: Zek
 ## Title-zhCN: X-Perl 核心
 ## Notes: Replaces the normal unit, party, target, pet frames and adds target-of-target.
-## Notes-ruRU: Заменяет стандартный фреймы играков, группы, цели, питомца и добовляет цели-цели.
+## Notes-ruRU: Заменяет стандартные фреймы игроков, группы, цели, питомца и добавляет цель цели.
 ## Notes-deDE: Ersetzt die normalen Einheiten, Gruppe, Ziel, Begleiterframe und fügt Ziel des Zieles hinzu.
 ## Notes-esES: Reemplazo para los marcos de unidades, con nuevo aspecto para jugador, mascota, grupo, objetivo, objetivo del objetivo, y banda
 ## Notes-zhCN: 玩家头像增强插件，附带团队助手功能
