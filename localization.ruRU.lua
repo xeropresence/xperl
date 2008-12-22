@@ -9,7 +9,7 @@ XPerl_Description	    = XPerl_ProductName.." от "..XPerl_Author
 XPerl_Version		    = XPerl_Description.." - "..XPerl_VersionNumber
 XPERL_LongDescription	= "Фреймы Игроков заменяются на новый вид Игроков, Питомцев, Группы, Цели, Целей Цели, Фокуса, Рейда"
 
-	XPERL_MINIMAP_HELP1		= "|c00FFFFFFЛевый rлик|r - опции  (а также |c0000FF00перемещение фреймов|r)"
+	XPERL_MINIMAP_HELP1		= "|c00FFFFFFЛевый rклик|r - опции  (а также |c0000FF00перемещение фреймов|r)"
 	XPERL_MINIMAP_HELP2		= "|c00FFFFFFПравый клик|r - перемещение иконки"
 	XPERL_MINIMAP_HELP3		= "\rУчастники рейда: |c00FFFF80%d|r\rУчастники рейда: |c00FFFF80%d|r"
 	XPERL_MINIMAP_HELP4		= "\rВы лидер группы/рейда"
@@ -41,7 +41,7 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_LOC_CLASS_PRIEST		= "Жрец"
 	XPERL_LOC_CLASS_WARLOCK		= "Чернокнижник"
 	XPERL_LOC_CLASS_PALADIN		= "Паладин"
-	XPERL_LOC_CLASS_DEATHKNIGHT = "Рыцарь Смерти"
+	XPERL_LOC_CLASS_DEATHKNIGHT = "Рыцарь cмерти"
 
 	XPERL_LOC_CLASS_WARRIORFEM	= "Воин"
 	XPERL_LOC_CLASS_MAGEFEM		= "Маг"
@@ -52,7 +52,7 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_LOC_CLASS_PRIESTFEM	= "Жрица"
 	XPERL_LOC_CLASS_WARLOCKFEM	= "Чернокнижница"
 	XPERL_LOC_CLASS_PALADINFEM	= "Паладин"
-	XPERL_LOC_CLASS_DEATHKNIGHTFEM = "Рыцарь Смерти"
+	XPERL_LOC_CLASS_DEATHKNIGHTFEM = "Рыцарь cмерти"
 	
 	XPERL_LOC_CLASS_PETS		= "Питомцы"
 	XPERL_TYPE_NOT_SPECIFIED	= "Не указанно"
@@ -134,7 +134,7 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 
 	XPERL_RAID_TOOLTIP_WITHBUFF		= "С баффом: (%s)"
 	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Без баффа: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s's %s заканчивается через %s"	-- Name, buff name, time to expire
+	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s'а %s заканчивается через %s"	-- Name, buff name, time to expire
 
 end
 
