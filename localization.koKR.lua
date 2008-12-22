@@ -35,6 +35,8 @@ if (GetLocale() == "koKR") then
 	XPERL_LOC_CLASS_PRIEST	= "사제"
 	XPERL_LOC_CLASS_WARLOCK	= "흑마법사"
 	XPERL_LOC_CLASS_PALADIN	= "성기사"
+	XPERL_LOC_CLASS_DEATHKNIGHT = "죽음의 기사"
+
 	XPERL_LOC_CLASS_PETS	= "소환수"
 	XPERL_TYPE_NOT_SPECIFIED = "무엇인가"
 	XPERL_TYPE_BOSS		= "보스"
@@ -73,6 +75,8 @@ if (GetLocale() == "koKR") then
 
 	XPERL_LOC_LARGENUMDIV	= 1000
 	XPERL_LOC_LARGENUMTAG	= "K"
+	XPERL_LOC_HUGENUMDIV	= 1000000
+	XPERL_LOC_HUGENUMTAG	= "M"
 
 	BINDING_HEADER_XPERL = "X-Perl 단축키 설정"
 	BINDING_NAME_TOGGLERAID = "공격대 창 켜기/끄기"
@@ -100,11 +104,20 @@ if (GetLocale() == "koKR") then
 	XPERL_USAGE_NEWVERSION	= "*새로운 버전"
 	XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r : 다운로드 가능"
 
-	XPerl_DefaultRangeSpells.ANY = {item = "두꺼운 황천매듭 붕대"}
+
+	XPERL_CMD_HELP			= "|c00FFFF80사용법: |c00FFFFFF/xperl menu | lock | unlock | config list | config delete <서버> <이름>"
+	XPERL_CANNOT_DELETE_CURRENT 	= "현재 설정은 삭제할 수 없습니다."
+	XPERL_CONFIG_DELETED		= "%s/%s 설정이 삭제되었습니다."
+	XPERL_CANNOT_FIND_DELETE_TARGET = "삭제할 설정을 찾을 수 없습니다. (%s/%s)"
+	XPERL_CANNOT_DELETE_BADARGS 	= "서버명과 플레이어 이름을 입력하세요."
+	XPERL_CONFIG_LIST		= "설정 목록:"
+	XPERL_CONFIG_CURRENT		= " (현재)"
 
 	XPERL_RAID_TOOLTIP_WITHBUFF	= "버프있음: (%s)"
 	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "버프없음: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s의 %s 사라짐까지 %s"	-- Name, buff name, time to expire
+	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s의 %s %s 이내 사라짐"	-- Name, buff name, time to expire
+	
+	XPerl_DefaultRangeSpells.ANY = {item = "두꺼운 황천매듭 붕대"}
 end
 
 XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
