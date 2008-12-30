@@ -33,16 +33,16 @@
 
 		<Layers>
 			<Layer level="OVERLAY">
-				<FontString name="$parenttext" justifyH="LEFT" inherits="GameFontNormalSmall" text="Error!">
+				<FontString name="$parenttext" inherits="GameFontNormalSmall">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
-								<AbsDimension x="2" y="-2"/>
+								<AbsDimension x="2" y="-3"/>
 							</Offset>
 						</Anchor>
 						<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT">
 							<Offset>
-								<AbsDimension x="-2" y="-6"/>
+								<AbsDimension x="-2" y="-9"/>
 							</Offset>
 						</Anchor>
 					</Anchors>

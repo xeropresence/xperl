@@ -626,10 +626,10 @@ local function XPerl_Party_TargetUpdateHealth(self)
 	end
 
 	if (UnitAffectingCombat(self.targetid)) then
-	        tf.combatIcon:SetTexCoord(0.5, 1.0, 0.0, 0.5)
-	        tf.combatIcon:Show()
+        tf.combatIcon:SetTexCoord(0.5, 1.0, 0.0, 0.5)
+        tf.combatIcon:Show()
 	else
-	        tf.combatIcon:Hide()
+        tf.combatIcon:Hide()
 	end
 
 	if (pconf.pvpIcon and UnitIsPVP(self.targetid)) then
@@ -748,7 +748,7 @@ function XPerl_Party_UpdateDisplay(self, less)
 		end
 
 		XPerl_Party_UpdatePlayerFlags(self)
-        	XPerl_Party_UpdateCombat(self)
+       	XPerl_Party_UpdateCombat(self)
 		XPerl_Party_UpdatePVP(self)
 		XPerl_Unit_UpdatePortrait(self)
 		XPerl_Party_Buff_UpdateAll(self)

@@ -2728,7 +2728,7 @@ end
 
 -- customOnUpdate
 local ICON_STEP_SIZE	= 500
-local ICON_STOP_SCAN	= 60000
+local ICON_STOP_SCAN	= 80000
 local function customOnUpdate(self, elspsed)
 	local db = self.iconDB
 	local ind = self.iconIndex

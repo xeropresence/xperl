@@ -153,17 +153,12 @@ local function XPerl_Player_Pet_UpdateName(self)
 		self.nameFrame.text:SetText(petname)
 	end
 
-	XPerl_ColourFriendlyUnit(self.nameFrame.text, self.partyid)
-
-	local c
 	if (not UnitIsFriend("player", "pet")) then		-- Pet or you charmed
-		c = conf.colour.reaction.enemy
-	elseif (UnitIsPVP("player")) then
-		c = conf.colour.reaction.friend
+		local c = conf.colour.reaction.enemy
+		self.nameFrame.text:SetTextColor(c.r, c.g, c.b, conf.transparency.text)
 	else
-		c = conf.colour.reaction.none
+		XPerl_ColourFriendlyUnit(self.nameFrame.text, self.partyid)
 	end
-        self.nameFrame.text:SetTextColor(c.r, c.g, c.b, conf.transparency.text)
 end
 
 -- XPerl_Player_Pet_UpdateLevel
@@ -262,7 +257,7 @@ end
 
 -- XPerl_Player_Pet_Update_Control
 local function XPerl_Player_Pet_Update_Control(self)
-	if (UnitIsCharmed(self.partyid) and not UnitName("vehicle")) then
+	if (UnitIsCharmed(self.partyid) and not UnitInVehicle("player")) then
 		self.nameFrame.warningIcon:Show()
 	else
 		self.nameFrame.warningIcon:Hide()
@@ -519,6 +514,7 @@ end
 function XPerl_Player_Pet_SetWidth(self)
 	pconf.size.width = max(0, pconf.size.width or 0)
 	self.statsFrame:SetWidth(80 + pconf.size.width)
+	self.nameFrame:SetWidth(80 + pconf.size.width)
 	self:SetScale(pconf.scale)
 	XPerl_StatsFrameSetup(self, {self.statsFrame.xpBar}, 2)
 	XPerl_SavePosition(self, true)

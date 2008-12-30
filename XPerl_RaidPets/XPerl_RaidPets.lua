@@ -13,7 +13,7 @@ local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 local function XPerl_RaidPets_OnEvent(self, event, unit, ...)
 	local func = XPerl_RaidPets_Events[event]
 	if (func) then
-		if (strfind(event, "^UNIT_")) then
+		if (strfind(event, "^UNIT_") and event ~= "UNIT_ENTERED_VEHICLE") then
 			local f = RaidPetFrameArray[unit]
 			if (f) then
 				func(f, ...)
@@ -30,6 +30,11 @@ end
 local function XPerl_RaidPets_OnUpdate(self, elapsed)
 	self.time = self.time + elapsed
 	if (self.time > 0.3) then
+		if (updateTitles) then
+			updateTitles = nil
+			XPerl_RaidPets_Titles()
+		end
+
 		for unit,frame in pairs(RaidPetFrameArray) do
 			if (unit) then
 				XPerl_UpdateSpellRange(frame, unit, true)
@@ -181,7 +186,7 @@ end
 -- PLAYER_ENTERING_WORLD
 function XPerl_RaidPets_Events:PLAYER_ENTERING_WORLD()
 	XPerl_RaidPet_UpdateGUIDs()
-	XPerl_RaidPets_Titles()
+	updateTitles = true
 end
 
 -- UNIT_PET
@@ -189,9 +194,25 @@ function XPerl_RaidPets_Events:UNIT_PET()
 	XPerl_RaidPet_UpdateGUIDs()
 end
 
+-- UNIT_ENTERED_VEHICLE
+function XPerl_RaidPets_Events:UNIT_ENTERED_VEHICLE(unit)
+	local guid = UnitGUID(unit)
+	for u,frame in pairs(RaidPetFrameArray) do
+		if (frame.ownerid and UnitGUID(frame.ownerid) == guid) then
+			XPerl_RaidPet_UpdateName(frame)
+		end
+	end
+	updateTitles = true
+end
+
+-- UNIT_EXITED_VEHICLE
+function XPerl_RaidPets_Events:UNIT_EXITED_VEHICLE(unit)
+	updateTitles = true
+end
+
 -- RAID_ROSTER_UPDATE
 function XPerl_RaidPets_Events:RAID_ROSTER_UPDATE()
-	XPerl_RaidPets_Titles()
+	updateTitles = true
 end
 
 -- UNIT_HEALTH
@@ -381,24 +402,7 @@ end
 
 -- XPerl_RaidPets_Titles
 function XPerl_RaidPets_Titles()
-	--if (rconf.hunter) then
-	--	if (rconf.warlock) then
-			XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETS)
-	--	else
-	--		XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETSHUNTER)
-	--	end
-	--elseif (rconf.warlock) then
-	--	XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETSWARLOCK)
-	--end
-
-	--local show
-	--for i = 1,GetNumRaidMembers() do
-	--	local unitName, rank, group, level, _, unitClass = GetRaidRosterInfo(i)
-	--	if (unitClass == "HUNTER" or unitClass == "WARLOCK") then
-	--		show = true
-	--		break
-	--	end
-	--end
+	XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETS)
 
 	XPerl_ProtectedCall(XPerl_RaidPets_HideShow)
 
@@ -414,7 +418,7 @@ end
 function XPerl_RaidPets_OptionActions()
 	SetMainHeaderAttributes(XPerl_Raid_GrpPets)
 
-	local events = {"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE", "UNIT_PET"}
+	local events = {"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE", "UNIT_PET", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE"}
 	for i,event in pairs(events) do
 		if (rconf.enable) then
 			XPerl_RaidPets_Frame:RegisterEvent(event)

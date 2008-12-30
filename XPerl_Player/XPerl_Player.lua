@@ -169,10 +169,53 @@ function XPerl_Player_UpdateLeader(self)
 	self.groupFrame:Hide()
 end
 
+-- XPerl_Player_UpdateCombat
+local function XPerl_Player_UpdateCombat(self)
+	local nf = self.nameFrame
+	if (UnitAffectingCombat(self.partyid)) then
+		nf.text:SetTextColor(1,0,0)
+		nf.combatIcon:SetTexCoord(0.5, 1.0, 0.0, 0.5)
+		nf.combatIcon:Show()
+	else
+		if (UnitIsPVP("player")) then
+			nf.text:SetTextColor(0,1,0)
+		else
+			if (self.partyid ~= "player") then
+				local c = conf.colour.reaction.none
+				nf.text:SetTextColor(c.r, c.g, c.b, conf.transparency.text)
+			else
+				XPerl_ColourFriendlyUnit(nf.text, self.partyid)
+			end
+		end
+
+		if (IsResting()) then
+			nf.combatIcon:SetTexCoord(0, 0.5, 0.0, 0.5)
+			nf.combatIcon:Show()
+		else
+			nf.combatIcon:Hide()
+		end
+	end
+end
+
 -- XPerl_Player_UpdateName()
 local function XPerl_Player_UpdateName(self)
 	playerName = UnitName(self.partyid)
 	self.nameFrame.text:SetText(playerName)
+	XPerl_Player_UpdateCombat(self)
+end
+
+-- XPerl_Player_UpdateClass
+local function XPerl_Player_UpdateClass(self)
+	local playerClass = select(2, UnitClass(self.partyid))
+	playerName = UnitName(self.partyid)
+	local l, r, t, b = XPerl_ClassPos(playerClass)
+	self.classFrame.tex:SetTexCoord(l, r, t, b)
+
+	if (pconf.classIcon) then
+		self.classFrame:Show()
+	else
+		self.classFrame:Hide()
+	end
 end
 
 -- XPerl_Player_UpdateRep
@@ -253,29 +296,6 @@ local function XPerl_Player_UpdateXP(self)
 
 		xpBar.text:SetText(xptext)
 		xpBar.percent:SetFormattedText(percD, (playerxp * 100) / playerxpmax)
-	end
-end
-
--- XPerl_Player_UpdateCombat
-local function XPerl_Player_UpdateCombat(self)
-	local nf = self.nameFrame
-	if (UnitAffectingCombat(self.partyid)) then
-		nf.text:SetTextColor(1,0,0)
-		nf.combatIcon:SetTexCoord(0.5, 1.0, 0.0, 0.5)
-		nf.combatIcon:Show()
-	else
-		if (UnitIsPVP("player")) then
-			nf.text:SetTextColor(0,1,0)
-		else
-			XPerl_ColourFriendlyUnit(nf.text, "player")
-		end
-
-		if (IsResting()) then
-			nf.combatIcon:SetTexCoord(0, 0.5, 0.0, 0.5)
-			nf.combatIcon:Show()
-		else
-			nf.combatIcon:Hide()
-		end
 	end
 end
 
@@ -478,6 +498,7 @@ function XPerl_Player_UpdateDisplay (self)
 	XPerl_Player_UpdateManaType(self)
 	XPerl_Player_UpdateLevel(self)
 	XPerl_Player_UpdateName(self)
+	XPerl_Player_UpdateClass(self)
 	XPerl_Player_UpdatePVP(self)
 	XPerl_Player_UpdateCombat(self)
 	XPerl_Player_UpdateLeader(self)
@@ -666,6 +687,7 @@ end
 -- UNIT_FACTION
 function XPerl_Player_Events:UNIT_FACTION()
 	XPerl_Player_UpdatePVP(self)
+	XPerl_Player_UpdateCombat(self)
 end
 XPerl_Player_Events.UNIT_FLAGS = XPerl_Player_Events.UNIT_FACTION
 
@@ -891,17 +913,7 @@ function XPerl_Player_Set_Bits(self)
 		self.levelFrame:Hide()
 	end
 
-	local _
-	_, playerClass = UnitClass("player")
-	playerName = UnitName("player")
-	local l, r, t, b = XPerl_ClassPos(playerClass)
-	self.classFrame.tex:SetTexCoord(l, r, t, b)
-
-	if (pconf.classIcon) then
-		self.classFrame:Show()
-	else
-		self.classFrame:Hide()
-	end
+	XPerl_Player_UpdateClass(self)
 
 	if (pconf.repBar) then
 		if (not self.statsFrame.repBar) then

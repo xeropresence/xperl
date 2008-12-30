@@ -483,6 +483,8 @@ do
 			for k,v in pairs(shortlist) do
 				media:Register("statusbar", v[1], v[2])
 			end
+
+			media:Register("border", "X-Perl Thin", "Interface\\Addons\\XPerl\\images\\XPerl_ThinEdge")
 		end
 	end
 
