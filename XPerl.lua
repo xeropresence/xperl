@@ -2738,7 +2738,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				-- in favor of all in UnitBuff instead. We still want our big buffs first in the list,
 				-- so we have to scan thru twice.
 				for buffnum = 1,maxBuffs do
-					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly and "RAID")
+					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, (castableOnly == 1) and "RAID")
 
 					if (buff and (((mine == 1) and (isMine or isStealable)) or ((mine == 2) and not (isMine or isStealable)))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true)
@@ -2830,7 +2830,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			lastIcon = 0
 			for mine = 1,2 do
 				for buffnum = 1,maxDebuffs do
-					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, curableOnly and "RAID")
+					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, (curableOnly == 1) and "RAID")
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true)
