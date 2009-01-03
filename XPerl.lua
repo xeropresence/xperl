@@ -1887,13 +1887,13 @@ end
 
 -- XPerl_UnitBuff
 function XPerl_UnitBuff(unit, index, flag)
-	return UnitBuff(unit, index)
+	return UnitBuff(unit, index, flag)
 	--return BuffException(unit, index, flag, UnitBuff, BuffExceptions)
 end
 
 -- XPerl_UnitBuff
 function XPerl_UnitDebuff(unit, index, flag)
-	return UnitDebuff(unit, index)
+	return UnitDebuff(unit, index, flag)
 	--return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
 end
 
@@ -2830,7 +2830,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			lastIcon = 0
 			for mine = 1,2 do
 				for buffnum = 1,maxDebuffs do
-					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, curableOnly and "PLAYER")
+					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, curableOnly and "RAID")
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true)
