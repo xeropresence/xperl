@@ -133,6 +133,16 @@ local absorbSpells = {
 		GetModifier = getTalentModifier,
 		GetRankAmount = getRankAmount,
 	},
+	[58597] = {				-- Sacred Shield
+		ranks = {
+			[58597] = 500,
+		},
+		class = "PALADIN",
+		targetable = true,
+		school = "HOLY",
+		GetModifier = getTalentModifier,
+		GetRankAmount = getRankAmount,
+	},
 }
 
 local colours = {HOT = {r = 0.2, g = 0.4, b = 0.8, canFlash = true},
@@ -1669,8 +1679,11 @@ end
 -- COMBATLOG:SPELL_AURA_APPLIED
 function xpHigh.clEvents:SPELL_AURA_APPLIED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, auraType)
 	if (conf.highlight.SHIELD) then
-		if (srcGUID == playerGUID and band(dstFlags, dstMask) ~= 0) then
+		if ((srcGUID == dstGUID or srcGUID == playerGUID) and band(dstFlags, dstMask) ~= 0) then
 			local def = absorbSpells[spellName]
+			if (not def) then
+				def = absorbSpells[spellId]
+			end
 			if (def) then
 				local rankAmount = def:GetRankAmount(spellId)
 				if (rankAmount) then
@@ -1696,6 +1709,9 @@ function xpHigh.clEvents:SPELL_AURA_REMOVED(timestamp, event, srcGUID, srcName, 
 	if (conf.highlight.SHIELD) then
 		if (band(dstFlags, dstMask) ~= 0) then
 			local def = absorbSpells[spellName]
+			if (not def) then
+				def = absorbSpells[spellId]
+			end
 			if (def) then
 				local rankAmount = def:GetRankAmount(spellId)
 				if (rankAmount) then

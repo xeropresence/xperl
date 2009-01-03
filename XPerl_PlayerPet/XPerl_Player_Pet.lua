@@ -147,13 +147,16 @@ end
 local function XPerl_Player_Pet_UpdateName(self)
 	local petname = UnitName(self.partyid)
 
-	if (petname == UNKNOWNOBJECT) then
+	if (petname == UNKNOWN) then
 		self.nameFrame.text:SetText("")
 	else
 		self.nameFrame.text:SetText(petname)
 	end
 
-	if (not UnitIsFriend("player", "pet")) then		-- Pet or you charmed
+	if (self.partyid == "pet") then
+		local c = conf.colour.reaction.none
+		self.nameFrame.text:SetTextColor(c.r, c.g, c.b, conf.transparency.text)
+	elseif (not UnitIsFriend("player", "pet")) then		-- Pet or you charmed
 		local c = conf.colour.reaction.enemy
 		self.nameFrame.text:SetTextColor(c.r, c.g, c.b, conf.transparency.text)
 	else

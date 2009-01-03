@@ -378,27 +378,35 @@ local function XPerl_Player_UpdateMana(self)
 	end
 end
 
+local shadowOfDeath = GetSpellInfo(54223)
+local spiritOfRedemption = GetSpellInfo(27827)
+
 -- XPerl_Player_UpdateHealth
 function XPerl_Player_UpdateHealth(self)
+	local partyid = self.partyid
 	local sf = self.statsFrame
 	local hb = sf.healthBar
-	local playerhealth, playerhealthmax = XPerl_UnitHealth(self.partyid), UnitHealthMax(self.partyid)
+	local playerhealth, playerhealthmax = XPerl_UnitHealth(partyid), UnitHealthMax(partyid)
 
 	XPerl_SetHealthBar(self, playerhealth, playerhealthmax)
 
 	local greyMsg
-	if (UnitIsDead(self.partyid)) then
+	if (UnitIsDead(partyid)) then
 		--if (UnitIsFeignDeath("player")) then
 		--	greyMsg = XPERL_LOC_FEIGNDEATH
 		--else
 			greyMsg = XPERL_LOC_DEAD
 		--end
 
-	elseif (UnitIsGhost(self.partyid)) then
+	elseif (UnitIsGhost(partyid)) then
 		greyMsg = XPERL_LOC_GHOST
 
 	elseif (UnitIsAFK("player") and conf.showAFK) then
 		greyMsg = CHAT_MSG_AFK
+
+	elseif (UnitBuff(partyid, shadowOfDeath) or UnitBuff(partyid, spiritOfRedemption)) then
+		greyMsg = XPERL_LOC_DEAD
+
 	end
 
 	if (greyMsg) then
@@ -473,7 +481,11 @@ function XPerl_Player_OnUpdate(self, elapsed)
 	end
 
 	XPerl_Player_UpdateMana(self)
-	--XPerl_Player_UpdateHealth(self)
+
+	if (self.updateAFK) then
+		self.updateAFK = nil
+		XPerl_Player_UpdateHealth(self)
+	end
 end
 
 -- XPerl_Player_UpdateBuffs
@@ -525,6 +537,7 @@ end
 
 -- PLAYER_ENTERING_WORLD
 function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
+	self.updateAFK = true
 	if (UnitHasVehicleUI("player")) then
 		self.partyid = "vehicle"
 		self:SetAttribute("unit", "vehicle")
@@ -686,6 +699,7 @@ end
 
 -- UNIT_FACTION
 function XPerl_Player_Events:UNIT_FACTION()
+	XPerl_Player_UpdateHealth(self)
 	XPerl_Player_UpdatePVP(self)
 	XPerl_Player_UpdateCombat(self)
 end

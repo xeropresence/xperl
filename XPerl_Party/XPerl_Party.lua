@@ -218,18 +218,22 @@ local function ShowHideValues(self)
 	end
 end
 
+local shadowOfDeath = GetSpellInfo(54223)
+local spiritOfRedemption = GetSpellInfo(27827)
+
 -- XPerl_Party_UpdateHealth
 function XPerl_Party_UpdateHealth(self)
-	local Partyhealth, Partyhealthmax = XPerl_UnitHealth(self.partyid), UnitHealthMax(self.partyid)
+	local partyid = self.partyid
+	local Partyhealth, Partyhealthmax = XPerl_UnitHealth(partyid), UnitHealthMax(partyid)
 	local reason
 
-	if (self.feigning and not UnitIsFeignDeath(self.partyid)) then
+	if (self.feigning and not UnitIsFeignDeath(partyid)) then
 		self.feigning = nil
 	end
 
 	XPerl_SetHealthBar(self, Partyhealth, Partyhealthmax)
 
-	if (not UnitIsConnected(self.partyid)) then
+	if (not UnitIsConnected(partyid)) then
 		reason = XPERL_LOC_OFFLINE
 	else
 		if (self.feigning and conf.showFD) then
@@ -238,14 +242,18 @@ function XPerl_Party_UpdateHealth(self)
 		elseif (self.afk and conf.showAFK) then
 			reason = CHAT_MSG_AFK
 
-		elseif (UnitIsDead(self.partyid)) then
+		elseif (UnitIsDead(partyid)) then
 			reason = XPERL_LOC_DEAD
 
-		elseif (UnitIsGhost(self.partyid)) then
+		elseif (UnitIsGhost(partyid)) then
 			reason = XPERL_LOC_GHOST
 
 		elseif ((Partyhealth==1) and (Partyhealthmax==1)) then
 			reason = XPERL_LOC_UPDATING
+
+		elseif (UnitBuff(partyid, shadowOfDeath) or UnitBuff(partyid, spiritOfRedemption)) then
+			reason = XPERL_LOC_DEAD
+
 		end
 	end
 

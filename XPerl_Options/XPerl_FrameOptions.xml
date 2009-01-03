@@ -3493,7 +3493,7 @@
 										XPerlDB.highlight.HOT = nil
 										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightHoTs"), false)
 									end
-									if (class ~= "PRIEST" and class ~= "SHAMAN" and class ~= "MAGE") then
+									if (class ~= "PRIEST" and class ~= "SHAMAN" and class ~= "MAGE" and class ~= "PALADIN") then
 										XPerlDB.highlight.SHIELD = nil
 										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightShields"), false)
 									end
