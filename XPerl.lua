@@ -527,23 +527,6 @@ function XPerl_GetClassColour(class)
 	return (class and RAID_CLASS_COLORS[class]) or defaultColour
 end
 
--- UnitIsFeignDeath - chinese might not have patch yet.
-if (type(UnitIsFeignDeath) ~= "function") then
-	function UnitIsFeignDeath(unit)
-		for i = 1,20 do
-			local name, rank, buff = UnitBuff(unit, i)
-
-			if (buff) then
-				if (strfind(strlower(buff), "feigndeath")) then
-					return true
-				end
-			else
-				break
-			end
-		end
-	end
-end
-
 ---------------------------------
 --Loading Function             --
 ---------------------------------
@@ -1886,16 +1869,19 @@ end
 --end
 
 -- XPerl_UnitBuff
-function XPerl_UnitBuff(unit, index, flag)
-	return UnitBuff(unit, index, flag)
-	--return BuffException(unit, index, flag, UnitBuff, BuffExceptions)
-end
+--function XPerl_UnitBuff(unit, index, flag)
+--	return UnitBuff(unit, index, flag)
+--	--return BuffException(unit, index, flag, UnitBuff, BuffExceptions)
+--end
 
 -- XPerl_UnitBuff
-function XPerl_UnitDebuff(unit, index, flag)
-	return UnitDebuff(unit, index, flag)
-	--return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
-end
+--function XPerl_UnitDebuff(unit, index, flag)
+--	return UnitDebuff(unit, index, flag)
+--	--return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
+--end
+
+XPerl_UnitBuff = UnitBuff
+XPerl_UnitDebuff = UnitDebuff
 
 -- XPerl_TooltipSetUnitBuff
 -- Retreives the index of the actual unfiltered buff, and uses this on unfiltered tooltip call
@@ -2715,8 +2701,6 @@ do
 	end
 end
 
-local youreInfected = GetSpellInfo(43958)
-
 -- XPerl_Unit_UpdateBuffs(self)
 function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curableOnly)
 	local buffs, debuffs, buffsMine, debuffsMine = 0, 0, 0, 0
@@ -2739,6 +2723,12 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				-- so we have to scan thru twice.
 				for buffnum = 1,maxBuffs do
 					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, (castableOnly == 1) and "RAID")
+					if (not name) then
+						if (mine == 1) then
+							maxBuffs = buffnum - 1
+						end
+						break
+					end
 
 					if (buff and (((mine == 1) and (isMine or isStealable)) or ((mine == 2) and not (isMine or isStealable)))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true)
@@ -2796,18 +2786,18 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 							button:SetScale(self.conf.buffs.size / 32)
 						end
 						buffIconIndex = buffIconIndex + 1
-					else
-						if (mine == 2) then
-							local button = self.buffFrame.buff and self.buffFrame.buff[buffIconIndex]
-							if (button) then
-								lastIcon = buffIconIndex
-								button.expireTime = nil
-								button.big = nil
-								button:Hide()
-							else
-								break
-							end
-						end
+					--else
+					--	if (mine == 2) then
+					--		local button = self.buffFrame.buff and self.buffFrame.buff[buffIconIndex]
+					--		if (button) then
+					--			lastIcon = buffIconIndex
+					--			button.expireTime = nil
+					--			button.big = nil
+					--			button:Hide()
+					--		else
+					--			break
+					--		end
+					--	end
 					end
 				end
 			end
@@ -2831,6 +2821,12 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			for mine = 1,2 do
 				for buffnum = 1,maxDebuffs do
 					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, (curableOnly == 1) and "RAID")
+					if (not name) then
+						if (mine == 1) then
+							maxDebuffs = buffnum - 1
+						end
+						break
+					end
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true)
@@ -2851,10 +2847,6 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 	
 						-- Handle cooldowns
 						if (button.cooldown) then
-							if (name == youreInfected) then
-								duration = max(120, duration)
-							end
-
 							if (duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
 								local start = endTime - duration
 								XPerl_CooldownFrame_SetTimer(button.cooldown, start, duration, 1, isMine)
@@ -2875,18 +2867,18 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 							button:SetScale(self.conf.debuffs.size / 32)
 						end
 						buffIconIndex = buffIconIndex + 1
-					else
-						if (mine == 1) then
-							local button = self.buffFrame.debuff and self.buffFrame.debuff[buffIconIndex]
-							if (button) then
-								lastIcon = buffIconIndex
-								button.big = nil
-								button.expireTime = nil
-								button:Hide()
-							else
-								break
-							end
-						end
+					--else
+					--	if (mine == 1) then
+					--		local button = self.buffFrame.debuff and self.buffFrame.debuff[buffIconIndex]
+					--		if (button) then
+					--			lastIcon = buffIconIndex
+					--			button.big = nil
+					--			button.expireTime = nil
+					--			button:Hide()
+					--		else
+					--			break
+					--		end
+					--	end
 					end
 				end
 			end
