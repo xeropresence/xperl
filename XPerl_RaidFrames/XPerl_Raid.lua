@@ -715,9 +715,9 @@ end
 -- GetShowCast
 local function GetShowCast(self)
 	if (rconf.buffs.enable) then
-		return "b", rconf.buffs.castable
+		return "b", (rconf.buffs.castable == 1) and "RAID"
 	elseif (rconf.debuffs.enable) then
-		return "d", rconf.buffs.castable
+		return "d", (rconf.buffs.castable == 1) and "RAID"
 	end
 end
 
