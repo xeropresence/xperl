@@ -17,5 +17,5 @@ if (GetLocale() == "zhTW") then
 	XPERL_MONITOR_INNERVATE			= "啟動"
 	XPERL_MONITOR_MANATIDE			= "法力之潮圖騰"
 
-	XPERL_LOC_OOR				= "超距"
+	XPERL_LOC_OOR				= "超出距離"
 end

@@ -1,4 +1,4 @@
-if (GetLocale() == "zhTW") then
+﻿if (GetLocale() == "zhTW") then
 
 XPERL_MSG_PREFIX	= "|c00C05050X-Perl|r "
 XPERL_COMMS_PREFIX	= "X-Perl"
@@ -31,11 +31,11 @@ XPERL_HELPER_MACLEAR		= "主要協助對象 |c00FF0000已清除!"
 XPERL_HELPER_MAREMOVED		= "坦克列表中沒有找到主要協助 %s - 移除!"
 XPERL_HELPER_MAREMOTESET	= "%s 分配主要協助對象是 %s"
 
-XPERL_HELPER_FINDFOUND		= "使用 FIND 來搜尋適合的目標. ('|c00007F00/xp find|r' 可清除)."
+XPERL_HELPER_FINDFOUND		= "使用 FIND 來搜尋適合的目標. ('|c00007F00/xp find|r' 來清除)."
 XPERL_HELPER_FINDCLEARED	= "Find |c00FF0000已清除!|r"
-XPERL_HELPER_FINDSET		= "Find 設置為 %s. ('|c00007F00/xp find|r' 可清除)."
+XPERL_HELPER_FINDSET		= "Find 設置為 %s. ('|c00007F00/xp find|r' 來清除)."
 
-XPERL_AGGRO_PLAYER		= "- AGGRO -"
-XPERL_AGGRO_PET			= "- PET AGGRO -"
-XPERL_AGGRO_DRAGTIP		= "移動仇恨警告位置"
+XPERL_AGGRO_PLAYER		= "- 獲得仇恨 -"
+XPERL_AGGRO_PET			= "- 寵物獲得仇恨 -"
+XPERL_AGGRO_DRAGTIP		= "移動獲得仇恨警告位置"
 end

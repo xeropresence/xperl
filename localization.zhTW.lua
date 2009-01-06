@@ -2,12 +2,13 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
--- Thanks 星塵 for translations
+-- Thanks 星塵、Player Lin for translations
+
 if (GetLocale() == "zhTW") then
 XPerl_ProductName	= "|cFFD00000X-Perl|r 框架"
 XPerl_Description	= XPerl_ProductName.." 作者 "..XPerl_Author
 
-XPerl_LongDescription	= "全新外觀的玩家狀態框，包括玩家、寵物、隊伍、團隊、目標以及目標的目標"
+XPerl_LongDescription	= "全新外觀的玩家狀態框，包括玩家、寵物、隊伍、團隊、目標以及目標的目標等。"
 
 XPERL_MINIMAP_HELP1	= "|c00FFFFFF左鍵點擊|r 開啟設定視窗 (以及 |c0000FF00解鎖框架|r)"
 XPERL_MINIMAP_HELP2	= "|c00FFFFFF右鍵拖動|r 移動此圖標"
@@ -41,6 +42,8 @@ XPERL_LOC_CLASS_SHAMAN 	= "薩滿"
 XPERL_LOC_CLASS_PRIEST 	= "牧師"
 XPERL_LOC_CLASS_WARLOCK = "術士"
 XPERL_LOC_CLASS_PALADIN = "聖騎士"
+XPERL_LOC_CLASS_DEATHKNIGHT = "死亡騎士"
+
 XPERL_LOC_CLASS_PETS	= "寵物"
 XPERL_TYPE_NOT_SPECIFIED = "未指定"
 XPERL_TYPE_PET		= PET			-- "Pet"
@@ -78,7 +81,7 @@ XPERL_CANCEL		= "取消"
 XPERL_LOC_LARGENUMDIV	= 10000
 XPERL_LOC_LARGENUMTAG	= "萬"
 XPERL_LOC_HUGENUMDIV	= 100000000
-XPERL_LOC_HUGENUMTAG	= "萬萬"
+XPERL_LOC_HUGENUMTAG	= "億"
 
 BINDING_HEADER_XPERL = "X-Perl 快捷鍵設定"
 BINDING_NAME_TOGGLERAID = "開/關團隊視窗"
@@ -114,7 +117,11 @@ XPERL_CANNOT_DELETE_BADARGS	= "請給予正確的伺服器名稱以及玩家名�
 XPERL_CONFIG_LIST		= "設定清單:"
 XPERL_CONFIG_CURRENT		= " (目前)"
 
-XPerl_DefaultRangeSpells.ANY = {item = "厚幽紋繃帶"}
+XPERL_RAID_TOOLTIP_WITHBUFF	= "有此 buff 的: (%s)"
+XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "沒有此 buff 的: (%s)"
+XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s 的 %s 將要在 %s 後消失。"	-- Name, buff name, time to expire
+
+XPerl_DefaultRangeSpells.ANY = {item = "厚霜紋繃帶"}
 
 XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
 XPERL_LOC_CLASS_PETSWARLOCK = XPERL_LOC_CLASS_WARLOCK.." "..XPERL_LOC_CLASS_PETS
