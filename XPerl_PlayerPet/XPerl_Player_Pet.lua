@@ -395,10 +395,10 @@ function XPerl_Player_Pet_Events:PET_ATTACK_START()
 end
 
 -- UNIT_COMBAT
-function XPerl_Player_Pet_Events:UNIT_COMBAT()
+function XPerl_Player_Pet_Events:UNIT_COMBAT(...)
 	if (arg1 == self.partyid) then
 		if (pconf.hitIndicator and pconf.portrait) then
-			CombatFeedback_OnCombatEvent(self, arg2, arg3, arg4, arg5)
+			CombatFeedback_OnCombatEvent(self, ...)
 		end
 
 		if (arg2 == "HEAL") then

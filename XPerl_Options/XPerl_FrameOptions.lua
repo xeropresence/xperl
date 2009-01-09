@@ -1646,7 +1646,7 @@ function XPerl_Options_ImportOldConfig(old)
 			},
 			portrait		= Convert(old.ShowPlayerPortrait),
 			portrait3D		= Convert(old.ShowPlayerPortrait3D),
-			hitIndicator		= Convert(old.CombatHitIndicator),
+			hitIndicator	= Convert(old.CombatHitIndicator),
 			level			= Convert(old.ShowPlayerLevel),
 			classIcon		= Convert(old.ShowPlayerClassIcon),
 			xpBar			= Convert(old.ShowPlayerXPBar),
@@ -1657,7 +1657,10 @@ function XPerl_Options_ImportOldConfig(old)
 			scale			= old.Scale_PlayerFrame		or 0.8,
 			partyNumber		= Convert(old.ShowPartyNumber),
 			withName		= Convert(old.ShowPartyNumberWithName),
-			energyTicker		= Convert(old.EnergyTicker),
+			energyTicker	= Convert(old.EnergyTicker),
+			showRunes		= 1,
+			dockRunes		= 1,
+
 
 			fullScreen = {
 				enable		= Convert(old.FullScreenStatus),
@@ -2316,7 +2319,9 @@ local function XPerl_Player_ConfigDefault(default)
 		scale			= 0.9,
 		partyNumber		= 1,
 --		withName		= nil,
-		energyTicker		= 1,
+		energyTicker	= 1,
+		showRunes		= 1,
+		dockRunes		= 1,
 
 		fullScreen = {
 			enable		= 1,

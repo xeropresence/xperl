@@ -227,14 +227,9 @@ end
 
 -- XPerl_UnitDebuffInformation
 local function TargetDebuffInformation(debuff)
-	for i = 1,40 do
-		local name, rank, tex, count = UnitDebuff("target", i)
-		if (not name) then
-			break
-		end
-		if (name == debuff) then
-			return count
-		end
+	local name, rank, tex, count = UnitDebuff("target", debuff)
+	if (name) then
+		return count
 	end
 	return 0
 end

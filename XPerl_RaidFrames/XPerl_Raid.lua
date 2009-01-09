@@ -29,6 +29,11 @@ local UnitMana = UnitMana
 local UnitManaMax = UnitManaMax
 local UnitName = UnitName
 local UnitPowerType = UnitPowerType
+local XPerl_UnitBuff = XPerl_UnitBuff
+local XPerl_UnitDebuff = XPerl_UnitDebuff
+local XPerl_CheckDebuffs = XPerl_CheckDebuffs
+local XPerl_ColourFriendlyUnit = XPerl_ColourFriendlyUnit
+local XPerl_ColourHealthBar = XPerl_ColourHealthBar
 
 -- TODO - Watch for:   ERR_FRIEND_OFFLINE_S = "%s has gone offline."
 
@@ -323,7 +328,7 @@ local function XPerl_Raid_UpdateName(self)
 	self.lastName, self.lastID = name, partyid -- These stored, so we can at least make a small effort in reducing workload on attribute changes.
 
 	if (name) then
-                self.nameFrame.text:SetText(name)
+		self.nameFrame.text:SetText(name)
 
 		if (self.pet) then
 			local color = conf.ColourReactionNone
@@ -500,10 +505,9 @@ function XPerl_Raid_UpdateHealth(self)
 			XPerl_Raid_UpdateName(self)
 
 		elseif (UnitIsDead(partyid) or (myRoster and myRoster.fd and conf.showFD)) then
-			if (myRoster and myRoster.fd) then		--UnitIsFeignDeath(partyid)) then
+			if (myRoster and myRoster.fd) then
 				XPerl_NoFadeBars(true)
 				self.statsFrame.healthBar.text:SetText(XPERL_LOC_FEIGNDEATH)
-				--XPerl_SetSmoothBarColor(self.statsFrame.healthBar, 0)
 				self.statsFrame:SetGrey()
 				XPerl_NoFadeBars()
 			else
@@ -773,7 +777,7 @@ local function UpdateBuffs(self)
 			end
 		end
 		for buffnum=maxBuff+1,8 do
-                        local button = bf.buff and bf.buff[buffnum]
+			local button = bf.buff and bf.buff[buffnum]
 			if (button) then
 				if (button:IsShown()) then
 	 				button:Hide()

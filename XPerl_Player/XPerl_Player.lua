@@ -21,6 +21,7 @@ local UnitManaMax = UnitManaMax
 local UnitName = UnitName
 local UnitPower = UnitPower
 local UnitPowerType = UnitPowerType
+local XPerl_SetHealthBar = XPerl_SetHealthBar
 
 local XPerl_Player_InitDK
 
@@ -550,22 +551,26 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 end
 
 -- UNIT_COMBAT
-function XPerl_Player_Events:UNIT_COMBAT()
-	if (pconf.hitIndicator and pconf.portrait) then
-		CombatFeedback_OnCombatEvent(self, arg2, arg3, arg4, arg5)
-	end
+function XPerl_Player_Events:UNIT_COMBAT(...)
+	if (arg1 == self.partyid) then
+		if (pconf.hitIndicator and pconf.portrait) then
+			CombatFeedback_OnCombatEvent(self, ...)
+		end
 
-	if (arg2 == "HEAL") then
-		XPerl_Player_CombatFlash(self, elapsed, true, true)
-	elseif (arg4 and arg4 > 0) then
-		XPerl_Player_CombatFlash(self, elapsed, true)
+		if (arg2 == "HEAL") then
+			XPerl_Player_CombatFlash(self, elapsed, true, true)
+		elseif (arg4 and arg4 > 0) then
+			XPerl_Player_CombatFlash(self, elapsed, true)
+		end
 	end
 end
 
 -- UNIT_SPELLMISS
 function XPerl_Player_Events:UNIT_SPELLMISS()
 	if (pconf.hitIndicator and pconf.portrait) then
-		CombatFeedback_OnSpellMissEvent(self, arg2)
+		if (arg1 == self.partyid) then
+			CombatFeedback_OnSpellMissEvent(self, arg2)
+		end
 	end
 end
 
