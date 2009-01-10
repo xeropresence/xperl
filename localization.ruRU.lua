@@ -62,11 +62,6 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_TYPE_ELITE			= "Элита"
 	XPERL_TYPE_RARE				= "Редкий"
 
-	XPERL_SPELL_SUNDER			= GetSpellInfo(30901)	-- "Sunder Armor"
-	XPERL_SPELL_SHADOWV 		= GetSpellInfo(15258)	-- "Shadow Vulnerability"
-	XPERL_SPELL_FIREV			= GetSpellInfo(22959)	-- "Fire Vulnerability"
-	XPERL_SPELL_WINTERCH		= GetSpellInfo(12579)	-- "Winter's Chill"
-
 -- Status
 	XPERL_LOC_DEAD			= DEAD		-- "Dead"
 	XPERL_LOC_GHOST			= "Дух"
