@@ -1676,10 +1676,20 @@ function xpHigh.clEvents:SWING_MISSED(timestamp, event, srcGUID, srcName, srcFla
 	end
 end
 
+-- ENVIRONMENTAL_DAMAGE
+function xpHigh.clEvents:ENVIRONMENTAL_DAMAGE(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+	if (band(dstFlags, dstMask) ~= 0) then
+		local environmentalType, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
+		if (missType == "ABSORB") then
+			self:Damage(dstGUID, absorbed)
+		end
+	end
+end
+
 -- COMBATLOG:SPELL_AURA_APPLIED
 function xpHigh.clEvents:SPELL_AURA_APPLIED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, auraType)
 	if (conf.highlight.SHIELD) then
-		if ((srcGUID == dstGUID or srcGUID == playerGUID) and band(dstFlags, dstMask) ~= 0) then
+		if ((srcGUID == dstGUID or srcGUID == playerGUID or dstGUID == playerGUID) and band(dstFlags, dstMask) ~= 0) then
 			local def = absorbSpells[spellName]
 			if (not def) then
 				def = absorbSpells[spellId]
@@ -1687,22 +1697,36 @@ function xpHigh.clEvents:SPELL_AURA_APPLIED(timestamp, event, srcGUID, srcName, 
 			if (def) then
 				local rankAmount = def:GetRankAmount(spellId)
 				if (rankAmount) then
-					if (not self.shields[dstGUID]) then
-						self.shields[dstGUID] = new()
+					if (event == "SPELL_AURA_APPLIED") then
+						if (not self.shields[dstGUID]) then
+							self.shields[dstGUID] = new()
+						end
+						tinsert(self.shields[dstGUID], 1, {
+							amount = rankAmount,
+							maxAmount = rankAmount,
+							name = spellName,
+							id = spellId,
+						})
+						self:Send(dstGUID)
+					elseif (dstGUID == playerGUID) then
+						local s = self.shields and self.shields[dstGUID]
+						if (s) then
+							for i,data in pairs(s) do
+								if (data.name == spellName) then
+									data.amount = rankAmount
+									data.maxAmount = rankAmount
+									self:Send(dstGUID)
+									break
+								end
+							end
+						end
 					end
-	
-					tinsert(self.shields[dstGUID], 1, {
-						amount = rankAmount,
-						maxAmount = rankAmount,
-						name = spellName,
-						id = spellId,
-					})
-					self:Send(dstGUID)
 				end
 			end
 		end
 	end
 end
+xpHigh.clEvents.SPELL_AURA_REFRESH = xpHigh.clEvents.SPELL_AURA_APPLIED
 
 -- COMBATLOG:SPELL_AURA_REMOVED
 function xpHigh.clEvents:SPELL_AURA_REMOVED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, auraType, ...)
@@ -1719,13 +1743,9 @@ function xpHigh.clEvents:SPELL_AURA_REMOVED(timestamp, event, srcGUID, srcName, 
 					if (list) then
 						for i,info in pairs(list) do
 							if (info.id == spellId) then
-								if (event == "SPELL_AURA_REFRESH" and srcGUID == playerGUID) then
-									info.amount = rankAmount
-								else
-									del(tremove(list, i))
-									if (not next(list)) then
-										self.shields[dstGUID] = del(self.shields[dstGUID])
-									end
+								del(tremove(list, i))
+								if (not next(list)) then
+									self.shields[dstGUID] = del(self.shields[dstGUID])
 								end
 								self:Send(dstGUID)
 								break
@@ -1737,7 +1757,6 @@ function xpHigh.clEvents:SPELL_AURA_REMOVED(timestamp, event, srcGUID, srcName, 
 		end
 	end
 end
-xpHigh.clEvents.SPELL_AURA_REFRESH = xpHigh.clEvents.SPELL_AURA_REMOVED
 
 -- Damage
 function xpHigh:Damage(guid, absorbed)

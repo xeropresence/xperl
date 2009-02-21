@@ -1676,26 +1676,27 @@ function XPerl_RaidTitles()
 			end
 
 			if (XPerlLocked == 0) then
+				local rows = conf.sortByClass and RaidGroupCounts[i] or 5
 				virtualFrame:ClearAllPoints()
 				if (rconf.anchor == "TOP") then
 					virtualFrame:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, 0)
-					virtualFrame:SetHeight(((rconf.mana or 0) * 5 + 38) * 5 + (rconf.spacing * 4))
+					virtualFrame:SetHeight(((rconf.mana or 0) * rows + 38) * rows + (rconf.spacing * (rows - 1)))
 					virtualFrame:SetWidth(80)
 
 				elseif (rconf.anchor == "LEFT") then
 					virtualFrame:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 0, 0)
 					virtualFrame:SetHeight((rconf.mana or 0) * 5 + 38)
-					virtualFrame:SetWidth(80 * 5 + (rconf.spacing * 4))
+					virtualFrame:SetWidth(80 * rows + (rconf.spacing * (rows - 1)))
 
 				elseif (rconf.anchor == "BOTTOM") then
 					virtualFrame:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 0, 0)
-					virtualFrame:SetHeight(((rconf.mana or 0) * 5 + 38) * 5 + (rconf.spacing * 4))
+					virtualFrame:SetHeight(((rconf.mana or 0) * rows + 38) * rows + (rconf.spacing * (rows - 1)))
 					virtualFrame:SetWidth(80)
 
 				elseif (rconf.anchor == "RIGHT") then
 					virtualFrame:SetPoint("TOPRIGHT", frame, "BOTTOMRIGHT", 0, 0)
 					virtualFrame:SetHeight((rconf.mana or 0) * 5 + 38)
-					virtualFrame:SetWidth(80 * 5 + (rconf.spacing * 4))
+					virtualFrame:SetWidth(80 * rows + (rconf.spacing * (rows - 1)))
 				end
 
 				virtualFrame:SetBackdropColor(conf.colour.frame.r, conf.colour.frame.g, conf.colour.frame.b, conf.colour.frame.a)

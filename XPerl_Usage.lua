@@ -118,7 +118,7 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 			self:CheckForNewerVersion(ver)			-- Won't do a per revision check
 		end
 
-		if (channel ~= "WHISPER" and sender ~= UnitName("player")) then
+		if (channel ~= "WHISPER" and sender and sender ~= UnitName("player")) then
 			self:SendModules("WHISPER", sender)
 		end
 

@@ -197,6 +197,7 @@ XPerl_DefaultRangeSpells = {
 
 -- Don't highlight these magical debuffs
 XPerl_ArcaneExclusions = {
+	[GetSpellInfo(42897)] = true,						-- Arcane Blast (again)
 	[GetSpellInfo(30405)] = true,						-- Unstable Affliction
 	[GetSpellInfo(15822)] = true,						-- Dreamless Sleep
 	[GetSpellInfo(24360)] = true,						-- Greater Dreamless Sleep

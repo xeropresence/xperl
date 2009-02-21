@@ -284,8 +284,9 @@ end
 local function XPerl_Target_UpdatePVP(self)
 	local partyid = self.partyid
 
-	if (self.conf.pvpIcon and UnitIsPVP(partyid)) then
-		self.nameFrame.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..(UnitFactionGroup(partyid) or "FFA"))
+	local pvp = self.conf.pvpIcon and (UnitIsPVP(partyid) and UnitFactionGroup(partyid)) or (UnitIsPVPFreeForAll(partyid) and "FFA")
+	if (pvp) then
+		self.nameFrame.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..pvp)
 		self.nameFrame.pvpIcon:Show()
 	else
 		self.nameFrame.pvpIcon:Hide()
@@ -1023,7 +1024,7 @@ end
 
 -- VARIABLES_LOADED
 function XPerl_Target_Events:VARIABLES_LOADED()
-	if (XPerl_Target_GetHealthMH3) then
+--[[	if (XPerl_Target_GetHealthMH3) then
 		local mh4 = AceLibrary and AceLibrary:HasInstance("LibMobHealth-4.0") and AceLibrary("LibMobHealth-4.0")
 
 		if (mh4) then
@@ -1041,6 +1042,7 @@ function XPerl_Target_Events:VARIABLES_LOADED()
 
 		XPerl_Target_Events.VARIABLES_LOADED = nil
 	end
+]]
 end
 
 function XPerl_Target_Events:PLAYER_REGEN_ENABLED()

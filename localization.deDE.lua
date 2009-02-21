@@ -17,6 +17,7 @@ if (GetLocale() == "deDE") then
 	XPERL_LOC_CLASS_PRIEST	= "Priester"
 	XPERL_LOC_CLASS_WARLOCK = "Hexenmeister"
 	XPERL_LOC_CLASS_PALADIN = "Paladin"
+	XPERL_LOC_CLASS_DEATHKNIGHT = "Todesritter"
 	XPERL_LOC_CLASS_PETS	= "Begleiter"
 
 	XPERL_LOC_CLASS_PALADINFEM	= "Paladin"
@@ -28,6 +29,7 @@ if (GetLocale() == "deDE") then
 	XPERL_LOC_CLASS_SHAMANFEM	= "Schamanin"
 	XPERL_LOC_CLASS_PRIESTFEM	= "Priesterin"
 	XPERL_LOC_CLASS_WARLOCKFEM	= "Hexenmeisterin"
+	XPERL_LOC_CLASS_DEATHKNIGHTFEM = "Todesritter"
 	
 	XPERL_TYPE_NOT_SPECIFIED	= "Nicht spezifiziert"
 	XPERL_TYPE_PET		= "Begleiter"

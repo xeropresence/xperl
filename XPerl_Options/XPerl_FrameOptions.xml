@@ -3664,7 +3664,7 @@
 							<OnLoad>
 								self:SetScale(0.9)
 								self.Refresh = function(self)
-									local a = {"Enable", "FadeAmount", "CustomSpell", "CombineWithHealth", "RangeHealthAmount", "DebuffCheck", "InteractNone", "Interact10", "Interact30"}
+									local a = {"Enable", "FadeAmount", "CustomSpell", "CombineWithHealth", "RangeHealthAmount", "DebuffCheck", "InteractNone", "Interact10", "Interact30", "Interact40"}
 									for k,v in pairs(a) do
 										local f = getglobal(self:GetName().."_"..v)
 										if (f) then
@@ -3711,6 +3711,7 @@
 											XPerl_Options_EnableSibling("InteractNone")
 											XPerl_Options_EnableSibling("Interact10")
 											XPerl_Options_EnableSibling("Interact30")
+											XPerl_Options_EnableSibling("Interact40")
 										end
 									</OnLoad>
 									<OnShow>
@@ -3979,8 +3980,8 @@
 
 							<CheckButton name="$parent_InteractNone" inherits="XPerlRadioButtonTemplate">
 								<Anchors>
-									<Anchor point="LEFT" relativeTo="$parent_Main" relativePoint="RIGHT">
-										<Offset><AbsDimension x="20" y="5"/></Offset>
+									<Anchor point="LEFT" relativeTo="$parent_OnlyInRaid" relativePoint="RIGHT">
+										<Offset><AbsDimension x="15" y="0"/></Offset>
 									</Anchor>
 								</Anchors>
 								<Scripts>
@@ -3989,14 +3990,14 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_RANGE_INTERACTNONE")
 									</OnLoad>
 									<OnShow>
-										local t = XPerl_Options_GetSibling("Main")
+										local t = XPerl_Options_GetSibling("OnlyInRaid")
 										local t2 = getglobal(t:GetName().."Text")
-										self:SetPoint("LEFT", t, "RIGHT", t2:GetStringWidth() + 25, 0)
+										self:SetPoint("LEFT", t, "RIGHT", t2:GetStringWidth() + 15, 0)
 										self:SetChecked(XPerlDB.rangeFinder[XPerl_Options.optRange].interact == nil)
 									</OnShow>
 									<OnClick>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].interact = nil
-										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30"})
+										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30", "Interact40"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -4018,7 +4019,7 @@
 									</OnShow>
 									<OnClick>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].interact = 3
-										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30"})
+										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30", "Interact40"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -4040,7 +4041,29 @@
 									</OnShow>
 									<OnClick>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].interact = 1
-										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30"})
+										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30", "Interact40"})
+										self:GetParent():Refresh()
+									</OnClick>
+								</Scripts>
+							</CheckButton>
+
+							<CheckButton name="$parent_Interact40" inherits="XPerlRadioButtonTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_Interact30" relativePoint="BOTTOMLEFT">
+										<Offset><AbsDimension x="0" y="3"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										self:SetChecked(false)
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_RANGE_INTERACT40")
+									</OnLoad>
+									<OnShow>
+										self:SetChecked(XPerlDB.rangeFinder[XPerl_Options.optRange].interact == 5)
+									</OnShow>
+									<OnClick>
+										XPerlDB.rangeFinder[XPerl_Options.optRange].interact = 5
+										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30", "Interact40"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>

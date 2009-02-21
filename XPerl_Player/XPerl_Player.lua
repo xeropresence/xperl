@@ -178,7 +178,7 @@ local function XPerl_Player_UpdateCombat(self)
 		nf.combatIcon:SetTexCoord(0.5, 1.0, 0.0, 0.5)
 		nf.combatIcon:Show()
 	else
-		if (UnitIsPVP("player")) then
+		if (UnitIsPVP("player") or UnitIsPVPFreeForAll("player")) then
 			nf.text:SetTextColor(0,1,0)
 		else
 			if (self.partyid ~= "player") then
@@ -312,8 +312,9 @@ local function XPerl_Player_UpdatePVP(self)
 		XPerl_ColourFriendlyUnit(nf.text, "player")
 	end
 
-	if (pconf.pvpIcon and UnitIsPVP("player")) then
-		nf.pvp.icon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..(UnitIsPVPFreeForAll("player") and "FFA" or UnitFactionGroup("player")))
+	local pvp = pconf.pvpIcon and (UnitIsPVP("player") and UnitFactionGroup("player")) or (UnitIsPVPFreeForAll("player") and "FFA")
+	if (pvp) then
+		nf.pvp.icon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..pvp)
 		nf.pvp:Show()
 	else
 		nf.pvp:Hide()

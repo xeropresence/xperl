@@ -174,6 +174,8 @@ XPERL_CONF_RANGE_INTERACT10		= "10 미터"
 XPERL_CONF_RANGE_INTERACT10_DESC	= "선택된 아이템/주문을 무시하고 10미터로 거리 확인을 고정합니다."
 XPERL_CONF_RANGE_INTERACT30		= "30 미터"
 XPERL_CONF_RANGE_INTERACT30_DESC	= "선택된 아이템/주문을 무시하고 30미터로 거리 확인을 고정합니다."
+XPERL_CONF_RANGE_INTERACT40		= "40 미터"
+XPERL_CONF_RANGE_INTERACT40_DESC	= "선택된 아이템/주문을 무시하고 40미터로 거리 확인을 고정합니다."
 
 if (GetCursorInfo) then
 XPERL_CONF_CUSTOMSPELL_DESC2		= "주문 혹은 아이템을 여기에 위치하세요"

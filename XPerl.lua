@@ -38,6 +38,7 @@ local hugeNumDiv = XPERL_LOC_HUGENUMDIV
 local hugeNumTag = XPERL_LOC_HUGENUMTAG
 local hugeNumDiv10 = hugeNumDiv * 10
 local largeNumDiv100 = largeNumDiv * 100
+local ArcaneExclusions = XPerl_ArcaneExclusions
 
 ------------------------------------------------------------------------------
 -- Re-usable tables
@@ -175,7 +176,6 @@ XPerl_AnchorList = {"TOP", "LEFT", "BOTTOM", "RIGHT"}
 -- FindABandage()
 local function FindABandage()
 	local bandages = {
-		-- [34723] = true, -- Dense Frostweave Bandage ?????????? check ID
 		[34722] = true, -- Heavy Frostweave Bandage
 		[34721] = true,	-- Frostweave Bandage
 		[21991] = true, -- Heavy Netherweave Bandage
@@ -209,7 +209,6 @@ end
 
 -- DoRangeCheck
 local function DoRangeCheck(unit, opt)
-
 	local range
 	if (opt.PlusHealth) then
 		local hp, hpMax = UnitHealth(unit), UnitHealthMax(unit)
@@ -218,18 +217,36 @@ local function DoRangeCheck(unit, opt)
 		end
 	end
 
-	if (range == 0 and opt.PlusDebuff) then
-		local name = UnitDebuff(unit, 1, 1)
+	if (opt.PlusDebuff) then			-- range == 0 and 
+		local name = UnitDebuff(unit, 1, "RAID")
 		if (not name) then
 			range = 0
 		else
-			range = nil		-- Override's the health check, because there's a debuff on unit
+			if (ArcaneExclusions[name]) then
+				-- It's one of the filtered debuffs, so we have to iterate thru all debuffs to see if anything is curable
+				for i = 2,100 do
+					local name = UnitDebuff(unit, i, "RAID")
+					if (not name) then
+						range = 0
+						break
+					elseif (not ArcaneExclusions[name]) then
+						range = nil
+						break
+					end
+				end
+			else
+				range = nil		-- Override's the health check, because there's a debuff on unit
+			end
 		end
 	end
 
 	if (not range) then
 		if (opt.interact) then
-			range = CheckInteractDistance(unit, opt.interact)
+			if (opt.interact == 5) then
+				range = UnitInRange(unit)			-- 40 yards
+			else
+				range = CheckInteractDistance(unit, opt.interact)
+			end
 			-- 1 = Inspect = 30 yards
 			-- 2 = Trade = 11.11 yards
 			-- 3 = Duel = 10 yards
@@ -361,17 +378,17 @@ function XPerl_StartupSpellRange()
 		XPerl_DefaultRangeSpells.ANY = {}
 	end
 
-	local b = FindABandage()
-	if (b) then
-		XPerl_DefaultRangeSpells.ANY.item = b
+	if (not XPerl_DefaultRangeSpells.ANY.item) then
+		local b = FindABandage()
+		if (b) then
+			XPerl_DefaultRangeSpells.ANY.item = b
+		end
 	end
 
 	local rf = conf.rangeFinder
 
 	local function Setup1(self)
-		if ((type(self.spell) ~= "string" and type(self.item) ~= "string") or
-						(self.item and not GetItemInfo(self.item))) then
-
+		if ((type(self.spell) ~= "string" and type(self.item) ~= "string")) then 	-- and (self.item and not GetItemInfo(self.item))) then
 			self.spell = XPerl_DefaultRangeSpells[playerClass] and XPerl_DefaultRangeSpells[playerClass].spell
 			if (type(self.spell) ~= "string") then
 				self.item = (XPerl_DefaultRangeSpells.ANY and XPerl_DefaultRangeSpells.ANY.item) or ""
@@ -1452,8 +1469,6 @@ function XPerl_CombatFlashSetFrames(self)
 	end
 end
 
-local ArcaneExclusions = XPerl_ArcaneExclusions
-
 local getShow
 function XPerl_DebufHighlightInit()
 	-- We also re-set the colours here so that we highlight best colour per class
@@ -1828,6 +1843,7 @@ local DebuffExceptions = {
 
 local SeasonalDebuffs = {							-- TODO Ignore these option
 	[GetSpellInfo(26004)] = true,					-- Mistletoe
+	[GetSpellInfo(26680)] = true,					-- Adored
 }
 
 -- BuffException
@@ -2671,7 +2687,7 @@ do
 	local steals = {}
 
 	local function stealOnUpdate(self, elapsed)
-		self.angle = self.angle - elapsed
+		self.angle = self.angle - (elapsed * 15)
 		if (self.angle < 0) then
 			self.angle = self.angle + 360
 		end
@@ -3115,13 +3131,22 @@ function XPerl_NextMember(_, last)
 	end
 end
 
+-- Some models have camera views switched for face/body or just don't look right with face
+local alternateCamera = {
+	[28859] = true,			-- Malygos
+	[22231] = true,			-- Dragonmaw Elite
+	[22252] = true,			-- Dragonmaw Peon
+	[23188] = true,			-- Dragonmaw Transporter
+}
+
 -- PerlSetPortrait3D
 local function XPerlSetPortrait3D(self, argUnit)
 	self:ClearModel()
 	self:SetUnit(argUnit)
 
-	-- Workaround for the Dragonmaw illusion. They set the cameras wrong. 1 is 0, 0 is 1
-	if (strfind(UnitName(argUnit), "Dragonmaw Peon") or strfind(UnitName(argUnit), "Dragonmaw Transporter") or UnitBuff(argUnit, "Dragonmaw Illusion")) then
+	local guid = UnitGUID(argUnit)
+	local id = guid and tonumber(strsub(guid, -12, -7), 16)
+	if (alternateCamera[id] or UnitBuff(argUnit, "Dragonmaw Illusion")) then
 		self:SetCamera(1)
 	else
 		self:SetCamera(0)
@@ -3545,7 +3570,7 @@ if (LibStub or LoadAddOn("LibStub")) then
 			XPerl_UnitHealth = QuickHealth.UnitHealth
 		else
 			function XPerl_UnitHealth(...)
-				if (UnitCanAttack("player", ...)) then
+				if (not UnitIsFriend("player", "target")) then	-- UnitCanAttack("player", ...)) then
 					return UnitHealth(...)
 				else
 					return QuickHealth:UnitHealth(...)
