@@ -586,7 +586,7 @@ end
 
 -- XPerl_Options_Anchor_OnClick
 function XPerl_Options_Anchor_OnClick()
-	local obj = getglobal(UIDROPDOWNMENU_OPEN_MENU)
+	local obj = UIDROPDOWNMENU_OPEN_MENU
 
 	obj.varSet(XPerl_AnchorList[this:GetID()])
 	MyIndex = this:GetID()
