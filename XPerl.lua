@@ -217,7 +217,7 @@ local function DoRangeCheck(unit, opt)
 		end
 	end
 
-	if (opt.PlusDebuff) then			-- range == 0 and 
+	if (opt.PlusDebuff and ((opt.PlusHealth and range == 0) or not opt.PlusHealth)) then
 		local name = UnitDebuff(unit, 1, "RAID")
 		if (not name) then
 			range = 0
