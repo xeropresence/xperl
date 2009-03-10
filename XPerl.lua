@@ -1932,21 +1932,39 @@ function XPerl_UnitDebuff(unit, index, flag)
 	return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
 end
 
+-- AddSourceName
+local function AddAuraSourceName(self, caster)
+	if (isWoW3dot1) then
+		if (caster) then
+			local casterName = UnitFullName(caster)
+			if (casterName) then
+				local _, class = UnitClass(caster)
+				if (class) then
+					self:AddLine(XPerlColourTable[class]..casterName)
+					self:Show()
+				end
+			end
+		end
+	end
+end
+
 -- XPerl_TooltipSetUnitBuff
 -- Retreives the index of the actual unfiltered buff, and uses this on unfiltered tooltip call
 function XPerl_TooltipSetUnitBuff(self, unit, ind, flag)
-	local name, rank, buff, count, _, dur, max, isMine, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitBuff, BuffExceptions)
+	local name, rank, buff, count, _, dur, max, caster, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitBuff, BuffExceptions)
 	if (name and index) then
 		self:SetUnitBuff(unit, index)
+		AddAuraSourceName(self, caster)
 	end
 end
 
 -- XPerl_TooltipSetUnitDebuff
 -- Retreives the index of the actual unfiltered debuff, and uses this on unfiltered tooltip call
 function XPerl_TooltipSetUnitDebuff(self, unit, ind, flag)
-	local name, rank, buff, count, debuffType, dur, max, isMine, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitDebuff, DebuffExceptions)
+	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitDebuff, DebuffExceptions)
 	if (name and index) then
 		self:SetUnitDebuff(unit, index)
+		AddAuraSourceName(self, caster)
 	end
 end
 
@@ -2310,7 +2328,7 @@ function XPerl_ShowGenericMenu(self, unit, button, actionType)
 			end
 		end
 
-		ToggleDropDownMenu(1, nil, XPerl_DropDown, "cursor", 0, 0)
+		ToggleDropDownMenu(1, nil, XPerl_DropDown, self, 0, 0)
 	end
 end
 
