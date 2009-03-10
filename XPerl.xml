@@ -98,9 +98,7 @@
 		<Size><AbsDimension x="10" y="10"/></Size>
 		<Anchors><Anchor point="TOP"/></Anchors>
 		<Scripts>
-			<OnLoad>
-				XPerl_GenericDropDown_OnLoad(self)
-			</OnLoad>
+			<OnLoad function="XPerl_GenericDropDown_OnLoad"/>
 		</Scripts>
 	</Frame>
 </Ui>

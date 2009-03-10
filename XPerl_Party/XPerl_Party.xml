@@ -501,9 +501,7 @@
 
 	<Frame name="XPerl_Party_Events">
 		<Scripts>
-			<OnLoad>
-				XPerl_Party_Events_OnLoad(self)
-			</OnLoad>
+			<OnLoad function="XPerl_Party_Events_OnLoad"/>
 		</Scripts>
 	</Frame>
 </Ui>

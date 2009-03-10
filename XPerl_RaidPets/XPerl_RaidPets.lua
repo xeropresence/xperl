@@ -268,6 +268,7 @@ end
 
 -- XPerl_RaidPet_Single_OnLoad
 function XPerl_RaidPet_Single_OnLoad(self)
+	self:RegisterForClicks("AnyUp")
 	XPerl_SetChildMembers(self)
 	XPerl_RegisterPerlFrames(self)
 	self:SetScript("OnAttributeChanged", onAttrChanged)

@@ -36,6 +36,8 @@ local mobhealth
 -- Loading Function --
 ----------------------
 function XPerl_Target_OnLoad(self, partyid)
+	self:RegisterForClicks("AnyUp")
+	self:RegisterForDrag("LeftButton")
 	XPerl_SetChildMembers(self)
 
 	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
@@ -128,11 +130,6 @@ function XPerl_Target_OnLoad(self, partyid)
 		XPerl_Target_AssistFrame:SetPoint("TOPLEFT", self.portraitFrame, "TOPRIGHT", -2, -20)
 		XPerl_Target_AssistFrame:Raise()
 	end
-
-	-- Set here to reduce amount of function calls made
-	self:SetScript("OnEvent", XPerl_Target_OnEvent)
-	self:SetScript("OnUpdate", XPerl_Target_OnUpdate)
-	self:SetScript("OnShow", XPerl_Unit_UpdatePortrait)
 
 	XPerl_RegisterHighlight(self.highlight, 3)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.typeFramePlayer, self.creatureTypeFrame, self.bossFrame, self.cpFrame})
@@ -460,6 +457,14 @@ local function AdjustCreatureTypeFrame(self)
 	end
 end
 
+local function UnitFullName(unit)
+	local n,s = UnitName(unit)
+	if (s and s ~= "") then
+		return n.."-"..s
+	end
+	return n
+end
+
 -- XPerl_Target_UpdateTalents
 local XPerl_Target_UpdateTalents
 if (NotifyInspect) then
@@ -477,7 +482,7 @@ if (NotifyInspect) then
 				lastInspectInvalid = true
 			end
 			lastInspectTime = GetTime()
-			lastInspectName = UnitName(unit)
+			lastInspectName = UnitFullName(unit)
 		end
 	)
 	function XPerl_Target_UpdateTalents(self)
@@ -498,7 +503,6 @@ if (NotifyInspect) then
 							name1, iconTexture, num1, background  = GetTalentTabInfo(1, remoteInspectNeeded)
 							name2, iconTexture, num2, background  = GetTalentTabInfo(2, remoteInspectNeeded)
 							name3, iconTexture, num3, background  = GetTalentTabInfo(3, remoteInspectNeeded)
-							newInfo = true
 						end
 					end
 
@@ -534,7 +538,9 @@ if (NotifyInspect) then
 							if (not UnitIsUnit("player", partyid)) then
 								lastInspectInvalid = nil
 								lastInspectPending = 0
-								NotifyInspect(partyid)
+								if (lastInspectName ~= UnitFullName(partyid)) then
+									NotifyInspect(partyid)
+								end
 							end
 						end
 					end

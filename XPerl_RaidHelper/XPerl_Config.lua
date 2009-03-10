@@ -129,16 +129,16 @@ function XPerl_Slash(msg)
 end
 
 -- XPerl_OnLoad
-function XPerl_OnLoad()
+function XPerl_OnLoad(self)
+	self:RegisterForDrag("LeftButton")
+	self:RegisterEvent("VARIABLES_LOADED")
+	self:RegisterEvent("RAID_ROSTER_UPDATE")
 
-	XPerl_Frame:RegisterEvent("VARIABLES_LOADED")
-	XPerl_Frame:RegisterEvent("RAID_ROSTER_UPDATE")
-
-        SlashCmdList["XPERLHELPER"] = XPerl_Slash
-        SLASH_XPERLHELPER1 = "/xp"
+	SlashCmdList["XPERLHELPER"] = XPerl_Slash
+	SLASH_XPERLHELPER1 = "/xp"
 
 	if (XPerl_RegisterPerlFrames) then
-		XPerl_RegisterPerlFrames(XPerl_Frame)
+		XPerl_RegisterPerlFrames(self)
 	end
 
 	if (XPerl_SavePosition) then

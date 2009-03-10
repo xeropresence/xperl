@@ -2,6 +2,8 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+local isWoW3dot1 = select(2,GetBuildInfo()) >= "9614"
+
 local conf
 XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
 local percD	= "%d"..PERCENT_SYMBOL
@@ -1860,7 +1862,7 @@ local function BuffException(unit, index, flag, func, exceptions)
 	if (buff) then
 		-- We need the index of the buff unfiltered later for tooltips
 		for i = 1,1000 do
-			local name1, rank1, buff1, count1, debuffType1, dur1, max1, isMine1 = func(unit, i)
+			local name1, rank1, buff1, count1, debuffType1, dur1, max1, isMine1, isStealable1 = func(unit, i)
 			if (not name1) then
 				break
 			end
@@ -2286,7 +2288,7 @@ end
 
 -- XPerl_ShowGenericMenu
 -- self, unit, button are passed from secure template handler (SecureTemplates.lua, line 288 in SecureActionButton_OnClick)
-function XPerl_ShowGenericMenu(self, unit, button, anchor)
+function XPerl_ShowGenericMenu(self, unit, button, actionType)
 	HideDropDownMenu(1)
 
 	if (not unit) then
@@ -2294,8 +2296,8 @@ function XPerl_ShowGenericMenu(self, unit, button, anchor)
 	end
 	XPerl_DropDown.unit = unit
 
-	if (XPerl_DropDown.unit) then
-		XPerl_DropDown.id = strmatch(XPerl_DropDown.unit or "", "(%d+)")
+	if (unit) then
+		XPerl_DropDown.id = strmatch(unit or "", "(%d+)")
 		XPerl_DropDown.displayMode = "MENU"
 
 		XPerl_DropDown.initialize = XPerl_GenericDropDown_Initialize
@@ -2308,9 +2310,7 @@ function XPerl_ShowGenericMenu(self, unit, button, anchor)
 			end
 		end
 
---ChatFrame7:AddMessage("Generic menu for "..tostring(unit).." anchor: "..tostring(anchor))
-
-		ToggleDropDownMenu(1, nil, XPerl_DropDown, anchor or "cursor", 0, 0)
+		ToggleDropDownMenu(1, nil, XPerl_DropDown, "cursor", 0, 0)
 	end
 end
 
@@ -2774,6 +2774,9 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						end
 						break
 					end
+					if (isWoW3dot1) then
+						isMine = isMine == "player"
+					end
 
 					if (buff and (((mine == 1) and (isMine or isStealable)) or ((mine == 2) and not (isMine or isStealable)))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true)
@@ -2871,6 +2874,10 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 							maxDebuffs = buffnum - 1
 						end
 						break
+					end
+
+					if (isWoW3dot1) then
+						isMine = isMine == "player"
 					end
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then

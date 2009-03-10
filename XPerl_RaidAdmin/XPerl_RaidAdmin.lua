@@ -370,7 +370,7 @@ function XPerl_AdminOnEvent(self, event)
 end
 
 -- XPerl_Admin_OnUpdate
-function XPerl_Admin_OnUpdate(elapsed)
+function XPerl_Admin_OnUpdate(self, elapsed)
 	if (WaitingForRoster) then
 		if (GetTime() > WaitingForRoster + 5000) then
 			XPerl_StopLoad()

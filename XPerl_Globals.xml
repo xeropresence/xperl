@@ -113,9 +113,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>
-				XPerl_SetChildMembers(self)
-			</OnLoad>
+			<OnLoad function="XPerl_SetChildMembers"/>
 		</Scripts>
 	</Frame>
 
@@ -229,9 +227,7 @@
 			</StatusBar>
 		</Frames>
 		<Scripts>
-			<OnLoad>
-				XPerl_StatsFrame_Setup(self)
-			</OnLoad>
+			<OnLoad function="XPerl_StatsFrame_Setup"/>
 		</Scripts>
 	</Frame>
 
@@ -291,10 +287,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>
-				XPerl_SetChildMembers(self)
-				self:SetScript("OnLoad", nil)
-			</OnLoad>
+			<OnLoad function="XPerl_SetChildMembers"/>
 		</Scripts>
 	</Button>
 
@@ -340,10 +333,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>
-				XPerl_SetChildMembers(self)
-				self:SetScript("OnLoad", nil)
-			</OnLoad>
+			<OnLoad function="XPerl_SetChildMembers"/>
 		</Scripts>
 	</Button>
 

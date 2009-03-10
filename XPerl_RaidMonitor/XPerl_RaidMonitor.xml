@@ -18,9 +18,7 @@
 					GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
 				end
 			</OnEnter>
-			<OnLeave>
-				XPerl_PlayerTipHide()
-			</OnLeave>
+			<OnLeave function="XPerl_PlayerTipHide"/>
 		</Scripts>
 	</Button>
 
@@ -86,9 +84,7 @@
 					XPerl_PlayerTip(self)
 				end
 			</OnEnter>
-			<OnLeave>
-				XPerl_PlayerTipHide()
-			</OnLeave>
+			<OnLeave function="XPerl_PlayerTipHide"/>
 		</Scripts>
 	</Button>
 
@@ -146,9 +142,7 @@
 					end
 				end
 			</OnEnter>
-			<OnLeave>
-				XPerl_PlayerTipHide()
-			</OnLeave>
+			<OnLeave function="XPerl_PlayerTipHide"/>
 		</Scripts>
 		<Size>
 			<AbsDimension x="120" y="12"/>

@@ -109,15 +109,11 @@
 
 	<Frame name="XPerl_AdminFrame" parent="XPerl_AdminFrameAnchor" hidden="true">
 		<Scripts>
-			<OnLoad>
-				XPerl_AdminOnLoad(self)
-			</OnLoad>
+			<OnLoad function="XPerl_AdminOnLoad"/>
 			<OnEnter>
 				XPerl_AdminFrame:Expand()
 			</OnEnter>
-			<OnUpdate>
-				XPerl_Admin_OnUpdate(arg1)
-			</OnUpdate>
+			<OnUpdate function="XPerl_Admin_OnUpdate"/>
 			<OnDragStart>
 				if (not XPerl_Admin.Pinned or (IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown())) then
 					XPerl_AdminFrameAnchor:StartMoving()
@@ -291,9 +287,7 @@
 
 			<Frame name="$parent_Controls" hidden="true">
 				<Scripts>
-					<OnLoad>
-						XPerl_Admin_ControlsOnLoad(self)
-					</OnLoad>
+					<OnLoad function="XPerl_Admin_ControlsOnLoad"/>
 					<OnShow>
 						self:MakeList()
 						self:Validate()
@@ -452,9 +446,7 @@
 									<OnLoad>
 										self.tooltipText = "XPERL_BUTTON_ADMIN_STOPLOAD"
 									</OnLoad>
-									<OnClick>
-										XPerl_StopLoad()
-									</OnClick>
+									<OnClick function="XPerl_StopLoad"/>
 								</Scripts>
 							</Button>
 

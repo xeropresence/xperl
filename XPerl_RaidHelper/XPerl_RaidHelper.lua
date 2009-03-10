@@ -1188,13 +1188,11 @@ function XPerl_Toggle_UseCTRATargets()
 	return true
 end
 
-function XPerl_Toggle_MTTargets(noChange)
-	if (not noChange) then
-		if (conf.MTTargetTargets == 1) then
-			conf.MTTargetTargets = 0
-		else
-			conf.MTTargetTargets = 1
-		end
+function XPerl_Toggle_MTTargets()
+	if (conf.MTTargetTargets == 1) then
+		conf.MTTargetTargets = 0
+	else
+		conf.MTTargetTargets = 1
 	end
 
 	XPerl_SetFrameSizes()
@@ -1204,14 +1202,11 @@ function XPerl_Toggle_MTTargets(noChange)
 end
 
 -- XPerl_Toggle_ToggleLabels
-function XPerl_Toggle_ToggleLabels(noChange)
-
-	if (not noChange) then
-		if (conf.MTLabels == 1) then
-			conf.MTLabels = 0
-		else
-			conf.MTLabels = 1
-		end
+function XPerl_Toggle_ToggleLabels()
+	if (conf.MTLabels == 1) then
+		conf.MTLabels = 0
+	else
+		conf.MTLabels = 1
 	end
 
 	XPerl_SetFrameSizes()
@@ -1221,13 +1216,11 @@ function XPerl_Toggle_ToggleLabels(noChange)
 	return true
 end
 
-function XPerl_Toggle_ShowMT(noChange)
-	if (not noChange) then
-		if (conf.ShowMT == 1) then
-			conf.ShowMT = 0
-		else
-			conf.ShowMT = 1
-		end
+function XPerl_Toggle_ShowMT()
+	if (conf.ShowMT == 1) then
+		conf.ShowMT = 0
+	else
+		conf.ShowMT = 1
 	end
 
 	XPerl_SetFrameSizes()

@@ -39,9 +39,7 @@
 					XPerl_MTList_ChildUnits(self)
 				end
 			</OnLoad>
-			<OnEnter>
-				XPerl_MTListUnit_OnEnter(self)
-			</OnEnter>
+			<OnEnter function="XPerl_MTListUnit_OnEnter"/>
 			<OnLeave>
 				GameTooltip:Hide()
 				XPerl_BottomTip:Hide()
@@ -200,19 +198,14 @@
 
 	<Frame name="XPerl_RaidHelperCheck">
 		<Scripts>
-			<OnLoad>
-				self:SetScript("OnUpdate", XPerl_HelperCheck_OnUpdate)
-			</OnLoad>
+			<OnUpdate function="XPerl_HelperCheck_OnUpdate"/>
 		</Scripts>
 	</Frame>
 
 	<Frame name="XPerl_Frame" parent="XPerl_MTList_Anchor" hidden="true" clampedToScreen="true">
 		<Scripts>
-			<OnLoad>
-				self:RegisterForDrag("LeftButton")
-				XPerl_OnLoad()
-				self:SetScript("OnEvent", XPerl_OnEvent)
-			</OnLoad>
+			<OnLoad function="XPerl_OnLoad"/>
+			<OnEvent function="XPerl_OnEvent"/>
 			<OnDragStart>
 				if (not XPerlConfigHelper or not XPerlConfigHelper.Pinned or (IsAltKeyDown() and IsControlKeyDown() and IsShiftKeyDown())) then
 					XPerl_MTList_Anchor:StartMoving()
@@ -377,9 +370,7 @@
 									end
 								end
 							</OnLoad>
-							<OnClick>
-								XPerl_Toggle_ToggleLabels();
-							</OnClick>
+							<OnClick function="XPerl_Toggle_ToggleLabels"/>
 						</Scripts>
 					</Button>
 
@@ -427,9 +418,7 @@
 									end
 								end
 							</OnLoad>
-							<OnClick>
-								XPerl_Toggle_MTTargets()
-							</OnClick>
+							<OnClick function="XPerl_Toggle_MTTargets"/>
 						</Scripts>
 					</Button>
 
@@ -476,9 +465,7 @@
 									end
 								end
 							</OnLoad>
-							<OnClick>
-								XPerl_Toggle_ShowMT()
-							</OnClick>
+							<OnClick function="XPerl_Toggle_ShowMT"/>
 						</Scripts>
 					</Button>
 				</Frames>

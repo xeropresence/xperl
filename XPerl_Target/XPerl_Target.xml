@@ -9,12 +9,11 @@
 		</Size>
 
 		<Scripts>
-			<OnLoad>
-				self:RegisterForClicks("AnyUp")
-				self:RegisterForDrag("LeftButton")
-				self:SetScript("OnEnter", XPerl_Unit_OnEnter)
-				self:SetScript("OnLeave", XPerl_Unit_OnLeave)
-			</OnLoad>
+			<OnEnter function="XPerl_Unit_OnEnter"/>
+			<OnLeave function="XPerl_Unit_OnLeave"/>
+			<OnEvent function="XPerl_Target_OnEvent"/>
+			<OnUpdate function="XPerl_Target_OnUpdate"/>
+			<OnShow function="XPerl_Unit_UpdatePortrait"/>
 			<OnDragStart>
 				if (XPerlLocked == 0) then
 					self:StartMoving()
@@ -431,11 +430,7 @@
 		</Anchors>
 		<Scripts>
 			<OnLoad>
-				self:RegisterForClicks("AnyUp")
-				self:RegisterForDrag("LeftButton")
 				XPerl_Target_OnLoad(self, "target")
-				self:SetScript("OnEnter", XPerl_Unit_OnEnter)
-				self:SetScript("OnLeave", XPerl_Unit_OnLeave)
 			</OnLoad>
 		</Scripts>
 	</Button>
@@ -450,11 +445,7 @@
 		</Anchors>
 		<Scripts>
 			<OnLoad>
-				self:RegisterForClicks("AnyUp")
-				self:RegisterForDrag("LeftButton")
 				XPerl_Target_OnLoad(self, "focus")
-				self:SetScript("OnEnter", XPerl_Unit_OnEnter)
-				self:SetScript("OnLeave", XPerl_Unit_OnLeave)
 			</OnLoad>
 		</Scripts>
 		<Frames>

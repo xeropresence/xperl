@@ -16,7 +16,7 @@ mod:RegisterEvent("PLAYER_ENTERING_WORLD")
 mod:RegisterEvent("CHAT_MSG_ADDON")
 mod:RegisterEvent("RAID_ROSTER_UPDATE")
 mod:RegisterEvent("PARTY_MEMBERS_CHANGED")
-mod:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
+--mod:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
 function modOnEvent(self, event, ...)
 	local f = mod[event]
@@ -26,13 +26,17 @@ function modOnEvent(self, event, ...)
 end
 
 mod:SetScript("OnEvent", modOnEvent)
-
 mod.notifiedVersion = nil
 
-local function XPerl_GameTooltipSetUnit(tooltip, unitid)
-	mod:TooltipInfo(tooltip, unitid)
-end
-hooksecurefunc(GameTooltip, "SetUnit", XPerl_GameTooltipSetUnit)
+GameTooltip:HookScript("OnTooltipSetUnit",
+	function(self)
+		local name, unitid = self:GetUnit()
+		if (not unitid) then
+			unitid = "mouseover"
+		end
+		mod:TooltipInfo(self, unitid)
+	end)
+
 
 local function UnitFullName(unit)
 	local n,s = UnitName(unit)
@@ -42,21 +46,11 @@ local function UnitFullName(unit)
 	return n
 end
 
-function mod:UPDATE_MOUSEOVER_UNIT()
-	self:TooltipInfo(GameTooltip, "mouseover")
-end
-
 function mod:TooltipInfo(tooltip, unitid)
-	if (conf and conf.tooltip.xperlInfo and not strmatch(unitid, "pet")) then
+	if (unitid and conf and conf.tooltip.xperlInfo and UnitIsPlayer(unitid) and UnitIsFriend(unitid, "player")) then
 		local xpUsage = XPerl_GetUsage(UnitFullName(unitid), unitid)
 		if (xpUsage) then
-			local xp, any = "|cFFD00000X-Perl|r "
-			if (xpUsage.version) then
-				xp = xp..xpUsage.version
-			else
-				xp = xp..XPerl_VersionNumber
-			end
-			any = true
+			local xp = "|cFFD00000X-Perl|r "..(xpUsage.version or XPerl_VersionNumber)
 
 			if (xpUsage.revision) then
 				local r = "r"..xpUsage.revision
@@ -71,10 +65,9 @@ function mod:TooltipInfo(tooltip, unitid)
 					xp = xp.." : |c00909090"..modList
 				end
 			end
-			if (any) then
-				GameTooltip:AddLine(xp, 1, 1, 1, 1)
-				GameTooltip:Show()
-			end
+
+			GameTooltip:AddLine(xp, 1, 1, 1, 1)
+			GameTooltip:Show()
 		end
 	end
 end

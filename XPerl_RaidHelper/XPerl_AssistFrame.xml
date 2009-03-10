@@ -418,11 +418,13 @@
 		<Scripts>
 			<OnLoad>
 				self:SetScript("OnUpdate", XPerl_RefreshAggro)
-				if GetLocale() == "koKR" then
+				if (GetLocale() == "koKR") then
 					XPerl_AggroPlayer:SetFont("Fonts/K_Damage.TTF", 42, "THICKOUTLINE")
 					XPerl_AggroPet:SetFont("Fonts/K_Damage.TTF", 16, "THICKOUTLINE")
+				elseif (GetLocale() == "zhTW" or GetLocale() == "zhCN") then
+					XPerl_AggroPlayer:SetFont("Fonts/bKAI00M.TTF", 42, "THICKOUTLINE")
+					XPerl_AggroPet:SetFont("Fonts/bKAI00M.TTF", 16, "THICKOUTLINE")
 				end
-
 			</OnLoad>
 			<OnHide>
 				self.playerFadeStart = nil

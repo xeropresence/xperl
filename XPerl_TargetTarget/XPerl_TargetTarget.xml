@@ -11,13 +11,9 @@
 		<!-- Script Events -->
 
 		<Scripts>
-			<OnLoad>
-				self:RegisterForClicks("AnyUp")
-				self:RegisterForDrag("LeftButton")
-				XPerl_TargetTarget_OnLoad(self)
-				self:SetScript("OnEnter", XPerl_Unit_OnEnter)
-				self:SetScript("OnLeave", XPerl_Unit_OnLeave)
-			</OnLoad>
+			<OnLoad function="XPerl_TargetTarget_OnLoad"/>
+			<OnEnter function="XPerl_Unit_OnEnter"/>
+			<OnLeave function="XPerl_Unit_OnLeave"/>
 			<OnDragStart>
 				if (XPerlLocked == 0) then
 					self:StartMoving()
@@ -40,9 +36,7 @@
 				self.highlight:Deselect()
 				XPerl_PlayerTipHide()
 			</OnLeave>
-			<OnEvent>
-				XPerl_TargetTarget_OnEvent(self, event)
-			</OnEvent>
+			<OnEvent function="XPerl_TargetTarget_OnEvent"/>
 		</Scripts>
 
 		<Frames>

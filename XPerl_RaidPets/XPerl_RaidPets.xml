@@ -3,10 +3,7 @@
 
 	<Button name="XPerl_RaidPet_FrameTemplate" frameStrata="LOW" virtual="true" hidden="true" inherits="SecureActionButtonTemplate">
 		<Scripts>
-			<OnLoad>
-				self:RegisterForClicks("AnyUp")
-				XPerl_RaidPet_Single_OnLoad(self)
-			</OnLoad>
+			<OnLoad function="XPerl_RaidPet_Single_OnLoad"/>
 			<OnEnter>
 				XPerl_PlayerTip(self)
 				self.highlight:Select()
@@ -91,9 +88,7 @@
 
 	<Frame name="XPerl_RaidPets_Frame" parent="UIParent" hidden="true">
 		<Scripts>
-			<OnLoad>
-				XPerl_RaidPets_OnLoad(self)
-			</OnLoad>
+			<OnLoad function="XPerl_RaidPets_OnLoad"/>
 		</Scripts>
 	</Frame>
 </Ui>

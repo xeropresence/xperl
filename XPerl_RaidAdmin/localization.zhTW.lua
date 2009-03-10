@@ -94,7 +94,7 @@ XPERL_REAGENTS			= {PRIEST = "神聖蠟燭", MAGE = "魔粉", DRUID = "野生棘
 					SHAMAN = "十字章", WARLOCK = "靈魂碎片", PALADIN = "神聖印記",
 					ROGUE = "閃光粉"}
 
-XPERL_CHECK_REAGENTS		= "藥水"
+XPERL_CHECK_REAGENTS		= "施法需要物品"
 
 -- Roster Text
 XPERL_ROSTERTEXT_TITLE		= XPerl_ShortProductName.." 名單字串"

@@ -346,9 +346,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>
-				XPerl_SliderSetup(self)
-			</OnLoad>
+			<OnLoad function="XPerl_SliderSetup"/>
 			<OnEnter>
 				if (self.xperlSliderEnabled) then
 					if ( self.tooltipText ) then
@@ -425,9 +423,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>
-				XPerl_EditBoxSetup(self)
-			</OnLoad>
+			<OnLoad function="XPerl_EditBoxSetup"/>
 			<OnEscapePressed>
 				self:ClearFocus()
 			</OnEscapePressed>
@@ -613,9 +609,7 @@
 			<AbsDimension x="30" y="30"/>
 		</Size>
 		<Scripts>
-			<OnEnter>
-				XPerl_Options_CheckButton_OnEnter(self)
-			</OnEnter>
+			<OnEnter function="XPerl_Options_CheckButton_OnEnter"/>
 			<OnLeave>
 				getglobal(self:GetName().."Text"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 				if (self.flashFrame and not InCombatLockdown()) then
@@ -1068,9 +1062,7 @@
 	<!-- Options Frames -->
 	<Frame name="XPerl_Options_TextureSelect" frameStrata="DIALOG" inherits="XPerl_OptionsTemplateNaked" parent="UIParent" hidden="true">
 		<Scripts>
-			<OnLoad>
-				XPerl_Options_TextureSelect_Onload(self)
-			</OnLoad>
+			<OnLoad function="XPerl_Options_TextureSelect_Onload"/>
 			<OnShow>
 				if (not self.list) then
 					self.list = XPerl_AllBarTextures()

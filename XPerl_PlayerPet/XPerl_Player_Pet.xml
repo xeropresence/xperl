@@ -204,9 +204,7 @@
 									GameTooltip:Show();
 								end
 							</OnEnter>
-							<OnLeave>
-								XPerl_PlayerTipHide()
-							</OnLeave>
+							<OnLeave function="XPerl_PlayerTipHide"/>
 						</Scripts>
 					</Frame>
 				</Frames>

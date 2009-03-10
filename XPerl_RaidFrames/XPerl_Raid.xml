@@ -34,7 +34,6 @@
 			<OnLoad>
 				XPerl_SetChildMembers(self)
 				XPerl_RegisterBar(self)
-				self:SetScript("OnLoad", nil)
 				if (not XPerl_OldStatusBarSetValue) then
 					XPerl_OldStatusBarSetValue = self.SetValue
 				end
@@ -51,9 +50,7 @@
 		</Size>
 
 		<Scripts>
-			<OnLoad>
-				XPerl_Raid_Single_OnLoad(self)
-			</OnLoad>
+			<OnLoad function="XPerl_Raid_Single_OnLoad"/>
 			<OnEnter>
 				XPerl_PlayerTip(self)
 				if (XPerlDB.highlightSelection) then
@@ -234,9 +231,7 @@
 					</Frame>
 				</Frames>
 				<Scripts>
-					<OnLoad>
-						XPerl_StatsFrame_Setup(self)
-					</OnLoad>
+					<OnLoad function="XPerl_StatsFrame_Setup"/>
 				</Scripts>
 			</Frame>
 
@@ -282,9 +277,7 @@
 		</Anchors>
 
 		<Scripts>
-			<OnLoad>
-				XPerl_Raid_HeaderOnLoad(self)
-			</OnLoad>
+			<OnLoad function="XPerl_Raid_HeaderOnLoad"/>
 			<OnDragStart>
 				if (XPerlLocked == 0 or self:GetID() == 99) then
 					if (not InCombatLockdown()) then
@@ -495,12 +488,9 @@
 			<Anchor point="BOTTOMRIGHT"/>
 		</Anchors>
 		<Scripts>
-			<OnLoad>
-				XPerl_Raid_OnLoad(self)
-				-- Saves 1 level of function calling by calling our update function directly
-				self:SetScript("OnEvent", XPerl_Raid_OnEvent)
-				self:SetScript("OnUpdate", XPerl_Raid_OnUpdate)
-			</OnLoad>
+			<OnLoad function="XPerl_Raid_OnLoad"/>
+			<OnEvent function="XPerl_Raid_OnEvent"/>
+			<OnUpdate function="XPerl_Raid_OnUpdate"/>
 		</Scripts>
 	</Frame>
 </Ui>

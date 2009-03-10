@@ -180,9 +180,7 @@
 
 	<Frame name="XPerl_Party_Pet_EventFrame" hidden="true">
 		<Scripts>
-			<OnLoad>
-				XPerl_Party_Pet_OnLoadEvents(self)
-			</OnLoad>
+			<OnLoad function="XPerl_Party_Pet_OnLoadEvents"/>
 		</Scripts>
 	</Frame>
 </Ui>

@@ -8,7 +8,7 @@ if (GetLocale() == "zhTW") then
 XPerl_ProductName	= "|cFFD00000X-Perl|r 框架"
 XPerl_Description	= XPerl_ProductName.." 作者 "..XPerl_Author
 
-XPerl_LongDescription	= "全新外觀的玩家狀態框，包括玩家、寵物、隊伍、團隊、目標以及目標的目標等。"
+XPerl_LongDescription	= "全新外觀的玩家狀態框架模組，包括玩家、寵物、隊伍、專注(focus)、團隊、目標以及目標的目標等。"
 
 XPERL_MINIMAP_HELP1	= "|c00FFFFFF左鍵點擊|r 開啟設定視窗 (以及 |c0000FF00解鎖框架|r)"
 XPERL_MINIMAP_HELP2	= "|c00FFFFFF右鍵拖動|r 移動此圖標"
@@ -71,8 +71,8 @@ XPERL_LOC_STATUSTIPLIST = {
 	HOT = "持續治療",
 	AGGRO = "敵方目標",
 	MISSING = "你職業的 buff 被遺漏",
-	HEAL = "治癒生命",
-	SHIELD = "盾"
+	HEAL = "已受治療",
+	SHIELD = "已上盾"
 }
 
 XPERL_OK		= "完成"
@@ -107,7 +107,7 @@ XPerlUsageNameList	= {XPerl = "核心", XPerl_Player = "玩家", XPerl_PlayerPet
 XPERL_USAGE_MEMMAX	= "UI 記憶體用量: %d"
 XPERL_USAGE_MODULES	= "模組: "
 XPERL_USAGE_NEWVERSION	= "*新版本"
-XPERL_USAGE_AVAILABLE	= "已有 %s |c00FFFFFF%s|r 可下載使用"
+XPERL_USAGE_AVAILABLE	= "已有新版本 %s |c00FFFFFF%s|r 可以下載使用"
 
 XPERL_CMD_HELP		= "|c00FFFF80使用: |c00FFFFFF/xperl menu | lock | unlock | config list | config delete <realm> <name>"
 XPERL_CANNOT_DELETE_CURRENT	= "無法刪除您的個人設定"

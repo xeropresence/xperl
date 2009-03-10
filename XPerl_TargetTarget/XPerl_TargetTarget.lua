@@ -27,6 +27,8 @@ local buffSetup
 
 -- XPerl_TargetTarget_OnLoad
 function XPerl_TargetTarget_OnLoad(self)
+	self:RegisterForClicks("AnyUp")
+	self:RegisterForDrag("LeftButton")
 	XPerl_SetChildMembers(self)
 
 	self.tutorialPage = 9
