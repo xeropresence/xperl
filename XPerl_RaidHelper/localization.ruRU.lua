@@ -9,7 +9,7 @@ XPERL_TOOLTIP_HEALERS			= "Целители нацелившись в меня:"
 XPERL_TOOLTIP_ALLONME			= "Все нацелы:"
 XPERL_TOOLTIP_ENEMYONME			= "Враг нацелившись в меня:"
 XPERL_TOOLTIP_HELP				= "Кликни для открытия вида в реальном времени"
-XPERL_TOOLTIP_PET				= "%s's пет"
+XPERL_TOOLTIP_PET				= "Пит |3-1(%s)"
 
 XPERL_LOC_DEAD					= "Мёртв"
 
@@ -18,7 +18,7 @@ XPERL_BUTTON_TOGGLE_MTTARGETS	= "Переключить отображение �
 XPERL_BUTTON_TOGGLE_SHOWMT		= "Переключить отображение Главных Танков"
 XPERL_BUTTON_HELPER_PIN			= "Закрепить Окно"
 
-XPERL_XS_TARGET					= "%s's цель"
+XPERL_XS_TARGET					= "Цель |3-1(%s)"
 XPERL_NO_TARGET					= "нет цели"
 
 XPERL_TITLE_MT_LONG				= "Цели ГТ"
