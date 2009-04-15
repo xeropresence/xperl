@@ -109,6 +109,17 @@ XPerlColourTable = setmetatable({},{
 	end
 })
 
+local function UnitFullName(unit)
+    local name, realm = UnitName(unit)
+    if (name) then
+		if (realm and realm ~= "") then
+	        return name .. "-" .. realm
+		else
+    		return name
+		end
+	end
+end
+
 -- Dummy Tutorial function if it's not enabled
 if (not XPerl_Tutorial) then
 	function XPerl_Tutorial()
@@ -2012,11 +2023,17 @@ function XPerl_GuildStatusUpdate()
 
 				if (u) then
 					if (online) then
-						getglobal("GuildFrameButton"..i.."Name"):SetTextColor(1, 0.4, 0.4)
-						--getglobal("GuildFrameGuildStatusButton"..i.."Name"):SetTextColor(1, 0.4, 0.4)
+						if (u.old) then
+							getglobal("GuildFrameButton"..i.."Name"):SetTextColor(1, 0.4, 0.1)
+						else
+							getglobal("GuildFrameButton"..i.."Name"):SetTextColor(1, 0.4, 0.4)
+						end
 					else
-						getglobal("GuildFrameButton"..i.."Name"):SetTextColor(0.5, 0.2, 0.2)
-						--getglobal("GuildFrameGuildStatusButton"..i.."Name"):SetTextColor(0.5, 0.2, 0.2)
+						if (u.old) then
+							getglobal("GuildFrameButton"..i.."Name"):SetTextColor(0.5, 0.2, 0.05)
+						else
+							getglobal("GuildFrameButton"..i.."Name"):SetTextColor(0.5, 0.2, 0.2)
+						end
 					end
 				end
 			end
@@ -3654,15 +3671,6 @@ if (LibStub or LoadAddOn("LibStub")) then
 
 			del(temp)
 		end)
-
-		local function unitFullName(unit)
-		    local name, realm = UnitName(unit)
-	    	if (realm and realm ~= "") then
-		        return name .. "-" .. realm
-    		else
-	        	return name
-	    	end
-		end
 
 		local guidFrame = CreateFrame("Frame")
 		guidFrame:RegisterEvent("PLAYER_ENTERING_WORLD")

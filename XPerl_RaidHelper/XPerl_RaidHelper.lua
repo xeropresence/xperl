@@ -635,7 +635,7 @@ function XPerl_EnableDisable()
 		return
 	end
 
-	if (XPerlConfigHelper and conf.RaidHelper == 1 and GetNumRaidMembers() > 0) then
+	if (XPerlConfigHelper and conf and conf.RaidHelper == 1 and GetNumRaidMembers() > 0) then
 		if (not XPerl_Frame:IsShown()) then
 			XPerl_Frame:Show()
 			XPerl_Frame:SetScript("OnUpdate", OnUpdate)
