@@ -207,7 +207,7 @@ end
 
 -- XPerl_Player_UpdateClass
 local function XPerl_Player_UpdateClass(self)
-	local playerClass = select(2, UnitClass(self.partyid))
+	playerClass = select(2, UnitClass(self.partyid))
 	playerName = UnitName(self.partyid)
 	local l, r, t, b = XPerl_ClassPos(playerClass)
 	self.classFrame.tex:SetTexCoord(l, r, t, b)
@@ -380,7 +380,6 @@ local function XPerl_Player_UpdateMana(self)
 	end
 end
 
-local shadowOfDeath = GetSpellInfo(54223)
 local spiritOfRedemption = GetSpellInfo(27827)
 
 -- XPerl_Player_UpdateHealth
@@ -406,7 +405,7 @@ function XPerl_Player_UpdateHealth(self)
 	elseif (UnitIsAFK("player") and conf.showAFK) then
 		greyMsg = CHAT_MSG_AFK
 
-	elseif (UnitBuff(partyid, shadowOfDeath) or UnitBuff(partyid, spiritOfRedemption)) then
+	elseif (UnitBuff(partyid, spiritOfRedemption)) then
 		greyMsg = XPERL_LOC_DEAD
 
 	end

@@ -442,7 +442,6 @@ local function XPerl_Raid_ShowFlags(self, flags)
 	del(flags)
 end
 
-local shadowOfDeath = GetSpellInfo(54223)
 local spiritOfRedemption = GetSpellInfo(27827)
 
 -- XPerl_Raid_UpdateHealth
@@ -499,7 +498,7 @@ function XPerl_Raid_UpdateHealth(self)
 			end
 			return
 
-		elseif (UnitBuff(partyid, shadowOfDeath) or UnitBuff(partyid, spiritOfRedemption)) then
+		elseif (UnitBuff(partyid, spiritOfRedemption)) then
 			self.dead = true
 			XPerl_Raid_ShowFlags(self, XPERL_LOC_DEAD)
 			XPerl_Raid_UpdateName(self)

@@ -169,7 +169,7 @@ local matches = {
 }
 
 local checkExpiring
-local function GetNamesWithoutBuff(spellName, with)
+local function GetNamesWithoutBuff(spellName, with, filter)
 	if (spellName == lastName and with == lastWith and lastNamesList) then
 		return lastNamesList, lastNamesCount
 	end
@@ -238,7 +238,7 @@ local function GetNamesWithoutBuff(spellName, with)
 		if (unitName and use and online and not dead) then
 			local hasBuff
 			for num = 1,25 do
-			local name, rank, buffTexture, count, _, fullDuration, endTime, isMine, isStealable = UnitBuff(unitid, num)
+			local name, rank, buffTexture, count, _, fullDuration, endTime, isMine, isStealable = UnitAura(unitid, num, filter)
 				if (not name) then
 					break
 				end
@@ -344,26 +344,56 @@ local function GetNamesWithoutBuff(spellName, with)
 	return names, count
 end
 
+local function UnitFullName(unit)
+    local name, realm = UnitName(unit)
+    if (name) then
+		if (realm and realm ~= "") then
+	        return name .. "-" .. realm
+		else
+    		return name
+		end
+	end
+end
+
 -- XPerl_ToolTip_AddBuffDuration
-local function XPerl_ToolTip_AddBuffDuration(self, partyid, buffID)
+local function XPerl_ToolTip_AddBuffDuration(self, partyid, buffID, filter)
+	local name, rank, buff, count, _, dur, max, caster, isStealable = UnitAura(partyid, buffID, filter)
+
 	if (GetNumPartyMembers() > 0 or GetNumRaidMembers() > 0) then
 		if (conf.buffHelper.enable and partyid and (UnitInParty(partyid) or UnitInRaid(partyid))) then
-			local buffName = GameTooltipTextLeft1:GetText()
-			if (buffName) then
-				local names, count = GetNamesWithoutBuff(buffName, IsAltKeyDown())
+			if (name) then
+				local names, count = GetNamesWithoutBuff(name, IsAltKeyDown(), filter)
 				if (names) then
 					if (IsAltKeyDown()) then
-						GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_WITHBUFF, count), 0.3, 1, 0.2)
+						self:AddLine(format(XPERL_RAID_TOOLTIP_WITHBUFF, count), 0.3, 1, 0.2)
 					else
-						GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_WITHOUTBUFF, count), 1, 0.3, 0.1)
+						self:AddLine(format(XPERL_RAID_TOOLTIP_WITHOUTBUFF, count), 1, 0.3, 0.1)
 					end
 
 					if (conf.buffHelper.sort) then
-						GameTooltip:AddLine(names, 0.5, 0.5, 0.5)
+						self:AddLine(names, 0.5, 0.5, 0.5)
 					else
-						GameTooltip:AddLine(names, 0.5, 0.5, 0.5, 1)
+						self:AddLine(names, 0.5, 0.5, 0.5, 1)
 					end
 				end
+			end
+		end
+	end
+
+	if (caster) then
+		local casterName = UnitFullName(caster)
+		if (casterName) then
+			local c
+			if (UnitIsPlayer(caster)) then
+				local _, class = UnitClass(caster)
+				c = class and RAID_CLASS_COLORS[class]
+			else
+				c = XPerl_ReactionColour(caster)
+			end
+			if (c) then
+				self:AddLine(casterName, c.r, c.g, c.b)
+			else				
+				self:AddLine(casterName)
 			end
 		end
 	end
@@ -373,7 +403,15 @@ end
 
 -- Buff Tooltip Hook
 local function XPerl_GameTooltipSetUnitAura(self, unitId, buffId, filter)
-	XPerl_ToolTip_AddBuffDuration(self, unitId, buffId)
+	XPerl_ToolTip_AddBuffDuration(self, unitId, buffId, filter)
+end
+
+local function XPerl_GameTooltipSetUnitBuff(self, unitId, buffId)
+	XPerl_ToolTip_AddBuffDuration(self, unitId, buffId, "HELPFUL")
+end
+
+local function XPerl_GameTooltipSetUnitDebuff(self, unitId, buffId)
+	XPerl_ToolTip_AddBuffDuration(self, unitId, buffId, "HARMFUL")
 end
 
 -- XPerl_Init()
@@ -381,8 +419,8 @@ function XPerl_Init()
 	init_done = true
 	if (GameTooltip.SetUnitAura) then
 		hooksecurefunc(GameTooltip, "SetUnitAura", XPerl_GameTooltipSetUnitAura)
-		hooksecurefunc(GameTooltip, "SetUnitBuff", XPerl_GameTooltipSetUnitAura)
-		hooksecurefunc(GameTooltip, "SetUnitDebuff", XPerl_GameTooltipSetUnitAura)
+		hooksecurefunc(GameTooltip, "SetUnitBuff", XPerl_GameTooltipSetUnitBuff)
+		hooksecurefunc(GameTooltip, "SetUnitDebuff", XPerl_GameTooltipSetUnitDebuff)
 	end
 
 	DisableAddOn("XPerl_TeamSpeak")

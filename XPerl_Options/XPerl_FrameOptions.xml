@@ -5833,7 +5833,7 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PETTARGET_BUFFS")
-										self.flashFrame = XPerl_TargetTarget_BuffFrame
+										self.flashFrame = XPerl_PetTargetbuffFrame
 										self.configBase = "XPerlDB.pettarget.buffs"
 										self.configIndex = "enable"
 										self.configClick = XPerl_TargetTarget_Set_Bits
@@ -5856,7 +5856,7 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PETTARGET_BUFFSABOVE")
-										self.flashFrame = XPerl_TargetTarget_BuffFrame
+										self.flashFrame = XPerl_PetTargetbuffFrame
 										self.configBase = "XPerlDB.pettarget.buffs"
 										self.configIndex = "above"
 										self.configClick = XPerl_TargetTarget_Set_Bits
@@ -5874,7 +5874,7 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PETTARGET_BIGBUFFS")
-										self.flashFrame = XPerl_TargetTarget_BuffFrame
+										self.flashFrame = XPerl_PetTargetbuffFrame
 										self.configBase = "XPerlDB.pettarget.buffs"
 										self.configIndex = "big"
 										self.configClick = XPerl_TargetTarget_Reset
@@ -5892,9 +5892,27 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PETTARGET_BIGDEBUFFS")
-										self.flashFrame = {XPerl_TargetbuffFrame, XPerl_TargetdebuffFrame}
+										self.flashFrame = {XPerl_PetTargetbuffFrame, XPerl_PetTargetdebuffFrame}
 										self.configBase = "XPerlDB.pettarget.debuffs"
 										self.configIndex = "big"
+										self.configClick = XPerl_TargetTarget_Reset
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+
+							<CheckButton name="$parent_BigPet" inherits="XPerlCheckButtonTemplate">
+								<Size><AbsDimension x="26" y="26"/></Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+										<Offset><AbsDimension x="0" y="7"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_PETTARGET_BIGPETBUFFS")
+										self.flashFrame = {XPerl_PetTargetbuffFrame, XPerl_PetTargetdebuffFrame}
+										self.configBase = "XPerlDB.pettarget.buffs"
+										self.configIndex = "bigpet"
 										self.configClick = XPerl_TargetTarget_Reset
 									</OnLoad>
 								</Scripts>
@@ -5903,7 +5921,7 @@
 							<CheckButton name="$parent_Level" inherits="XPerlCheckButtonTemplate">
 								<Size><AbsDimension x="26" y="26"/></Size>
 								<Anchors>
-									<Anchor point="TOPRIGHT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+									<Anchor point="TOPRIGHT" relativeTo="$parent_BigPet" relativePoint="BOTTOMLEFT">
 										<Offset><AbsDimension x="0" y="7"/></Offset>
 									</Anchor>
 								</Anchors>
@@ -6171,9 +6189,27 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_BigPet" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="7"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_PET_BIGPETBUFFS")
+								self.flashFrame = {XPerl_Player_PetbuffFrame, XPerl_Player_PetdebuffFrame}
+								self.configBase = "XPerlDB.pet.buffs"
+								self.configIndex = "bigpet"
+								self.configClick = XPerl_Player_Pet_Reset
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_BuffWrap" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOP" relativeTo="$parent_BigPet" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="7"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -6950,7 +6986,7 @@
 								<Offset><AbsDimension x="0" y="-5"/></Offset>
 							</Anchor>
 							<Anchor point="BOTTOMRIGHT" relativeTo="XPerl_Options_Area_Tabs" relativePoint="RIGHT">
-								<Offset><AbsDimension x="-5" y="-20"/></Offset>
+								<Offset><AbsDimension x="-5" y="0"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Frames>
@@ -7085,12 +7121,33 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGETTARGET_BIGDEBUFFS")
-										self.flashFrame = {XPerl_TargetbuffFrame, XPerl_TargetdebuffFrame}
+										self.flashFrame = {XPerl_TargetTargetbuffFrame, XPerl_TargetTargetdebuffFrame}
 										self.configBase = "XPerlDB.targettarget.debuffs"
 										self.configIndex = "big"
 										self.configClick = function()
 											XPerlDB.targettargettarget.debuffs.big = XPerlDB.targettarget.debuffs.big
-											XPerl_TargetTarget_Reset ()
+											XPerl_TargetTarget_Reset()
+										end
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+
+							<CheckButton name="$parent_BigPet" inherits="XPerlCheckButtonTemplate">
+								<Size><AbsDimension x="26" y="26"/></Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+										<Offset><AbsDimension x="0" y="7"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGETTARGET_BIGPETBUFFS")
+										self.flashFrame = {XPerl_TargetTargetbuffFrame, XPerl_TargetTargetdebuffFrame}
+										self.configBase = "XPerlDB.targettarget.buffs"
+										self.configIndex = "bigpet"
+										self.configClick = function()
+											XPerlDB.targettargettarget.debuffs.bigpet = XPerlDB.targettarget.debuffs.bigpet
+											XPerl_TargetTarget_Reset()
 										end
 									</OnLoad>
 								</Scripts>
@@ -7099,7 +7156,7 @@
 							<CheckButton name="$parent_TargetsTargetsTarget" inherits="XPerlCheckButtonTemplate">
 								<Size><AbsDimension x="26" y="26"/></Size>
 								<Anchors>
-									<Anchor point="TOPRIGHT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+									<Anchor point="TOPRIGHT" relativeTo="$parent_BigPet" relativePoint="BOTTOMLEFT">
 										<Offset><AbsDimension x="0" y="7"/></Offset>
 									</Anchor>
 								</Anchors>
@@ -7587,9 +7644,27 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_BigPet" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="7"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGET_BIGPETBUFFS")
+								self.flashFrame = {XPerl_TargetbuffFrame, XPerl_TargetdebuffFrame}
+								self.configBase = "XPerlDB.target.buffs"
+								self.configIndex = "bigpet"
+								self.configClick = XPerl_Target_Reset
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_DebuffHighlight" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOP" relativeTo="$parent_BigPet" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -8292,10 +8367,28 @@
 								</Scripts>
 							</CheckButton>
 
+							<CheckButton name="$parent_BigPet" inherits="XPerlCheckButtonTemplate">
+								<Size><AbsDimension x="26" y="26"/></Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+										<Offset><AbsDimension x="0" y="7"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUSTARGET_BIGPETBUFFS")
+										self.flashFrame = {XPerl_FocusTargetbuffFrame, XPerl_FocusTargetdebuffFrame}
+										self.configBase = "XPerlDB.focustarget.buffs"
+										self.configIndex = "bigpet"
+										self.configClick = XPerl_TargetTarget_Reset
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+
 							<CheckButton name="$parent_Level" inherits="XPerlCheckButtonTemplate">
 								<Size><AbsDimension x="26" y="26"/></Size>
 								<Anchors>
-									<Anchor point="TOPRIGHT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+									<Anchor point="TOPRIGHT" relativeTo="$parent_BigPet" relativePoint="BOTTOMLEFT">
 										<Offset><AbsDimension x="0" y="7"/></Offset>
 									</Anchor>
 								</Anchors>
@@ -8683,6 +8776,24 @@
 								self.flashFrame = {XPerl_FocusbuffFrame, XPerl_FocusdebuffFrame}
 								self.configBase = "XPerlDB.focus.debuffs"
 								self.configIndex = "big"
+								self.configClick = XPerl_Target_Reset
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_BigPet" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="7"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_BIGPETBUFFS")
+								self.flashFrame = {XPerl_FocusbuffFrame, XPerl_FocusdebuffFrame}
+								self.configBase = "XPerlDB.focus.buffs"
+								self.configIndex = "bigpet"
 								self.configClick = XPerl_Target_Reset
 							</OnLoad>
 						</Scripts>
@@ -9368,6 +9479,24 @@
 								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
 								self.configBase = "XPerlDB.party.buffs"
 								self.configIndex = "big"
+								self.configClick = XPerl_Party_Reset
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_BigPet" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_BigBuffs" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="7"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_BIGPETBUFFS")
+								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
+								self.configBase = "XPerlDB.party.buffs"
+								self.configIndex = "bigpet"
 								self.configClick = XPerl_Party_Reset
 							</OnLoad>
 						</Scripts>
@@ -10459,7 +10588,11 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_CUSTOM_ENABLE")
 										self.configBase = "XPerlDB.custom"
 										self.configIndex = "enable"
-										self.configClick = function() end
+										self.configClick = function()
+											if (XPerl_Custom) then
+												XPerl_Custom:PLAYER_ENTERING_WORLD()
+											end
+										end
 										self.Validate = function()
 											XPerl_Options_EnableSibling("Config")
 											XPerl_Options_EnableSibling("Alpha")

@@ -2175,7 +2175,9 @@ local function XPerl_Target_ConfigDefault(default, section)
 		castBar = {
 			enable		= 1,
 		},
-		hitIndicator		= 1,			-- 2.1.7
+		hitIndicator	= 1,			-- 2.1.7
+		threat			= 1,
+		threatMode		= "portraitFrame",
 		classIcon		= 1,
 --		classText		= nil,			-- 2.0.6
 		mobType			= 1,
@@ -2235,7 +2237,9 @@ local function XPerl_Party_ConfigDefault(default)
 		anchor			= "TOP",
 		portrait		= 1,
 		portrait3D		= 1,
-		hitIndicator		= 1,			-- 2.1.7
+		hitIndicator	= 1,			-- 2.1.7
+		threat			= 1,
+		threatMode		= "portraitFrame",
 		target = {
 			enable		= 1,
 			large		= 1,
@@ -2308,7 +2312,9 @@ local function XPerl_Player_ConfigDefault(default)
 		},
 		portrait		= 1,
 		portrait3D		= 1,
-		hitIndicator		= 1,
+		hitIndicator	= 1,
+		threat			= 1,
+		threatMode		= "portraitFrame",
 		level			= 1,
 		classIcon		= 1,
 --		xpBar			= nil,
@@ -2363,7 +2369,9 @@ local function XPerl_Pet_ConfigDefault(default)
 		},
 		portrait		= 1,
 		portrait3D		= 1,
-		hitIndicator		= 1,
+		hitIndicator	= 1,
+		threat			= 1,
+		threatMode		= "portraitFrame",
 		happiness = {
 			enabled		= 1,
 			onlyWhenSad	= 1,
@@ -2838,6 +2846,10 @@ function XPerl_Options_Custom_ScanForIcons(self)
 									XPerl_Custom_ConfigNew:Hide()
 									XPerl_Custom_Config.listzone:FillList()
 									XPerl_Custom_Config.listdebuff:FillList()
+
+									if (XPerl_Custom) then
+										XPerl_Custom:PLAYER_ENTERING_WORLD()
+									end
 								end
 							end
 						end)
@@ -2985,21 +2997,21 @@ if (XPerl_UpgradeSettings) then
 			for k,v in pairs(flist) do
 				if (old[v]) then
 					if (not old[v].buffs) then
-						old[v].buffs = {enable = 1, size = 20}
+						old[v].buffs = {enable = 1, size = 20, bigpet = 1, wrap = 1}
 					elseif (not old[v].buffs.size) then
 						old[v].buffs.size = 20
 					end
 					if (not old[v].debuffs) then
-						old[v].debuffs = {enable = 1, size = 20}
+						old[v].debuffs = {enable = 1, size = 20, bigpet = 1, wrap = 1}
 					elseif (not old[v].debuffs.size) then
 						old[v].debuffs.size = 20
 					end
 				end
 			end
 
-			if (not old.colour.bar.runic_power) then
+			if (not old.colour.bar.runic_power or old.colour.bar.runic_power[1]) then
 				if (PowerBarColor) then
-					old.colour.bar.runic_power	= {PowerBarColor["RUNIC_POWER"].r, PowerBarColor["RUNIC_POWER"].g, PowerBarColor["RUNIC_POWER"].b}
+					old.colour.bar.runic_power	= {r = PowerBarColor["RUNIC_POWER"].r, g = PowerBarColor["RUNIC_POWER"].g, b = PowerBarColor["RUNIC_POWER"].b}
 				else
 					old.colour.bar.runic_power	= {r = 1, g = 0.25, b = 1}
 				end
@@ -3009,6 +3021,17 @@ if (XPerl_UpgradeSettings) then
 
 			if (old.bar and old.bar.texture and old.bar.texture[1] == "X-Perl 2") then
 				old.bar.texture[1] = "BantoBar"
+			end
+
+			if (oldVersion < "3.0.3a") then
+				old.target.buffs.bigpet = 1
+				old.targettarget.buffs.bigpet = 1
+				old.targettargettarget.buffs.bigpet = 1
+				old.focus.buffs.bigpet = 1
+				old.focustarget.buffs.bigpet = 1
+				old.pet.buffs.bigpet = 1
+				old.pettarget.buffs.bigpet = 1
+				old.party.buffs.bigpet = 1
 			end
 
 			if (oldVersion < "3.0.2") then
@@ -3023,6 +3046,10 @@ if (XPerl_UpgradeSettings) then
 				old.target.threatMode = "portraitFrame"
 				old.focus.threat = 1
 				old.focus.threatMode = "portraitFrame"
+				old.party.threat = 1
+				old.party.threatMode = "portraitFrame"
+				old.pet.threat = 1
+				old.pet.threatMode = "portraitFrame"
 			end
 
 			if (oldVersion < "3.0.0") then

@@ -109,17 +109,6 @@ XPerlColourTable = setmetatable({},{
 	end
 })
 
-local function UnitFullName(unit)
-    local name, realm = UnitName(unit)
-    if (name) then
-		if (realm and realm ~= "") then
-	        return name .. "-" .. realm
-		else
-    		return name
-		end
-	end
-end
-
 -- Dummy Tutorial function if it's not enabled
 if (not XPerl_Tutorial) then
 	function XPerl_Tutorial()
@@ -1837,9 +1826,6 @@ local BuffExceptions = {
 		[GetSpellInfo(27179)] = true,				-- Holy Shield
 		[GetSpellInfo(54428)] = true,				-- Divine Plea
 	},
-	DEATHKNIGHT = {
-		[GetSpellInfo(40251)] = true,				-- Shadow of Death
-	}
 }
 
 local DebuffExceptions = {
@@ -1854,10 +1840,21 @@ local DebuffExceptions = {
 	}
 }
 
+--[[
 local SeasonalDebuffs = {							-- TODO Ignore these option
 	[GetSpellInfo(26004)] = true,					-- Mistletoe
 	[GetSpellInfo(26680)] = true,					-- Adored
-}
+	[GetSpellInfo(64805)] = true,					-- Bested Darnassus
+	[GetSpellInfo(64808)] = true,					-- Bested the Exodar
+	[GetSpellInfo(64809)] = true,					-- Bested Gnomeregan
+	[GetSpellInfo(64810)] = true,					-- Bested Ironforge
+	[GetSpellInfo(64811)] = true,					-- Bested Orgrimmar
+	[GetSpellInfo(64812)] = true,					-- Bested Sen'jin
+	[GetSpellInfo(64813)] = true,					-- Bested Silvermoon City
+	[GetSpellInfo(64814)] = true,					-- Bested Stormwind
+	[GetSpellInfo(64815)] = true,					-- Bested Thunder Bluff
+	[GetSpellInfo(64816)] = true,					-- Bested the Undercity
+} ]]
 
 -- BuffException
 local showInfo
@@ -1943,29 +1940,12 @@ function XPerl_UnitDebuff(unit, index, flag)
 	return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
 end
 
--- AddSourceName
-local function AddAuraSourceName(self, caster)
-	if (isWoW3dot1) then
-		if (caster) then
-			local casterName = UnitFullName(caster)
-			if (casterName) then
-				local _, class = UnitClass(caster)
-				if (class) then
-					self:AddLine(XPerlColourTable[class]..casterName)
-					self:Show()
-				end
-			end
-		end
-	end
-end
-
 -- XPerl_TooltipSetUnitBuff
 -- Retreives the index of the actual unfiltered buff, and uses this on unfiltered tooltip call
 function XPerl_TooltipSetUnitBuff(self, unit, ind, flag)
 	local name, rank, buff, count, _, dur, max, caster, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitBuff, BuffExceptions)
 	if (name and index) then
 		self:SetUnitBuff(unit, index)
-		AddAuraSourceName(self, caster)
 	end
 end
 
@@ -1975,7 +1955,6 @@ function XPerl_TooltipSetUnitDebuff(self, unit, ind, flag)
 	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitDebuff, DebuffExceptions)
 	if (name and index) then
 		self:SetUnitDebuff(unit, index)
-		AddAuraSourceName(self, caster)
 	end
 end
 
@@ -2716,69 +2695,9 @@ function XPerl_Unit_BuffPositions(self, buffList1, buffList2, size1, size2)
 	end
 end
 
-local RegisterStealable, UnregisterStealable
-do
-	local stealFrame
-	local steals = {}
-
-	local function stealOnUpdate(self, elapsed)
-		self.angle = self.angle - (elapsed * 15)
-		if (self.angle < 0) then
-			self.angle = self.angle + 360
-		end
-		local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = rotate(self.angle)
-
-		for frame in pairs(steals) do
-			local r, g, b = frame.tex:GetVertexColor()
-			r = r + (frame.redOut and elapsed or -elapsed)
-			g = g + (frame.greenOut and elapsed or -elapsed)
-			b = b + (frame.blueOut and elapsed or -elapsed)
-
-			if (r > 1) then
-				frame.redOut = nil
-				r = 1
-			elseif (r < 0) then
-				frame.redOut = true
-				r = 0
-			end
-			if (g > 1) then
-				frame.greenOut = nil
-				g = 1
-			elseif (g < 0) then
-				frame.greenOut = true
-				g = 0
-			end
-			if (b > 1) then
-				frame.blueOut = nil
-				b = 1
-			elseif (b < 0) then
-				frame.blueOut = true
-				b = 0
-			end
-
-			frame.tex:SetVertexColor(r, g, b)
-			frame.tex:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
-		end
-	end
-
-	function RegisterStealable(self)
-		steals[self] = true
-		self.tex:SetVertexColor(1, 0.5, 0)
-		if (not stealFrame) then
-			stealFrame = CreateFrame("Frame")
-			stealFrame:SetScript("OnUpdate", stealOnUpdate)
-			stealFrame.angle = 0
-		end
-		stealFrame:Show()
-	end
-
-	function UnregisterStealable(self)
-		steals[self] = nil
-
-		if (stealFrame and not next(steals)) then
-			stealFrame:Hide()
-		end
-	end
+local function fixMeBlizzard(self)
+	self.anim:Play()
+	self:SetScript("OnUpdate", nil)
 end
 
 -- XPerl_Unit_UpdateBuffs(self)
@@ -2810,7 +2729,11 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						break
 					end
 					if (isWoW3dot1) then
-						isMine = isMine == "player"
+						if (self.conf.buffs.bigpet) then
+							isMine = isMine == "player" or isMine == "pet"
+						else
+							isMine = isMine == "player"
+						end
 					end
 
 					if (buff and (((mine == 1) and (isMine or isStealable)) or ((mine == 2) and not (isMine or isStealable)))) then
@@ -2837,20 +2760,33 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 							end
 						end
 
+						button:Show()
+
 						if (isStealable) then		--  and UnitCanAttack("player", partyid)
 							if (not button.steal) then
 								button.steal = CreateFrame("Frame", nil, button)
 								button.steal:SetPoint("TOPLEFT", -2, 2)
 								button.steal:SetPoint("BOTTOMRIGHT", 2, -2)
-								button.steal:SetScript("OnShow", RegisterStealable)
-								button.steal:SetScript("OnHide", UnregisterStealable)
 
 								button.steal.tex = button.steal:CreateTexture(nil, "OVERLAY")
 								button.steal.tex:SetAllPoints()
 								button.steal.tex:SetTexture("Interface\\Addons\\XPerl\\Images\\StealMe")
+
+								local g = button.steal.tex:CreateAnimationGroup()
+								button.steal.anim = g
+								local r = g:CreateAnimation("Rotation")
+								g.rot = r
+
+								r:SetDuration(4)
+								r:SetDegrees(-360)
+								r:SetOrigin("CENTER", 0, 0)
+
+								g:SetLooping("REPEAT")
+								g:Play()
 							end
 
-							button.steal:Show()					-- TODO TEST
+							button.steal:Show()
+							button.steal:SetScript("OnUpdate", fixMeBlizzard)		-- Workaround for Play not always working..
 						else
 							if (button.steal) then
 								button.steal:Hide()
@@ -2858,7 +2794,6 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						end
 
 						lastIcon = buffIconIndex
-						button:Show()
 	
 						if ((self.conf.buffs.big and isMine) or (self.conf.buffs.bigStealable and isStealable)) then
 							buffsMine = buffsMine + 1
@@ -2869,18 +2804,6 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 							button:SetScale(self.conf.buffs.size / 32)
 						end
 						buffIconIndex = buffIconIndex + 1
-					--else
-					--	if (mine == 2) then
-					--		local button = self.buffFrame.buff and self.buffFrame.buff[buffIconIndex]
-					--		if (button) then
-					--			lastIcon = buffIconIndex
-					--			button.expireTime = nil
-					--			button.big = nil
-					--			button:Hide()
-					--		else
-					--			break
-					--		end
-					--	end
 					end
 				end
 			end
@@ -2912,7 +2835,11 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 					end
 
 					if (isWoW3dot1) then
-						isMine = isMine == "player"
+						if (self.conf.buffs.bigpet) then
+							isMine = isMine == "player" or isMine == "pet"
+						else
+							isMine = isMine == "player"
+						end
 					end
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
@@ -2954,18 +2881,6 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 							button:SetScale(self.conf.debuffs.size / 32)
 						end
 						buffIconIndex = buffIconIndex + 1
-					--else
-					--	if (mine == 1) then
-					--		local button = self.buffFrame.debuff and self.buffFrame.debuff[buffIconIndex]
-					--		if (button) then
-					--			lastIcon = buffIconIndex
-					--			button.big = nil
-					--			button.expireTime = nil
-					--			button:Hide()
-					--		else
-					--			break
-					--		end
-					--	end
 					end
 				end
 			end

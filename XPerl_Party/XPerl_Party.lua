@@ -218,7 +218,6 @@ local function ShowHideValues(self)
 	end
 end
 
-local shadowOfDeath = GetSpellInfo(54223)
 local spiritOfRedemption = GetSpellInfo(27827)
 
 -- XPerl_Party_UpdateHealth
@@ -251,7 +250,7 @@ function XPerl_Party_UpdateHealth(self)
 		elseif ((Partyhealth==1) and (Partyhealthmax==1)) then
 			reason = XPERL_LOC_UPDATING
 
-		elseif (UnitBuff(partyid, shadowOfDeath) or UnitBuff(partyid, spiritOfRedemption)) then
+		elseif (UnitBuff(partyid, spiritOfRedemption)) then
 			reason = XPERL_LOC_DEAD
 
 		end

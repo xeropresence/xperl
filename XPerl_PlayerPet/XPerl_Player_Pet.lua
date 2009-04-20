@@ -133,6 +133,18 @@ function XPerl_Player_Pet_OnLoad(self)
 		self.conf = XPerlDB.pet
 	end
 
+	self.GetBuffSpacing = function(self)
+		local w = self.statsFrame:GetWidth()
+		if (self.portraitFrame and self.portraitFrame:IsShown()) then
+			w = w - 2 + self.portraitFrame:GetWidth()
+		end
+		if (not self.buffSpacing) then
+			self.buffSpacing = XPerl_GetReusableTable()
+		end
+		self.buffSpacing.rowWidth = w
+		self.buffSpacing.smallRowHeight = 0
+		self.buffSpacing.smallRowWidth = w
+	end
 	XPerl_Player_Pet_OnLoad = nil
 end
 
