@@ -2,6 +2,16 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.3a
+NEW: Option to include pet debuffs/buffs in with the big aura option.
+Changed: Moved the code that shows who cast an aura so that it now works for your own auras for whatever mod, be that Blizz default or whatever. Mouseover some aura to see the caster name at bottom!
+Changed: Removed Shadow of Death code, as this is now some trinket proc name, and the old Shadow of Death was removed.
+Fixed: Druid mana bar wasn't showing.
+
+3.0.3
+Changed: TOC Bump to 30100
+Fixed: Patch 3.1 Fixes.
+
 3.0.2a
 Fixed: Raid pets functionality improved and fixed overall. Vehicles now will all show up correctly (giving the name of the player in <>, rather than their mount). Should help you all immensely for Malygos, which we killed tonight despite my coding efforts.. :)
 
