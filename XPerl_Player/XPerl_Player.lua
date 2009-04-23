@@ -901,20 +901,6 @@ local function MakeXPBars(self)
 	MakeXPBars = nil
 end
 
--- XPerl_Player_SetTotems
-function XPerl_Player_SetTotems(self)
-	if (pconf.totems.enable) then
-		TotemFrame:SetParent(self)
-		TotemFrame:ClearAllPoints()
-		TotemFrame:SetPoint("TOP", self, "BOTTOM", pconf.totems.offsetX, pconf.totems.offsetY)
-	else
-		TotemFrame:SetParent(PlayerFrame)
-		TotemFrame:ClearAllPoints()
-		TotemFrame:SetPoint("TOPLEFT", PlayerFrame, "BOTTOMLEFT", 99, 38)
-	end
-	TotemFrame_Update()
-end
-
 -- XPerl_Player_Set_Bits()
 function XPerl_Player_Set_Bits(self)
 	if (pconf.portrait) then
@@ -1032,7 +1018,20 @@ function XPerl_Player_Set_Bits(self)
 				offsetY = 0
 			}
 		end
-		XPerl_Player_SetTotems(self)
+
+		local __TotemFrame_Update = TotemFrame_Update
+		function TotemFrame_Update(...)
+			if (pconf.totems and pconf.totems.enable) then
+				TotemFrame:SetParent(self)
+				TotemFrame:ClearAllPoints()
+				TotemFrame:SetPoint("TOP", self, "BOTTOM", pconf.totems.offsetX, pconf.totems.offsetY)
+			else
+				TotemFrame:SetParent(PlayerFrame)
+				TotemFrame:ClearAllPoints()
+				TotemFrame:SetPoint("TOPLEFT", PlayerFrame, "BOTTOMLEFT", 99, 38)
+			end
+			__TotemFrame_Update(...)
+		end
 	end
 	
 	self:SetAlpha(conf.transparency.frame)
