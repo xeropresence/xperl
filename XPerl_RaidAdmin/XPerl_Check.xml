@@ -202,10 +202,6 @@
 			<OnClick>
 				XPerl_Check_OnClickItem(arg1)
 			</OnClick>
-			<OnMouseWheel>
-				XPerl_CheckMouseWheel("Items", arg1)
-				XPerl_Check_OnEnter()
-			</OnMouseWheel>
 		</Scripts>
 	</Button>
 
@@ -574,7 +570,7 @@
 			</Button>
 			<ScrollFrame name="$parentScrollBar" inherits="FauxScrollFrameTemplate">
 				<Size>
-					<AbsDimension x="31" y="145"/>
+					<AbsDimension x="230" y="145"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPRIGHT">
@@ -585,11 +581,8 @@
 				</Anchors>
 				<Scripts>
 					<OnVerticalScroll>
-						FauxScrollFrame_OnVerticalScroll(self, value, 1, XPerl_Check_UpdatePlayerList)
+						FauxScrollFrame_OnVerticalScroll(self, offset, 14, XPerl_Check_UpdatePlayerList)
 					</OnVerticalScroll>
-					<OnMouseWheel>
-						XPerl_CheckMouseWheel("Players", arg1)
-					</OnMouseWheel>
 				</Scripts>
 			</ScrollFrame>
 		</Frames>
@@ -627,11 +620,6 @@
 				</Texture>
 			</Layer>
 		</Layers>
-		<Scripts>
-			<OnMouseWheel>
-				XPerl_CheckMouseWheel("Players", arg1)
-			</OnMouseWheel>
-		</Scripts>
 	</Button>
 
 	<Button name="XPerl_CheckListTemplate" virtual="true">
@@ -648,9 +636,6 @@
 			<OnLeave>
 				GameTooltip:Hide()
 			</OnLeave>
-			<OnMouseWheel>
-				XPerl_CheckMouseWheel("Items", arg1)
-			</OnMouseWheel>
 		</Scripts>
 		<Size>
 			<AbsDimension x="230" y="178"/>
@@ -733,7 +718,7 @@
 			</Button>
 			<ScrollFrame name="$parentScrollBar" inherits="FauxScrollFrameTemplate" enableMouse="true">
 				<Size>
-					<AbsDimension x="31" y="173"/>
+					<AbsDimension x="200" y="173"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPRIGHT">
@@ -744,11 +729,8 @@
 				</Anchors>
 				<Scripts>
 					<OnVerticalScroll>
-						FauxScrollFrame_OnVerticalScroll(self, value, 1, XPerl_Check_UpdateItemList)
+						FauxScrollFrame_OnVerticalScroll(self, offset, 14, XPerl_Check_UpdateItemList)
 					</OnVerticalScroll>
-					<OnMouseWheel>
-						XPerl_CheckMouseWheel("Items", arg1)
-					</OnMouseWheel>
 				</Scripts>
 			</ScrollFrame>
 		</Frames>

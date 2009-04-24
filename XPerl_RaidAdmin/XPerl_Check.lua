@@ -1339,16 +1339,6 @@ function XPerl_Check_OnEnter()
 	GameTooltip:Show()
 end
 
--- XPerl_CheckMouseWheel
-function XPerl_CheckMouseWheel(name, dir)
-	local frame = getglobal("XPerl_CheckList"..name.."ScrollBarScrollBar")
-	if (dir > 0) then
-	        frame:SetValue(frame:GetValue() - 5)
-	else
-	        frame:SetValue(frame:GetValue() + 5)
-	end
-end
-
 -- XPerl_Check_OnClickStart
 function XPerl_Check_OnClickTick()
 	local id = this:GetParent():GetID() + XPerl_CheckListItemsScrollBar.offset
