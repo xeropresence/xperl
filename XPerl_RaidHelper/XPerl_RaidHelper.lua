@@ -5,8 +5,9 @@
 XPerl_SetModuleRevision("$Revision$")
 
 XPerl_MainTanks = {}
-local MainTankCount = 0
+local MainTankCount, blizzMTanks, ctraTanks = 0, 0, 0
 local MainTanks = {}
+local BlizzardMainTanks = {}
 local Events = {}
 local XUnits = {}
 local UpdateTime = 0
@@ -14,6 +15,8 @@ local XGaps = 0
 local XTitle
 local pendingTankListChange		-- If in combat when tank list changes, then we'll defer it till next time we're out of combat
 local conf
+
+local new, del = XPerl_GetReusableTable, XPerl_FreeTable
 
 -- Dup colours used to show which tanks have the same target
 local MTdupColours = {	{r = "0.8", g = "0.2", b = "0.2"},
@@ -301,7 +304,7 @@ end
 local function RemoveDupMT(name)
 	for k, v in pairs(XPerl_MainTanks) do
 		if (strlower(v[2]) == strlower(name)) then
-			XPerl_MainTanks[k] = nil
+			XPerl_MainTanks[k] = del(XPerl_MainTanks[k])
 			return true
 		end
 	end
@@ -360,37 +363,87 @@ end
 function XPerl_MTRosterChanged()
 	ValidateTankList()
 
-	MainTankCount = 0
-	for i in pairs(XPerl_MainTanks) do
-		MainTankCount = MainTankCount + 1
-	end
+	del(MainTanks, true)
+	MainTanks = new()
 
-	if (MainTankCount == 0 or conf.UseCTRATargets == 0) then
-		-- If no defined tanks, then make a list from the warriors in raid
-		MainTanks = {}
-		MainTankCount = 0
-
-		if (conf.NoAutoList == 0 and not inBattlegrounds()) then
-			for i = 1,GetNumRaidMembers() do
-				local c = select(2, UnitClass("raid"..i))
-				if (c == "WARRIOR") then
-					tinsert(MainTanks, {i, UnitName("raid"..i)})
-					MainTankCount = MainTankCount + 1
-				end
-			end
-		end
-	else
-		MainTankCount = 0
+	blizzMTanks, ctraTanks = 0, 0
+	
+	if (conf.UseCTRATargets == 1) then
 		for index,entry in pairs(XPerl_MainTanks) do
 			local raidid = GetRaidIDByName(entry[2])
 			if (raidid) then
-				MainTankCount = MainTankCount + 1
-				entry[1] = raidid
+				ctraTanks = ctraTanks + 1
+				tinsert(MainTanks, new(raidid, UnitName("raid"..raidid)))
+			end
+		end
+	end
+
+	-- Blizzard defined main tanks bit. Looks a bit convoluted, but this is all so the order of the tanks is defined
+	-- by they order that they were assigned. It's a reasonable assumption that the MT is promoted first. There's no
+	-- guarentees of course. This is up to your raid leader, but imo it's better than the default raid ID ordering.
+	if (conf.UseBlizzardMTTargets == 1) then
+		-- Remember old tanks
+		local oldBlizzardNames = new()
+		for i,n in ipairs(BlizzardMainTanks) do
+			oldBlizzardNames[n] = true
+		end
+
+		-- Scan roster, adding any new ones, and removing found ones from old tanks list
+		for i = 1,GetNumRaidMembers() do
+			local unitid = "raid"..i
+			if (GetPartyAssignment("maintank", unitid)) then
+				local name = UnitName(unitid)
+				if (name ~= UNKNOWN) then
+					if (oldBlizzardNames[name]) then
+						-- We already had this tank, so leave it where it is
+						oldBlizzardNames[name] = nil
+					else
+						-- New tank defined, add it to the end of the list
+						tinsert(BlizzardMainTanks, name)
+					end
+				end
 			end
 		end
 
-		MainTanks = XPerl_MainTanks
+		-- Remove any that have been demoted
+		for name in pairs(oldBlizzardNames) do
+			for i = #BlizzardMainTanks,1,-1 do
+				if (BlizzardMainTanks[i] == name) then
+					tremove(BlizzardMainTanks, i)
+					break
+				end
+			end
+		end
+		oldBlizzardNames = del(oldBlizzardNames)
+
+		for i,name in ipairs(BlizzardMainTanks) do
+			local found
+			for i,info in ipairs(MainTanks) do
+				if (name == info[2]) then
+					found = true
+				end
+			end
+			if (not found) then
+				tinsert(MainTanks, new(i, name))
+				blizzMTanks = blizzMTanks + 1
+			end
+		end
 	end
+
+	if (not next(XPerl_MainTanks)) then
+		-- If no defined tanks, then make a list from the warriors in raid
+
+		if (blizzMTanks == 0 and conf.NoAutoList == 0 and not inBattlegrounds()) then
+			for i = 1,GetNumRaidMembers() do
+				local id = "raid"..i
+				if (select(2, UnitClass(id)) == "WARRIOR") then
+					tinsert(MainTanks, new(i, UnitName(id)))
+				end
+			end
+		end
+	end
+
+	MainTankCount = #MainTanks
 
 	XPerl_MakeTankList()
 end
@@ -425,7 +478,8 @@ local function ProcessCTRAMessage(unitName, msg)
 
 			RemoveDupMT(name)
 
-			XPerl_MainTanks[tonumber(num)] = {mtID, name}
+			del(XPerl_MainTanks[tonumber(num)])
+			XPerl_MainTanks[tonumber(num)] = new(mtID, name)
 
 			mtListUpdate = true
 		end
@@ -449,7 +503,7 @@ end
 
 -- XPerl_SplitCTRAMessage
 function XPerl_SplitCTRAMessage(msg, char)
-	local arr = { }
+	local arr = new()
 	while (strfind(msg, char) ) do
 		local iStart, iEnd = strfind(msg, char)
 		tinsert(arr, strsub(msg, 1, iStart-1))
@@ -468,6 +522,7 @@ function XPerl_ParseCTRA(nick, msg, func)
 		for i,subMsg in pairs(arr) do
 			func(nick, subMsg)
 		end
+		del(arr)
 	else
 		func(nick, msg)
 	end
@@ -505,7 +560,7 @@ end
 -- Check MTs all have unique targets
 local function ScanForMTDups()
 	local dup = 1
-	local dups = {}
+	local dups = new()
 
 	for i,unit in pairs(XUnits) do
 		XPerl_SetupFrameSimple(unit, conf.Background_Transparency)
@@ -541,6 +596,8 @@ local function ScanForMTDups()
 			end
 		end
 	end
+
+	del(dups)
 end
 
 -- MoveArrow
@@ -668,7 +725,10 @@ end
 -- RAID_ROSTER_UPDATE
 function Events:RAID_ROSTER_UPDATE()
 	if (GetNumRaidMembers() == 0) then
-		MainTanks = {}
+		del(MainTanks, 1)
+		MainTanks = new()
+		del(BlizzardMainTanks)
+		BlizzardMainTanks = new()
 	end
 
 	XPerl_RaidHelperCheck:Show()		-- XPerl_EnableDisable()
@@ -855,13 +915,13 @@ end
 -- XPerl_SetTitle
 function XPerl_SetTitle()
 	if (DisplayableColumns() > 1 and conf.UnitWidth >= 70) then
-		if (XPerl_MainTanks == MainTanks) then
+		if (ctraTanks > 0 or blizzMTanks > 0) then
 			XPerl_Frame_Title:SetText(XPERL_TITLE_MT_LONG)
 		else
 			XPerl_Frame_Title:SetText(XPERL_TITLE_WARRIOR_LONG)
 		end
 	else
-		if (XPerl_MainTanks == MainTanks) then
+		if (ctraTanks > 0 or blizzMTanks > 0) then
 			XPerl_Frame_Title:SetText(XPERL_TITLE_MT_SHORT)
 		else
 			XPerl_Frame_Title:SetText(XPERL_TITLE_WARRIOR_SHORT)
@@ -983,7 +1043,7 @@ function XPerl_MakeTankList()
 	XPerl_MyTarget:Hide()
 	XGaps = 0
 
-	local tanks = {}
+	local tanks = new()
 	for i = 1,10 do
 		if (MainTanks[i]) then
 			tinsert(tanks, MainTanks[i][2])
@@ -1002,6 +1062,8 @@ function XPerl_MakeTankList()
 
 	XPerl_MTTargets:SetAttribute("nameList", table.concat(tanks, ","))
 	XPerl_MTTargets:Show()
+
+	del(tanks)
 
 	if (XPerl_NoFadeBars) then XPerl_NoFadeBars() end
 

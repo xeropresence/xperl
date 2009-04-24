@@ -5337,7 +5337,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_TOTEMS_ENABLE")
 										self.configBase = "XPerlDB.player.totems"
 										self.configIndex = "enable"
-										self.configClick = function() XPerl_Player_SetTotems(XPerl_Player) end
+										self.configClick = function() TotemFrame_Update() end
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
@@ -12403,6 +12403,7 @@
 
 								self.Validate = function()
 									XPerl_Options_EnableSibling("CTTargets")
+									XPerl_Options_EnableSibling("BlizzTargets")
 									XPerl_Options_EnableSibling("NoAuto")
 									XPerl_Options_EnableSibling("Tooltips")
 									XPerl_Options_EnableSibling("GrowUp")
@@ -12439,12 +12440,31 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_BlizzTargets" inherits="XPerlCheckButtonTemplate">
+						<Size>
+							<AbsDimension x="26" y="26"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeTo="$parent_CTTargets">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAIDHELP_BLIZZMTTARGETS")
+								self.XconfigVar = "UseBlizzardMTTargets"
+								self.configClick = XPerl_MTRosterChanged
+								XPerl_Options_RegisterProtected(self)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_NoAuto" inherits="XPerlCheckButtonTemplate">
 						<Size>
 							<AbsDimension x="26" y="26"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_CTTargets" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeTo="$parent_BlizzTargets" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>

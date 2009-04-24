@@ -1019,18 +1019,21 @@ function XPerl_Player_Set_Bits(self)
 			}
 		end
 
-		local __TotemFrame_Update = TotemFrame_Update
-		function TotemFrame_Update(...)
-			if (pconf.totems and pconf.totems.enable) then
-				TotemFrame:SetParent(self)
-				TotemFrame:ClearAllPoints()
-				TotemFrame:SetPoint("TOP", self, "BOTTOM", pconf.totems.offsetX, pconf.totems.offsetY)
-			else
-				TotemFrame:SetParent(PlayerFrame)
-				TotemFrame:ClearAllPoints()
-				TotemFrame:SetPoint("TOPLEFT", PlayerFrame, "BOTTOMLEFT", 99, 38)
-			end
-			__TotemFrame_Update(...)
+		if (not self.totemHooked) then
+			self.totemHooked = true
+			hooksecurefunc("TotemFrame_Update",
+				function(...)
+					if (pconf.totems and pconf.totems.enable) then
+						TotemFrame:SetParent(self)
+						TotemFrame:ClearAllPoints()
+						TotemFrame:SetPoint("TOP", self, "BOTTOM", pconf.totems.offsetX, pconf.totems.offsetY)
+					else
+						TotemFrame:SetParent(PlayerFrame)
+						TotemFrame:ClearAllPoints()
+						TotemFrame:SetPoint("TOPLEFT", PlayerFrame, "BOTTOMLEFT", 99, 38)
+					end
+				end
+			)
 		end
 	end
 	

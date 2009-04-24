@@ -2303,14 +2303,13 @@ end
 -- XPerl_ShowGenericMenu
 -- self, unit, button are passed from secure template handler (SecureTemplates.lua, line 288 in SecureActionButton_OnClick)
 function XPerl_ShowGenericMenu(self, unit, button, actionType)
-	HideDropDownMenu(1)
-
 	if (not unit) then
 		unit = SecureButton_GetUnit(self)
 	end
 	XPerl_DropDown.unit = unit
 
 	if (unit) then
+		HideDropDownMenu(1)
 		XPerl_DropDown.id = strmatch(unit or "", "(%d+)")
 		XPerl_DropDown.displayMode = "MENU"
 
