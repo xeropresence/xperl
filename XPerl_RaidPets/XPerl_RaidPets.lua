@@ -30,11 +30,6 @@ end
 local function XPerl_RaidPets_OnUpdate(self, elapsed)
 	self.time = self.time + elapsed
 	if (self.time > 0.3) then
-		if (updateTitles) then
-			updateTitles = nil
-			XPerl_RaidPets_Titles()
-		end
-
 		for unit,frame in pairs(RaidPetFrameArray) do
 			if (unit) then
 				XPerl_UpdateSpellRange(frame, unit, true)
@@ -183,10 +178,19 @@ function XPerl_RaidPets_Events:VARIABLES_LOADED()
 	XPerl_RaidPets_Events.VARIABLES_LOADED = nil
 end
 
+local TitlesUpdateFrame = CreateFrame("Frame")
+TitlesUpdateFrame:SetScript("OnUpdate",
+	function(self)
+		XPerl_RaidPets_Titles()
+		self:Hide()
+	end
+)
+TitlesUpdateFrame:Hide()
+
 -- PLAYER_ENTERING_WORLD
 function XPerl_RaidPets_Events:PLAYER_ENTERING_WORLD()
 	XPerl_RaidPet_UpdateGUIDs()
-	updateTitles = true
+	TitlesUpdateFrame:Show()
 end
 
 -- UNIT_PET
@@ -202,18 +206,19 @@ function XPerl_RaidPets_Events:UNIT_ENTERED_VEHICLE(unit)
 			XPerl_RaidPet_UpdateName(frame)
 		end
 	end
-	updateTitles = true
+	TitlesUpdateFrame:Show()
 end
 
 -- UNIT_EXITED_VEHICLE
 function XPerl_RaidPets_Events:UNIT_EXITED_VEHICLE(unit)
-	updateTitles = true
+	TitlesUpdateFrame:Show()
 end
 
 -- RAID_ROSTER_UPDATE
 function XPerl_RaidPets_Events:RAID_ROSTER_UPDATE()
-	updateTitles = true
+	TitlesUpdateFrame:Show()
 end
+XPerl_RaidPets_Events.PARTY_MEMBERS_CHANGED = XPerl_RaidPets_Events.RAID_ROSTER_UPDATE
 
 -- UNIT_HEALTH
 function XPerl_RaidPets_Events:UNIT_HEALTH()
@@ -286,7 +291,6 @@ end
 
 -- SetMainHeaderAttributes
 local function SetMainHeaderAttributes(self)
-
 	self:Hide()
 
 	--local classes = {}
@@ -419,7 +423,7 @@ end
 function XPerl_RaidPets_OptionActions()
 	SetMainHeaderAttributes(XPerl_Raid_GrpPets)
 
-	local events = {"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE", "UNIT_PET", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE"}
+	local events = {"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "PARTY_MEMBERS_CHANGED", "RAID_ROSTER_UPDATE", "UNIT_PET", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE"}
 	for i,event in pairs(events) do
 		if (rconf.enable) then
 			XPerl_RaidPets_Frame:RegisterEvent(event)
