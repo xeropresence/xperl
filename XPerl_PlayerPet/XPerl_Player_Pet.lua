@@ -537,30 +537,36 @@ end
 
 -- XPerl_Player_Pet_Virtual
 function XPerl_Player_Pet_Virtual(show)
-	if (show) then
-		virtual = true
-		XPerl_Player_Pet:RegisterEvent("PLAYER_REGEN_DISABLED")
-		UnregisterUnitWatch(XPerl_Player_Pet)
-		XPerl_Player_Pet:Show()
-		XPerl_Player_Pet.nameFrame.text:SetText(PET)
+	if (not InCombatLockdown()) then
+		if (show) then
+			if (not virtual) then
+				virtual = true
+				XPerl_Player_Pet:RegisterEvent("PLAYER_REGEN_DISABLED")
+				UnregisterUnitWatch(XPerl_Player_Pet)
+				XPerl_Player_Pet:Show()
+				XPerl_Player_Pet.nameFrame.text:SetText(PET)
 
-		if (XPerl_PetTarget) then
-			XPerl_PetTarget.virtual = true
-			UnregisterUnitWatch(XPerl_PetTarget)
-			XPerl_PetTarget:Show()
-			XPerl_PetTarget.nameFrame.text:SetText(PET.." "..TARGET)
-		end
-	else
-		virtual = nil
-		RegisterUnitWatch(XPerl_Player_Pet)
-		if (XPerl_PetTarget) then
-			XPerl_PetTarget.virtual = nil
-			if (XPerl_PetTarget.conf.enable) then
-				RegisterUnitWatch(XPerl_PetTarget)
-				XPerl_PetTarget:Hide()
+				if (XPerl_PetTarget) then
+					XPerl_PetTarget.virtual = true
+					UnregisterUnitWatch(XPerl_PetTarget)
+					XPerl_PetTarget:Show()
+					XPerl_PetTarget.nameFrame.text:SetText(PET.." "..TARGET)
+				end
+			end
+		else
+			if (virtual) then
+				virtual = nil
+				RegisterUnitWatch(XPerl_Player_Pet)
+				if (XPerl_PetTarget) then
+					XPerl_PetTarget.virtual = nil
+					if (XPerl_PetTarget.conf.enable) then
+						RegisterUnitWatch(XPerl_PetTarget)
+						XPerl_PetTarget:Hide()
+					end
+				end
+				XPerl_Player_Pet:UnregisterEvent("PLAYER_REGEN_DISABLED")
 			end
 		end
-		XPerl_Player_Pet:UnregisterEvent("PLAYER_REGEN_DISABLED")
 	end
 end
 
