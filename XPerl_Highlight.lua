@@ -482,6 +482,58 @@ function xpHigh:SetHighlight(frame, guid)
 	self:ShowShieldBar(frame, self.shields[guid])
 end
 
+-- hotBarOnUpdate
+local function hotBarOnUpdate(self, elapsed)
+	local Min, Max = self:GetMinMaxValues()
+	local val = self:GetValue()
+	if (self.movementMod) then
+		val = val - elapsed
+		if (val <= 0) then
+			self:Hide()
+			return
+		end
+	
+		self:SetValue(val)
+	end
+
+	local sparkPosition = self:GetWidth() * (val / Max)
+	self.spark:SetPoint("CENTER", self, "LEFT", sparkPosition, 0)
+
+	self.angle = self.angle + elapsed
+	if (self.angle > 360) then
+		self.angle = self.angle - 360
+	end
+
+	local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = rotate(self.angle)
+	self.spark:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
+	self.shine:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
+
+	local a
+	if (val < 5) then
+		if (self.alphaPulse == "in") then
+			a = self.alpha + elapsed * 2
+			if (a >= 1) then
+				a = 1
+				self.alphaPulse = "out"
+			end
+		else
+			a = self.alpha - elapsed * 2
+			if (a < 0.3) then
+				a = 0.3
+				self.alphaPulse = "in"
+			end
+		end
+	else
+		a = 1
+		self.alphaPulse = "out"
+	end
+
+	--self:SetAlpha(self.alpha)
+	self.spark:SetVertexColor(1, 1, 1, a * fluctuateOnUpdate(self.spark, elapsed))
+	self.shine:SetVertexColor(1, 1, 1, a * fluctuateOnUpdate(self.shine, elapsed))
+	self.alpha = a
+end
+
 -- CreateShieldBar
 function xpHigh:CreateShieldBar(frame)
 	local parent = frame.healthBar
@@ -725,58 +777,6 @@ local function fluctuateOnUpdate(self, elapsed)
 	end
 
 	return self.fluctuatingBrightness or 1
-end
-
--- hotBarOnUpdate
-function hotBarOnUpdate(self, elapsed)
-	local Min, Max = self:GetMinMaxValues()
-	local val = self:GetValue()
-	if (self.movementMod) then
-		val = val - elapsed
-		if (val <= 0) then
-			self:Hide()
-			return
-		end
-	
-		self:SetValue(val)
-	end
-
-	local sparkPosition = self:GetWidth() * (val / Max)
-	self.spark:SetPoint("CENTER", self, "LEFT", sparkPosition, 0)
-
-	self.angle = self.angle + elapsed
-	if (self.angle > 360) then
-		self.angle = self.angle - 360
-	end
-
-	local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = rotate(self.angle)
-	self.spark:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
-	self.shine:SetTexCoord(ULx, ULy, LLx, LLy, URx, URy, LRx, LRy)
-
-	local a
-	if (val < 5) then
-		if (self.alphaPulse == "in") then
-			a = self.alpha + elapsed * 2
-			if (a >= 1) then
-				a = 1
-				self.alphaPulse = "out"
-			end
-		else
-			a = self.alpha - elapsed * 2
-			if (a < 0.3) then
-				a = 0.3
-				self.alphaPulse = "in"
-			end
-		end
-	else
-		a = 1
-		self.alphaPulse = "out"
-	end
-
-	--self:SetAlpha(self.alpha)
-	self.spark:SetVertexColor(1, 1, 1, a * fluctuateOnUpdate(self.spark, elapsed))
-	self.shine:SetVertexColor(1, 1, 1, a * fluctuateOnUpdate(self.shine, elapsed))
-	self.alpha = a
 end
 
 -- CreateShine

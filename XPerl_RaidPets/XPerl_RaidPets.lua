@@ -4,7 +4,7 @@
 
 local XPerl_RaidPets_Events = {}
 local RaidPetFrameArray = {}
-local conf, rconf
+local conf, rconf, raidconf
 XPerl_RequestConfig(function(New) conf = New raidconf = New.raid rconf = New.raidpet end, "$Revision$")
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable

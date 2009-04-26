@@ -18,7 +18,7 @@ mod:RegisterEvent("RAID_ROSTER_UPDATE")
 mod:RegisterEvent("PARTY_MEMBERS_CHANGED")
 --mod:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
-function modOnEvent(self, event, ...)
+local function modOnEvent(self, event, ...)
 	local f = mod[event]
 	if (f) then
 		f(mod, ...)

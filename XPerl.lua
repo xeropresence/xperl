@@ -1282,36 +1282,6 @@ function XPerl_PlayerTip(self, unitid)
 		XPerl_RaidTipExtra(unitid)
 	end
 
---[[	if (conf.tooltip.xperlInfo and XPerl_GetUsage and not strmatch(unitid, "pet")) then
-		local xpUsage = XPerl_GetUsage(UnitName(unitid), unitid)
-		if (xpUsage) then
-			local xp, any = "|cFFD00000X-Perl|r "
-			if (xpUsage.version) then
-				xp = xp..xpUsage.version
-			else
-				xp = xp..XPerl_VersionNumber
-			end
-			any = true
-
-			if (xpUsage.revision) then
-				xp = xp.." "..xpUsage.revision
-			elseif (UnitIsUnit("player", unitid)) then
-				xp = xp.." "..XPerl_GetRevision()
-			end
-
-			if (xpUsage.mods and IsShiftKeyDown()) then
-				local modList = XPerl_DecodeModuleList(xpUsage.mods)
-				if (modList) then
-					xp = xp.." : |c00909090"..modList
-				end
-			end
-			if (any) then
-				GameTooltip:AddLine(xp, 1, 1, 1, 1)
-				GameTooltip:Show()
-			end
-		end
-	end ]]
-
 	XPerl_Highlight:TooltipInfo(UnitName(unitid))
 end
 
@@ -3742,6 +3712,7 @@ local function DrawSlider(self, percent)
 	self.needle:ClearAllPoints()
 	self.needle:SetPoint("CENTER", self, "TOPLEFT", offset + 5, -2)
 
+	local r, g, b
 	if (percent <= 70) then
 		r, g, b = 0, 1, 0
 	else
@@ -3769,16 +3740,6 @@ end
 
 -- threatOnUpdate
 local function threatOnUpdate(self, elapsed)
-	--local isTanking, state, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation(self.one, self.two)
-	--if (not scaledPercent or scaledPercent == 0) then
-	--	self:Hide()
-	--	return
-	--end
-
-	--local threatPercent = floor(scaledPercent / pullAggro * 100 + 0.5)
-	--self.text:SetFormattedText("%d%%", threatPercent)
-	--self.target = threatPercent
-
 	local diff = (self.target - self.current) * 0.2
 	self.current = min(100, max(0, self.current + diff))
 	if (abs(self.current - self.target) <= 0.01) then
@@ -3797,7 +3758,7 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 
 	local mode = self.conf.threatMode or (self.conf.portrait and "portraitFrame" or "nameFrame")
 	local t = self.threatFrames and self.threatFrames[mode]
-	if (not self.conf.threat) then	-- or (GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0)) then
+	if (not self.conf.threat) then
 		if (t) then
 			t:Hide()
 		end
@@ -3838,6 +3799,8 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 			end
 
 			if (one) then
+				-- scaledPercent is 0% - 100%, 100 means you pull agro
+				-- rawPercent is before normalization so can go up to 110% or 130% before you pull agro
 				isTanking, state, scaledPercent, rawPercent, threatValue = UnitDetailedThreatSituation(one, two)
 			end
 		end
@@ -3851,7 +3814,7 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 				t.one = one
 				t.two = two
 				t:SetScript("OnUpdate", threatOnUpdate)
-			end				
+			end
 
 			t.text:SetFormattedText("%d%%", scaledPercent)
 			local r, g, b = smoothColor(scaledPercent)

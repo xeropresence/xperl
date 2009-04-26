@@ -302,7 +302,7 @@ local function XPerl_RegisterLDB()
 	local LDB = LibStub and LibStub("LibDataBroker-1.1", true)
 	if (LDB) then
 		local ldbSource = LDB:NewDataObject("X-Perl UnitFrames", {
-			type = "data source",
+			type = "launcher",
 			text = XPerl_ShortProductName,
 			icon = XPerl_ModMenuIcon,
 		})
