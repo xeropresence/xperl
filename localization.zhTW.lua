@@ -5,7 +5,7 @@
 -- Thanks 星塵、Player Lin for translations
 
 if (GetLocale() == "zhTW") then
-XPerl_ProductName	= "|cFFD00000X-Perl|r 框架"
+XPerl_ProductName	= "|cFFD00000X-Perl|r 單位框架"
 XPerl_Description	= XPerl_ProductName.." 作者 "..XPerl_Author
 
 XPerl_LongDescription	= "全新外觀的玩家狀態框架模組，包括玩家、寵物、隊伍、專注(focus)、團隊、目標以及目標的目標等。"
@@ -62,7 +62,7 @@ XPERL_LOC_SS_AVAILABLE	= "靈魂保存"
 XPERL_LOC_UPDATING	= "更新中"
 XPERL_LOC_ACCEPTEDRES	= "已接受"		-- Res accepted
 XPERL_RAID_GROUP	= "小隊 %d"
-XPERL_RAID_GROUPSHORT	= "%d 隊"
+XPERL_RAID_GROUPSHORT	= "%d隊"
 
 XPERL_LOC_NONEWATCHED	= "無監看"
 

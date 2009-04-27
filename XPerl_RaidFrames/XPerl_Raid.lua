@@ -13,6 +13,7 @@ local raidLoaded
 local rosterUpdated
 local percD = "%d"..PERCENT_SYMBOL
 local lastNamesList, lastName, lastWith, lastNamesCount		-- Stores with/without buff list (OnUpdate optimization)
+local fullyInitiallized
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
@@ -947,7 +948,9 @@ end
 function XPerl_Raid_OnUpdate(self, elapsed)
 	if (rosterUpdated) then
 		rosterUpdated = nil
-		XPerl_Raid_Position(self)
+		if (not InCombatLockdown()) then
+			XPerl_Raid_Position(self)
+		end
 		if (XPerl_Custom) then
 			XPerl_Custom:UpdateUnits()
 		end
@@ -1008,6 +1011,8 @@ function XPerl_Raid_OnUpdate(self, elapsed)
 			break
 		end
 	end
+
+	fullyInitiallized = true
 end
 
 -- XPerl_Raid_RaidTargetUpdate
@@ -1072,7 +1077,7 @@ end
 function XPerl_Raid_HideShowRaid()
 	local singleGroup
 	if (XPerl_Party_SingleGroup) then
-		if (conf.party.smallRaid) then
+		if (conf.party.smallRaid and fullyInitiallized) then
 			singleGroup = XPerl_Party_SingleGroup()
 		end
 	end
@@ -1610,7 +1615,7 @@ function XPerl_Raid_Position(self)
 	SetRaidRoster()
 	XPerl_RaidTitles()
 
-	if (conf.party.smallRaid) then
+	if (conf.party.smallRaid and fullyInitiallized and not InCombatLockdown()) then
 		XPerl_Raid_HideShowRaid()
 	end
 end
@@ -1631,10 +1636,9 @@ end
 
 -- XPerl_RaidTitles
 function XPerl_RaidTitles()
-
 	local singleGroup
 	if (XPerl_Party_SingleGroup) then
-		if (conf.party.smallRaid) then
+		if (conf.party.smallRaid and fullyInitiallized) then
 			singleGroup = XPerl_Party_SingleGroup()
 		end
 	end
