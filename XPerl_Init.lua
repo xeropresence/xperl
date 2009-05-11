@@ -380,7 +380,7 @@ local function XPerl_ToolTip_AddBuffDuration(self, partyid, buffID, filter)
 		end
 	end
 
-	if (caster) then
+	if (caster and conf.buffs.names) then
 		local casterName = UnitFullName(caster)
 		if (casterName) then
 			local c

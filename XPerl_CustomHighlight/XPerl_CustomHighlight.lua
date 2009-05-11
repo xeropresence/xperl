@@ -75,6 +75,8 @@ function ch:DefaultZoneData()
 				[62056] = true,								-- Stone Grip (Kologarn)
 				[63018] = true,								-- Light Bomb (XT-002 Deconstructor)
 				[63024] = true,								-- Gravity Bomb (XT-002 Deconstructor)
+				[64554] = true,								-- Frozen Blows (Hodir)
+				[62469] = true,								-- Freeze (Hodir)
 			},
 		}
 end

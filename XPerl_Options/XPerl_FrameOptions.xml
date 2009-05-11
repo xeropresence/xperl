@@ -3356,7 +3356,7 @@
 
 					<CheckButton name="$parent_BuffCooldown" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightDebuffs" relativePoint="BOTTOMRIGHT">
+							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightDebuffs" relativePoint="TOPRIGHT">
 								<Offset><AbsDimension x="120" y="0"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -3427,6 +3427,22 @@
 								self.configBase = "XPerlDB.buffs"
 								self.configIndex = "countdownAny"
 								self.configClick = XPerl_OptionActions
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_BuffCasterNames" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_BuffCountdown" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="-20"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_BUFFTOOLTIPNAMES")
+								self.configBase = "XPerlDB.buffs"
+								self.configIndex = "names"
 							</OnLoad>
 						</Scripts>
 					</CheckButton>

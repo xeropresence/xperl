@@ -316,35 +316,35 @@ end
 function XPerl_Party_SetDebuffLocation(self)
 	local debuff1 = self.buffFrame.debuff and self.buffFrame.debuff[1]
 	if (debuff1) then
-        	debuff1:ClearAllPoints()
+		debuff1:ClearAllPoints()
 
 		if (pconf.debuffs.below) then
 			local buff1 = self.buffFrame.buff and self.buffFrame.buff[1]
 			if (not buff1) then
 				if (pconf.flip) then
-        	        		debuff1:SetPoint("TOPRIGHT", self.buffFrame, "TOPRIGHT", 0, -20)
+					debuff1:SetPoint("TOPRIGHT", self.buffFrame, "TOPRIGHT", 0, -20)
 				else
-        	        		debuff1:SetPoint("TOPLEFT", self.buffFrame, "TOPLEFT", 0, -20)
+					debuff1:SetPoint("TOPLEFT", self.buffFrame, "TOPLEFT", 0, -20)
 				end
 			else
 				if (pconf.flip) then
-        	        		debuff1:SetPoint("TOPRIGHT", buff1, "BOTTOMRIGHT", 0, -2)
+					debuff1:SetPoint("TOPRIGHT", buff1, "BOTTOMRIGHT", 0, -2)
 				else
-        	        		debuff1:SetPoint("TOPLEFT", buff1, "BOTTOMLEFT", 0, -2)
+					debuff1:SetPoint("TOPLEFT", buff1, "BOTTOMLEFT", 0, -2)
 				end
 			end
 		else
 			if (self.petFrame and self.petFrame:IsVisible()) then
 				if (pconf.flip) then
-        	                	debuff1:SetPoint("TOPRIGHT", self.petFrame.nameFrame, "TOPRIGHT", 0, -4)
+					debuff1:SetPoint("TOPRIGHT", self.petFrame.nameFrame, "TOPRIGHT", 0, -4)
 				else
-        	                	debuff1:SetPoint("TOPLEFT", self.petFrame.nameFrame, "TOPRIGHT", 0, -4)
+					debuff1:SetPoint("TOPLEFT", self.petFrame.nameFrame, "TOPRIGHT", 0, -4)
 				end
 			else
 				if (pconf.flip) then
-        	                	debuff1:SetPoint("TOPRIGHT", self.statsFrame, "TOPLEFT", 0, -4)
+					debuff1:SetPoint("TOPRIGHT", self.statsFrame, "TOPLEFT", 0, -4)
 				else
-        	                	debuff1:SetPoint("TOPLEFT", self.statsFrame, "TOPRIGHT", 0, -4)
+					debuff1:SetPoint("TOPLEFT", self.statsFrame, "TOPRIGHT", 0, -4)
 				end
 			end
 
@@ -449,7 +449,7 @@ local function XPerl_Party_UpdateName(self)
 	self.lastName = Partyname
 	if (Partyname) then
 		self.nameFrame.text:SetFontObject(GameFontNormal)
-                self.nameFrame.text:SetText(Partyname)
+		self.nameFrame.text:SetText(Partyname)
 
 		if (self.nameFrame.text:GetStringWidth() > self.nameFrame:GetWidth() - 4) then
 			self.nameFrame.text:SetFontObject(GameFontNormalSmall)
@@ -516,9 +516,9 @@ local function XPerl_Party_UpdateClass(self)
 	end
 
 	if (pconf.classIcon) then
-	        self.levelFrame.classTexture:Show()
+		self.levelFrame.classTexture:Show()
 	else
-	        self.levelFrame.classTexture:Hide()
+		self.levelFrame.classTexture:Hide()
 	end
 end
 
@@ -539,9 +539,9 @@ local function XPerl_Party_UpdateMana(self)
 	self.statsFrame.manaBar:SetValue(Partymana)
 
 	if (UnitPowerType(self.partyid)>=1) then
-	        self.statsFrame.manaBar.percent:SetText(Partymana)
+		self.statsFrame.manaBar.percent:SetText(Partymana)
 	else
-	        self.statsFrame.manaBar.percent:SetFormattedText(percD, 100 * max(0, Partymana / Partymanamax))
+		self.statsFrame.manaBar.percent:SetFormattedText(percD, 100 * max(0, Partymana / Partymanamax))
 	end
 
 	--if (pconf.values) then
@@ -553,7 +553,7 @@ local function XPerl_Party_UpdateMana(self)
 	self.statsFrame.manaBar.text:SetFormattedText("%d/%d", Partymana, Partymanamax)
 
 	if (not UnitIsConnected(self.partyid)) then
-	        self.statsFrame.healthBar.text:SetText(XPERL_LOC_OFFLINE)
+		self.statsFrame.healthBar.text:SetText(XPERL_LOC_OFFLINE)
 		if (not self.statsFrame.greyMana) then
 			self.statsFrame:SetGrey()
 		end
@@ -888,10 +888,10 @@ end
 -- PLAYER_ENTERING_WORLD
 function XPerl_Party_Events:PLAYER_ENTERING_WORLD()
 	UIParent:UnregisterEvent("RAID_ROSTER_UPDATE")	-- Re-do, in case
-	if (not startupDone) then
-		startupDone = true
-		XPerl_ProtectedCall(XPerl_Party_SetInitialAttributes)
-	end
+	--if (not startupDone) then
+	--	startupDone = true
+	--	XPerl_ProtectedCall(XPerl_Party_SetInitialAttributes)
+	--end
 	XPerl_Party_Events:PARTY_MEMBER_ENABLE()
 end
 
@@ -1333,23 +1333,23 @@ function XPerl_Party_SetMainAttributes()
 	partyHeader:ClearAllPoints()
 	if (pconf.anchor == "TOP") then
 		partyHeader:SetPoint("TOPLEFT", partyAnchor, "TOPLEFT", 0, 0)
-        	partyHeader:SetAttribute("xOffset", 0)
+		partyHeader:SetAttribute("xOffset", 0)
 		partyHeader:SetAttribute("yOffset", -pconf.spacing)
 	elseif (pconf.anchor == "LEFT") then
 		partyHeader:SetPoint("TOPLEFT", partyAnchor, "TOPLEFT", 0, 0)
 		partyHeader:SetAttribute("xOffset", pconf.spacing)
-        	partyHeader:SetAttribute("yOffset", 0)
+		partyHeader:SetAttribute("yOffset", 0)
 	elseif (pconf.anchor == "BOTTOM") then
 		partyHeader:SetPoint("BOTTOMLEFT", partyAnchor, "BOTTOMLEFT", 0, 0)
-        	partyHeader:SetAttribute("xOffset", 0)
+		partyHeader:SetAttribute("xOffset", 0)
 		partyHeader:SetAttribute("yOffset", pconf.spacing)
 	elseif (pconf.anchor == "RIGHT") then
 		partyHeader:SetPoint("BOTTOMRIGHT", partyAnchor, "BOTTOMRIGHT", 0, 0)
 		partyHeader:SetAttribute("xOffset", -pconf.spacing)
-        	partyHeader:SetAttribute("yOffset", 0)
+		partyHeader:SetAttribute("yOffset", 0)
 	end
 
-        partyHeader:SetAttribute("point", pconf.anchor or "TOP")
+	partyHeader:SetAttribute("point", pconf.anchor or "TOP")
 end
 
 -- XPerl_Party_Virtual
@@ -1404,11 +1404,12 @@ function XPerl_Party_Set_Bits()
 		XPerl_Party_Set_Bits1(v)
 	end
 
-	if (startupDone) then
-		partyHeader:Hide()
-		XPerl_Party_SetMainAttributes()
-		CheckRaid()
-	end
+	--if (startupDone) then
+	--	partyHeader:Hide()
+	--	XPerl_Party_SetMainAttributes()
+	--	CheckRaid()
+	--end
+	XPerl_Party_SetInitialAttributes()
 
 	if (XPerl_Party_AnchorVirtual:IsShown()) then
 		XPerl_Party_Virtual(true)

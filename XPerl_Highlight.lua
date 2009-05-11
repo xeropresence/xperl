@@ -45,9 +45,10 @@ local function GetTalentPosition(findName)
 end
 
 local function GetTalentValueByName(name)
+	local group = GetActiveTalentGroup()
 	local tab, index = GetTalentPosition(name)
 	if (index) then
-		local name, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tab, index)
+		local name, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tab, index, nil, nil, group)
 		return currentRank
 	end
 	return 0

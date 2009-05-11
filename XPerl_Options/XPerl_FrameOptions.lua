@@ -3023,6 +3023,10 @@ if (XPerl_UpgradeSettings) then
 				old.bar.texture[1] = "BantoBar"
 			end
 
+			if (oldVersion < "3.0.3b") then
+				old.buffs.names = true
+			end
+
 			if (oldVersion < "3.0.3a") then
 				old.target.buffs.bigpet = 1
 				old.targettarget.buffs.bigpet = 1
