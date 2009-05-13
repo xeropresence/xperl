@@ -8,7 +8,7 @@ XPERL_TOOLTIP_HEALERS	= "以我為目標的治療者："
 XPERL_TOOLTIP_ALLONME	= "以我為目標的所有人："
 XPERL_TOOLTIP_ENEMYONME	= "以我為目標的敵對者："
 XPERL_TOOLTIP_HELP	= "點擊開啟即時觀察"
-XPERL_TOOLTIP_PET	= "%s's 寵物"
+XPERL_TOOLTIP_PET	= "%s的寵物"
 
 XPERL_LOC_DEAD		= "死亡"
 
