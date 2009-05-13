@@ -3699,8 +3699,7 @@ if (LibStub or LoadAddOn("LibStub")) then
 end
 -- End of HealComm/LibQuickHealth
 
--- Threat Dislay
-
+-- Threat Display
 local function DrawHand(self, percent)
 	local angle = 360 - (percent * 2.7 - 135)
 	local ULx, ULy, LLx, LLy, URx, URy, LRx, LRy = rotate(angle)
@@ -3793,6 +3792,8 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 			else
 				if (UnitExists("target") and UnitCanAttack(self.partyid, "target")) then
 					one, two = self.partyid, "target"
+				elseif (UnitCanAttack("player", self.partyid)) then
+					one, two = "player", self.partyid
 				elseif (UnitCanAttack(self.partyid, self.partyid.."target")) then
 					one, two = self.partyid, self.partyid.."target"
 				end
