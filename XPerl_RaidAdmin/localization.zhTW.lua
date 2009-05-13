@@ -91,7 +91,7 @@ XPERL_CHECK_EQUIPED		= "裝備"
 XPERL_CHECK_SCAN_MISSING	= "掃描檢查玩家物品. (%d 尚未掃描)"
 
 XPERL_REAGENTS			= {PRIEST = "神聖蠟燭", MAGE = "魔粉", DRUID = "野生棘根草",
-					SHAMAN = "十字章", WARLOCK = "靈魂碎片", PALADIN = "神聖印記",
+					SHAMAN = "十字章", WARLOCK = "靈魂裂片", PALADIN = "神聖印記",
 					ROGUE = "閃光粉"}
 
 XPERL_CHECK_REAGENTS		= "施法需要物品"
