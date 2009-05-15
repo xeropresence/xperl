@@ -1810,10 +1810,10 @@ local DebuffExceptions = {
 	}
 }
 
---[[
-local SeasonalDebuffs = {							-- TODO Ignore these option
+local SeasonalDebuffs = {
 	[GetSpellInfo(26004)] = true,					-- Mistletoe
 	[GetSpellInfo(26680)] = true,					-- Adored
+	[GetSpellInfo(26898)] = true,					-- Heartbroken
 	[GetSpellInfo(64805)] = true,					-- Bested Darnassus
 	[GetSpellInfo(64808)] = true,					-- Bested the Exodar
 	[GetSpellInfo(64809)] = true,					-- Bested Gnomeregan
@@ -1824,7 +1824,7 @@ local SeasonalDebuffs = {							-- TODO Ignore these option
 	[GetSpellInfo(64814)] = true,					-- Bested Stormwind
 	[GetSpellInfo(64815)] = true,					-- Bested Thunder Bluff
 	[GetSpellInfo(64816)] = true,					-- Bested the Undercity
-} ]]
+}
 
 -- BuffException
 local showInfo
@@ -1900,6 +1900,20 @@ local function BuffException(unit, index, flag, func, exceptions)
 	end
 end
 
+-- DebuffException
+local function DebuffException(unit, start, flag)
+	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
+	for i = start,1000 do
+		name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, i, flag, UnitDebuff, DebuffExceptions)
+		if (not name) then
+			break
+		end
+		if (not conf.buffs.ignoreSeasonal or not SeasonalDebuffs[name]) then
+			return name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
+		end
+	end
+end
+
 -- XPerl_UnitBuff
 function XPerl_UnitBuff(unit, index, flag)
 	return BuffException(unit, index, flag, UnitBuff, BuffExceptions)
@@ -1907,6 +1921,9 @@ end
 
 -- XPerl_UnitBuff
 function XPerl_UnitDebuff(unit, index, flag)
+	if (conf.buffs.ignoreSeasonal) then
+		return DebuffException(unit, index, flag)
+	end
 	return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
 end
 
@@ -2699,7 +2716,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 					end
 					if (isWoW3dot1) then
 						if (self.conf.buffs.bigpet) then
-							isMine = isMine == "player" or isMine == "pet"
+							isMine = isMine == "player" or isMine == "pet" or isMine == "vehicle"
 						else
 							isMine = isMine == "player"
 						end
@@ -2710,7 +2727,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						button:SetAlpha(1)
 
 						buffs = buffs + 1
-	
+
 						button.icon:SetTexture(buff)
 						if (count > 1) then
 							button.count:SetText(count)
@@ -2805,7 +2822,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 
 					if (isWoW3dot1) then
 						if (self.conf.buffs.bigpet) then
-							isMine = isMine == "player" or isMine == "pet"
+							isMine = isMine == "player" or isMine == "pet" or isMine == "vehicle"
 						else
 							isMine = isMine == "player"
 						end
@@ -2816,7 +2833,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						button:SetAlpha(1)
 
 						debuffs = debuffs + 1
-	
+
 						button.icon:SetTexture(debuff)
 						if ((debuffApplications or 0) > 1) then
 							button.count:SetText(debuffApplications)
@@ -2824,10 +2841,10 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						else
 							button.count:Hide()
 						end
-	
+
 						local borderColor = DebuffTypeColor[(debuffType or "none")]
 						button.border:SetVertexColor(borderColor.r, borderColor.g, borderColor.b)
-	
+
 						-- Handle cooldowns
 						if (button.cooldown) then
 							if (duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
@@ -2840,7 +2857,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 
 						lastIcon = buffIconIndex
 						button:Show()
-	
+
 						if (self.conf.debuffs.big and isMine) then
 							debuffsMine = debuffsMine + 1
 							button.big = true

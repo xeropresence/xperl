@@ -3356,7 +3356,7 @@
 
 					<CheckButton name="$parent_BuffCooldown" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightDebuffs" relativePoint="TOPRIGHT">
+							<Anchor point="TOPLEFT" relativeTo="$parent_Highlight" relativePoint="TOPRIGHT">
 								<Offset><AbsDimension x="120" y="0"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -3443,6 +3443,22 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_BUFFTOOLTIPNAMES")
 								self.configBase = "XPerlDB.buffs"
 								self.configIndex = "names"
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+					
+					<CheckButton name="$parent_IgnoreSeasonal" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_BuffCasterNames" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_BUFFIGNORESEASONAL")
+								self.configBase = "XPerlDB.buffs"
+								self.configIndex = "ignoreSeasonal"
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
