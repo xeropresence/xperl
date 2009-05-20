@@ -2,6 +2,13 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.3c
+NEW: Option to ignore seasonal debuffs (Bested Somecity, Mistletoe, Adored, Heartbroken etc.).
+Fixed: Big Buffs Pet Too option will now also work for vehicles as well as pets.
+Fixed: Allow threat indicator to work for focus if it's an enemy NPC.
+Fixed: Bug with sparkles.
+Fixed: 3D portrait for Guardians of Yogg-Saron.
+
 3.0.3b
 NEW: Added option for Blizzard MT Targets for raid helper. This will merge Blizzard defined MT targets with oRA defined ones. The order for the Blizzard ones will be the order that they are defined. Making the assumption that your Main MT is usually set first, followed by OTs. Also fixed issue with toggling totem frame option.
 Changed: The caster's name added to bottom of buff tooltips is now optional, to avoid conflicts with other mods that may display this you may turn it off.
