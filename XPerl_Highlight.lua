@@ -483,6 +483,40 @@ function xpHigh:SetHighlight(frame, guid)
 	self:ShowShieldBar(frame, self.shields[guid])
 end
 
+-- fluctuateOnUpdate
+local function fluctuateOnUpdate(self, elapsed)
+	if (self.fluctuate) then
+		if (self.fluctuate == "dim" or self.fluctuate == "notbright") then
+			self.fluctuatingBrightness = self.fluctuatingBrightness - elapsed
+			if (self.fluctuatingBrightness < 0.5) then
+				if (self.fluctuate == "dim") then
+					self.fluctuatingBrightness = 0.5
+					self.fluctuate = "notdim"
+				else
+					self.fluctuatingBrightness = nil
+					self.fluctuate = nil
+				end
+			end
+		elseif (self.fluctuate == "notdim" or self.fluctuate == "bright") then
+			self.fluctuatingBrightness = self.fluctuatingBrightness + elapsed
+			if (self.fluctuatingBrightness >= 1) then
+				if (self.fluctuate == "notdim") then
+					self.fluctuatingBrightness = nil
+					self.fluctuate = nil
+				else
+					self.fluctuatingBrightness = 1
+					self.fluctuate = "notbright"
+				end
+			end
+		end
+	elseif (random(10) == 1) then
+		self.fluctuate = random(3) == 2 and "dim" or "bright"
+		self.fluctuatingBrightness = 1
+	end
+
+	return self.fluctuatingBrightness or 1
+end
+
 -- hotBarOnUpdate
 local function hotBarOnUpdate(self, elapsed)
 	local Min, Max = self:GetMinMaxValues()
@@ -745,40 +779,6 @@ end
 --		h.shield.fading = true
 --	end
 --end
-
--- fluctuateOnUpdate
-local function fluctuateOnUpdate(self, elapsed)
-	if (self.fluctuate) then
-		if (self.fluctuate == "dim" or self.fluctuate == "notbright") then
-			self.fluctuatingBrightness = self.fluctuatingBrightness - elapsed
-			if (self.fluctuatingBrightness < 0.5) then
-				if (self.fluctuate == "dim") then
-					self.fluctuatingBrightness = 0.5
-					self.fluctuate = "notdim"
-				else
-					self.fluctuatingBrightness = nil
-					self.fluctuate = nil
-				end
-			end
-		elseif (self.fluctuate == "notdim" or self.fluctuate == "bright") then
-			self.fluctuatingBrightness = self.fluctuatingBrightness + elapsed
-			if (self.fluctuatingBrightness >= 1) then
-				if (self.fluctuate == "notdim") then
-					self.fluctuatingBrightness = nil
-					self.fluctuate = nil
-				else
-					self.fluctuatingBrightness = 1
-					self.fluctuate = "notbright"
-				end
-			end
-		end
-	elseif (random(10) == 1) then
-		self.fluctuate = random(3) == 2 and "dim" or "bright"
-		self.fluctuatingBrightness = 1
-	end
-
-	return self.fluctuatingBrightness or 1
-end
 
 -- CreateShine
 function xpHigh:CreateShine(parent)

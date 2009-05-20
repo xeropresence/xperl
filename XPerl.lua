@@ -1908,7 +1908,7 @@ local function DebuffException(unit, start, flag)
 		if (not name) then
 			break
 		end
-		if (not conf.buffs.ignoreSeasonal or not SeasonalDebuffs[name]) then
+		if (not SeasonalDebuffs[name]) then
 			return name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
 		end
 	end
@@ -3080,7 +3080,9 @@ local alternateCamera = {
 	[22231] = true,			-- Dragonmaw Elite
 	[22252] = true,			-- Dragonmaw Peon
 	[23188] = true,			-- Dragonmaw Transporter
+	[33136] = true,			-- Guardian of Yogg-Saron
 }
+local dragonmawIllusion = GetSpellInfo(42016)
 
 -- PerlSetPortrait3D
 local function XPerlSetPortrait3D(self, argUnit)
@@ -3089,7 +3091,7 @@ local function XPerlSetPortrait3D(self, argUnit)
 
 	local guid = UnitGUID(argUnit)
 	local id = guid and tonumber(strsub(guid, -12, -7), 16)
-	if (alternateCamera[id] or UnitBuff(argUnit, "Dragonmaw Illusion")) then
+	if (alternateCamera[id] or UnitBuff(argUnit, dragonmawIllusion)) then
 		self:SetCamera(1)
 	else
 		self:SetCamera(0)
