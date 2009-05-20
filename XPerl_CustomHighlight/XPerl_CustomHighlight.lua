@@ -1,4 +1,4 @@
--- X-Perl UnitFrames
+﻿-- X-Perl UnitFrames
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
@@ -77,6 +77,7 @@ function ch:DefaultZoneData()
 				[63024] = true,								-- Gravity Bomb (XT-002 Deconstructor)
 				[64554] = true,								-- Frozen Blows (Hodir)
 				[62469] = true,								-- Freeze (Hodir)
+				[62717] = true,								-- Slag Pot (Ignis the Furnace Master)
 			},
 		}
 end
