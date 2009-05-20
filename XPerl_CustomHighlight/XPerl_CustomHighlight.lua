@@ -70,7 +70,11 @@ function ch:DefaultZoneData()
 				[45342] = true,								-- Conflagration (Grand Warlock Alythess)
 				[45641] = true,								-- Fire Bloom (Kil'Jaeden)
 			},
-		Ulduar =
+		["Naxxramas"] =
+			{
+				[27808] = true,								-- Frost Blast (Kel'Thuzad)
+			},
+		["Ulduar"] =
 			{
 				[62056] = true,								-- Stone Grip (Kologarn)
 				[63018] = true,								-- Light Bomb (XT-002 Deconstructor)
