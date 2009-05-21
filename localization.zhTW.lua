@@ -66,7 +66,7 @@ XPERL_RAID_GROUPSHORT	= "%d隊"
 
 XPERL_LOC_NONEWATCHED	= "無監看"
 
-XPERL_LOC_STATUSTIP	= "狀態提示: "		-- Tooltip explanation of status highlight on unit
+XPERL_LOC_STATUSTIP	= "狀態提示："		-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
 	HOT = "持續治療",
 	AGGRO = "敵方目標",
@@ -114,11 +114,11 @@ XPERL_CANNOT_DELETE_CURRENT	= "無法刪除您的個人設定"
 XPERL_CONFIG_DELETED		= "刪除 %s/%s 的個人設定"
 XPERL_CANNOT_FIND_DELETE_TARGET	= "找不到 (%s/%s) 設定來刪除"
 XPERL_CANNOT_DELETE_BADARGS	= "請給予正確的伺服器名稱以及玩家名稱"
-XPERL_CONFIG_LIST		= "設定清單:"
+XPERL_CONFIG_LIST		= "設定清單："
 XPERL_CONFIG_CURRENT		= " (目前)"
 
-XPERL_RAID_TOOLTIP_WITHBUFF	= "有此 buff 的: (%s)"
-XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "沒有此 buff 的: (%s)"
+XPERL_RAID_TOOLTIP_WITHBUFF	= "有此 buff 的：(%s)"
+XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "沒有此 buff 的：(%s)"
 XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s 的 %s 將要在 %s 後消失。"	-- Name, buff name, time to expire
 
 XPerl_DefaultRangeSpells.ANY = {item = "厚霜紋繃帶"}

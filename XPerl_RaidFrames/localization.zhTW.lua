@@ -29,6 +29,6 @@ XPERL_RAID_RESSING		= " 正復活"
 XPERL_RAID_AFK			= "暫離"
 XPERL_RAID_DND			= "勿擾"
 XPERL_RAID_AUTOPROMOTE		= "自動晉級"
-XPERL_RAID_RESSER_AVAIL		= "可施展復活技能者仍有: "
+XPERL_RAID_RESSER_AVAIL		= "可施展復活技能者仍有："
 
 end
