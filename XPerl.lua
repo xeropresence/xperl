@@ -650,6 +650,39 @@ function XPerl_ColourHealthBar(self, healthPct, partyid)
 
 	XPerl_SetSmoothBarColor(bar, healthPct)
 end
+local XPerl_ColourHealthBar = XPerl_ColourHealthBar
+
+-- XPerl_SetValuedText
+function XPerl_SetValuedText(self, current, Max, suffix)
+	if (Max >= hugeNumDiv) then
+		if (abs(current) < largeNumDiv100) then
+			-- 123/12.3M
+			self:SetFormattedText("%d/%.1f%s%s", current, Max / hugeNumDiv, hugeNumTag, suffix or "")
+		else
+			if (abs(current) >= hugeNumDiv) then
+				-- 1.2M/12.3M
+				self:SetFormattedText("%.1f%s/%.1f%s%s", current / hugeNumDiv, hugeNumTag, Max / hugeNumDiv, hugeNumTag, suffix or "")
+			else
+				-- 12.3K/12.3M
+				self:SetFormattedText("%.1f%s/%.1f%s%s", current / largeNumDiv, largeNumTag, Max / hugeNumDiv, hugeNumTag, suffix or "")
+			end
+		end
+	else
+		if (Max > largeNumDiv100) then
+			if (abs(current) < largeNumDiv100) then
+				-- 123/123.4K
+				self:SetFormattedText("%d/%.1f%s%s", current, Max / largeNumDiv, largeNumTag, suffix or "")
+			else
+				-- 12345/123.4K
+				self:SetFormattedText("%.1f%s/%.1f%s%s", current / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag, suffix or "")
+			end
+		else
+			-- 12345/12345
+			self:SetFormattedText("%d/%d%s", current, Max, suffix or "")
+		end
+	end
+end
+local SetValuedText = XPerl_SetValuedText
 
 -- XPerl_SetHealthBar
 function XPerl_SetHealthBar(self, hp, Max)
@@ -677,72 +710,19 @@ function XPerl_SetHealthBar(self, hp, Max)
 		local hbt = bar.text
 		if (self.conf.healerMode.enable and self.conf.healerMode.type ~= 2) then
 			local health = hp - Max
-			local Ahealth = abs(health)
 			if (self.conf.healerMode.type == 1) then
-				if (Max >= hugeNumDiv10) then
-					if (Ahealth < largeNumDiv100) then
-						-- 123/12M
-						hbt:SetFormattedText("%d/%d%s", health, Max / hugeNumDiv, hugeNumTag)
-					else
-						if (Ahealth >= hugeNumDiv) then
-							-- 2M/12M
-							hbt:SetFormattedText("%d%s/%d%s", health / hugeNumDiv, hugeNumTag, Max / hugeNumDiv, hugeNumTag)
-						else
-							-- 12K/12M
-							hbt:SetFormattedText("%d%s/%d%s", health / largeNumDiv, largeNumTag, Max / hugeNumDiv, hugeNumTag)
-						end
-					end
-				else
-					if (Max > largeNumDiv100) then
-						if (Ahealth < largeNumDiv100) then
-							-- 123/123K
-							hbt:SetFormattedText("%d/%d%s", health, Max / largeNumDiv, largeNumTag)
-						else
-							-- 12K/123K
-							hbt:SetFormattedText("%d%s/%d%s", health / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
-						end
-					else
-						-- 1234/1234
-						hbt:SetFormattedText("%d/%d", health, Max)
-					end
-				end
+				SetValuedText(hbt, health, Max)
 			else
-				if (Ahealth >= hugeNumDiv10) then
+				if (abs(health) >= hugeNumDiv10) then
 					hbt:SetFormattedText("%d%s", health / hugeNumDiv, hugeNumTag)
-				elseif (Ahealth >= largeNumDiv100) then
+				elseif (abs(health) >= largeNumDiv100) then
 					hbt:SetFormattedText("%d%s", health / largeNumDiv, largeNumTag)
 				else
 					hbt:SetFormattedText("%d", health)
 				end
 			end
 		else
-			if (Max >= hugeNumDiv) then
-				if (hp < largeNumDiv100) then
-					-- 123/12.3M
-					hbt:SetFormattedText("%d/%.1f%s", hp, Max / hugeNumDiv, hugeNumTag)
-				else
-					if (hp >= hugeNumDiv) then
-						-- 1.2M/12.3M
-						hbt:SetFormattedText("%.1f%s/%.1f%s", hp / hugeNumDiv, hugeNumTag, Max / hugeNumDiv, hugeNumTag)
-					else
-						-- 12.3K/12.3M
-						hbt:SetFormattedText("%.1f%s/%.1f%s", hp / largeNumDiv, largeNumTag, Max / hugeNumDiv, hugeNumTag)
-					end
-				end
-			else
-				if (Max > largeNumDiv100) then
-					if (hp < largeNumDiv100) then
-						-- 123/123.4K
-						hbt:SetFormattedText("%d/%.1f%s", hp, Max / largeNumDiv, largeNumTag)
-					else
-						-- 12345/123.4K
-						hbt:SetFormattedText("%.1f%s/%.1f%s", hp / largeNumDiv, largeNumTag, Max / largeNumDiv, largeNumTag)
-					end
-				else
-					-- 12345/12345
-					hbt:SetFormattedText("%d/%d", hp, Max)
-				end
-			end
+			SetValuedText(hbt, hp, Max)
 		end
 	end
 	XPerl_SetExpectedHealth(self)
@@ -1903,13 +1883,17 @@ end
 -- DebuffException
 local function DebuffException(unit, start, flag)
 	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
-	for i = start,1000 do
+	local valid = 0
+	for i = 1,1000 do
 		name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, i, flag, UnitDebuff, DebuffExceptions)
 		if (not name) then
 			break
 		end
 		if (not SeasonalDebuffs[name]) then
-			return name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
+			valid = valid + 1
+			if (valid == start) then
+				return name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
+			end
 		end
 	end
 end
