@@ -268,25 +268,20 @@ local function XPerl_Player_UpdateXP(self)
 		xpBar:SetMinMaxValues(0, playerxpmax)
 		restBar:SetMinMaxValues(0, playerxpmax)
 		xpBar:SetValue(playerxp)
-		local xptext
 
-		if (playerxpmax > 10000) then
-			xptext = format("%dK/%dK", playerxp / 1000, playerxpmax / 1000)
-		else
-			xptext = format("%d/%d", playerxp, playerxpmax)
-		end
-
+		local suffix
 		if (playerxprest > 0) then
 			if (playerxpmax > 10000) then
-				xptext = xptext .. format("(+%dK)", playerxprest / 1000)
+				suffix = format(" (+%dK)", playerxprest / 1000)
 			else
-				xptext = xptext .. format("(+%d)", playerxprest)
+				suffix = format(" (+%d)", playerxprest)
 			end
-
 			color = {r = 0.3, g = 0.3, b = 1}
 		else
 			color = {r = 0.6, g = 0, b = 0.6}
 		end
+
+		XPerl_SetValuedText(xpBar.text, playerxp, playerxpmax, suffix)
 
 		xpBar:SetStatusBarColor(color.r, color.g, color.b, 1)
 		xpBar.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
@@ -295,7 +290,6 @@ local function XPerl_Player_UpdateXP(self)
 		restBar:SetStatusBarColor(color.r, color.g, color.b, 0.5)
 		restBar.bg:SetVertexColor(color.r, color.g, color.b, 0.5)
 
-		xpBar.text:SetText(xptext)
 		xpBar.percent:SetFormattedText(percD, (playerxp * 100) / playerxpmax)
 	end
 end
@@ -901,6 +895,19 @@ local function MakeXPBars(self)
 	MakeXPBars = nil
 end
 
+-- XPerl_Player_SetTotems
+function XPerl_Player_SetTotems(...)
+	if (pconf.totems and pconf.totems.enable) then
+		TotemFrame:SetParent(self)
+		TotemFrame:ClearAllPoints()
+		TotemFrame:SetPoint("TOP", XPerl_Player, "BOTTOM", pconf.totems.offsetX, pconf.totems.offsetY)
+	else
+		TotemFrame:SetParent(PlayerFrame)
+		TotemFrame:ClearAllPoints()
+		TotemFrame:SetPoint("TOPLEFT", PlayerFrame, "BOTTOMLEFT", 99, 38)
+	end
+end
+
 -- XPerl_Player_Set_Bits()
 function XPerl_Player_Set_Bits(self)
 	if (pconf.portrait) then
@@ -1021,19 +1028,7 @@ function XPerl_Player_Set_Bits(self)
 
 		if (not self.totemHooked) then
 			self.totemHooked = true
-			hooksecurefunc("TotemFrame_Update",
-				function(...)
-					if (pconf.totems and pconf.totems.enable) then
-						TotemFrame:SetParent(self)
-						TotemFrame:ClearAllPoints()
-						TotemFrame:SetPoint("TOP", self, "BOTTOM", pconf.totems.offsetX, pconf.totems.offsetY)
-					else
-						TotemFrame:SetParent(PlayerFrame)
-						TotemFrame:ClearAllPoints()
-						TotemFrame:SetPoint("TOPLEFT", PlayerFrame, "BOTTOMLEFT", 99, 38)
-					end
-				end
-			)
+			hooksecurefunc("TotemFrame_Update", XPerl_Player_SetTotems)
 		end
 	end
 	

@@ -1923,7 +1923,7 @@ end
 -- XPerl_TooltipSetUnitDebuff
 -- Retreives the index of the actual unfiltered debuff, and uses this on unfiltered tooltip call
 function XPerl_TooltipSetUnitDebuff(self, unit, ind, flag)
-	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitDebuff, DebuffExceptions)
+	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = XPerl_UnitDebuff(unit, ind, flag == 1 and "RAID")
 	if (name and index) then
 		self:SetUnitDebuff(unit, index)
 	end
@@ -3065,6 +3065,7 @@ local alternateCamera = {
 	[22252] = true,			-- Dragonmaw Peon
 	[23188] = true,			-- Dragonmaw Transporter
 	[33136] = true,			-- Guardian of Yogg-Saron
+	[33687] = true,			-- Chillmaw
 }
 local dragonmawIllusion = GetSpellInfo(42016)
 

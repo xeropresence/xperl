@@ -754,7 +754,7 @@ local function UpdateBuffs(self)
 		end
 
 		for buffnum=1,maxBuff do
-			local name, rank, buff, count
+			local name, rank, buff
 			if (show == "b") then
 				name, rank, buff = XPerl_UnitBuff(partyid, buffnum, cureCast)
 			else
