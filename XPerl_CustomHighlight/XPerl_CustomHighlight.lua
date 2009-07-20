@@ -34,6 +34,7 @@ function ch:AddBuff(buffName)
 end
 
 -- DefaultZoneData
+if (GetLocale() == "enUS") then
 function ch:DefaultZoneData()
 	return {
 		["Serpentshrine Caverns"]=
@@ -84,6 +85,60 @@ function ch:DefaultZoneData()
 				[62717] = true,								-- Slag Pot (Ignis the Furnace Master)
 			},
 		}
+end
+
+elseif (GetLocale() == "zhTW") then
+function ch:DefaultZoneData()
+	return {
+		["毒蛇神殿洞穴"]=
+			{
+				[38132] = true								-- Paralyze - Picked up Tainted Core
+			},
+		["黑暗神廟"] =
+			{
+				[38132] = true,								-- Paralyze - Target of Illidan's Demons
+				[40932] = true,								-- Agonizing Flames (Illidan)
+				[41917] = true,								-- Parasitic Shadowfiend (Illidan)
+				[46787] = true,								-- Fel Rage (Gurtogg Bloodboil)
+				[39837] = true,								-- Impaling Spine (Najentus)
+				[41001] = true,								-- Fatal Attraction (Mother Shahrazz)
+				[40251] = true,								-- Shadow of Death (Terron Gorefiend)
+				[43581] = true,								-- Deadly Poison (Illidari Council)
+				[40585] = true,								-- Dark Barrage (Illidan)
+			},
+		["海加爾山"] =
+			{
+				[39941] = true,								-- Inferno
+				[31347] = true,								-- Doom
+			},
+		["卡拉贊"] =
+			{
+				[34661] = true,								-- Sacrifice (Illhoof)
+				[30753] = true,								-- Red Riding Hood (Big Bad Wolf)
+			},
+		["太陽之井高地"] =
+			{
+				[45141] = true,								-- Burn (Brutallus)
+				[45662] = true,								-- Encapsulate (Felmyst)
+				[45855] = true,								-- Gas Nova (Felmyst)
+				[45342] = true,								-- Conflagration (Grand Warlock Alythess)
+				[45641] = true,								-- Fire Bloom (Kil'Jaeden)
+			},
+		["納克薩瑪斯"] =
+			{
+				[27808] = true,								-- Frost Blast (Kel'Thuzad)
+			},
+		["奧杜亞"] =
+			{
+				[62056] = true,								-- Stone Grip (Kologarn)
+				[63018] = true,								-- Light Bomb (XT-002 Deconstructor)
+				[63024] = true,								-- Gravity Bomb (XT-002 Deconstructor)
+				[64554] = true,								-- Frozen Blows (Hodir)
+				[62469] = true,								-- Freeze (Hodir)
+				[62717] = true,								-- Slag Pot (Ignis the Furnace Master)
+			},
+		}
+end
 end
 
 -- SetDefaultZoneData
