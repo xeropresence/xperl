@@ -139,6 +139,112 @@ function ch:DefaultZoneData()
 			},
 		}
 end
+
+elseif (GetLocale() == "zhCN") then
+function ch:DefaultZoneData()
+	return {
+		["毒蛇神殿"]=
+			{
+				[38132] = true								-- Paralyze - Picked up Tainted Core
+			},
+		["黑暗神殿"] =
+			{
+				[38132] = true,								-- Paralyze - Target of Illidan's Demons
+				[40932] = true,								-- Agonizing Flames (Illidan)
+				[41917] = true,								-- Parasitic Shadowfiend (Illidan)
+				[46787] = true,								-- Fel Rage (Gurtogg Bloodboil)
+				[39837] = true,								-- Impaling Spine (Najentus)
+				[41001] = true,								-- Fatal Attraction (Mother Shahrazz)
+				[40251] = true,								-- Shadow of Death (Terron Gorefiend)
+				[43581] = true,								-- Deadly Poison (Illidari Council)
+				[40585] = true,								-- Dark Barrage (Illidan)
+			},
+		["海加尔峰"] =
+			{
+				[39941] = true,								-- Inferno
+				[31347] = true,								-- Doom
+			},
+		["卡拉赞"] =
+			{
+				[34661] = true,								-- Sacrifice (Illhoof)
+				[30753] = true,								-- Red Riding Hood (Big Bad Wolf)
+			},
+		["太阳之井高地"] =
+			{
+				[45141] = true,								-- Burn (Brutallus)
+				[45662] = true,								-- Encapsulate (Felmyst)
+				[45855] = true,								-- Gas Nova (Felmyst)
+				[45342] = true,								-- Conflagration (Grand Warlock Alythess)
+				[45641] = true,								-- Fire Bloom (Kil'Jaeden)
+			},
+		["纳克萨玛斯"] =
+			{
+				[27808] = true,								-- Frost Blast (Kel'Thuzad)
+			},
+		["奥杜尔"] =
+			{
+				[62056] = true,								-- Stone Grip (Kologarn)
+				[63018] = true,								-- Light Bomb (XT-002 Deconstructor)
+				[63024] = true,								-- Gravity Bomb (XT-002 Deconstructor)
+				[64554] = true,								-- Frozen Blows (Hodir)
+				[62469] = true,								-- Freeze (Hodir)
+				[62717] = true,								-- Slag Pot (Ignis the Furnace Master)
+			},
+		}
+end
+
+elseif (GetLocale() == "koKR") then
+function ch:DefaultZoneData()
+	return {
+		["불뱀 제단"]=
+			{
+				[38132] = true								-- Paralyze - Picked up Tainted Core
+			},
+		["검은 사원"] =
+			{
+				[38132] = true,								-- Paralyze - Target of Illidan's Demons
+				[40932] = true,								-- Agonizing Flames (Illidan)
+				[41917] = true,								-- Parasitic Shadowfiend (Illidan)
+				[46787] = true,								-- Fel Rage (Gurtogg Bloodboil)
+				[39837] = true,								-- Impaling Spine (Najentus)
+				[41001] = true,								-- Fatal Attraction (Mother Shahrazz)
+				[40251] = true,								-- Shadow of Death (Terron Gorefiend)
+				[43581] = true,								-- Deadly Poison (Illidari Council)
+				[40585] = true,								-- Dark Barrage (Illidan)
+			},
+		["하이잘 정상"] =
+			{
+				[39941] = true,								-- Inferno
+				[31347] = true,								-- Doom
+			},
+		["카라잔"] =
+			{
+				[34661] = true,								-- Sacrifice (Illhoof)
+				[30753] = true,								-- Red Riding Hood (Big Bad Wolf)
+			},
+		["태양샘 고원"] =
+			{
+				[45141] = true,								-- Burn (Brutallus)
+				[45662] = true,								-- Encapsulate (Felmyst)
+				[45855] = true,								-- Gas Nova (Felmyst)
+				[45342] = true,								-- Conflagration (Grand Warlock Alythess)
+				[45641] = true,								-- Fire Bloom (Kil'Jaeden)
+			},
+		["낙스라마스"] =
+			{
+				[27808] = true,								-- Frost Blast (Kel'Thuzad)
+			},
+		["울두아르"] =
+			{
+				[62056] = true,								-- Stone Grip (Kologarn)
+				[63018] = true,								-- Light Bomb (XT-002 Deconstructor)
+				[63024] = true,								-- Gravity Bomb (XT-002 Deconstructor)
+				[64554] = true,								-- Frozen Blows (Hodir)
+				[62469] = true,								-- Freeze (Hodir)
+				[62717] = true,								-- Slag Pot (Ignis the Furnace Master)
+			},
+		}
+end
 end
 
 -- SetDefaultZoneData
