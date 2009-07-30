@@ -2003,36 +2003,39 @@ function XPerl_RaidTipExtra(unitid)
 	end
 end
 
+-- initialConfigFunction
+local function initialConfigFunction(self)
+	-- This is the only place we're allowed to set attributes whilst in combat
+
+	self:SetScript("OnAttributeChanged", onAttrChanged)
+	XPerl_RegisterClickCastFrame(self)
+	XPerl_RegisterClickCastFrame(self.nameFrame)
+
+	Setup1RaidFrame(self)
+
+	self:SetAttribute("*type1", "target")
+	self:SetAttribute("type2", "menu")
+	self.menu = XPerl_Raid_ShowPopup
+
+	-- Does AllowAttributeChange work for children?
+	self.nameFrame:SetAttribute("useparent-unit", true)
+	self.nameFrame:SetAttribute("*type1", "target")
+	self.nameFrame:SetAttribute("type2", "menu")
+	self.nameFrame.menu = XPerl_Raid_ShowPopup
+
+	if (rconf.mana) then
+		self:SetAttribute("initial-height", 43)
+	else
+		self:SetAttribute("initial-height", 38)
+	end
+end
+
 -- SetMainHeaderAttributes
 local function SetMainHeaderAttributes(self)
 
 	self:Hide()
 
-	self.initialConfigFunction = function(self)
-		-- This is the only place we're allowed to set attributes whilst in combat
-
-		self:SetScript("OnAttributeChanged", onAttrChanged)
-		XPerl_RegisterClickCastFrame(self)
-		XPerl_RegisterClickCastFrame(self.nameFrame)
-
-		Setup1RaidFrame(self)
-
-		self:SetAttribute("*type1", "target")
-		self:SetAttribute("type2", "menu")
-		self.menu = XPerl_Raid_ShowPopup
-
-		-- Does AllowAttributeChange work for children?
-		self.nameFrame:SetAttribute("useparent-unit", true)
-		self.nameFrame:SetAttribute("*type1", "target")
-		self.nameFrame:SetAttribute("type2", "menu")
-		self.nameFrame.menu = XPerl_Raid_ShowPopup
-
-		if (rconf.mana) then
-			self:SetAttribute("initial-height", 43)
-		else
-			self:SetAttribute("initial-height", 38)
-		end
-	end
+	self.initialConfigFunction = initialConfigFunction
 
 	if (rconf.sortAlpha) then
 		self:SetAttribute("sortMethod", "NAME")

@@ -31,12 +31,6 @@ if (GetLocale() == "frFR") then
 	XPERL_LOC_CLASS_SHAMANFEM = "Chamane"
 	XPERL_LOC_CLASS_PRIESTFEM = "Pr\195\170tresse"
 
-	XPERL_SPELL_SUNDER = "Fracasser armure"
-	XPERL_SPELL_SHADOWV = "vuln\195\169rabilit\195\169 �� l'ombre"
-	XPERL_SPELL_FIREV = "Vuln\195\169rabilit\195\169 au Feu"
-	XPERL_SPELL_WINTERCH = "Froid hivernal"
-
-
 	XPERL_LOC_DEAD = "Mort"
 	XPERL_LOC_GHOST = "Fant\195\180me"
 	XPERL_LOC_FEIGNDEATH = "Feindre la Mort"

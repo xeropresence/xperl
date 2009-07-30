@@ -44,12 +44,6 @@ if (GetLocale() == "koKR") then
 	XPERL_TYPE_ELITE	= "정예"
 	XPERL_TYPE_RARE		= "희귀"
 
-	XPERL_SPELL_SUNDER	= "방어구 가르기"
-	XPERL_SPELL_SHADOWV	= "암흑 저항력 약화"
-	XPERL_SPELL_FIREV	= "화염 저항력 약화"
-	XPERL_SPELL_WINTERCH	= "혹한의 추위"
-
--- 스테이터스
 	XPERL_LOC_GHOST		= "유령"
 	XPERL_LOC_FEIGNDEATH	= "죽은척하기"
 	XPERL_LOC_RESURRECTED	= "부활"

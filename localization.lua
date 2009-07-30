@@ -54,11 +54,6 @@ XPERL_TYPE_RAREPLUS = "Rare+"
 XPERL_TYPE_ELITE	= "Elite"
 XPERL_TYPE_RARE 	= "Rare"
 
-XPERL_SPELL_SUNDER	= GetSpellInfo(30901)		-- "Sunder Armor"
-XPERL_SPELL_SHADOWV = GetSpellInfo(15258)		-- "Shadow Vulnerability"
-XPERL_SPELL_FIREV	= GetSpellInfo(22959)		-- "Fire Vulnerability"
-XPERL_SPELL_WINTERCH	= GetSpellInfo(12579)	-- "Winter's Chill"
-
 -- Status
 XPERL_LOC_DEAD		= DEAD			-- "Dead"
 XPERL_LOC_GHOST 	= "Ghost"
@@ -143,7 +138,8 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(25222)] = 15,			-- Renew
 		[GetSpellInfo(5375)] = 7,			-- Swiftmend
 		[GetSpellInfo(33763)] = 8,			-- Lifebloom
-		[GetSpellInfo(28880)] = 15			-- Gift of the Naaru (Racial)
+		[GetSpellInfo(28880)] = 15,			-- Gift of the Naaru (Racial)
+		[GetSpellInfo(61295)] = 15,			-- Riptide
 	},
 	pomSpells = {
 		[GetSpellInfo(33076)] = 30			-- Prayer of Mending

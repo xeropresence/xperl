@@ -41,6 +41,7 @@ local hugeNumTag = XPERL_LOC_HUGENUMTAG
 local hugeNumDiv10 = hugeNumDiv * 10
 local largeNumDiv100 = largeNumDiv * 100
 local ArcaneExclusions = XPerl_ArcaneExclusions
+local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
 ------------------------------------------------------------------------------
 -- Re-usable tables
@@ -2702,7 +2703,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						if (self.conf.buffs.bigpet) then
 							isMine = isMine == "player" or isMine == "pet" or isMine == "vehicle"
 						else
-							isMine = isMine == "player"
+							isMine = isMine == "player" or isMine == "vehicle"
 						end
 					end
 

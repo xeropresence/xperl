@@ -80,7 +80,7 @@ local function UpdateBuffsTimeLeft(self)
 		for i = 1,40 do
 			local button = self.buffFrame.buff[i]
 			if (button) then
-				local name, rank, buff, count, _, duration, endTime, myCast = UnitBuff("player", i)
+				local name, rank, buff, count, _, duration, endTime, myCast = UnitBuff(self.partyid, i)
 				if (name and myCast) then
 					CheckOneBuff(button, endTime - duration)
 				else
@@ -90,7 +90,7 @@ local function UpdateBuffsTimeLeft(self)
 
 			button = self.buffFrame.debuff[i]
 			if (button) then
-				local name, rank, buff, count, _, duration, endTime, myCast = UnitDebuff("player", i)
+				local name, rank, buff, count, _, duration, endTime, myCast = UnitDebuff(self.partyid, i)
 				if (name) then
 					CheckOneBuff(button, endTime - duration)
 				else
@@ -251,6 +251,8 @@ function XPerl_Player_BuffSetup(self)
 
 	ev:RegisterEvent("UNIT_AURA")
 	ev:RegisterEvent("UNIT_INVENTORY_CHANGED")
+	ev:RegisterEvent("UNIT_ENTERED_VEHICLE")
+	ev:RegisterEvent("UNIT_EXITED_VEHICLE")
 	self.buffFrame:Show()
 
 	local a = conf.buffs.cooldown
@@ -376,7 +378,7 @@ function XPerl_Player_SetBuffTooltip(self)
 	if (conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.hideInCombat or not InCombatLockdown()) then
 			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-			GameTooltip:SetUnitBuff("player", self:GetID())
+			GameTooltip:SetUnitBuff(self.partyid, self:GetID())
 		end
 	end
 end
@@ -386,7 +388,7 @@ function XPerl_Player_SetDeBuffTooltip(self)
 	if (conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.hideInCombat or not InCombatLockdown()) then
 			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-			GameTooltip:SetUnitDebuff("player", self:GetID())
+			GameTooltip:SetUnitDebuff(self.partyid, self:GetID())
 		end
 	end
 end
@@ -503,7 +505,7 @@ end
 local function PlayerBuffsOnEvent(self, event, unit)
 --XPerl_ShowMessage("PlayerBuffs")
 
-	if (event == "UNIT_AURA" and unit == "player") then
+	if (event == "UNIT_AURA" and (unit == "player" or unit == "vehicle")) then
 		-- The PLAYER_AURAS_CHANGED event is not given if an own buff is refreshed, hence we don't get expire times updated
 		-- So we intercept UNIT_AURA for this, but will still have to catch PLAYER_AURAS_CHANGED because there's some
 		-- latency between a buff expiring (according to UNIT_BUFF), and the aura fading (according to PLAYER_AURAS_CHANGED).
@@ -517,12 +519,18 @@ local function PlayerBuffsOnEvent(self, event, unit)
 		-- Fired when (among other things) a weapon enchant changes
 		-- This event fires a lot, which is aweful. But less awful than re-working the icons from
 		-- scratch for every single frame like the Blizzard code does (Who writes that code???)
-		if (unit == "player" and pconf.buffs.enable) then
+		if (unit == "player" and self.partyid == "player" and pconf.buffs.enable) then
 			buffsUpdateFlag = true
 		end
 
 	elseif (event == "VARIABLES_LOADED") then
 		PlayerBuffsInit(self)
+
+	elseif (event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") then
+		-- We want to insure that and update to buffs happen uppone entering a Vehicle
+		if (pconf.buffs.enable) then
+			buffsUpdateFlag = true
+		end
 	end
 end
 

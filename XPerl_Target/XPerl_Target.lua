@@ -27,6 +27,7 @@ local UnitMana = UnitMana
 local UnitManaMax = UnitManaMax
 local UnitName = UnitName
 local UnitPowerType = UnitPowerType
+local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 local buffSetup
 local playerClass
 local lastInspectPending = 0
@@ -225,15 +226,17 @@ end
 -- XPerl_UnitDebuffInformation
 local function TargetDebuffInformation(debuff)
 	local name, rank, tex, count = UnitDebuff("target", debuff)
-	if (name) then
-		return count
-	end
-	return 0
+	return name and count or 0
 end
 
 ---------------------
 --Debuffs          --
 ---------------------
+local XPERL_SPELL_SUNDER	= GetSpellInfo(30901)		-- Sunder Armor
+local XPERL_SPELL_SHADOWV	= GetSpellInfo(15258)		-- Shadow Vulnerability
+local XPERL_SPELL_FIREV		= GetSpellInfo(22959)		-- Fire Vulnerability
+local XPERL_SPELL_WINTERCH	= GetSpellInfo(12579)		-- Winter's Chill
+
 local function XPerl_Target_DebuffUpdate(self)
 	local partyid = self.partyid
 	if (GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player", partyid) == 0) then

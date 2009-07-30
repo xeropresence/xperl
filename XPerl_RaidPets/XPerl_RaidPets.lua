@@ -289,6 +289,15 @@ function XPerl_RaidPet_Single_OnLoad(self)
 	self:SetScript("OnShow", XPerl_RaidPets_UpdateDisplay)
 end
 
+-- initialConfigFunction
+local function initialConfigFunction(self)
+	-- This is the only place we're allowed to set attributes whilst in combat
+	--self:SetAttribute("unitsuffix", "pet")
+	self:SetAttribute("*type1", "target")
+	self:SetAttribute("initial-height", 30)
+	XPerl_RaidPets_UpdateDisplay(self)
+end
+
 -- SetMainHeaderAttributes
 local function SetMainHeaderAttributes(self)
 	self:Hide()
@@ -331,13 +340,7 @@ local function SetMainHeaderAttributes(self)
 	self:SetAttribute("template", "XPerl_RaidPet_FrameTemplate")
 	self:SetAttribute("templateType", "Button")
 
-	self.initialConfigFunction = function(self)
-		-- This is the only place we're allowed to set attributes whilst in combat
-		--self:SetAttribute("unitsuffix", "pet")
-		self:SetAttribute("*type1", "target")
-		self:SetAttribute("initial-height", 30)
-		XPerl_RaidPets_UpdateDisplay(self)
-	end
+	self.initialConfigFunction = initialConfigFunction
 end
 
 -- XPerl_RaidPets_ChangeAttributes

@@ -47,11 +47,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_TYPE_ELITE	= "\195\137lite"
 	XPERL_TYPE_RARE 	= "Raro"
 
-	XPERL_SPELL_SUNDER	= GetSpellInfo(30901)	-- "Sunder Armor"
-	XPERL_SPELL_SHADOWV 	= GetSpellInfo(15258)	-- "Shadow Vulnerability"
-	XPERL_SPELL_FIREV	= GetSpellInfo(22959)	-- "Fire Vulnerability"
-	XPERL_SPELL_WINTERCH	= GetSpellInfo(28595)	-- "Winter's Chill"
-
 	-- Status
 	XPERL_LOC_DEAD		= "Muerto"
 	XPERL_LOC_GHOST 	= "Fantasma"

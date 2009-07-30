@@ -3513,7 +3513,7 @@
 									XPerl_Options_EnableSibling("HighlightTarget")
 
 									local _, class = UnitClass("player")
-									if (class ~= "DRUID" and class ~= "PRIEST") then
+									if (class ~= "DRUID" and class ~= "PRIEST" and class ~= "SHAMAN") then
 										XPerlDB.highlight.HOT = nil
 										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightHoTs"), false)
 									end

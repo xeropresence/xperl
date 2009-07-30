@@ -25,6 +25,7 @@ function XPerl_Assists_OnLoad(self)
 	self:RegisterEvent("PLAYER_TARGET_CHANGED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_DEAD")
+	self:RegisterEvent("PLAYER_REGEN_ENABLED")
 
 	self:SetScript("OnEvent", XPerl_Assists_OnEvent)
 	self:SetScript("OnMouseDown", XPerl_Assists_MouseDown)
@@ -298,7 +299,7 @@ function XPerl_Assists_OnEvent(self, event, unit)
 		doUpdate = true
 	elseif (event == "VARIABLES_LOADED") then
 		MakeFriendlyUnitList()
-	        XPerl_UpdateAssists()
+		XPerl_UpdateAssists()
 		XPerl_ShowAssists()
 		if (XPerl_SavePosition) then
 			XPerl_SavePosition(XPerl_Assists_FrameAnchor, true)
@@ -320,8 +321,13 @@ function XPerl_Assists_OnEvent(self, event, unit)
 		MakeFriendlyUnitList()
 		doUpdate = true
 
-	elseif (event == "PLAYER_DEAD") then
-	        XPerl_UpdateAssists()
+	elseif (event == "PLAYER_DEAD" or event == "PLAYER_REGEN_ENABLED") then
+		XPerl_FreeTable(currentPlayerAggro)
+		currentPlayerAggro = XPerl_GetReusableTable()
+		if (XPerl_Highlight) then
+			XPerl_Highlight:ClearAll("AGGRO")
+		end
+		XPerl_UpdateAssists()
 		XPerl_ShowAssists()
 
 	elseif (event == "PLAYER_ENTERING_WORLD") then
@@ -341,7 +347,7 @@ function XPerl_Assists_OnUpdate()
 	if (doUpdate or UpdateTime >= 0.2) then
 		if (doUpdate or #enemyUnitList > 0) then
 			doUpdate = false
-	        	XPerl_UpdateAssists()
+			XPerl_UpdateAssists()
 			XPerl_ShowAssists()
 		end
 		UpdateTime = 0

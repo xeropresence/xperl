@@ -38,11 +38,6 @@ if (GetLocale() == "deDE") then
 	XPERL_TYPE_ELITE		= "Elite"
 	XPERL_TYPE_RARE 	= "Rar"
 
-	XPERL_SPELL_SUNDER	= "Rüstung zerreißen"
-	XPERL_SPELL_SHADOWV = "Schattenverwundbarkeit"
-	XPERL_SPELL_FIREV	= "Feuerverwundbarkeit"
-	XPERL_SPELL_WINTERCH	= "Winterkälte"
-
 	XPERL_LOC_DEAD		= "Tot"
 	XPERL_LOC_GHOST 	= "Geist"
 	XPERL_LOC_FEIGNDEATH	= "Totgestellt"
