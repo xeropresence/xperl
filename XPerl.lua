@@ -1805,6 +1805,9 @@ local SeasonalDebuffs = {
 	[GetSpellInfo(64814)] = true,					-- Bested Stormwind
 	[GetSpellInfo(64815)] = true,					-- Bested Thunder Bluff
 	[GetSpellInfo(64816)] = true,					-- Bested the Undercity
+	[GetSpellInfo(36900)] = true,					-- Soul Split: Evil!
+	[GetSpellInfo(36901)] = true,					-- Soul Split: Good
+	[GetSpellInfo(36899)] = true,					-- Transporter Malfunction
 }
 
 -- BuffException
