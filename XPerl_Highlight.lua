@@ -2,8 +2,6 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-local isWoW3dot1 = select(2,GetBuildInfo()) >= "9614"
-
 local playerClass, playerName
 local conf
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
@@ -834,10 +832,7 @@ function xpHigh:GetMyHotTime(unit)
 		end
 
 		if (hotSpells[name]) then
-			if (isWoW3dot1) then
-				isMine = isMine == "player"
-			end
-			if (isMine) then
+			if (isMine == "player") then
 				local timeLeft = endTime - GetTime()
 				if (timeLeft > maxTimeLeft) then
 					maxDur, maxTimeLeft = dur, timeLeft
@@ -931,10 +926,7 @@ function xpHigh:GetMyPomEndTime(unit)
 		end
 
 		if (pomSpells[name]) then
-			if (isWoW3dot1) then
-				isMine = isMine == "player"
-			end
-			if (isMine) then
+			if (isMine == "player") then
 				return endTime
 			end
 			break				-- A player can only have 1 POM
@@ -1854,10 +1846,7 @@ function xpHigh:HasMyPomPom(unit)
 		end
 
 		if (pomSpells[name]) then
-			if (isWoW3dot1) then
-				isMine = isMine == "player"
-			end
-			if (isMine) then
+			if (isMine == "player") then
 				return endTime - GetTime()
 			end
 		end
@@ -1873,10 +1862,7 @@ function xpHigh:HasMyShield(unit)
 		end
 
 		if (shieldSpells[name]) then
-			if (isWoW3dot1) then
-				isMine = isMine == "player"
-			end
-			if (isMine) then
+			if (isMine == "player") then
 				return endTime - GetTime()
 			end
 		end

@@ -2,6 +2,9 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.4c
+Fixed: 3.2 Issues and update TOC.
+
 3.0.3c
 NEW: Option to ignore seasonal debuffs (Bested Somecity, Mistletoe, Adored, Heartbroken etc.).
 Fixed: Big Buffs Pet Too option will now also work for vehicles as well as pets.

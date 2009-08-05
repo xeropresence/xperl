@@ -2,8 +2,6 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-local isWoW3dot1 = select(2,GetBuildInfo()) >= "9614"
-
 local conf
 XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
 local percD	= "%d"..PERCENT_SYMBOL
@@ -2702,12 +2700,10 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						end
 						break
 					end
-					if (isWoW3dot1) then
-						if (self.conf.buffs.bigpet) then
-							isMine = isMine == "player" or isMine == "pet" or isMine == "vehicle"
-						else
-							isMine = isMine == "player" or isMine == "vehicle"
-						end
+					if (self.conf.buffs.bigpet) then
+						isMine = isMine == "player" or isMine == "pet" or isMine == "vehicle"
+					else
+						isMine = isMine == "player" or isMine == "vehicle"
 					end
 
 					if (buff and (((mine == 1) and (isMine or isStealable)) or ((mine == 2) and not (isMine or isStealable)))) then
@@ -2808,12 +2804,10 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 						break
 					end
 
-					if (isWoW3dot1) then
-						if (self.conf.buffs.bigpet) then
-							isMine = isMine == "player" or isMine == "pet" or isMine == "vehicle"
-						else
-							isMine = isMine == "player"
-						end
+					if (self.conf.buffs.bigpet) then
+						isMine = isMine == "player" or isMine == "pet" or isMine == "vehicle"
+					else
+						isMine = isMine == "player"
 					end
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
