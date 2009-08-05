@@ -454,7 +454,7 @@ function XPerl_LoadOptions()
 		local ok, reason = LoadAddOn("XPerl_Options")
 
 		if (not ok) then
-			XPerl_Notice("Failed to load X-Perl Options ("..reason..")")
+			XPerl_Notice("Failed to load X-Perl Options ("..tostring(reason)..")")
 		else
 			collectgarbage()			-- Reclaims about 1.4Mb from loading options
 		end
