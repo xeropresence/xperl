@@ -338,7 +338,7 @@ local function XPerl_Target_UpdateLevel(self)
 			local color = GetDifficultyColor(targetlevel)
 			self.levelFrame.text:SetTextColor(color.r, color.g, color.b)
 			self.levelFrame.text:Show()
-			if (not self.conf.elite and (UnitClassification(self.partyid) == "elite" or UnitClassification(self.partyid) == "worldboss")) then --(UnitIsPlusMob(self.partyid))) then
+			if (not self.conf.elite and (UnitClassification(self.partyid) == "elite" or UnitClassification(self.partyid) == "worldboss")) then
 				self.levelFrame.text:SetFormattedText("%d+", targetlevel)
 				self.levelFrame:SetWidth(33)
 			end

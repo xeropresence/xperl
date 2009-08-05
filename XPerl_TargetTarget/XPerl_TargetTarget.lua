@@ -199,7 +199,7 @@ function XPerl_TargetTarget_UpdateDisplay(self,force)
 						self.levelFrame.text:Hide()
 						self.levelFrame.skull:Show()
 					end
-				elseif (UnitIsPlusMob(partyid) or UnitClassification(partyid) == "elite") then
+				elseif (strfind(UnitClassification(partyid) or "", "elite")) then
 					TargetTargetlevel = TargetTargetlevel.."+"
 					self.levelFrame:SetWidth(33)
 				else
