@@ -421,9 +421,12 @@
 				if (GetLocale() == "koKR") then
 					XPerl_AggroPlayer:SetFont("Fonts/K_Damage.TTF", 42, "THICKOUTLINE")
 					XPerl_AggroPet:SetFont("Fonts/K_Damage.TTF", 16, "THICKOUTLINE")
-				elseif (GetLocale() == "zhTW" or GetLocale() == "zhCN") then
+				elseif (GetLocale() == "zhTW") then
 					XPerl_AggroPlayer:SetFont("Fonts/bKAI00M.TTF", 42, "THICKOUTLINE")
 					XPerl_AggroPet:SetFont("Fonts/bKAI00M.TTF", 16, "THICKOUTLINE")
+				elseif (GetLocale() == "zhCN") then
+					XPerl_AggroPlayer:SetFont("Fonts/ZYHei.ttf", 42, "THICKOUTLINE")
+					XPerl_AggroPet:SetFont("Fonts/ZYHei.ttf", 16, "THICKOUTLINE")
 				end
 			</OnLoad>
 			<OnHide>

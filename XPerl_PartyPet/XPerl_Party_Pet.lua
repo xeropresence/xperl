@@ -326,7 +326,7 @@ end
 
 -- XPerl_Party_Pet_Update_Control
 local function XPerl_Party_Pet_Update_Control(self)
-        if (UnitIsVisible(self.partyid) and UnitIsCharmed(self.partyid)) then
+	if (UnitIsVisible(self.partyid) and UnitIsCharmed(self.partyid) and not UnitUsingVehicle(self.ownerid)) then
 		self.nameFrame.warningIcon:Show()
 	else
 		self.nameFrame.warningIcon:Hide()

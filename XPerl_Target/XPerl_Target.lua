@@ -1498,9 +1498,6 @@ function XPerl_Target_Set_BlizzCPFrame(self)
 
 		end
 
-		ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-		ComboFrame:RegisterEvent("UNIT_COMBO_POINTS")
-
 		function ComboFrame_OnEvent(self, event, ...)
 			if (event == "PLAYER_TARGET_CHANGED") then
 				ComboFrame_Update()
@@ -1511,6 +1508,10 @@ function XPerl_Target_Set_BlizzCPFrame(self)
 				end
 			end
 		end
+
+		ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+		ComboFrame:RegisterEvent("UNIT_COMBO_POINTS")
+		ComboFrame:SetScript("OnEvent", ComboFrame_OnEvent)
 
 		function ComboFrame_Update()
 			local comboPoints = GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player")

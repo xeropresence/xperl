@@ -378,7 +378,7 @@ function XPerl_Player_SetBuffTooltip(self)
 	if (conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.hideInCombat or not InCombatLockdown()) then
 			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-			GameTooltip:SetUnitBuff(self.partyid, self:GetID())
+			GameTooltip:SetUnitBuff(XPerl_Player.partyid, self:GetID())
 		end
 	end
 end
@@ -388,7 +388,7 @@ function XPerl_Player_SetDeBuffTooltip(self)
 	if (conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.hideInCombat or not InCombatLockdown()) then
 			GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-			GameTooltip:SetUnitDebuff(self.partyid, self:GetID())
+			GameTooltip:SetUnitDebuff(XPerl_Player.partyid, self:GetID())
 		end
 	end
 end
