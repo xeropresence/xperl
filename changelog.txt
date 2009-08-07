@@ -2,6 +2,10 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.5a
+Fixed: PlayerBuffs error.
+Fixed: action blocked on target frame when in options.
+
 3.0.5
 New: Added debuff highlighting option for focus frame.
 Changed: Added Wild Growth to hot highlighting.

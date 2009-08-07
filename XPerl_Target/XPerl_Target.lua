@@ -1354,22 +1354,30 @@ function XPerl_Target_SetWidth(self)
 	self.conf.size.width = max(0, self.conf.size.width or 0)
 	local w = 128 + ((self.conf.portrait or 0) * 60) + ((self.conf.percent or 0) * 32) + self.conf.size.width
 
-	self:SetWidth(w)
+	if (not InCombatLockdown()) then
+		self:SetWidth(w)
+	end
 
 	if (self.conf.percent) then
-		self.nameFrame:SetWidth(160 + self.conf.size.width)
-		self.statsFrame:SetWidth(160 + self.conf.size.width)
+		if (not InCombatLockdown()) then
+			self.nameFrame:SetWidth(160 + self.conf.size.width)
+			self.statsFrame:SetWidth(160 + self.conf.size.width)
+		end
 		self.statsFrame.healthBar.percent:Show()
 		self.statsFrame.manaBar.percent:Show()
 	else
-		self.nameFrame:SetWidth(128 + self.conf.size.width)
-		self.statsFrame:SetWidth(128 + self.conf.size.width)
+		if (not InCombatLockdown()) then
+			self.nameFrame:SetWidth(128 + self.conf.size.width)
+			self.statsFrame:SetWidth(128 + self.conf.size.width)
+		end
 		self.statsFrame.healthBar.percent:Hide()
 		self.statsFrame.manaBar.percent:Hide()
 	end
 
 	self.conf.scale = self.conf.scale or 0.8
-	self:SetScale(self.conf.scale)
+	if (not InCombatLockdown()) then
+		self:SetScale(self.conf.scale)
+	end
 
 	XPerl_SavePosition(self, true)
 end
@@ -1418,11 +1426,13 @@ function XPerl_Target_Set_Bits(self)
 
 	XPerl_Target_SetWidth(self)
 
-	if (self.conf.enable) then
-		RegisterUnitWatch(self)
-	else
-		self:Hide()
-		UnregisterUnitWatch(self)
+	if (not InCombatLockdown()) then
+		if (self.conf.enable) then
+			RegisterUnitWatch(self)
+		else
+			self:Hide()
+			UnregisterUnitWatch(self)
+		end
 	end
 
 	if (self == XPerl_Target) then

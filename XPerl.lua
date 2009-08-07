@@ -2398,11 +2398,15 @@ function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent, newID)
 			--button:SetAttribute("index", "number")
 		end
 
-		local size = self.conf.buffs.size
-		if (debuff == 1) then
-			size = self.conf.debuffs.size or (size * (1 + (setup.debuffSizeMod * debuff)))
+		if (self.conf) then
+			local size = self.conf.buffs.size
+			if (debuff == 1) then
+				size = self.conf.debuffs.size or (size * (1 + (setup.debuffSizeMod * debuff)))
+			end
+			button:SetScale(size / 32)
+		else
+			button:SetScale(1)
 		end
-		button:SetScale(size / 32)
 
 		if (setup.onCreate) then
 			setup.onCreate(button)

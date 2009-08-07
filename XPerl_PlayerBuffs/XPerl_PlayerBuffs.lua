@@ -524,6 +524,7 @@ local function PlayerBuffsOnEvent(self, event, unit)
 		end
 
 	elseif (event == "PLAYER_ENTERING_WORLD") then
+		self:UnregisterEvent("PLAYER_ENTERING_WORLD")
 		PlayerBuffsInit(self)
 
 	elseif (event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") then

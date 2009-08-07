@@ -205,36 +205,38 @@ end
 local function XPerl_Player_UpdateRep(self)
 	if (pconf and pconf.repBar) then
 		local rb = self.statsFrame.repBar
-		local name, reaction, min, max, value = GetWatchedFactionInfo()
-		local color
+		if (rb) then
+			local name, reaction, min, max, value = GetWatchedFactionInfo()
+			local color
 
-		if (name) then
-			color = FACTION_BAR_COLORS[reaction]
-		else
-			name = XPERL_LOC_NONEWATCHED
-			max = 1
+			if (name) then
+				color = FACTION_BAR_COLORS[reaction]
+			else
+				name = XPERL_LOC_NONEWATCHED
+				max = 1
+				min = 0
+				value = 0
+				color = FACTION_BAR_COLORS[4]
+			end
+
+			value = value - min
+			max = max - min
 			min = 0
-			value = 0
-			color = FACTION_BAR_COLORS[4]
-		end
 
-		value = value - min
-		max = max - min
-		min = 0
+			rb:SetMinMaxValues(min, max)
+			rb:SetValue(value)
 
-		rb:SetMinMaxValues(min, max)
-		rb:SetValue(value)
+			rb:SetStatusBarColor(color.r, color.g, color.b, 1)
+			rb.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
 
-		rb:SetStatusBarColor(color.r, color.g, color.b, 1)
-		rb.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
+			local perc = (value * 100) / max
+			rb.percent:SetFormattedText(perc1F, perc)
 
-		local perc = (value * 100) / max
-		rb.percent:SetFormattedText(perc1F, perc)
-
-		if (max == 1) then
-			rb.text:SetText(name)
-		else
-			rb.text:SetFormattedText("%d/%d", value, max)
+			if (max == 1) then
+				rb.text:SetText(name)
+			else
+				rb.text:SetFormattedText("%d/%d", value, max)
+			end
 		end
 	end
 end
@@ -243,36 +245,38 @@ end
 local function XPerl_Player_UpdateXP(self)
 	if (pconf.xpBar) then
 		local xpBar = self.statsFrame.xpBar
-		local restBar = self.statsFrame.xpRestBar
-		local playerxp = UnitXP("player")
-		local playerxpmax = UnitXPMax("player")
-		local playerxprest = GetXPExhaustion() or 0
-		xpBar:SetMinMaxValues(0, playerxpmax)
-		restBar:SetMinMaxValues(0, playerxpmax)
-		xpBar:SetValue(playerxp)
+		if (xpBar) then
+			local restBar = self.statsFrame.xpRestBar
+			local playerxp = UnitXP("player")
+			local playerxpmax = UnitXPMax("player")
+			local playerxprest = GetXPExhaustion() or 0
+			xpBar:SetMinMaxValues(0, playerxpmax)
+			restBar:SetMinMaxValues(0, playerxpmax)
+			xpBar:SetValue(playerxp)
 
-		local suffix
-		if (playerxprest > 0) then
-			if (playerxpmax > 10000) then
-				suffix = format(" (+%dK)", playerxprest / 1000)
+			local suffix
+			if (playerxprest > 0) then
+				if (playerxpmax > 10000) then
+					suffix = format(" (+%dK)", playerxprest / 1000)
+				else
+					suffix = format(" (+%d)", playerxprest)
+				end
+				color = {r = 0.3, g = 0.3, b = 1}
 			else
-				suffix = format(" (+%d)", playerxprest)
+				color = {r = 0.6, g = 0, b = 0.6}
 			end
-			color = {r = 0.3, g = 0.3, b = 1}
-		else
-			color = {r = 0.6, g = 0, b = 0.6}
+
+			XPerl_SetValuedText(xpBar.text, playerxp, playerxpmax, suffix)
+
+			xpBar:SetStatusBarColor(color.r, color.g, color.b, 1)
+			xpBar.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
+
+			restBar:SetValue(playerxp + playerxprest)
+			restBar:SetStatusBarColor(color.r, color.g, color.b, 0.5)
+			restBar.bg:SetVertexColor(color.r, color.g, color.b, 0.5)
+
+			xpBar.percent:SetFormattedText(percD, (playerxp * 100) / playerxpmax)
 		end
-
-		XPerl_SetValuedText(xpBar.text, playerxp, playerxpmax, suffix)
-
-		xpBar:SetStatusBarColor(color.r, color.g, color.b, 1)
-		xpBar.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
-
-		restBar:SetValue(playerxp + playerxprest)
-		restBar:SetStatusBarColor(color.r, color.g, color.b, 0.5)
-		restBar.bg:SetVertexColor(color.r, color.g, color.b, 0.5)
-
-		xpBar.percent:SetFormattedText(percD, (playerxp * 100) / playerxpmax)
 	end
 end
 
