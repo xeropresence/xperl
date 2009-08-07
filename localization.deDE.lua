@@ -38,6 +38,13 @@ if (GetLocale() == "deDE") then
 	XPERL_TYPE_ELITE		= "Elite"
 	XPERL_TYPE_RARE 	= "Rar"
 
+	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Höhle des Schlangenschreins"
+	XPERL_LOC_ZONE_BLACK_TEMPLE = "Der Schwarze Tempel"
+	XPERL_LOC_ZONE_HYJAL_SUMMIT = "Hyjalgipfel"
+	XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
+	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Sonnenbrunnenplateau"
+	XPERL_LOC_ZONE_ULDUAR = "Ulduar"
+
 	XPERL_LOC_DEAD		= "Tot"
 	XPERL_LOC_GHOST 	= "Geist"
 	XPERL_LOC_FEIGNDEATH	= "Totgestellt"

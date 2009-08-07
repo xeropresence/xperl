@@ -2,6 +2,17 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.5
+New: Added debuff highlighting option for focus frame.
+Changed: Added Wild Growth to hot highlighting.
+Changed: Added Revive to rez watching on raid frames.
+Changed: HoT Counter on frames will show green if you have an active hot on the unit, red otherwise.
+Fixed: Prayer of Healing should highlight the correct group now.
+Fixed: SetFocus menu problem. Thanks for someone for finding a solution to that.
+Fixed: Extended Portrait height for druids showing multiple power bars.
+Fixed: Bar textures popup when LibSharedMedia not available.
+Fixed: Custom Highlight now works for all locales (you'll need to reload the defaults) and a lot more spells in the defaults (thanks SkyerRu)
+
 3.0.4d
 Fixed: Startup problems stemming from LoadAddOn() bugs meaning it's not able to load XPerl_Options as early as it used to and therefore not being able to access the default configurations.
 

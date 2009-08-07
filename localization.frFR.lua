@@ -31,6 +31,13 @@ if (GetLocale() == "frFR") then
 	XPERL_LOC_CLASS_SHAMANFEM = "Chamane"
 	XPERL_LOC_CLASS_PRIESTFEM = "Pr\195\170tresse"
 
+	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Caverne du sanctuaire du Serpent"
+	XPERL_LOC_ZONE_BLACK_TEMPLE = "Temple noir"
+	XPERL_LOC_ZONE_HYJAL_SUMMIT = "Sommet d'Hyjal"
+	XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
+	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Plateau du Puits de soleil"
+	XPERL_LOC_ZONE_ULDUAR = "Ulduar"
+
 	XPERL_LOC_DEAD = "Mort"
 	XPERL_LOC_GHOST = "Fant\195\180me"
 	XPERL_LOC_FEIGNDEATH = "Feindre la Mort"

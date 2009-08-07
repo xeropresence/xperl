@@ -523,7 +523,7 @@ local function PlayerBuffsOnEvent(self, event, unit)
 			buffsUpdateFlag = true
 		end
 
-	elseif (event == "VARIABLES_LOADED") then
+	elseif (event == "PLAYER_ENTERING_WORLD") then
 		PlayerBuffsInit(self)
 
 	elseif (event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE") then
@@ -534,6 +534,6 @@ local function PlayerBuffsOnEvent(self, event, unit)
 	end
 end
 
-ev:RegisterEvent("VARIABLES_LOADED")
+ev:RegisterEvent("PLAYER_ENTERING_WORLD")
 ev:SetScript("OnEvent", PlayerBuffsOnEvent)
 ev:Show()

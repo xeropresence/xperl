@@ -389,7 +389,11 @@ function XPerl_StartupSpellRange()
 	local rf = conf.rangeFinder
 
 	local function Setup1(self)
-		if ((type(self.spell) ~= "string" and type(self.item) ~= "string")) then 	-- and (self.item and not GetItemInfo(self.item))) then
+		local bCanUse
+		if (self.spell) then
+			bCanUse = IsUsableSpell(self.spell)
+		end
+		if ((type(self.spell) ~= "string" and type(self.item) ~= "string") or not bCanUse) then
 			self.spell = XPerl_DefaultRangeSpells[playerClass] and XPerl_DefaultRangeSpells[playerClass].spell
 			if (type(self.spell) ~= "string") then
 				self.item = (XPerl_DefaultRangeSpells.ANY and XPerl_DefaultRangeSpells.ANY.item) or ""
@@ -489,15 +493,15 @@ do
 			end
 		end
 
-		if (media) then
-			shortlist = {
-				{"Perl v2", "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"},
-			}
-			for i = 1,9 do
-				local name = i == 2 and "BantoBar" or "X-Perl "..i
-				tinsert(shortlist, {name, "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"..(i + 1)})
-			end
+		shortlist = {
+			{"Perl v2", "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"},
+		}
+		for i = 1,9 do
+			local name = i == 2 and "BantoBar" or "X-Perl "..i
+			tinsert(shortlist, {name, "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"..(i + 1)})
+		end
 
+		if (media) then
 			for k,v in pairs(shortlist) do
 				media:Register("statusbar", v[1], v[2])
 			end
@@ -2229,13 +2233,33 @@ function XPerl_UnregisterClickCastFrame(self)
 	end
 end
 
-function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc)
+function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc, m1, m2)
 	self:SetAttribute("*type1", "target")
 	self:SetAttribute("type2", "menu")
 	if (unit) then
 		self:SetAttribute("unit", unit)
 	end
+
 	self.menu = menufunc
+	self.dropdownMenu = m1
+	self:SetAttribute("_menu", m2)
+
+	self:SetScript("PostClick", function(self)
+		if (UIDROPDOWNMENU_OPEN_MENU == self.dropdownMenu and DropDownList1:IsShown())   then
+			local point, relativePoint = "TOPLEFT", "BOTTOMLEFT"
+			if ((select(2, DropDownList1:GetCenter()) - DropDownList1:GetHeight() / 2) < 0) then
+				point = string.gsub(point, "TOP(.*)", "BOTTOM%1")
+				relativePoint = string.gsub(relativePoint, "BOTTOM(.*)", "TOP%1")
+			end
+			if (DropDownList1:GetRight() > GetScreenWidth()) then
+				point = string.gsub(point, "(.*)LEFT", "%1RIGHT")
+				relativePoint = string.gsub(relativePoint, "(.*)RIGHT", "%1LEFT")
+			end
+			DropDownList1:ClearAllPoints()
+			DropDownList1:SetPoint(point, self, relativePoint, 0, 0)
+		end
+	end)
+
 	XPerl_RegisterClickCastFrame(self)
 end
 
@@ -2248,6 +2272,7 @@ function XPerl_GenericDropDown_OnLoad(self)
 	tinsert(UnitPopupFrames, "XPerl_DropDown")
 end
 
+local whichMenu
 -- XPerl_GenericDropDown_Initialize
 function XPerl_GenericDropDown_Initialize()
 	local unitid = XPerl_DropDown.unit or "player"
@@ -2273,9 +2298,30 @@ function XPerl_GenericDropDown_Initialize()
 		name = RAID_TARGET_ICON
 	end
 	if (menu) then
+		whichMenu = menu
 		UnitPopup_ShowMenu(XPerl_DropDown, menu, unitid, name, id)
 	end
 end
+
+local function d(...)
+	ChatFrame1:AddMessage(format(...))
+end
+
+local function HideSetFocus()
+	if (XPerl_ShouldHideSetFocus) then
+		local count = 0
+		for index, value in ipairs(UnitPopupMenus[XPerl_DropDown.which]) do
+			if (UnitPopupShown[1][index] == 1) then
+				count = count + 1
+				if (value == "SET_FOCUS") then
+					UnitPopupShown[1][index] = 0
+					break
+				end
+			end
+		end
+	end
+end
+hooksecurefunc("UnitPopup_HideButtons", HideSetFocus)
 
 -- XPerl_ShowGenericMenu
 -- self, unit, button are passed from secure template handler (SecureTemplates.lua, line 288 in SecureActionButton_OnClick)
@@ -2300,14 +2346,16 @@ function XPerl_ShowGenericMenu(self, unit, button, actionType)
 			end
 		end
 
+		XPerl_ShouldHideSetFocus = true
 		ToggleDropDownMenu(1, nil, XPerl_DropDown, self, 0, 0)
+		XPerl_ShouldHideSetFocus = nil
 	end
 end
 
 ------------------------------------------------------------------------------
 -- XPerl_GetBuffButton
 local buffIconCount = 0
-function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent)
+function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent, newID)
 	debuff = (debuff or 0)
 	local buffType, buffList		--, buffFrame
 
@@ -2342,7 +2390,6 @@ function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent)
 		buffIconCount = buffIconCount + 1
 		button = CreateFrame("Button", "XPerlBuff"..buffIconCount, parent, format("XPerl_Cooldown_%sTemplate", buffType))
 		button:Hide()
-		button:SetID(buffnum)
 		--button.cooldown.noCooldownCount = true				-- OmniCC to NOT show cooldown
 
 		if (setup.rightClickable) then
@@ -2391,6 +2438,7 @@ function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent)
 			button:SetPoint("TOPLEFT", buffList[buffnum - 1], "TOPRIGHT", 1 + debuff, 0)
 		end
 	end
+	button:SetID(newID or buffnum)
 
 	return button
 end
@@ -2711,7 +2759,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 					end
 
 					if (buff and (((mine == 1) and (isMine or isStealable)) or ((mine == 2) and not (isMine or isStealable)))) then
-						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true)
+						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true, buffnum)
 						button:SetAlpha(1)
 
 						buffs = buffs + 1
@@ -2815,7 +2863,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 					end
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
-						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true)
+						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true, buffnum)
 						button:SetAlpha(1)
 
 						debuffs = debuffs + 1

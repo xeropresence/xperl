@@ -62,6 +62,14 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_TYPE_ELITE			= "Элита"
 	XPERL_TYPE_RARE				= "Редкий"
 
+-- Zones
+	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Змеиное святилище"
+	XPERL_LOC_ZONE_BLACK_TEMPLE = "Черный храм"
+	XPERL_LOC_ZONE_HYJAL_SUMMIT = "Вершина Хиджала"
+	XPERL_LOC_ZONE_KARAZHAN = "Каражан"
+	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Плато Солнечного Колодца"
+	XPERL_LOC_ZONE_ULDUAR = "Ульдуар"
+
 -- Status
 	XPERL_LOC_DEAD			= DEAD		-- "Dead"
 	XPERL_LOC_GHOST			= "Дух"

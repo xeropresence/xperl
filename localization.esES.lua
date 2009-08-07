@@ -47,6 +47,13 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_TYPE_ELITE	= "\195\137lite"
 	XPERL_TYPE_RARE 	= "Raro"
 
+	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Caverna Santuario Serpiente"
+	XPERL_LOC_ZONE_BLACK_TEMPLE = "El Templo Oscuro"
+	XPERL_LOC_ZONE_HYJAL_SUMMIT = "Cima Hyjal"
+	XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
+	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Meseta de la Fuente del Sol"
+	XPERL_LOC_ZONE_ULDUAR = "Ulduar"
+
 	-- Status
 	XPERL_LOC_DEAD		= "Muerto"
 	XPERL_LOC_GHOST 	= "Fantasma"

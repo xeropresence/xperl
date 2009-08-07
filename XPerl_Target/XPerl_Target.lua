@@ -109,8 +109,8 @@ function XPerl_Target_OnLoad(self, partyid)
 		buffSetup = self.buffSetup
 	end
 
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame, partyid, XPerl_ShowGenericMenu)
-	XPerl_SecureUnitButton_OnLoad(self, partyid, XPerl_ShowGenericMenu)
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, partyid, nil, TargetFrameDropDown, TargetFrame.menu)
+	XPerl_SecureUnitButton_OnLoad(self, partyid, nil, TargetFrameDropDown, TargetFrame.menu)
 
 	--RegisterUnitWatch(self)
 

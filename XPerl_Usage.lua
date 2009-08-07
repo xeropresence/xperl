@@ -16,7 +16,6 @@ mod:RegisterEvent("PLAYER_ENTERING_WORLD")
 mod:RegisterEvent("CHAT_MSG_ADDON")
 mod:RegisterEvent("RAID_ROSTER_UPDATE")
 mod:RegisterEvent("PARTY_MEMBERS_CHANGED")
---mod:RegisterEvent("UPDATE_MOUSEOVER_UNIT")
 
 local function modOnEvent(self, event, ...)
 	local f = mod[event]

@@ -327,11 +327,10 @@ local function GetNamesWithoutBuff(spellName, with, filter)
 		sort(withList, function(a,b) return a.name < b.name end)
 		for i,item in ipairs(withList) do
 			names = (names or "")..XPerlColourTable[item.class]..item.name.." "
+			XPerl_FreeTable(item)
 		end
 
 		names = (names or "").."\r"
-
-		XPerl_FreeTable(item)
 	end
 
 	XPerl_FreeTable(withList)

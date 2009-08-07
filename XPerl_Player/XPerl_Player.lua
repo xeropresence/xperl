@@ -39,8 +39,8 @@ function XPerl_Player_OnLoad(self)
 
 	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
 
-	XPerl_SecureUnitButton_OnLoad(self, "player", XPerl_ShowGenericMenu)
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", XPerl_ShowGenericMenu)
+	XPerl_SecureUnitButton_OnLoad(self, "player", nil, PlayerFrameDropDown, PlayerFrame.menu)
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", nil, PlayerFrameDropDown, PlayerFrame.menu)
 
 	self:RegisterEvent("VARIABLES_LOADED")
 
@@ -329,6 +329,9 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 
 	local h = 40 + ((druidBarExtra + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
+	if (pconf.extendPortrait) then
+		self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
+	end 
 	self.statsFrame:SetHeight(h)
 	XPerl_StatsFrameSetup(self, {druidBar, self.statsFrame.xpBar, self.statsFrame.repBar})
 	if (XPerl_Player_Buffs_Position) then

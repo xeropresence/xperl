@@ -1067,7 +1067,7 @@
 				if (not self.list) then
 					self.list = XPerl_AllBarTextures()
 				end
-				if (XPerlDB and XPerlDB.bar.texture) then
+				if (XPerlDB and XPerlDB.bar.texture and self.list) then
 					for k,v in pairs(self.list) do
 						if (XPerlDB.bar.texture[1] == v[1] and XPerlDB.bar.texture[2] == v[2]) then
 							self.Selection = k
@@ -1075,7 +1075,7 @@
 					end
 				end
 
-				self.scrollBar.bar:SetValue(max(0, min(self.Selection - 5, #self.list - 8)))
+				self.scrollBar.bar:SetValue(max(0, min(self.Selection - 5, self.list and #self.list - 8 or 0)))
 				self:SetBarColours()
 				self:Setup()
 
@@ -5833,6 +5833,7 @@
 											XPerl_Options_EnableSibling("Buffs")
 											XPerl_Options_EnableSibling("BigBuffs", "Buffs")
 											XPerl_Options_EnableSibling("BigDebuffs", "Buffs")
+											XPerl_Options_EnableSibling("BigPet", "Buffs", "BigBuffs")
 											XPerl_Options_EnableSibling("Above", "Buffs")
 											XPerl_Options_EnableSibling("Level")
 											XPerl_Options_EnableSibling("Values")
@@ -5910,6 +5911,9 @@
 										self.configBase = "XPerlDB.pettarget.buffs"
 										self.configIndex = "big"
 										self.configClick = XPerl_TargetTarget_Reset
+										self.Validate = function()
+											XPerl_Options_EnableSibling("BigPet")
+										end
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
@@ -6200,6 +6204,9 @@
 								self.configBase = "XPerlDB.pet.buffs"
 								self.configIndex = "big"
 								self.configClick = XPerl_Player_Pet_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling("BigPet")
+								end
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -7139,6 +7146,9 @@
 											XPerlDB.targettargettarget.buffs.big = XPerlDB.targettarget.buffs.big
 											XPerl_TargetTarget_Reset ()
 										end
+										self.Validate = function()
+											XPerl_Options_EnableSibling("BigPet")
+										end
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
@@ -7655,6 +7665,9 @@
 								self.configBase = "XPerlDB.target.buffs"
 								self.configIndex = "big"
 								self.configClick = XPerl_Target_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling("BigPet")
+								end
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -8301,6 +8314,7 @@
 											XPerl_Options_EnableSibling("Buffs")
 											XPerl_Options_EnableSibling("BigBuffs", "Buffs")
 											XPerl_Options_EnableSibling("BigDebuffs", "Buffs")
+											XPerl_Options_EnableSibling("BigPet", "Buffs", "BigBuffs")
 											XPerl_Options_EnableSibling("Above", "Buffs")
 											XPerl_Options_EnableSibling("Level")
 											XPerl_Options_EnableSibling("Values")
@@ -8377,6 +8391,9 @@
 										self.configBase = "XPerlDB.focustarget.buffs"
 										self.configIndex = "big"
 										self.configClick = XPerl_TargetTarget_Reset
+										self.Validate = function()
+											XPerl_Options_EnableSibling("BigPet")
+										end
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
@@ -8828,6 +8845,89 @@
 								self.configIndex = "bigpet"
 								self.configClick = XPerl_Target_Reset
 							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_DebuffHighlight" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_BigPet" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_DEBUFFHIGHLIGHT")
+								self.configBase = "XPerlDB.focus.highlightDebuffs"
+								self.configIndex = "enable"
+								self.configClick = XPerl_Target_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling("All")
+									XPerl_Options_EnableSibling("Friend")
+									XPerl_Options_EnableSibling("Enemy")
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_All" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_DebuffHighlight" relativePoint="BOTTOM">
+								<Offset>
+									<AbsDimension x="0" y="6"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_DEBUFFHIGHLIGHT_ALL")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.focus.highlightDebuffs.who == 1)
+							</OnShow>
+							<OnClick>
+								XPerlDB.focus.highlightDebuffs.who = 1
+								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_Friend" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_All" relativePoint="TOPRIGHT">
+								<Offset><AbsDimension x="50" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_DEBUFFHIGHLIGHT_FRIEND")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.focus.highlightDebuffs.who == 2)
+							</OnShow>
+							<OnClick>
+								XPerlDB.focus.highlightDebuffs.who = 2
+								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_Enemy" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_Friend" relativePoint="TOPRIGHT">
+								<Offset><AbsDimension x="50" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_DEBUFFHIGHLIGHT_FOE")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.focus.highlightDebuffs.who == 3)
+							</OnShow>
+							<OnClick>
+								XPerlDB.focus.highlightDebuffs.who = 3
+								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+							</OnClick>
 						</Scripts>
 					</CheckButton>
 				</Frames>
@@ -9512,6 +9612,9 @@
 								self.configBase = "XPerlDB.party.buffs"
 								self.configIndex = "big"
 								self.configClick = XPerl_Party_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling("BigPet")
+								end
 							</OnLoad>
 						</Scripts>
 					</CheckButton>

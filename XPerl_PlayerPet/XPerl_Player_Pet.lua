@@ -82,8 +82,8 @@ function XPerl_Player_Pet_OnLoad(self)
 
 	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
 
-	XPerl_SecureUnitButton_OnLoad(self, "pet", XPerl_ShowGenericMenu)
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "pet", XPerl_ShowGenericMenu)
+	XPerl_SecureUnitButton_OnLoad(self, "player", nil, PetFrameDropDown, PetFrame.menu)
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", nil, PetFrameDropDown, PetFrame.menu)
 
 	--RegisterUnitWatch(self)
 

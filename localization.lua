@@ -6,7 +6,7 @@ XPerl_ProductName		= "|cFFD00000X-Perl|r UnitFrames"
 XPerl_ShortProductName	= "|cFFD00000X-Perl|r"
 XPerl_Author			= "|cFFFF8080Zek|r"
 XPerl_Description		= XPerl_ProductName.." by "..XPerl_Author
-XPerl_VersionNumber 	= "3.0.4d"
+XPerl_VersionNumber 	= "3.0.5"
 XPerl_Version			= XPerl_Description.." - "..XPerl_VersionNumber
 XPerl_LongDescription	= "UnitFrame replacement for new look Player, Pet, Party, Target, Target's Target, Focus, Raid"
 XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
@@ -53,6 +53,17 @@ XPERL_TYPE_BOSS 	= "Boss"
 XPERL_TYPE_RAREPLUS = "Rare+"
 XPERL_TYPE_ELITE	= "Elite"
 XPERL_TYPE_RARE 	= "Rare"
+
+-- Zones
+XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Serpentshrine Cavern"
+XPERL_LOC_ZONE_BLACK_TEMPLE = "Black Temple"
+XPERL_LOC_ZONE_HYJAL_SUMMIT = "Hyjal Summit"
+XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
+XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Sunwell Plateau"
+XPERL_LOC_ZONE_NAXXRAMAS = "Naxxramas"
+XPERL_LOC_ZONE_OBSIDIAN_SANCTUM = "The Obsidian Sanctum"
+XPERL_LOC_ZONE_EYE_OF_ETERNITY = "The Eye of Eternity"
+XPERL_LOC_ZONE_ULDUAR = "Ulduar"
 
 -- Status
 XPERL_LOC_DEAD		= DEAD			-- "Dead"
@@ -136,7 +147,7 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(26982)] = 12,			-- Rejuvenation
 		[GetSpellInfo(26980)] = 21,			-- Regrowth
 		[GetSpellInfo(25222)] = 15,			-- Renew
-		[GetSpellInfo(5375)] = 7,			-- Swiftmend
+		[GetSpellInfo(48438)] = 7,			-- Wild Growth
 		[GetSpellInfo(33763)] = 8,			-- Lifebloom
 		[GetSpellInfo(28880)] = 15,			-- Gift of the Naaru (Racial)
 		[GetSpellInfo(61295)] = 15,			-- Riptide
@@ -160,6 +171,7 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(27137)] = 1.5,		-- Flash of Light
 		[GetSpellInfo(27136)] = 2.5,		-- Holy Light
 		[GetSpellInfo(34866)] = 0.5,		-- Circle of Healing
+		[GetSpellInfo(50464)] = 1.5,		-- Nourish
 	},
 	buffSpells = {
 		PRIEST = {

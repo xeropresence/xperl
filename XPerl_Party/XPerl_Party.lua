@@ -176,8 +176,8 @@ function XPerl_Party_OnLoad(self)
 	self.hitIndicator.text:SetPoint("CENTER", self.portraitFrame, "CENTER", 0, 0)
 	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
 
-	XPerl_SecureUnitButton_OnLoad(self, self.partyid, XPerl_ShowGenericMenu)
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame, self.partyid, XPerl_ShowGenericMenu)
+	XPerl_SecureUnitButton_OnLoad(self, self.partyid, nil, getglobal("PartyMemberFrame"..self:GetID().."DropDown"), getglobal("PartyMemberFrame" .. self:GetID()).menu)
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, self.partyid, nil, getglobal("PartyMemberFrame"..self:GetID().."DropDown"), getglobal("PartyMemberFrame" .. self:GetID()).menu)
 
 	self.time = 0
 	self.flagsCheck = 0

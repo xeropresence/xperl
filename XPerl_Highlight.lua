@@ -855,6 +855,12 @@ function xpHigh:ShowHotBar(frame, show)
 					self:CreateHotBar(frame)
 				end
 
+				local a, b = h.hotBar:GetMinMaxValues()
+				if (b > dur) then
+					-- Changing HOTs shouldn't make the bar jump with varying buff durations, just use the max so far.
+					dur = b
+				end
+
 				h.hotBar.unit = unit
 				h.hotBar:SetMinMaxValues(0, dur)
 				h.hotBar:SetValue(timeLeft)
@@ -897,8 +903,23 @@ function xpHigh:CreateHotCount(frame)
 	end
 end
 
+-- xpHigh:HasMyHOT(unit)
+function xpHigh:HasMyHOT(unit)
+	for i = 1,100 do
+		local name, rank, tex, count, buffType, dur, endTime, caster = UnitBuff(unit, i)
+		if (not name) then
+			break
+		end
+		if (hotSpells[name]) then
+			if (caster == "player") then
+				return true
+			end
+		end
+	end
+end
+
 -- ShowHotCount
-function xpHigh:ShowHotCount(frame, hotCount)
+function xpHigh:ShowHotCount(frame, hotCount, unitid)
 	local h = frame.highlight
 	if (conf.highlight.HOTCOUNT) then
 		if (hotCount and hotCount > 0) then
@@ -908,6 +929,13 @@ function xpHigh:ShowHotCount(frame, hotCount)
 
 			h.hot:SetText(hotCount)
 			h.hot:Show()
+
+			local unit = SecureButton_GetUnit(frame)
+			if (unit and self:HasMyHOT(unit)) then
+				h.hot:SetTextColor(0, 1, 0)
+			else
+				h.hot:SetTextColor(0.8, 0, 0)
+			end
 			return
 		end
 	end
@@ -1523,7 +1551,7 @@ function xpHigh:UNIT_SPELLCAST_SENT(unit, spell, rank, targetName)
 		else
 			t = groupHealSpells[spell]
 			if (t) then
-				local findGUID = t < 0 and guid or UnitGUID("player")
+				local findGUID = t < 0 and guid or UnitGUID(targetName)
 				local targetGroup
 				self.castSpell = spell
 				self.castTarget = targetName

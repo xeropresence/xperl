@@ -709,7 +709,7 @@ function XPerl_EnableDisable()
 			XPerl_Frame:SetScript("OnUpdate", nil)
 		end
 
-		if (XPerlConfigHelper and conf.RaidHelper == 0 and CT_RAMenu_Options and CT_RA_UpdateVisibility) then
+		if (XPerlConfigHelper and conf and conf.RaidHelper == 0 and CT_RAMenu_Options and CT_RA_UpdateVisibility) then
 			if (conf.OldCTMTListHide ~= true) then
 				conf.OldCTMTListHide = nil
 				CT_RAMenu_Options["temp"]["HideMTs"] = false

@@ -64,10 +64,11 @@ local WoWclassCount = 0
 for k,v in pairs(localGroups) do WoWclassCount = WoWclassCount + 1 end
 
 local resSpells  = {
-	[GetSpellInfo(2006)] = true,			-- ["Resurrection"] = true,
-	[GetSpellInfo(2008)] = true,			-- ["Ancestral Spirit"] = true,
-	[GetSpellInfo(20484)] = true,			-- ["Rebirth"] = true,
-	[GetSpellInfo(7328)] = true,			-- ["Redemption"] = true
+	[GetSpellInfo(2006)] = true,			-- Resurrection
+	[GetSpellInfo(2008)] = true,			-- Ancestral Spirit
+	[GetSpellInfo(20484)] = true,			-- Rebirth
+	[GetSpellInfo(7328)] = true,			-- Redemption
+	[GetSpellInfo(50769)] = true,			-- Revive
 }
 
 local hotSpells = XPERL_HIGHLIGHT_SPELLS.hotSpells
@@ -281,21 +282,13 @@ function XPerl_Raid_ShowPopup(self)
 	FriendsDropDown.initialize = XPerl_RaidFrameDropDown_Initialize
 	FriendsDropDown.displayMode = "MENU"
 
-	-- Must use 'this' for these:
 	FriendsDropDown.unit = SecureButton_GetUnit(me)
 	FriendsDropDown.name, FriendsDropDown.server = UnitName(FriendsDropDown.unit)
 	FriendsDropDown.id = tonumber(strmatch(FriendsDropDown.unit, "(%d+)"))
+
+	XPerl_ShouldHideSetFocus = true
 	ToggleDropDownMenu(1, nil, FriendsDropDown, me.statsFrame:GetName(), 0, 0)
-
-	--local unit = SecureButton_GetUnit(me)
-	--local name, server = UnitName(this.unit)
-	--if (server and server ~= "") then
-	--	name = name.."-"..server
-	--end
-	--local id = tonumber(strmatch(this.unit, "(%d+)"))
-	--UnitPopup_ShowMenu(FriendsDropDown, "RAID", this.unit, name, id)
-
-	-- this.unit, this.name, this.server, this.id = nil, nil, nil, nil
+	XPerl_ShouldHideSetFocus = nil
 end
 
 -- SetFrameArray
