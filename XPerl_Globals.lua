@@ -318,73 +318,55 @@ local function XPerl_RegisterLDB()
 	XPerl_RegisterLDB = nil
 end
 
+local function startupCheckSettings(self)
+	playerName = UnitName("player")
+	self:UnregisterEvent(event)
+
+	local newUser = not XPerlConfigNew and not XPerlConfig
+
+	if (not XPerlConfigNew) then
+		if (XPerlConfig_Global or XPerlConfig) then
+			XPerl_pcall(ImportOldConfigs)
+		else
+			XPerlConfigNew = {}
+		end
+	end
+
+	GiveConfig()
+
+	-- Variable checking only occurs for new install and version number change
+	if (not XPerlConfigNew.ConfigVersion or XPerlConfigNew.ConfigVersion ~= XPerl_VersionNumber) then
+		XPerl_pcall(XPerl_UpgradeSettings)
+		XPerlConfigNew.ConfigVersion = XPerl_VersionNumber
+	end
+
+	ImportOldConfigs = nil
+	XPerl_ImportOldConfig = nil
+	XPerl_UpgradeSettings = nil
+
+	XPerl_pcall(XPerl_ValidateSettings)
+
+	if (newUser) then
+		conf.ShowTutorials = true
+	end
+
+	XPerl_Init()
+	XPerl_BlizzFrameDisable = nil
+	XPerl_RegisterLDB()
+
+	lastConfigMode = XPerlConfigSavePerCharacter
+	XPerl_Globals_AddonLoaded = nil
+end
+
 -- XPerl_Globals_OnEvent
 function XPerl_Globals_OnEvent(self, event, ...)
 
-	if (event == "ADDON_LOADED") then
-		if (... == "XPerl") then
-			self:UnregisterEvent(event)
-			playerName = UnitName("player")
+	--if (event == "ADDON_LOADED") then
+	--	if (... == "XPerl") then
+    --
+	--	end
 
-			local newUser = not XPerlConfigNew and not XPerlConfig
-
-			if (not XPerlConfigNew) then
-				if (XPerlConfig_Global or XPerlConfig) then
-					XPerl_pcall(ImportOldConfigs)
-				else
-					XPerlConfigNew = {}
-				end
-			end
-
-			GiveConfig()
-
-			-- Variable checking only occurs for new install and version number change
-			if (not XPerlConfigNew.ConfigVersion or XPerlConfigNew.ConfigVersion ~= XPerl_VersionNumber) then
-				XPerl_pcall(XPerl_UpgradeSettings)
-				XPerlConfigNew.ConfigVersion = XPerl_VersionNumber
-			end
-
-			ImportOldConfigs = nil
-			XPerl_ImportOldConfig = nil
-			XPerl_UpgradeSettings = nil
-
-			XPerl_pcall(XPerl_ValidateSettings)
-
-			if (newUser) then
-				conf.ShowTutorials = true
-			end
-
-			lastConfigMode = XPerlConfigSavePerCharacter
-
-			XPerl_Globals_AddonLoaded = nil
-		end
-
-		--elseif (... == "Blizzard_RaidUI") then
-		--	RaidFrame:UnregisterEvent("PARTY_MEMBERS_CHANGED")
-		--	RaidFrame:UnregisterEvent("PARTY_LEADER_CHANGED")
-		--
-		--	local hide = function()
-		--		RaidFrame:UnregisterEvent("UNIT_PET")
-		--		RaidFrame:UnregisterEvent("UNIT_NAME_UPDATE")
-		--		RaidFrame:UnregisterEvent("UNIT_LEVEL")
-		--		RaidFrame:UnregisterEvent("UNIT_HEALTH")
-		--		RaidFrame:UnregisterEvent("RAID_ROSTER_UPDATE")
-		--	end
-		--	hide()
-		--
-		--	RaidFrame:HookScript("OnHide", hide)
-		--	RaidFrame:HookScript("OnShow", function(self)
-		--		RaidFrame:RegisterEvent("UNIT_PET")
-		--		RaidFrame:RegisterEvent("UNIT_NAME_UPDATE")
-		--		RaidFrame:RegisterEvent("UNIT_LEVEL")
-		--		RaidFrame:RegisterEvent("UNIT_HEALTH")
-		--		RaidFrame:RegisterEvent("RAID_ROSTER_UPDATE")
-		--		RaidFrame_LoadUI()
-		--		RaidFrame_Update()
-		--		RaidPullout_RenewFrames()
-		--	end)
-
-	elseif (event == "VARIABLES_LOADED") then
+	if (event == "VARIABLES_LOADED") then
 		self:UnregisterEvent(event)
 
 		-- Tell DHUD to hide Blizzard default Player and Target frames
@@ -397,13 +379,18 @@ function XPerl_Globals_OnEvent(self, event, ...)
 			end
 		end
 
-		XPerl_Init()
-		XPerl_BlizzFrameDisable = nil
-		XPerl_RegisterLDB()
+		--XPerl_Init()
+		--XPerl_BlizzFrameDisable = nil
+		--XPerl_RegisterLDB()
+
+	elseif (event == "PLAYER_LOGIN") then
+		self:UnregisterEvent(event)
+		startupCheckSettings(self)
+		XPerl_MinimapButton_Init(XPerl_MinimapButton_Frame)
+		XPerl_Load_LQHLHC()			-- Load LibHealComm / LibQuickHealth
 
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		self:UnregisterEvent(event)
-		XPerl_MinimapButton_Init(XPerl_MinimapButton_Frame)
 
 		self:SetScript("OnEvent", onEventPostSetup)
 		XPerl_Globals_OnEvent = nil
@@ -529,10 +516,9 @@ function XPerl_ValidateSettings()
 		conf.pet.castBar = {enable = 1}
 	end
 
-	if (not conf.colour.gradient) then
+	if (conf.colour and not conf.colour.gradient) then
 		conf.colour.gradient = {
 			enable	= 1,
---			horizontal = nil,
 			s	= {r = 0.25, g = 0.25, b = 0.25, a = 1},
 			e	= {r = 0.1, g = 0.1, b = 0.1, a = 0}
 		}

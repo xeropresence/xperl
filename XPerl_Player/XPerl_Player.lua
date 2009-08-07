@@ -44,20 +44,6 @@ function XPerl_Player_OnLoad(self)
 
 	self:RegisterEvent("VARIABLES_LOADED")
 
-	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",
-			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
-			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
-			"UNIT_SPELLCAST_SUCCEEDED", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE",
-			"UNIT_SPELLCAST_SENT"}
-
-	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
-	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED"})
-	--XPerl_RegisterBasics(self, XPerl_Player_Events)
-
-	for i,e in pairs(events) do
-		self:RegisterEvent(e)
-	end
-
 	self.EnergyLast = 0
 	self.tutorialPage = 2
 	self:SetScript("OnUpdate", XPerl_Player_OnUpdate)
@@ -84,10 +70,6 @@ function XPerl_Player_OnLoad(self)
 
 	XPerl_RegisterHighlight(self.highlight, 3)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
-
-	if (XPerl_ArcaneBar_RegisterFrame) then
-		XPerl_ArcaneBar_RegisterFrame(self.nameFrame, UnitHasVehicleUI("player") and "vehicle" or "player")
-	end
 
 	self.FlashFrames = {self.portraitFrame, self.nameFrame,
 				self.levelFrame, self.statsFrame, self.runes}
@@ -221,7 +203,7 @@ end
 
 -- XPerl_Player_UpdateRep
 local function XPerl_Player_UpdateRep(self)
-	if (pconf.repBar) then
+	if (pconf and pconf.repBar) then
 		local rb = self.statsFrame.repBar
 		local name, reaction, min, max, value = GetWatchedFactionInfo()
 		local color
@@ -541,6 +523,20 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 		self:SetAttribute("unit", "player")
 	end
 
+	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",
+			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
+			"UNIT_SPELLCAST_SUCCEEDED", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE",
+			"UNIT_SPELLCAST_SENT"}
+
+	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
+	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED"})
+	--XPerl_RegisterBasics(self, XPerl_Player_Events)
+
+	for i,e in pairs(events) do
+		self:RegisterEvent(e)
+	end
+
 	XPerl_Player_UpdateDisplay(self)
 end
 
@@ -688,10 +684,12 @@ function XPerl_Player_Events:UPDATE_FACTION()
 	XPerl_Player_UpdateRep(self)
 
 	if (self.doubleCheckAFK) then
-		self.doubleCheckAFK = self.doubleCheckAFK - 1
-		if (self.doubleCheckAFK <= 0) then
-			XPerl_Player_UpdateHealth(self)
-			self.doubleCheckAFK = nil
+		if (conf and pconf) then
+			self.doubleCheckAFK = self.doubleCheckAFK - 1
+			if (self.doubleCheckAFK <= 0) then
+				XPerl_Player_UpdateHealth(self)
+				self.doubleCheckAFK = nil
+			end
 		end
 	end
 end
@@ -910,6 +908,10 @@ end
 
 -- XPerl_Player_Set_Bits()
 function XPerl_Player_Set_Bits(self)
+	if (XPerl_ArcaneBar_RegisterFrame and not self.nameFrame.castBar) then
+		XPerl_ArcaneBar_RegisterFrame(self.nameFrame, UnitHasVehicleUI("player") and "vehicle" or "player")
+	end
+
 	if (pconf.portrait) then
 		self.portraitFrame:Show()
 		self.portraitFrame:SetWidth(60)

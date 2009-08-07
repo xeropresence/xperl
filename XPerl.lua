@@ -530,7 +530,7 @@ end
 
 -- XPerl_GetBarTexture
 function XPerl_GetBarTexture()
-	return (conf.bar.texture and conf.bar.texture[2]) or "Interface\\TargetingFrame\\UI-StatusBar"
+	return (conf.bar and conf.bar.texture and conf.bar.texture[2]) or "Interface\\TargetingFrame\\UI-StatusBar"
 end
 
 -- XPerl_StatsFrame_Setup
@@ -1603,6 +1603,9 @@ end
 
 -- XPerl_GetSavePositionTable
 function XPerl_GetSavePositionTable(create)
+	if (not XPerlConfigNew) then
+		return
+	end
 
 	local name = UnitName("player")
 	local realm = GetRealmName()
@@ -1643,22 +1646,23 @@ function XPerl_SavePosition(self, onlyIfEmpty)
 		local w = self:IsResizable() and self:GetWidth()
 
 		local table = XPerl_GetSavePositionTable(true)
-
-		if (not onlyIfEmpty or (onlyIfEmpty and not table[name])) then
-			if (t and l) then
-				if (not table[name]) then
-					table[name] = {}
+		if (table) then
+			if (not onlyIfEmpty or (onlyIfEmpty and not table[name])) then
+				if (t and l) then
+					if (not table[name]) then
+						table[name] = {}
+					end
+					table[name].top = t * s
+					table[name].left = l * s
+					table[name].height = h
+					table[name].width = w
+				else
+					table[name] = nil
 				end
-				table[name].top = t * s
-				table[name].left = l * s
-				table[name].height = h
-				table[name].width = w
 			else
-				table[name] = nil
-			end
-		else
-			if (table[name] and not self:IsUserPlaced()) then
-				XPerl_RestorePosition(self)
+				if (table[name] and not self:IsUserPlaced()) then
+					XPerl_RestorePosition(self)
+				end
 			end
 		end
 	end
@@ -3083,7 +3087,7 @@ end
 
 -- XPerl_Unit_UpdatePortrait()
 function XPerl_Unit_UpdatePortrait(self)
-	if (self.conf.portrait) then
+	if (self.conf and self.conf.portrait) then
 		local pf = self.portraitFrame
 		if (self.conf.portrait3D and UnitIsVisible(self.partyid)) then
 			pf.portrait:Hide()
@@ -3448,258 +3452,262 @@ XPerl_ExpectedUnitHealth = XPerl_UnitHealth
 function XPerl_SetExpectedHealth()
 end
 
-if (LibStub or LoadAddOn("LibStub")) then
-	local lqh = 1
-	LoadAddOn("LibQuickHealth-2.0")
-	local QuickHealth = LibStub("LibQuickHealth-2.0", true)
-	if (QuickHealth) then
-		lqh = 2
-	else
-		LoadAddOn("LibQuickHealth-1.0")
-		QuickHealth = LibStub("LibQuickHealth-1.0", true)
-	end
-
-	if (QuickHealth) then
-		QuickHealth.RegisterCallback("XPerlHealthCallback", "HealthUpdated",
-			function(event, GUID, newHealth)
-				if (XPerl_Raid_Frame and conf.raid.enable and GetNumRaidMembers() > 0) then
-					local f = XPerl_Raid_GetUnitFrameByGUID(GUID)
-					if (f) then
-						XPerl_Raid_UpdateHealth(f)
-					end
-				end
-
-				if (XPerl_party1 and GetNumPartyMembers() > 0) then
-					local f = XPerl_Party_GetUnitFrameByGUID(GUID)
-					if (f) then
-						XPerl_Party_UpdateHealth(f)
-					end
-				end
-
-				if (XPerl_Player and UnitGUID("player") == GUID) then
-					XPerl_Player_UpdateHealth(XPerl_Player)
-				end
-
-				if (XPerl_Player_Pet and UnitGUID("pet") == GUID) then
-					XPerl_Player_Pet_UpdateHealth(XPerl_Player_Pet)
-				end
-
-				if (XPerl_Target and UnitGUID("target") == GUID) then
-					XPerl_Target_SetHealth(XPerl_Target)
-				end
-
-				if (XPerl_Focus and UnitGUID("focus") == GUID) then
-					XPerl_Target_SetHealth(XPerl_Focus)
-				end
-			end
-		)
-
-		if (lqh == 2) then
-			XPerl_UnitHealth = QuickHealth.UnitHealth
+function XPerl_Load_LQHLHC()
+	if (LibStub or LoadAddOn("LibStub")) then
+		local lqh = 1
+		LoadAddOn("LibQuickHealth-2.0")
+		local QuickHealth = LibStub("LibQuickHealth-2.0", true)
+		if (QuickHealth) then
+			lqh = 2
 		else
-			function XPerl_UnitHealth(...)
-				if (not UnitIsFriend("player", "target")) then	-- UnitCanAttack("player", ...)) then
-					return UnitHealth(...)
-				else
-					return QuickHealth:UnitHealth(...)
-				end
-			end
-		end
-	end
-
-	-- HealComm interface
-	LoadAddOn("LibHealComm-3.0")
-	local HealComm = LibStub("LibHealComm-3.0", true)
-
-	if (HealComm and HealComm.UnitIncomingHealGet) then
-		local myHeals = {}
-		local hcMiniFrame = CreateFrame("Frame", nil)
-		hcMiniFrame:RegisterEvent("RAID_ROSTER_UPDATE")
-		hcMiniFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
-		hcMiniFrame:SetScript("OnEvent", function()
-			local temp = new()
-
-			if (GetNumRaidMembers() > 0) then
-				for i = 1,GetNumRaidMembers() do
-					local id = "raid"..i
-					local guid = UnitGUID(id)
-					if (guid) then
-						temp[guid] = true
-						id = "raidpet"..i
-						guid = UnitGUID(id)
-						if (guid) then
-							temp[guid] = true
-						end
-					end
-				end
-			elseif (GetNumPartyMembers() > 0) then
-				for i = 0,GetNumPartyMembers() do
-					local id = i == 0 and "player" or "party"..i
-					local guid = UnitGUID(id)
-					if (guid) then
-						temp[guid] = true
-						id = i == 0 and "pet" or "raidpet"..i
-						guid = UnitGUID(id)
-						if (guid) then
-							temp[guid] = true
-						end
-					end
-				end
-			else
-				myHeals = {}
-			end
-
-			for guid in pairs(myHeals) do
-				if (not temp[guid]) then
-					myHeals[guid] = nil
-				end
-			end
-
-			del(temp)
-		end)
-
-		local guidFrame = CreateFrame("Frame")
-		guidFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
-		local playerGUID, targetGUID, focusGUID, petGUID, targettargetGUID
-
-		guidFrame:SetScript("OnEvent", function(self, event, ...)
-			local f = self[event]
-			if (f) then f(self, ...) end
-		end)
-		
-		function guidFrame:PLAYER_ENTERING_WORLD()
-			self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-			self:RegisterEvent("PLAYER_LEAVING_WORLD")
-			self:RegisterEvent("PLAYER_TARGET_CHANGED")
-			self:RegisterEvent("PLAYER_FOCUS_CHANGED")
-			self:RegisterEvent("UNIT_PET")
-			playerGUID = UnitGUID("player")
-			self:GetGUIDs()
-			self.PLAYER_ENTERING_WORLD = nil
+			LoadAddOn("LibQuickHealth-1.0")
+			QuickHealth = LibStub("LibQuickHealth-1.0", true)
 		end
 
-		function guidFrame:PLAYER_LEAVING_WORLD()
-			targetGUID, focusGUID, targettargetGUID = nil, nil, nil
-		end
-
-		function guidFrame:GetGUIDs()
-			petGUID = UnitGUID("pet")
-			targetGUID = UnitGUID("target")
-			targettargetGUID = UnitGUID("targettarget")
-			focusGUID = UnitGUID("focus")
-		end
-
-		guidFrame.PLAYER_TARGET_CHANGED = guidFrame.GetGUIDs
-		guidFrame.PLAYER_FOCUS_CHANGED = guidFrame.GetGUIDs
-
-		function guidFrame:UNIT_PET(unit)
-			if (unit == "player") then
-				self:GetGUIDs()
-			end
-		end
-
-		local function UpdateIncomingHeals(healerFullName, healSize, ...)
-			for i = 1,select("#",...) do
-				local name = select(i, ...)
-				local guid = UnitGUID(name)
-				local f
-
-				if (guid) then
-					if (healSize and UnitIsUnit("player", healerFullName)) then
-						myHeals[guid] = healSize
-					end
-
-					if (XPerl_Raid_GetUnitFrameByGUID) then
-						f = XPerl_Raid_GetUnitFrameByGUID(guid)
+		if (QuickHealth) then
+			QuickHealth.RegisterCallback("XPerlHealthCallback", "HealthUpdated",
+				function(event, GUID, newHealth)
+					if (XPerl_Raid_Frame and conf.raid.enable and GetNumRaidMembers() > 0) then
+						local f = XPerl_Raid_GetUnitFrameByGUID(GUID)
 						if (f) then
 							XPerl_Raid_UpdateHealth(f)
 						end
 					end
 
-					if (XPerl_Party_GetUnitFrameByGUID) then
-						f = XPerl_Party_GetUnitFrameByGUID(guid)
+					if (XPerl_party1 and GetNumPartyMembers() > 0) then
+						local f = XPerl_Party_GetUnitFrameByGUID(GUID)
 						if (f) then
 							XPerl_Party_UpdateHealth(f)
 						end
 					end
 
-					if (XPerl_Player_UpdateHealth and guid == playerGUID) then
+					if (XPerl_Player and UnitGUID("player") == GUID) then
 						XPerl_Player_UpdateHealth(XPerl_Player)
-					elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
-						XPerl_Player_Pet_UpdateHealth(XPerl_Player)
-					elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
-						f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
-						if (f) then
-							XPerl_Party_Pet_UpdateHealth(f)
-						end
 					end
 
-					if (XPerl_Target_SetHealth and guid == targetGUID) then
+					if (XPerl_Player_Pet and UnitGUID("pet") == GUID) then
+						XPerl_Player_Pet_UpdateHealth(XPerl_Player_Pet)
+					end
+
+					if (XPerl_Target and UnitGUID("target") == GUID) then
 						XPerl_Target_SetHealth(XPerl_Target)
 					end
-					if (XPerl_Target_SetHealth and XPerl_Focus and guid == focusGUID) then
+
+					if (XPerl_Focus and UnitGUID("focus") == GUID) then
 						XPerl_Target_SetHealth(XPerl_Focus)
 					end
-					if (XPerl_Target_SetHealth and XPerl_TargetTarget and guid == targettargetGUID) then
-						XPerl_Target_SetHealth(XPerl_TargetTarget)
+				end
+			)
+
+			if (lqh == 2) then
+				XPerl_UnitHealth = QuickHealth.UnitHealth
+			else
+				function XPerl_UnitHealth(...)
+					if (not UnitIsFriend("player", "target")) then	-- UnitCanAttack("player", ...)) then
+						return UnitHealth(...)
+					else
+						return QuickHealth:UnitHealth(...)
 					end
 				end
 			end
 		end
 
-		-- XPerl_ExpectedUnitHealth
-		function XPerl_ExpectedUnitHealth(unit)
-			local health = XPerl_UnitHealth(unit)
-			local incoming = HealComm:UnitIncomingHealGet(unit, GetTime() + 100.0) or 0
-			incoming = incoming + (myHeals[UnitGUID(unit)] or 0)
-			if (incoming > 0) then
-				local effective = incoming * HealComm:UnitHealModifierGet(unit)
-				return health + effective
+		-- HealComm interface
+		LoadAddOn("LibHealComm-3.0")
+		local HealComm = LibStub("LibHealComm-3.0", true)
+
+		if (HealComm and HealComm.UnitIncomingHealGet) then
+			local myHeals = {}
+			local hcMiniFrame = CreateFrame("Frame", nil)
+			hcMiniFrame:RegisterEvent("RAID_ROSTER_UPDATE")
+			hcMiniFrame:RegisterEvent("PARTY_MEMBERS_CHANGED")
+			hcMiniFrame:SetScript("OnEvent", function()
+				local temp = new()
+
+				if (GetNumRaidMembers() > 0) then
+					for i = 1,GetNumRaidMembers() do
+						local id = "raid"..i
+						local guid = UnitGUID(id)
+						if (guid) then
+							temp[guid] = true
+							id = "raidpet"..i
+							guid = UnitGUID(id)
+							if (guid) then
+								temp[guid] = true
+							end
+						end
+					end
+				elseif (GetNumPartyMembers() > 0) then
+					for i = 0,GetNumPartyMembers() do
+						local id = i == 0 and "player" or "party"..i
+						local guid = UnitGUID(id)
+						if (guid) then
+							temp[guid] = true
+							id = i == 0 and "pet" or "raidpet"..i
+							guid = UnitGUID(id)
+							if (guid) then
+								temp[guid] = true
+							end
+						end
+					end
+				else
+					myHeals = {}
+				end
+
+				for guid in pairs(myHeals) do
+					if (not temp[guid]) then
+						myHeals[guid] = nil
+					end
+				end
+
+				del(temp)
+			end)
+
+			local guidFrame = CreateFrame("Frame")
+			guidFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+			local playerGUID, targetGUID, focusGUID, petGUID, targettargetGUID
+
+			guidFrame:SetScript("OnEvent", function(self, event, ...)
+				local f = self[event]
+				if (f) then f(self, ...) end
+			end)
+		
+			function guidFrame:PLAYER_ENTERING_WORLD()
+				self:UnregisterEvent("PLAYER_ENTERING_WORLD")
+				self:RegisterEvent("PLAYER_LEAVING_WORLD")
+				self:RegisterEvent("PLAYER_TARGET_CHANGED")
+				self:RegisterEvent("PLAYER_FOCUS_CHANGED")
+				self:RegisterEvent("UNIT_PET")
+				playerGUID = UnitGUID("player")
+				self:GetGUIDs()
+				self.PLAYER_ENTERING_WORLD = nil
 			end
 
-			return health
-		end
+			function guidFrame:PLAYER_LEAVING_WORLD()
+				targetGUID, focusGUID, targettargetGUID = nil, nil, nil
+			end
 
-		-- XPerl_SetExpectedHealth
-		function XPerl_SetExpectedHealth(self)
-			local bar = self.statsFrame.expectedHealth
-			if (bar) then
-				local expectedHealth = XPerl_ExpectedUnitHealth(self.partyid)
-				if (expectedHealth == XPerl_UnitHealth(self.partyid)) then
-					bar:Hide()
-				else
-					local healthMax = UnitHealthMax(self.partyid)
-					bar:Show()
-					bar:SetMinMaxValues(0, healthMax)
-					bar:SetValue(expectedHealth)
+			function guidFrame:GetGUIDs()
+				petGUID = UnitGUID("pet")
+				targetGUID = UnitGUID("target")
+				targettargetGUID = UnitGUID("targettarget")
+				focusGUID = UnitGUID("focus")
+			end
+
+			guidFrame.PLAYER_TARGET_CHANGED = guidFrame.GetGUIDs
+			guidFrame.PLAYER_FOCUS_CHANGED = guidFrame.GetGUIDs
+
+			function guidFrame:UNIT_PET(unit)
+				if (unit == "player") then
+					self:GetGUIDs()
 				end
 			end
-		end
 
-		local function xperl_HealComm_DirectHealStart(event, healerFullName, healSize, endTime, ...)
-			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStart(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-			UpdateIncomingHeals(healerFullName, healSize, ...)
-		end
-		local function xperl_HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
-			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStop(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-			UpdateIncomingHeals(healerFullName, 0, ...)
-		end
-		local function xperl_HealComm_DirectHealDelayed(event, healerFullName, healSize, endTime, ...)
-			--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealDelayed(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-			UpdateIncomingHeals(healerFullName, healSize, ...)
-		end
-		local function xperl_HealComm_HealModifierUpdate(event, unit, targetFullName, healModifier)
-			--ChatFrame1:AddMessage(format("xperl_HealComm_HealModifierUpdate(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime)))
-			UpdateIncomingHeals(healerFullName, nil, targetFullName)
-		end
+			local function UpdateIncomingHeals(healerFullName, healSize, ...)
+				for i = 1,select("#",...) do
+					local name = select(i, ...)
+					local guid = UnitGUID(name)
+					local f
 
-		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStart", xperl_HealComm_DirectHealStart)
-		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStop", xperl_HealComm_DirectHealStop)
-		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealDelayed", xperl_HealComm_DirectHealDelayed)
-		HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_HealModifierUpdate", xperl_HealComm_HealModifierUpdate)
+					if (guid) then
+						if (healSize and UnitIsUnit("player", healerFullName)) then
+							myHeals[guid] = healSize
+						end
+
+						if (XPerl_Raid_GetUnitFrameByGUID) then
+							f = XPerl_Raid_GetUnitFrameByGUID(guid)
+							if (f) then
+								XPerl_Raid_UpdateHealth(f)
+							end
+						end
+
+						if (XPerl_Party_GetUnitFrameByGUID) then
+							f = XPerl_Party_GetUnitFrameByGUID(guid)
+							if (f) then
+								XPerl_Party_UpdateHealth(f)
+							end
+						end
+
+						if (XPerl_Player_UpdateHealth and guid == playerGUID) then
+							XPerl_Player_UpdateHealth(XPerl_Player)
+						elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
+							XPerl_Player_Pet_UpdateHealth(XPerl_Player)
+						elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
+							f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
+							if (f) then
+								XPerl_Party_Pet_UpdateHealth(f)
+							end
+						end
+
+						if (XPerl_Target_SetHealth and guid == targetGUID) then
+							XPerl_Target_SetHealth(XPerl_Target)
+						end
+						if (XPerl_Target_SetHealth and XPerl_Focus and guid == focusGUID) then
+							XPerl_Target_SetHealth(XPerl_Focus)
+						end
+						if (XPerl_Target_SetHealth and XPerl_TargetTarget and guid == targettargetGUID) then
+							XPerl_Target_SetHealth(XPerl_TargetTarget)
+						end
+					end
+				end
+			end
+
+			-- XPerl_ExpectedUnitHealth
+			function XPerl_ExpectedUnitHealth(unit)
+				local health = XPerl_UnitHealth(unit)
+				local incoming = HealComm:UnitIncomingHealGet(unit, GetTime() + 100.0) or 0
+				incoming = incoming + (myHeals[UnitGUID(unit)] or 0)
+				if (incoming > 0) then
+					local effective = incoming * HealComm:UnitHealModifierGet(unit)
+					return health + effective
+				end
+
+				return health
+			end
+
+			-- XPerl_SetExpectedHealth
+			function XPerl_SetExpectedHealth(self)
+				local bar = self.statsFrame.expectedHealth
+				if (bar) then
+					local expectedHealth = XPerl_ExpectedUnitHealth(self.partyid)
+					if (expectedHealth == XPerl_UnitHealth(self.partyid)) then
+						bar:Hide()
+					else
+						local healthMax = UnitHealthMax(self.partyid)
+						bar:Show()
+						bar:SetMinMaxValues(0, healthMax)
+						bar:SetValue(expectedHealth)
+					end
+				end
+			end
+
+			local function xperl_HealComm_DirectHealStart(event, healerFullName, healSize, endTime, ...)
+				--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStart(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+				UpdateIncomingHeals(healerFullName, healSize, ...)
+			end
+			local function xperl_HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
+				--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStop(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+				UpdateIncomingHeals(healerFullName, 0, ...)
+			end
+			local function xperl_HealComm_DirectHealDelayed(event, healerFullName, healSize, endTime, ...)
+				--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealDelayed(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+				UpdateIncomingHeals(healerFullName, healSize, ...)
+			end
+			local function xperl_HealComm_HealModifierUpdate(event, unit, targetFullName, healModifier)
+				--ChatFrame1:AddMessage(format("xperl_HealComm_HealModifierUpdate(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime)))
+				UpdateIncomingHeals(healerFullName, nil, targetFullName)
+			end
+
+			HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStart", xperl_HealComm_DirectHealStart)
+			HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStop", xperl_HealComm_DirectHealStop)
+			HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealDelayed", xperl_HealComm_DirectHealDelayed)
+			HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_HealModifierUpdate", xperl_HealComm_HealModifierUpdate)
+		end
 	end
+	-- End of HealComm/LibQuickHealth
+	
+	XPerl_Load_LQHLHC = nil
 end
--- End of HealComm/LibQuickHealth
 
 -- Threat Display
 local function DrawHand(self, percent)
