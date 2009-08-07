@@ -2,6 +2,9 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.5b
+Fixed: Party Pet errors.
+
 3.0.5a
 Fixed: PlayerBuffs error.
 Fixed: action blocked on target frame when in options.

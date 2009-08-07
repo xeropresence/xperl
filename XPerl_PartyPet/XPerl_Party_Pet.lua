@@ -178,6 +178,7 @@ function XPerl_Party_Pet_OnLoad(self)
 
 	self:SetScript("OnShow",
 		function(self)
+			self.conf = conf.partypet
 			CheckVisiblity()
 			XPerl_Party_Pet_UpdateDisplay(self)
 			XPerl_Party_SetDebuffLocation(self:GetParent())
@@ -192,7 +193,7 @@ function XPerl_Party_Pet_OnLoad(self)
 	self.tutorialPage = 5
 
 	if (XPerlDB) then
-		self.conf = XPerlDB.partypet
+		self.conf = conf.partypet
 	end
 
 	--XPerl_Party_Pet_Set_Bits1(self)
@@ -285,6 +286,10 @@ function XPerl_Party_Pet_Buff_UpdateAll(self)
 		if (UnitExists(self.partyid)) then
 			self.buffFrame:Show()
 			if (XPerlDB) then
+				if (not self.conf) then
+					self.conf = conf.partypet
+				end
+
 				XPerl_Unit_UpdateBuffs(self, nil, nil, petconf.buffs.castble, petconf.debuffs.curable)
 			end
 		else
