@@ -2,6 +2,9 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.5c
+Fixed: Error in XPerl_Unit_ThreatStatus.
+
 3.0.5b
 Fixed: Party Pet errors.
 

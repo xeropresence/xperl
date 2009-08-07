@@ -3809,7 +3809,7 @@ end
 
 -- XPerl_Unit_ThreatStatus
 function XPerl_Unit_ThreatStatus(self, relative, immediate)
-	if (not self.partyid) then
+	if (not self.partyid or not self.conf) then
 		return
 	end
 
