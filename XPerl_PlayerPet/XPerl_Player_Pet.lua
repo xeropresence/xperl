@@ -345,7 +345,9 @@ end
 
 -- UNIT_PET
 function XPerl_Player_Pet_Events:UNIT_PET()
-	XPerl_Player_Pet_UpdateDisplay(XPerl_Player_Pet)
+	if (conf) then		-- DK can issue very early UNIT_PET, long before PEW. We refresh on entering world regardless
+		XPerl_Player_Pet_UpdateDisplay(XPerl_Player_Pet)
+	end
 end
 
 XPerl_Player_Pet_Events.PET_STABLE_SHOW = XPerl_Player_Pet_Events.UNIT_PET
