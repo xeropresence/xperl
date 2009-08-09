@@ -2,6 +2,10 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.5d
+Fixed: Shouldn't forget range finder spell repeatadle now.
+Fixed: Won't try to announce version to party in a pvp instance.
+
 3.0.5c
 Fixed: Error in XPerl_Unit_ThreatStatus.
 

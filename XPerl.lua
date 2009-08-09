@@ -391,7 +391,7 @@ function XPerl_StartupSpellRange()
 	local function Setup1(self)
 		local bCanUse
 		if (self.spell) then
-			bCanUse = IsUsableSpell(self.spell)
+			bCanUse = GetSpellInfo(self.spell)
 		end
 		if ((type(self.spell) ~= "string" and type(self.item) ~= "string") or not bCanUse) then
 			self.spell = XPerl_DefaultRangeSpells[playerClass] and XPerl_DefaultRangeSpells[playerClass].spell

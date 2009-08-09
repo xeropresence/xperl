@@ -346,6 +346,14 @@ function mod:SendModules(chan, target)
 	end
 
 	if (chan) then
+		if (chan == "PARTY" or chan == "RAID") then
+			-- Cope with WoW 3.2 bug which says party members exist, when in BGs in fake raid
+			local instance, pvp = IsInInstance()
+			if (pvp == "arena" or pvp == "pvp") then
+				return
+			end
+		end
+
 		if (chan == "WHISPER") then
 			local t = self.throttle[target]
 			if (t and time() < t + 15) then
