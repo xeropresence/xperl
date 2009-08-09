@@ -2233,6 +2233,27 @@ function XPerl_UnregisterClickCastFrame(self)
 	end
 end
 
+-- unitmenuOnPostClick
+local function unitmenuOnPostClick(self)
+	if (UIDROPDOWNMENU_OPEN_MENU == self.dropdownMenu and DropDownList1:IsShown())   then
+		local parent = self
+		if (self:GetParent() and self:GetParent().nameFrame == self) then
+			parent = self:GetParent()
+		end
+
+		local point, relativePoint = "TOPLEFT", "BOTTOMLEFT"
+		if (parent:GetTop() / parent:GetEffectiveScale() > UIParent:GetHeight() / UIParent:GetEffectiveScale() / 2) then
+			point, relativePoint = "TOPLEFT", "BOTTOMLEFT"
+		else
+			point, relativePoint = "BOTTOMLEFT", "TOPLEFT"
+		end
+
+		DropDownList1:ClearAllPoints()
+		DropDownList1:SetPoint(point, parent, relativePoint, 0, 0)
+	end
+end
+
+-- XPerl_SecureUnitButton_OnLoad
 function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc, m1, m2)
 	self:SetAttribute("*type1", "target")
 	self:SetAttribute("type2", "menu")
@@ -2243,22 +2264,7 @@ function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc, m1, m2)
 	self.menu = menufunc
 	self.dropdownMenu = m1
 	self:SetAttribute("_menu", m2)
-
-	self:SetScript("PostClick", function(self)
-		if (UIDROPDOWNMENU_OPEN_MENU == self.dropdownMenu and DropDownList1:IsShown())   then
-			local point, relativePoint = "TOPLEFT", "BOTTOMLEFT"
-			if ((select(2, DropDownList1:GetCenter()) - DropDownList1:GetHeight() / 2) < 0) then
-				point = string.gsub(point, "TOP(.*)", "BOTTOM%1")
-				relativePoint = string.gsub(relativePoint, "BOTTOM(.*)", "TOP%1")
-			end
-			if (DropDownList1:GetRight() > GetScreenWidth()) then
-				point = string.gsub(point, "(.*)LEFT", "%1RIGHT")
-				relativePoint = string.gsub(relativePoint, "(.*)RIGHT", "%1LEFT")
-			end
-			DropDownList1:ClearAllPoints()
-			DropDownList1:SetPoint(point, self, relativePoint, 0, 0)
-		end
-	end)
+	self:SetScript("PostClick", unitmenuOnPostClick)
 
 	XPerl_RegisterClickCastFrame(self)
 end
@@ -2346,8 +2352,13 @@ function XPerl_ShowGenericMenu(self, unit, button, actionType)
 			end
 		end
 
+		local parent = self
+		if (self:GetParent() and self:GetParent().nameFrame == self) then
+			parent = self:GetParent()
+		end
+
 		XPerl_ShouldHideSetFocus = true
-		ToggleDropDownMenu(1, nil, XPerl_DropDown, self, 0, 0)
+		ToggleDropDownMenu(1, nil, XPerl_DropDown, parent, 0, 0)
 		XPerl_ShouldHideSetFocus = nil
 	end
 end
