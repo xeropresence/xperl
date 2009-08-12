@@ -901,9 +901,9 @@ local function MakeXPBars(self)
 end
 
 -- XPerl_Player_SetTotems
-function XPerl_Player_SetTotems(...)
+function XPerl_Player_SetTotems(self, ...)
 	if (pconf.totems and pconf.totems.enable) then
-		TotemFrame:SetParent(self)
+		TotemFrame:SetParent(XPerl_Player)
 		TotemFrame:ClearAllPoints()
 		TotemFrame:SetPoint("TOP", XPerl_Player, "BOTTOM", pconf.totems.offsetX, pconf.totems.offsetY)
 	else

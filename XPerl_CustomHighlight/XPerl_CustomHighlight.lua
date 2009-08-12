@@ -171,7 +171,6 @@ function ch:DefaultZoneData()
 				[64157] = true,								-- Curse of Doom (Yogg-Saron)
 				[64152] = true,								-- Draining Poison (Yogg-Saron)
 				[64125] = true,								-- Squeeze (Yogg-Saron)
-				[63050] = true,								-- Sanity (Yogg-Saron)
 			},
 		}
 end

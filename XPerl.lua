@@ -2748,6 +2748,8 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 		XPerl_GetBuffButton(self, 1, 0, true)
 		XPerl_GetBuffButton(self, 1, 1, true)
 
+		local isFriendly = not UnitCanAttack("player", partyid)
+
 		if (self.conf.buffs.enable and maxBuffs and maxBuffs > 0) then
 			local buffIconIndex = 1
 			self.buffFrame:Show()
@@ -2756,7 +2758,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				-- in favor of all in UnitBuff instead. We still want our big buffs first in the list,
 				-- so we have to scan thru twice.
 				for buffnum = 1,maxBuffs do
-					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, (castableOnly == 1) and "RAID")
+					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly == 1 and "RAID" or nil)
 					if (not name) then
 						if (mine == 1) then
 							maxBuffs = buffnum - 1
@@ -2859,7 +2861,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			lastIcon = 0
 			for mine = 1,2 do
 				for buffnum = 1,maxDebuffs do
-					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, (curableOnly == 1) and "RAID")
+					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, (isFriendly and curableOnly == 1 or castableOnly == 1) and "RAID" or nil)
 					if (not name) then
 						if (mine == 1) then
 							maxDebuffs = buffnum - 1
