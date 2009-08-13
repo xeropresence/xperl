@@ -716,7 +716,9 @@ end
 -- PLAYER_TALENT_UPDATE
 function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	XPerl_Player_UpdateMana(self)
-	XPerl_Player_DruidBarUpdate(self)
+	if (playerClass == "DRUID") then
+		XPerl_Player_DruidBarUpdate(self)
+	end
 end
 
 -- PLAYER_ENTER_COMBAT, PLAYER_LEAVE_COMBAT
