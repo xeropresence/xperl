@@ -1,6 +1,6 @@
 ﻿## Interface: 30200
 ## Title: X-Perl UnitFrames by |cFFFF8080Zek|r
-## Version: 3.0.5e
+## Version: 3.0.5f
 ## Title-ruRU: X-Perl UnitFrames |cFFFF6060Основной|r
 ## Author: Zek
 ## Title-zhCN: X-Perl 核心

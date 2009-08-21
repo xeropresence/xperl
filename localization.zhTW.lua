@@ -28,23 +28,6 @@ XPERL_MINIMENU_RAIDSORT = "團隊排序"
 XPERL_MINIMENU_RAIDSORT_GROUP = "依據隊伍排序"
 XPERL_MINIMENU_RAIDSORT_CLASS = "依據職業排序"
 
--- Class name localization is not too important. The only time these strings
--- are used is when the raid frame titles need to be shown when in class sort
--- mode AND when no players of that class have been seen. X-Perl builds an
--- internal list of WoW localised class names as they are encountered. The WoW
--- api function UnitClass returns both the localized and english class name.
-XPERL_LOC_CLASS_WARRIOR = "戰士"
-XPERL_LOC_CLASS_MAGE 	= "法師"
-XPERL_LOC_CLASS_ROGUE 	= "盜賊"
-XPERL_LOC_CLASS_DRUID 	= "德魯伊"
-XPERL_LOC_CLASS_HUNTER 	= "獵人"
-XPERL_LOC_CLASS_SHAMAN 	= "薩滿"
-XPERL_LOC_CLASS_PRIEST 	= "牧師"
-XPERL_LOC_CLASS_WARLOCK = "術士"
-XPERL_LOC_CLASS_PALADIN = "聖騎士"
-XPERL_LOC_CLASS_DEATHKNIGHT = "死亡騎士"
-
-XPERL_LOC_CLASS_PETS	= "寵物"
 XPERL_TYPE_NOT_SPECIFIED = "未指定"
 XPERL_TYPE_PET		= PET			-- "Pet"
 XPERL_TYPE_BOSS		= "首領"
@@ -131,6 +114,4 @@ XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s 的 %s 將要在 %s 後消失。"	-- Name,
 
 XPerl_DefaultRangeSpells.ANY = {item = "厚霜紋繃帶"}
 
-XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
-XPERL_LOC_CLASS_PETSWARLOCK = XPERL_LOC_CLASS_WARLOCK.." "..XPERL_LOC_CLASS_PETS
 end

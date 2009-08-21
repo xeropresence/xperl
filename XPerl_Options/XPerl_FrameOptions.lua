@@ -895,31 +895,6 @@ function XPerl_Options_DoRangeTooltip(self)
 	end
 end
 
--- XPerl_Options_LocalClass
-function XPerl_Options_LocalClass(class)
-
-	-- Try and get the localised class name from raid addon
-	if (XPerl_Raid_GetLocalisedClassName) then
-		local localClass = XPerl_Raid_GetLocalisedClassName(class)
-		if (localClass) then
-			return localClass
-		end
-	end
-
-	-- Otherwise, use ones we know
-	local list = {WARRIOR	= XPERL_LOC_CLASS_WARRIOR,
-			MAGE	= XPERL_LOC_CLASS_MAGE,
-			ROGUE	= XPERL_LOC_CLASS_ROGUE,
-			DRUID	= XPERL_LOC_CLASS_DRUID,
-			HUNTER	= XPERL_LOC_CLASS_HUNTER,
-			SHAMAN	= XPERL_LOC_CLASS_SHAMAN,
-			PRIEST	= XPERL_LOC_CLASS_PRIEST,
-			WARLOCK	= XPERL_LOC_CLASS_WARLOCK,
-			PALADIN	= XPERL_LOC_CLASS_PALADIN,
-			DEATHKNIGHT = XPERL_LOC_CLASS_DEATHKNIGHT}
-	return list[class]
-end
-
 -- DefaultRaidClasses
 local function DefaultRaidClasses()
 	return {
@@ -986,7 +961,7 @@ local function SetClassNames(self)
 		local f = getglobal(prefix.."ClassSel"..i.."_EnableText")
 		if (f) then
 			local class = XPerlDB.raid.class[i].name
-			f:SetText(XPerl_Options_LocalClass(class))
+			f:SetText(LOCALIZED_CLASS_NAMES_MALE[class])
 		end
 	end
 end

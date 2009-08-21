@@ -25,21 +25,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_MINIMENU_RAIDSORT_GROUP = "Ordenar por Grupo"
 	XPERL_MINIMENU_RAIDSORT_CLASS = "Ordenar por Clase"
 
-	-- Class name localization is not too important. The only time these strings
-	-- are used is when the raid frame titles need to be shown when in class sort
-	-- mode AND when no players of that class have been seen. X-Perl builds an
-	-- internal list of WoW localised class names as they are encountered. The WoW
-	-- api function UnitClass returns both the localized and english class name.
-	XPERL_LOC_CLASS_WARRIOR = "Guerrero"
-	XPERL_LOC_CLASS_MAGE	= "Mago"
-	XPERL_LOC_CLASS_ROGUE	= "P\195\173caro"
-	XPERL_LOC_CLASS_DRUID	= "Dru\195\173da"
-	XPERL_LOC_CLASS_HUNTER	= "Cazador"
-	XPERL_LOC_CLASS_SHAMAN	= "Cham\195\161n"
-	XPERL_LOC_CLASS_PRIEST	= "Sacerdote"
-	XPERL_LOC_CLASS_WARLOCK = "Brujo"
-	XPERL_LOC_CLASS_PALADIN = "Palad\195\173n"
-	XPERL_LOC_CLASS_PETS	= "Mascotas"
 	XPERL_TYPE_NOT_SPECIFIED = "No indicado"
 	XPERL_TYPE_PET		= "Mascota"
 	XPERL_TYPE_BOSS 	= "Jefe"
@@ -128,6 +113,3 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Sin ventaja: (%s)"
 	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s ha usado la %s que expira en %s"	-- Name, buff name, time to expire
 end
-
-XPERL_LOC_CLASS_PETSHUNTER  = XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
-XPERL_LOC_CLASS_PETSWARLOCK = XPERL_LOC_CLASS_WARLOCK.." "..XPERL_LOC_CLASS_PETS

@@ -27,34 +27,6 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_MINIMENU_RAIDSORT_GROUP	= "Сортировать по группам"
 	XPERL_MINIMENU_RAIDSORT_CLASS	= "Сортировать по классам"
 
--- Class name localization is not too important. The only time these strings
--- are used is when the raid frame titles need to be shown when in class sort
--- mode AND when no players of that class have been seen. X-Perl builds an
--- internal list of WoW localised class names as they are encountered. The WoW
--- api function UnitClass returns both the localized and english class name.
-	XPERL_LOC_CLASS_WARRIOR		= "Воин"
-	XPERL_LOC_CLASS_MAGE		= "Маг"
-	XPERL_LOC_CLASS_ROGUE		= "Разбойник"
-	XPERL_LOC_CLASS_DRUID		= "Друид"
-	XPERL_LOC_CLASS_HUNTER		= "Охотник"
-	XPERL_LOC_CLASS_SHAMAN		= "Шаман"
-	XPERL_LOC_CLASS_PRIEST		= "Жрец"
-	XPERL_LOC_CLASS_WARLOCK		= "Чернокнижник"
-	XPERL_LOC_CLASS_PALADIN		= "Паладин"
-	XPERL_LOC_CLASS_DEATHKNIGHT = "Рыцарь cмерти"
-
-	XPERL_LOC_CLASS_WARRIORFEM	= "Воин"
-	XPERL_LOC_CLASS_MAGEFEM		= "Маг"
-	XPERL_LOC_CLASS_ROGUEFEM	= "Разбойница"
-	XPERL_LOC_CLASS_DRUIDFEM	= "Друид"
-	XPERL_LOC_CLASS_HUNTERFEM	= "Охотница"
-	XPERL_LOC_CLASS_SHAMANFEM	= "Шаманка"
-	XPERL_LOC_CLASS_PRIESTFEM	= "Жрица"
-	XPERL_LOC_CLASS_WARLOCKFEM	= "Чернокнижница"
-	XPERL_LOC_CLASS_PALADINFEM	= "Паладин"
-	XPERL_LOC_CLASS_DEATHKNIGHTFEM = "Рыцарь cмерти"
-	
-	XPERL_LOC_CLASS_PETS		= "Питомцы"
 	XPERL_TYPE_NOT_SPECIFIED	= "Не указанно"
 	XPERL_TYPE_PET				= PET		-- "Pet"
 	XPERL_TYPE_BOSS				= "Босс"
@@ -140,6 +112,3 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s'а %s заканчивается через %s"	-- Name, buff name, time to expire
 
 end
-
-XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
-XPERL_LOC_CLASS_PETSWARLOCK = XPERL_LOC_CLASS_WARLOCK.." "..XPERL_LOC_CLASS_PETS

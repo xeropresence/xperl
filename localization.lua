@@ -6,7 +6,7 @@ XPerl_ProductName		= "|cFFD00000X-Perl|r UnitFrames"
 XPerl_ShortProductName	= "|cFFD00000X-Perl|r"
 XPerl_Author			= "|cFFFF8080Zek|r"
 XPerl_Description		= XPerl_ProductName.." by "..XPerl_Author
-XPerl_VersionNumber 	= "3.0.5e"
+XPerl_VersionNumber 	= "3.0.5f"
 XPerl_Version			= XPerl_Description.." - "..XPerl_VersionNumber
 XPerl_LongDescription	= "UnitFrame replacement for new look Player, Pet, Party, Target, Target's Target, Focus, Raid"
 XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
@@ -30,23 +30,6 @@ XPERL_MINIMENU_RAIDSORT = "Raid Sort"
 XPERL_MINIMENU_RAIDSORT_GROUP = "Sort by Group"
 XPERL_MINIMENU_RAIDSORT_CLASS = "Sort by Class"
 
--- Class name localization is not too important. The only time these strings
--- are used is when the raid frame titles need to be shown when in class sort
--- mode AND when no players of that class have been seen. X-Perl builds an
--- internal list of WoW localised class names as they are encountered. The WoW
--- api function UnitClass returns both the localized and english class name.
-XPERL_LOC_CLASS_WARRIOR = "Warrior"
-XPERL_LOC_CLASS_MAGE	= "Mage"
-XPERL_LOC_CLASS_ROGUE	= "Rogue"
-XPERL_LOC_CLASS_DRUID	= "Druid"
-XPERL_LOC_CLASS_HUNTER	= "Hunter"
-XPERL_LOC_CLASS_SHAMAN	= "Shaman"
-XPERL_LOC_CLASS_PRIEST	= "Priest"
-XPERL_LOC_CLASS_WARLOCK = "Warlock"
-XPERL_LOC_CLASS_PALADIN = "Paladin"
-XPERL_LOC_CLASS_DEATHKNIGHT = "Death Knight"
-
-XPERL_LOC_CLASS_PETS	= "Pets"
 XPERL_TYPE_NOT_SPECIFIED = "Not specified"
 XPERL_TYPE_PET		= PET			-- "Pet"
 XPERL_TYPE_BOSS 	= "Boss"
@@ -224,6 +207,3 @@ XPerl_ArcaneExclusions = {
 	[GetSpellInfo(38913)] = {ROGUE = true},				-- Silence
 	[GetSpellInfo(31555)] = {ROGUE = true, WARRIOR = true}, -- Decayed Intellect
 }
-
-XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
-XPERL_LOC_CLASS_PETSWARLOCK = XPERL_LOC_CLASS_WARLOCK.." "..XPERL_LOC_CLASS_PETS

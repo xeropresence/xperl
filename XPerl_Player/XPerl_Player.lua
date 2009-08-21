@@ -256,7 +256,7 @@ local function XPerl_Player_UpdateXP(self)
 
 			local suffix
 			if (playerxprest > 0) then
-				if (playerxpmax > 10000) then
+				if (playerxprest > 10000) then
 					suffix = format(" (+%dK)", playerxprest / 1000)
 				else
 					suffix = format(" (+%d)", playerxprest)
@@ -333,9 +333,9 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 
 	local h = 40 + ((druidBarExtra + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
-	if (pconf.extendPortrait) then
+	if (pconf.extendPortrait and not InCombatLockdown()) then
 		self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
-	end 
+	end
 	self.statsFrame:SetHeight(h)
 	XPerl_StatsFrameSetup(self, {druidBar, self.statsFrame.xpBar, self.statsFrame.repBar})
 	if (XPerl_Player_Buffs_Position) then

@@ -9,17 +9,6 @@ if (GetLocale() == "frFR") then
 	XPERL_MINIMAP_HELP3 = "\rReal Raid Members: |c00FFFF80%d|r\rReal Party Members: |c00FFFF80%d|r"
 	XPERL_MINIMAP_HELP4 = "\rYou are leader of the real party/raid"
 
-
-	XPERL_LOC_CLASS_WARRIOR = "Guerrier"
-	XPERL_LOC_CLASS_MAGE = "Mage"
-	XPERL_LOC_CLASS_ROGUE = "Voleur"
-	XPERL_LOC_CLASS_DRUID = "Druide"
-	XPERL_LOC_CLASS_HUNTER = "Chasseur"
-	XPERL_LOC_CLASS_SHAMAN = "Chaman"
-	XPERL_LOC_CLASS_PRIEST = "Pr\195\170tre"
-	XPERL_LOC_CLASS_WARLOCK = "D\195\169moniste"
-	XPERL_LOC_CLASS_PALADIN = "Paladin"
-	XPERL_LOC_CLASS_PETS = "Familiers"
 	XPERL_TYPE_NOT_SPECIFIED = "Non indiqu\195\169"
 
 	XPERL_TYPE_PET = "Familiers"
@@ -84,6 +73,3 @@ if (GetLocale() == "frFR") then
 	XPERL_RAID_TOOLTIP_WITHOUTBUFF	      = "Sans buffs: (%s)"
 	XPERL_RAID_TOOLTIP_BUFFEXPIRING	      = "%s's %s expires dans %s"	-- Name, buff name, time to expire
 end
-
-XPERL_LOC_CLASS_PETSHUNTER = XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
-XPERL_LOC_CLASS_PETSWARLOCK = XPERL_LOC_CLASS_WARLOCK.." "..XPERL_LOC_CLASS_PETS

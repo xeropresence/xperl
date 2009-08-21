@@ -496,16 +496,17 @@ if (NotifyInspect) then
 				if (not name) then
 					return
 				else
-					local remoteInspectNeeded = not UnitIsUnit("player", partyid) or nil
 					local cached = talentCache[name]
 					local name1, name2, name3, num1, num2, num3, iconTexture, background
 					if (cached) then
 						num1, name1, num2, name2, num3, name3 = unpack(cached)
 					else
+						local group = GetActiveTalentGroup(remoteInspectNeeded)
+						local remoteInspectNeeded = not UnitIsUnit("player", partyid) or nil
 						if (lastInspectName == UnitName(partyid) or not remoteInspectNeeded) then
-							name1, iconTexture, num1, background  = GetTalentTabInfo(1, remoteInspectNeeded)
-							name2, iconTexture, num2, background  = GetTalentTabInfo(2, remoteInspectNeeded)
-							name3, iconTexture, num3, background  = GetTalentTabInfo(3, remoteInspectNeeded)
+							name1, iconTexture, num1, background  = GetTalentTabInfo(1, remoteInspectNeeded, nil, group)
+							name2, iconTexture, num2, background  = GetTalentTabInfo(2, remoteInspectNeeded, nil, group)
+							name3, iconTexture, num3, background  = GetTalentTabInfo(3, remoteInspectNeeded, nil, group)
 						end
 					end
 

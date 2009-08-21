@@ -52,14 +52,7 @@ XPerl_Roster = {}
 -- NUM_RAID_GROUPS = 8
 -- MEMBERS_PER_RAID_GROUP = 5
 
--- This array will be built up on the fly whenever we pick up a localized class name that we don't already have.
--- The UnitClass function returns both english and localized versions, so it won't matter where the mod is run.
-local ClassNames = {}
-function XPerl_Raid_GetLocalisedClassName(class)
-	return ClassNames[class]
-end
-
-local localGroups = {WARRIOR = XPERL_LOC_CLASS_WARRIOR, DEATHKNIGHT = XPERL_LOC_CLASS_DEATHKNIGHT, MAGE = XPERL_LOC_CLASS_MAGE, PRIEST = XPERL_LOC_CLASS_PRIEST, WARLOCK = XPERL_LOC_CLASS_WARLOCK, DRUID = XPERL_LOC_CLASS_DRUID, ROGUE = XPERL_LOC_CLASS_ROGUE, HUNTER = XPERL_LOC_CLASS_HUNTER, SHAMAN = XPERL_LOC_CLASS_SHAMAN, PALADIN = XPERL_LOC_CLASS_PALADIN}
+local localGroups = LOCALIZED_CLASS_NAMES_MALE
 local WoWclassCount = 0
 for k,v in pairs(localGroups) do WoWclassCount = WoWclassCount + 1 end
 
@@ -1371,39 +1364,46 @@ local QuickFuncs = {
 -- DurabilityCheck(msg, author)
 -- Quick DUR check for those people who don't have oRA2 and CTRA installed
 -- No, I'm not going to replace either mod
-local function XPerl_DurabilityCheck(author)
-	local durPattern = gsub(DURABILITY_TEMPLATE, "%%d", "(%%d+)")
-	local cur, max, broken = 0, 0, 0
-	local tip = GameTooltip
-
-	tip:SetOwner(this, "ANCHOR_RIGHT")
-	for i = 1, 18 do
-		if (GetInventoryItemBroken("player", i)) then
-			broken = broken + 1
+do
+	local tip
+	local function XPerl_DurabilityCheck(author)
+		local durPattern = gsub(DURABILITY_TEMPLATE, "(%%%d-$-d)", "(%%d+)")
+		local cur, max, broken = 0, 0, 0
+		if (not tip) then
+			tip = CreateFrame("GameTooltip", "XPerlDurCheckTooltip")
 		end
 
-		tip:SetInventoryItem("player", i)
+		tip:SetOwner(this, "ANCHOR_RIGHT")
+		tip:ClearAllPoints()
+		tip:SetPoint("TOP", UIParent, "BOTTOM", -200, 0)
+		for i = 1, 18 do
+			if (GetInventoryItemBroken("player", i)) then
+				broken = broken + 1
+			end
 
-		for j = 1,tip:NumLines() do
-			local line = getglobal(tip:GetName().."TextLeft"..j)
-			if (line) then
-				local text = line:GetText()
-				if (text) then
-					local imin, imax = strmatch(text, durPattern)
-					if (imin and imax) then
-						imin, imax = tonumber(imin), tonumber(imax)
-						cur = cur + imin
-						max = max + imax
-						break
+			tip:SetInventoryItem("player", i)
+
+			for j = 1,tip:NumLines() do
+				local line = getglobal(tip:GetName().."TextLeft"..j)
+				if (line) then
+					local text = line:GetText()
+					if (text) then
+						local imin, imax = strmatch(text, durPattern)
+						if (imin and imax) then
+							imin, imax = tonumber(imin), tonumber(imax)
+							cur = cur + imin
+							max = max + imax
+							break
+						end
 					end
 				end
 			end
 		end
+
+		tip:Hide()
+
+		SendAddonMessage("CTRA", format("DUR %s %s %s %s", cur, max, broken, author), "RAID")
 	end
-
-	tip:Hide()
-
-	SendAddonMessage("CTRA", format("DUR %s %s %s %s", cur, max, broken, author), "RAID")
 end
 
 -- XPerl_ItemCheckCount
@@ -1572,16 +1572,12 @@ local function SetRaidRoster()
 				RaidGroupCounts[group] = RaidGroupCounts[group] + 1
 			end
 
-			if (fileName and not ClassNames[fileName]) then
-				ClassNames[fileName] = class
-			end
-
 			local r = XPerl_Roster[name]
 			if (r) then
 				NewRoster[name] = r
 				XPerl_Roster[name] = nil
-				r.afk = UnitIsAFK(unit)
-				r.dnd = UnitIsDND(unit)
+				r.afk = UnitIsAFK(unit) and GetTime() or nil
+				r.dnd = UnitIsDND(unit) and GetTime() or nil
 			else
 				NewRoster[name] = new()
 			end
@@ -1651,8 +1647,8 @@ function XPerl_RaidTitles()
 		titleFrame:SetTextColor(c.r, c.g, c.b)
 
 		if (rconf.sortByClass) then
-			if (ClassNames[confClass]) then
-				titleFrame:SetText(ClassNames[confClass])
+			if (LOCALIZED_CLASS_NAMES_MALE[confClass]) then
+				titleFrame:SetText(LOCALIZED_CLASS_NAMES_MALE[confClass])
 			else
 				titleFrame:SetText(localGroups[confClass])
 			end

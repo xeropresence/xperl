@@ -410,7 +410,7 @@ end
 
 -- XPerl_RaidPets_Titles
 function XPerl_RaidPets_Titles()
-	XPerl_Raid_TitlePets.text:SetText(XPERL_LOC_CLASS_PETS)
+	XPerl_Raid_TitlePets.text:SetText(PETS)
 
 	XPerl_ProtectedCall(XPerl_RaidPets_HideShow)
 

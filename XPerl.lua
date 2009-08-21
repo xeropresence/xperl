@@ -1939,28 +1939,13 @@ function XPerl_TooltipSetUnitDebuff(self, unit, ind, flag)
 	end
 end
 
-local colourList = {
-	[XPERL_LOC_CLASS_WARRIOR]	= "WARRIOR",
-	[XPERL_LOC_CLASS_MAGE]		= "MAGE",
-	[XPERL_LOC_CLASS_ROGUE]		= "ROGUE",
-	[XPERL_LOC_CLASS_DRUID]		= "DRUID",
-	[XPERL_LOC_CLASS_HUNTER]	= "HUNTER",
-	[XPERL_LOC_CLASS_SHAMAN]	= "SHAMAN",
-	[XPERL_LOC_CLASS_PRIEST]	= "PRIEST",
-	[XPERL_LOC_CLASS_WARLOCK]	= "WARLOCK",
-	[XPERL_LOC_CLASS_PALADIN]	= "PALADIN",
-	[XPERL_LOC_CLASS_DEATHKNIGHT] = "DEATHKNIGHT",
-	[XPERL_LOC_CLASS_WARRIORFEM or XPERL_LOC_CLASS_WARRIOR]	= "WARRIOR",
-	[XPERL_LOC_CLASS_MAGEFEM or XPERL_LOC_CLASS_MAGE]		= "MAGE",
-	[XPERL_LOC_CLASS_ROGUEFEM or XPERL_LOC_CLASS_ROGUE]		= "ROGUE",
-	[XPERL_LOC_CLASS_DRUIDFEM or XPERL_LOC_CLASS_DRUID]		= "DRUID",
-	[XPERL_LOC_CLASS_HUNTERFEM or XPERL_LOC_CLASS_HUNTER]	= "HUNTER",
-	[XPERL_LOC_CLASS_SHAMANFEM or XPERL_LOC_CLASS_SHAMAN]	= "SHAMAN",
-	[XPERL_LOC_CLASS_PRIESTFEM or XPERL_LOC_CLASS_PRIEST]	= "PRIEST",
-	[XPERL_LOC_CLASS_WARLOCKFEM or XPERL_LOC_CLASS_WARLOCK] = "WARLOCK",
-	[XPERL_LOC_CLASS_PALADINFEM or XPERL_LOC_CLASS_PALADIN]	= "PALADIN",
-	[XPERL_LOC_CLASS_DEATHKNIGHTFEM or XPERL_LOC_CLASS_DEATHKNIGHT] = "DEATHKNIGHT",
-}
+local colourList = {}
+for class,localClass in pairs(LOCALIZED_CLASS_NAMES_MALE) do
+	colourList[localClass] = class
+end
+for class,localClass in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
+	colourList[localClass] = class
+end
 
 -- XPerl_GuildStatusUpdate()
 function XPerl_GuildStatusUpdate()
@@ -2241,8 +2226,8 @@ local function unitmenuOnPostClick(self)
 			parent = self:GetParent()
 		end
 
-		local point, relativePoint = "TOPLEFT", "BOTTOMLEFT"
-		if (parent:GetTop() / parent:GetEffectiveScale() > UIParent:GetHeight() / UIParent:GetEffectiveScale() / 2) then
+		local point, relativePoint
+		if (parent:GetTop() * parent:GetEffectiveScale() > UIParent:GetHeight() * UIParent:GetEffectiveScale() / 2) then
 			point, relativePoint = "TOPLEFT", "BOTTOMLEFT"
 		else
 			point, relativePoint = "BOTTOMLEFT", "TOPLEFT"
@@ -3242,7 +3227,7 @@ end
 
 -- XPerl_Unit_SetBuffTooltip
 function XPerl_Unit_SetBuffTooltip(self)
-	if (conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
+	if (conf and conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.buffHideInCombat or not InCombatLockdown()) then
 			local frame = self:GetParent():GetParent()
 			local partyid = frame.partyid		--:GetAttribute("unit")
@@ -3256,7 +3241,7 @@ end
 
 -- XPerl_Unit_SetDeBuffTooltip
 function XPerl_Unit_SetDeBuffTooltip(self)
-	if (conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
+	if (conf and conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.hideInCombat or not InCombatLockdown()) then
 			local frame = self:GetParent():GetParent()
 			local partyid = frame.partyid		--:GetAttribute("unit")

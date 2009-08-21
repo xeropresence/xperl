@@ -8,18 +8,6 @@ if (GetLocale() == "deDE") then
 	XPERL_MINIMAP_HELP1 = "|c00FFFFFFLinksklick|r für Optionen (und Frames entsperren)"
 	XPERL_MINIMAP_HELP2 = "|c00FFFFFFRechtsklick|r, um das Icon zu verschieben"
 
-	XPERL_LOC_CLASS_WARRIOR = "Krieger"
-	XPERL_LOC_CLASS_MAGE	= "Magier"
-	XPERL_LOC_CLASS_ROGUE	= "Schurke"
-	XPERL_LOC_CLASS_DRUID	= "Druide"
-	XPERL_LOC_CLASS_HUNTER	= "Jäger"
-	XPERL_LOC_CLASS_SHAMAN	= "Schamane"
-	XPERL_LOC_CLASS_PRIEST	= "Priester"
-	XPERL_LOC_CLASS_WARLOCK = "Hexenmeister"
-	XPERL_LOC_CLASS_PALADIN = "Paladin"
-	XPERL_LOC_CLASS_DEATHKNIGHT = "Todesritter"
-	XPERL_LOC_CLASS_PETS	= "Begleiter"
-
 	XPERL_LOC_CLASS_PALADINFEM	= "Paladin"
 	XPERL_LOC_CLASS_WARRIORFEM	= "Kriegerin"
 	XPERL_LOC_CLASS_MAGEFEM		= "Magierin"
@@ -74,6 +62,3 @@ if (GetLocale() == "deDE") then
 	XPERL_RAID_TOOLTIP_WITHBUFF      = "Mit Buff: (%s)"
 	XPERL_RAID_TOOLTIP_WITHOUTBUFF   = "Ohne Buff: (%s)"
 end
-
-XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
-XPERL_LOC_CLASS_PETSWARLOCK = XPERL_LOC_CLASS_WARLOCK.." "..XPERL_LOC_CLASS_PETS

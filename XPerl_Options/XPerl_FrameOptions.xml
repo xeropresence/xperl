@@ -1250,7 +1250,7 @@
 					<OnShow>
 						local class = XPerlDB.raid.class[self:GetID()].name
 						local textFrame = getglobal(self:GetName().."Text")
-						textFrame:SetText(XPerl_Options_LocalClass(class))
+						textFrame:SetText(LOCALIZED_CLASS_NAMES_MALE[class])
 						self:SetHitRectInsets(0, -(textFrame:GetStringWidth()), 0, 0)
 						self:SetChecked(XPerlDB.raid.class[self:GetID()].enable)
 					</OnShow>

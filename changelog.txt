@@ -2,6 +2,14 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.5f
+Fixed: Unit menu positions for large frame scales.
+Fixed: Protected frame movement error for druids when shifting in combat.
+Fixed: AFK/DND timers being whacky on occasion (I think).
+Fixed: Invalid capture error on german client when oRA or CTRA not installed.
+Fixed: Aggro warning will no longer show for an opposite faction player who can't attack you (Either one not PVP flagged).
+Fixed: Talent info should show correct talent set now.
+
 3.0.5e
 Fixed: Only use curable filter with debuffs for friendly targets. Otherwise castable.
 Fixed: Removed Sanity from Yogg-Saron custom highlights. You'll either need to delete it from your config in options, or reload the new defaults in same place.

@@ -21,23 +21,6 @@ if (GetLocale() == "koKR") then
 	XPERL_MINIMENU_RAIDSORT_GROUP = "파티별 정렬"
 	XPERL_MINIMENU_RAIDSORT_CLASS = "직업별 정렬"
 
-	-- Class name localization is not too important. The only time these strings
-	-- are used is when the raid frame titles need to be shown when in class sort
-	-- mode AND when no players of that class have been seen. X-Perl builds an
-	-- internal list of WoW localised class names as they are encountered. The WoW
-	-- api function UnitClass returns both the localized and english class name.
-	XPERL_LOC_CLASS_WARRIOR	= "전사"
-	XPERL_LOC_CLASS_MAGE	= "마법사"
-	XPERL_LOC_CLASS_ROGUE	= "도적"
-	XPERL_LOC_CLASS_DRUID	= "드루이드"
-	XPERL_LOC_CLASS_HUNTER	= "사냥꾼"
-	XPERL_LOC_CLASS_SHAMAN	= "주술사"
-	XPERL_LOC_CLASS_PRIEST	= "사제"
-	XPERL_LOC_CLASS_WARLOCK	= "흑마법사"
-	XPERL_LOC_CLASS_PALADIN	= "성기사"
-	XPERL_LOC_CLASS_DEATHKNIGHT = "죽음의 기사"
-
-	XPERL_LOC_CLASS_PETS	= "소환수"
 	XPERL_TYPE_NOT_SPECIFIED = "무엇인가"
 	XPERL_TYPE_BOSS		= "보스"
 	XPERL_TYPE_RAREPLUS	= "희귀 정예"
@@ -120,6 +103,3 @@ if (GetLocale() == "koKR") then
 	
 	XPerl_DefaultRangeSpells.ANY = {item = "두꺼운 황천매듭 붕대"}
 end
-
-XPERL_LOC_CLASS_PETSHUNTER	= XPERL_LOC_CLASS_HUNTER.." "..XPERL_LOC_CLASS_PETS
-XPERL_LOC_CLASS_PETSWARLOCK = XPERL_LOC_CLASS_WARLOCK.." "..XPERL_LOC_CLASS_PETS
