@@ -1,7 +1,7 @@
 ﻿-- Local stuff
 
 if (GetLocale() == "zhCN") then
-	XPERL_RAID_MONITOR_TITLE		= "施法监视 |c00A04040(BETA)|r"
+	XPERL_RAID_MONITOR_TITLE		= "施法监视"
 	XPERL_RAID_MONITOR_TOTALS		= "切换显示所有状态监视"
 
 	XPERL_RAID_MONITOR_STATS_RAID_MANA	= "团队法力"

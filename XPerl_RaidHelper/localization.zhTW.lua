@@ -37,5 +37,5 @@ XPERL_HELPER_FINDSET		= "Find 設置為 %s. ('|c00007F00/xp find|r' 來清除)�
 
 XPERL_AGGRO_PLAYER		= "－獲得仇恨－"
 XPERL_AGGRO_PET			= "－寵物獲得仇恨－"
-XPERL_AGGRO_DRAGTIP		= "移動'獲得仇恨'警告訊息的位置"
+XPERL_AGGRO_DRAGTIP		= "拖曳以移動'獲得仇恨'警告訊息的位置"
 end
