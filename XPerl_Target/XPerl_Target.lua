@@ -64,7 +64,9 @@ function XPerl_Target_OnLoad(self, partyid)
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
 		self:RegisterEvent("VARIABLES_LOADED")
-		self:RegisterEvent("INSPECT_TALENT_READY")
+		if (XPerl_Target_Events.INSPECT_TALENT_READY) then
+			self:RegisterEvent("INSPECT_TALENT_READY")
+		end
 		self.combatMask = 0x00010000
 	else
 		XPerl_BlizzFrameDisable(FocusFrame)
@@ -470,24 +472,77 @@ end
 
 -- XPerl_Target_UpdateTalents
 local XPerl_Target_UpdateTalents
-if (NotifyInspect) then
-	local talentCache = setmetatable({}, {__mode = "kv"})
-	local lastInspectName, lastInspectUnit
-	local lastInspectTime = 0
-	hooksecurefunc("NotifyInspect",
-		function(unit)
-			if (UnitIsUnit("player", unit) or not (UnitExists(unit) and UnitIsVisible(unit) and UnitIsConnected(unit) and CheckInteractDistance(unit, 4))) then
-				return
-			end
-			lastInspectUnit = unit
-			lastInspectPending = lastInspectPending + 1
-			if (lastInspectPending > 1) then
-				lastInspectInvalid = true
-			end
-			lastInspectTime = GetTime()
-			lastInspectName = UnitFullName(unit)
+do
+	local function ShowSpec(self, spec, s1, s2, s3)
+		if (self.conf.talentsAsText) then
+			self.creatureTypeFrame.text:SetText(spec)
+		else
+			self.creatureTypeFrame.text:SetFormattedText("%d / %d / %d", s1, s2, s3)
 		end
-	)
+		self.creatureTypeFrame:SetWidth(self.creatureTypeFrame.text:GetStringWidth() + 10)
+		self.creatureTypeFrame:Show()
+
+		AdjustCreatureTypeFrame(self)
+		XPerl_Targets_BuffPositions(self)
+	end
+
+	local LGT = LibStub("LibGroupTalents-1.0", true)
+	local UpdateTalentsLGT
+	if (LGT) then
+		function UpdateTalentsLGT(self)
+			local spec, s1, s2, s3 = LGT:GetUnitTalentSpec(self.partyid)
+			if (spec) then
+				ShowSpec(self, spec, s1, s2, s3)
+				return true
+			end
+		end
+	end
+
+	local inspectReady
+	local lastInspectTime = 0
+	local lastInspectName, lastInspectUnit, lastInspectGUID
+	local talentCache = setmetatable({}, {__mode = "kv"})
+	local LTQ = LibStub("LibTalentQuery-1.0", true)
+	if (LTQ) then
+		local function TalentQuery_Ready(e, name, realm, unit)
+			if (UnitIsUnit(unit, XPerl_Target.partyid)) then
+				inspectReady = true
+				XPerl_Target_UpdateTalents(XPerl_Target)
+			end
+		end
+		LTQ:RegisterCallback("TalentQuery_Ready", TalentQuery_Ready)
+	else
+		hooksecurefunc("NotifyInspect",
+			function(unit)
+				if (UnitIsUnit("player", unit) or not (UnitExists(unit) and UnitIsVisible(unit) and UnitIsConnected(unit) and CheckInteractDistance(unit, 4))) then
+					return
+				end
+				lastInspectUnit = unit
+				lastInspectPending = lastInspectPending + 1
+				if (lastInspectPending > 1) then
+					lastInspectInvalid = true
+				end
+				lastInspectTime = GetTime()
+				lastInspectGUID = UnitGUID(unit)
+				lastInspectName = UnitFullName(unit)
+			end
+		)
+
+		-- INSPECT_TALENT_READY
+		function XPerl_Target_Events:INSPECT_TALENT_READY()
+			lastInspectPending = lastInspectPending - 1
+			if (lastInspectPending == 0) then
+				if (not lastInspectInvalid) then
+					if (UnitGUID(lastInspectUnit) == lastInspectGUID) then
+						inspectReady = true
+						XPerl_Target_UpdateTalents(self)
+					end
+				end
+				lastInspectInvalid = nil
+			end
+		end
+	end
+
 	function XPerl_Target_UpdateTalents(self)
 		if (not self.creatureTypeFrame:IsShown()) then
 			local partyid = self.partyid
@@ -496,18 +551,21 @@ if (NotifyInspect) then
 				if (not name) then
 					return
 				else
+					if (UpdateTalentsLGT and UpdateTalentsLGT(self)) then
+						return
+					end
+
 					local cached = talentCache[name]
 					local name1, name2, name3, num1, num2, num3, iconTexture, background
 					if (cached) then
 						num1, name1, num2, name2, num3, name3 = unpack(cached)
-					else
+					elseif (inspectReady) then
 						local group = GetActiveTalentGroup(remoteInspectNeeded)
 						local remoteInspectNeeded = not UnitIsUnit("player", partyid) or nil
-						if (lastInspectName == UnitName(partyid) or not remoteInspectNeeded) then
-							name1, iconTexture, num1, background  = GetTalentTabInfo(1, remoteInspectNeeded, nil, group)
-							name2, iconTexture, num2, background  = GetTalentTabInfo(2, remoteInspectNeeded, nil, group)
-							name3, iconTexture, num3, background  = GetTalentTabInfo(3, remoteInspectNeeded, nil, group)
-						end
+						name1, iconTexture, num1, background  = GetTalentTabInfo(1, remoteInspectNeeded, nil, group)
+						name2, iconTexture, num2, background  = GetTalentTabInfo(2, remoteInspectNeeded, nil, group)
+						name3, iconTexture, num3, background  = GetTalentTabInfo(3, remoteInspectNeeded, nil, group)
+						inspectReady = nil
 					end
 
 					if (name1 and name2 and name3) then
@@ -515,35 +573,34 @@ if (NotifyInspect) then
 							if (not cached) then
 								talentCache[name] = {num1, name1, num2, name2, num3, name3}
 							end
-							if (self.conf.talentsAsText) then
-								local title
-								if (num1 > num2 and num1 > num3) then
-									title = name1
-								elseif (num2 > num1 and num2 > num3) then
-									title = name2
-								elseif (num3 > num1 and num3 > num2) then
-									title = name3
-								end
-								self.creatureTypeFrame.text:SetText(title)
-							else
-								self.creatureTypeFrame.text:SetFormattedText("%d / %d / %d", num1, num2, num3)
+							local title
+							if (num1 > num2 and num1 > num3) then
+								title = name1
+							elseif (num2 > num1 and num2 > num3) then
+								title = name2
+							elseif (num3 > num1 and num3 > num2) then
+								title = name3
 							end
-							self.creatureTypeFrame:SetWidth(self.creatureTypeFrame.text:GetStringWidth() + 10)
-							self.creatureTypeFrame:Show()
-
-							AdjustCreatureTypeFrame(self)
-							XPerl_Targets_BuffPositions(self)
+							ShowSpec(self, title, num1, num2, num3)
 							return
 						end
 					end
 
-					if (not cached and (lastInspectPending == 0 or GetTime() > lastInspectTime + 15)) then
-						if (UnitExists(partyid) and UnitIsVisible(partyid) and CheckInteractDistance(partyid, 4)) then
-							if (not UnitIsUnit("player", partyid)) then
-								lastInspectInvalid = nil
-								lastInspectPending = 0
-								if (lastInspectName ~= UnitFullName(partyid)) then
-									NotifyInspect(partyid)
+					if (not cached) then
+						if (LTQ) then
+							inspectReady = nil
+							LTQ:Query(partyid)
+						else
+							if (lastInspectPending == 0 or GetTime() > lastInspectTime + 15) then
+								if (UnitExists(partyid) and UnitIsVisible(partyid) and CheckInteractDistance(partyid, 4)) then
+									if (not UnitIsUnit("player", partyid)) then
+										inspectReady = nil
+										lastInspectInvalid = nil
+										lastInspectPending = 0
+										if (lastInspectName ~= UnitFullName(partyid)) then
+											NotifyInspect(partyid)
+										end
+									end
 								end
 							end
 						end
@@ -551,9 +608,6 @@ if (NotifyInspect) then
 				end
 			end
 		end
-	end
-else
-	function XPerl_Target_UpdateTalents()
 	end
 end
 
@@ -1329,17 +1383,6 @@ function XPerl_Target_Events:PARTY_LOOT_METHOD_CHANGED()
 end
 XPerl_Target_Events.PARTY_MEMBERS_CHANGED = XPerl_Target_Events.PARTY_LOOT_METHOD_CHANGED
 XPerl_Target_Events.PARTY_LEADER_CHANGED  = XPerl_Target_Events.PARTY_LOOT_METHOD_CHANGED
-
--- INSPECT_TALENT_READY
-function XPerl_Target_Events:INSPECT_TALENT_READY()
-	lastInspectPending = lastInspectPending - 1
-	if (lastInspectPending == 0) then
-		if (not lastInspectInvalid) then
-			XPerl_Target_UpdateTalents(self)
-		end
-		lastInspectInvalid = nil
-	end
-end
 
 function XPerl_Target_Events:UNIT_THREAT_LIST_UPDATE(unit)
 	if (UnitCanAttack("player", self.partyid)) then
