@@ -3511,6 +3511,9 @@
 									XPerl_Options_EnableSibling("HighlightShields")
 									XPerl_Options_EnableSibling("HighlightHotcount")
 									XPerl_Options_EnableSibling("HighlightTarget")
+									XPerl_Options_EnableSibling("HighlightMending")
+									XPerl_Options_EnableSibling("HighlightSparkles")
+									XPerl_Options_EnableSibling("ExtraSparkles")
 
 									local _, class = UnitClass("player")
 									if (class ~= "DRUID" and class ~= "PRIEST" and class ~= "SHAMAN") then
@@ -4580,6 +4583,7 @@
 								self.configClick = XPerl_Player_Reset
 								self.Validate = function()
 									XPerl_Options_EnableSibling("Portrait3D")
+									XPerl_Options_EnableSibling("Extend")
 									XPerl_Options_EnableSibling("HitIndicator")
 								end
 								XPerl_Options_RegisterProtected(self)
@@ -4702,6 +4706,8 @@
 								self.configClick = XPerl_ArcaneBar_Set
 								self.Validate = function()
 									XPerl_Options_EnableSibling("CastTime")
+									XPerl_Options_EnableSibling("PreCast")
+									XPerl_Options_EnableSibling("CastTimeInside", "CastTime")
 								end
 							</OnLoad>
 						</Scripts>
@@ -4735,6 +4741,9 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_CAST_TIME")
 								self.configBase = "XPerlDB.player.castBar"
 								self.configIndex = "castTime"
+								self.Validate = function()
+									XPerl_Options_EnableSibling("CastTimeInside")
+								end
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -5477,6 +5486,7 @@
 								self.configClick = XPerl_Player_Pet_Reset
 								self.Validate = function()
 									XPerl_Options_EnableSibling("Portrait3D")
+									XPerl_Options_EnableSibling("Extend")
 									XPerl_Options_EnableSibling("HitIndicator")
 								end
 								XPerl_Options_RegisterProtected(self)
@@ -6391,6 +6401,7 @@
 								self.Validate = function()
 									XPerl_Options_EnableSibling("Portrait3D")
 									XPerl_Options_EnableSibling("HitIndicator")
+									XPerl_Options_EnableSibling("OnlyMine", "HitIndicator")
 								end
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
@@ -7829,6 +7840,10 @@
 									XPerl_Options_EnableSibling("Portrait")
 									XPerl_Options_EnableSibling("Portrait3D", "Portrait")
 									XPerl_Options_EnableSibling("HitIndicator", "Portrait")
+									XPerl_Options_EnableSibling("OnlyMine", "HitIndicator", "Enable")
+									XPerl_Options_EnableSibling("Threat")
+									XPerl_Options_EnableSibling("ThreatName", "Threat")
+									XPerl_Options_EnableSibling("ThreatPortrait", "Threat")
 									XPerl_Options_EnableSibling("ArcaneBar")
 									XPerl_Options_EnableSibling("Mana")
 									XPerl_Options_EnableSibling("Reaction")
@@ -7845,6 +7860,23 @@
 									XPerl_Options_EnableSibling("Healer_DeficitOnly", "Healer_Healer")
 									XPerl_Options_EnableSibling("Healer_DeficitMax", "Healer_Healer")
 									XPerl_Options_EnableSibling("Healer_CurMaxDeficit", "Healer_Healer")
+									XPerl_Options_EnableSibling("Width")
+									XPerl_Options_EnableSibling("Buffs")
+									XPerl_Options_EnableSibling("Debuffs")
+									XPerl_Options_EnableSibling("BuffSize")
+									XPerl_Options_EnableSibling("DebuffSize")
+									XPerl_Options_EnableSibling("BuffWrap")
+									XPerl_Options_EnableSibling("MaxRows")
+									XPerl_Options_EnableSibling("Castable")
+									XPerl_Options_EnableSibling("Curable")
+									XPerl_Options_EnableSibling("Above")
+									XPerl_Options_EnableSibling("BigBuffs")
+									XPerl_Options_EnableSibling("BigDebuffs")
+									XPerl_Options_EnableSibling("BigPet", "BigBuffs")
+									XPerl_Options_EnableSibling("DebuffHighlight")
+									XPerl_Options_EnableSibling("All", "DebuffHighlight")
+									XPerl_Options_EnableSibling("Friend", "DebuffHighlight")
+									XPerl_Options_EnableSibling("Enemy", "DebuffHighlight")
 								end
 							</OnLoad>
 						</Scripts>
@@ -7865,6 +7897,7 @@
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
 									XPerl_Options_EnableSibling("Portrait3D", "Enable")
+									XPerl_Options_EnableSibling("OnlyMine", "HitIndicator", "Enable")
 									XPerl_Options_EnableSibling("HitIndicator", "Enable")
 								end
 								XPerl_Options_RegisterProtected(self)
@@ -8826,6 +8859,9 @@
 								self.configBase = "XPerlDB.focus.debuffs"
 								self.configIndex = "big"
 								self.configClick = XPerl_Target_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling("BigPet")
+								end
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -9871,8 +9907,10 @@
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_SHOW")
 								self.Validate = function()
+									XPerl_Options_EnableSibling("NotInBG")
 									XPerl_Options_EnableSibling("Titles")
 									XPerl_Options_EnableSibling("Mana")
+									XPerl_Options_EnableSibling("ManaPercent", "Mana")
 									XPerl_Options_EnableSibling("HealthText")
 									XPerl_Options_EnableSibling("Percent", "HealthText")
 									XPerl_Options_EnableSibling("Values", "HealthText")
@@ -9880,12 +9918,18 @@
 									XPerl_Options_EnableSibling("Debuffs")
 									XPerl_Options_EnableSibling("Castable")
 									XPerl_Options_EnableSibling("BuffsRight")
-									XPerl_Options_EnableSibling("BuffsInside")
+									XPerl_Options_EnableSibling("BuffsInside", "BuffsRight")
+									XPerl_Options_EnableSibling("BuffsUntilDebuffed")
+									XPerl_Options_EnableSibling("BuffTooltipHelper")
+									XPerl_Options_EnableSibling("BuffHelperNoSort", "BuffTooltipHelper")
+									XPerl_Options_EnableSibling("BuffHelperSortGroup", "BuffTooltipHelper")
+									XPerl_Options_EnableSibling("BuffHelperSortClass", "BuffTooltipHelper")
+									XPerl_Options_EnableSibling("BuffTooltipHelperVis", "BuffTooltipHelper")
 									XPerl_Options_EnableSibling("Healer")
-									for i = 1,9 do
+									for i = 1,10 do
 										XPerl_Options_EnableSibling("Groups_Grp"..i)
 									end
-									for i = 1,9 do
+									for i = 1,10 do
 										XPerl_Options_EnableSibling("Groups_ClassSel"..i.."_Enable")
 										XPerl_Options_EnableSibling("Groups_ClassSel"..i.."_Up")
 										XPerl_Options_EnableSibling("Groups_ClassSel"..i.."_Down")
@@ -9905,9 +9949,27 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_NotInBG" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_Enable" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_NOTINBG")
+								self.configBase = "XPerlDB.raid"
+								self.configIndex = "notInBG"
+								self.configClick = XPerl_RaidPets_OptionActions
+								XPerl_Options_RegisterProtected(self)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_RaidPets" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_Enable" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOP" relativeTo="$parent_NotInBG" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -11478,7 +11540,7 @@
 								<Offset><AbsDimension x="0" y="-5"/></Offset>
 							</Anchor>
 							<Anchor point="BOTTOMRIGHT" relativePoint="RIGHT" relativeTo="XPerl_Options_Area_Tabs">
-								<Offset><AbsDimension x="-5" y="5"/></Offset>
+								<Offset><AbsDimension x="-5" y="-5"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Frames>
@@ -11805,6 +11867,37 @@
 								</Scripts>
 							</Button>
 
+							<Button name="$parent_ColourRunicBar" inherits="XPerlColorPickerTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_ColourFocusBar" relativePoint="BOTTOMLEFT">
+										<Offset>
+											<AbsDimension x="0" y="-2" />
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_RUNIC")
+									</OnLoad>
+									<OnShow>
+										local f = getglobal(self:GetName().."_Colour")
+										f:SetVertexColor(XPerlDB.colour.bar.runic_power.r, XPerlDB.colour.bar.runic_power.g, XPerlDB.colour.bar.runic_power.b)
+									</OnShow>
+									<OnClick>
+										XPerlLocked = 1
+										XPerl_ColourPicker.ParentFrame = XPerl_Options
+										XPerl_ColourPicker.varGet = function() return XPerlDB and XPerlDB.colour.bar.runic_power end
+										XPerl_ColourPicker.varSet = function(n)
+														XPerlDB.colour.bar.runic_power.r = n.r
+														XPerlDB.colour.bar.runic_power.g = n.g
+														XPerlDB.colour.bar.runic_power.b = n.b
+													end
+										XPerl_ColourPicker.alpha = nil
+										XPerl_ColourPicker:Show()
+									</OnClick>
+								</Scripts>
+							</Button>
+
 							<Button name="$parent_Reset" inherits="XPerlButtonTemplate">
 								<FontString inherits="GameFontNormalSmall"/>
 								<Size>
@@ -12093,7 +12186,7 @@
 								<Offset><AbsDimension x="5" y="-5"/></Offset>
 							</Anchor>
 							<Anchor point="BOTTOMRIGHT" relativePoint="CENTER" relativeTo="XPerl_Options_Area_Tabs">
-								<Offset><AbsDimension x="-5" y="5"/></Offset>
+								<Offset><AbsDimension x="-5" y="-5"/></Offset>
 							</Anchor>
 						</Anchors>
 

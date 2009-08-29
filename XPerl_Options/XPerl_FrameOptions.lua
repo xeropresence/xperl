@@ -842,10 +842,9 @@ end
 
 -- XPerl_Options_GetRangeTexture
 function XPerl_Options_GetRangeTexture(self)
-
 	local spell = GetSpell()
 	if (spell) then
-	        local tex = GetSpellTexture(spell)
+		local tex = GetSpellTexture(spell)
 		return tex, spell
 	end
 
@@ -863,15 +862,24 @@ end
 -- XPerl_Options_DoRangeTooltip
 function XPerl_Options_DoRangeTooltip(self)
 
-        GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)
+	GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)
 
 	local spell = GetSpell()
 	if (spell) then
-		if (XPerlDB.rangeFinder[XPerl_Options.optRange].spell) then
-	        	GameTooltip:SetText(XPERL_CONF_CUSTOMSPELL_DESC)
+		local link = GetSpellLink(spell)
+		if (link) then
+			GameTooltip:SetHyperlink(link)
 		else
-	        	GameTooltip:SetText(XPERL_CONF_CUSTOMSPELL_DESC2)
+			GameTooltip:SetText(spell or UNKNOWN, 1, 1, 1)
 		end
+
+		GameTooltip:AddLine(" ")
+		if (XPerlDB.rangeFinder[XPerl_Options.optRange].spell) then
+			GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC, 0.5, 1, 0.5)
+		else
+			GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC2, 0.5, 1, 0.5)
+		end
+		GameTooltip:Show()
 		return
 	end
 
@@ -884,10 +892,11 @@ function XPerl_Options_DoRangeTooltip(self)
 				local newLink = format("item:%d:0:0:0", itemId)
 				GameTooltip:SetHyperlink(newLink)
 
+				GameTooltip:AddLine(" ")
 				if (XPerlDB.rangeFinder[XPerl_Options.optRange].CustomRangeItem) then
-					GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+					GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC, 0.5, 1, 0.5)
 				else
-					GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC2, NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1)
+					GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC2, 0.5, 1, 0.5)
 				end
 				GameTooltip:Show()
 			end

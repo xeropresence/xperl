@@ -390,6 +390,7 @@ function XPerl_Globals_OnEvent(self, event, ...)
 		XPerl_Load_LQHLHC()			-- Load LibHealComm / LibQuickHealth
 
 	elseif (event == "PLAYER_ENTERING_WORLD") then
+		XPerl_GrabPublics()
 		self:UnregisterEvent(event)
 
 		self:SetScript("OnEvent", onEventPostSetup)

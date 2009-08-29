@@ -1067,8 +1067,16 @@ function XPerl_Raid_HideShowRaid()
 			singleGroup = XPerl_Party_SingleGroup()
 		end
 	end
+	
+	local enable = rconf.enable
+	if (enable) then
+		if (select(2, IsInInstance()) == "pvp") then
+			enable = not rconf.notInBG
+		end
+	end
+
 	for i = 1,WoWclassCount do
-		if (rconf.group[i] == 1 and rconf.enable and (i < 9 or rconf.sortByClass) and not singleGroup) then
+		if (rconf.group[i] == 1 and enable and (i < 9 or rconf.sortByClass) and not singleGroup) then
 			if (not raidHeaders[i]:IsShown()) then
 				raidHeaders[i]:Show()
 			end
@@ -1364,9 +1372,10 @@ local QuickFuncs = {
 -- DurabilityCheck(msg, author)
 -- Quick DUR check for those people who don't have oRA2 and CTRA installed
 -- No, I'm not going to replace either mod
+local XPerl_DurabilityCheck
 do
 	local tip
-	local function XPerl_DurabilityCheck(author)
+	function XPerl_DurabilityCheck(author)
 		local durPattern = gsub(DURABILITY_TEMPLATE, "(%%%d-$-d)", "(%%d+)")
 		local cur, max, broken = 0, 0, 0
 		if (not tip) then
@@ -1656,7 +1665,14 @@ function XPerl_RaidTitles()
 			titleFrame:SetFormattedText(XPERL_RAID_GROUP, i)
 		end
 
-		if (XPerlLocked == 0 or (RaidGroupCounts[i] > 0 and rconf.enable and rconf.group[i] and not singleGroup)) then
+		local enable = rconf.enable
+		if (enable) then
+			if (select(2, IsInInstance()) == "pvp") then
+				enable = not rconf.notInBG
+			end
+		end
+
+		if (XPerlLocked == 0 or (RaidGroupCounts[i] > 0 and enable and rconf.group[i] and not singleGroup)) then
 			if (XPerlLocked == 0 or rconf.titles) then
 				if (not titleFrame:IsShown()) then
 					titleFrame:Show()

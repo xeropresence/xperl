@@ -5,6 +5,7 @@
 local conf
 XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
 local percD	= "%d"..PERCENT_SYMBOL
+local perc1F = "%.1f"..PERCENT_SYMBOL
 
 -- Some local copies for speed
 local strsub = strsub
@@ -379,11 +380,9 @@ function XPerl_StartupSpellRange()
 		XPerl_DefaultRangeSpells.ANY = {}
 	end
 
-	if (not XPerl_DefaultRangeSpells.ANY.item) then
-		local b = FindABandage()
-		if (b) then
-			XPerl_DefaultRangeSpells.ANY.item = b
-		end
+	local b = FindABandage()
+	if (b) then
+		XPerl_DefaultRangeSpells.ANY.item = b
 	end
 
 	local rf = conf.rangeFinder
@@ -705,7 +704,12 @@ function XPerl_SetHealthBar(self, hp, Max)
 		if (self.conf.healerMode and self.conf.healerMode.enable and self.conf.healerMode.type == 2) then
 			bar.percent:SetText(hp - Max)
 		else
-			bar.percent:SetFormattedText(percD or "%d%%", (percent + 0.005) * 100)
+			local show = percent * 100
+			if (show < 10) then
+				bar.percent:SetFormattedText(perc1F or "%.1f%%", show + 0.05)
+			else
+				bar.percent:SetFormattedText(percD or "%d%%", show + 0.5)
+			end
 		end
 	end
 
@@ -3490,6 +3494,13 @@ function XPerl_RegisterScalableFrame(self, anchorFrame, minScale, maxScale, resi
 	self.corner.scaling = true
 	scaleMouseChange(anchorFrame)
 	self.corner.scaling = nil
+end
+
+-- XPerl_GrabPublics
+function XPerl_GrabPublics()
+	-- Reassigning here (PLAYER_ENTERING_WORLD) in case someone writes some filtering mechanism (Doing one for Utopia)
+	UnitBuff = _G.UnitBuff
+	UnitDebuff = _G.UnitDebuff
 end
 
 -- HealComm/LibQuickHealth interface

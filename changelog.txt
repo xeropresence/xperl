@@ -2,6 +2,14 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.5g
+New: Option for Runic Energy colour.
+Fixed: Default item selection for range finder.
+Fixed: Option for not showing raid frames in battlegrounds.
+Fixed: XPerl_DurabilityCheck error when no oRA/CTRA installed.
+Changed: Won't show hit indicator on player for heals if at full health.
+Changed: Shows one decimal place on health % when under 10%.
+
 3.0.5f
 Fixed: Unit menu positions for large frame scales.
 Fixed: Protected frame movement error for druids when shifting in combat.

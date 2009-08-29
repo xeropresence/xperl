@@ -551,7 +551,9 @@ end
 function XPerl_Player_Events:UNIT_COMBAT(...)
 	if (arg1 == self.partyid) then
 		if (pconf.hitIndicator and pconf.portrait) then
-			CombatFeedback_OnCombatEvent(self, ...)
+			if (arg2 ~= "HEAL" or UnitHealth(self.partyid) < UnitHealthMax(self.partyid)) then
+				CombatFeedback_OnCombatEvent(self, ...)
+			end
 		end
 
 		if (arg2 == "HEAL") then
@@ -563,10 +565,10 @@ function XPerl_Player_Events:UNIT_COMBAT(...)
 end
 
 -- UNIT_SPELLMISS
-function XPerl_Player_Events:UNIT_SPELLMISS()
+function XPerl_Player_Events:UNIT_SPELLMISS(...)
 	if (pconf.hitIndicator and pconf.portrait) then
 		if (arg1 == self.partyid) then
-			CombatFeedback_OnSpellMissEvent(self, arg2)
+			CombatFeedback_OnSpellMissEvent(self, ...)
 		end
 	end
 end
