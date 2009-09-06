@@ -123,7 +123,7 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1)
 		end
 
 		self:SetStatusBarColor(barColours.main.r, barColours.main.g, barColours.main.b, conf.transparency.frame)
-		self.spellText:SetText(name)
+		self.spellText:SetText(name:gsub(" %- No Text", ""))
 		self.barParentName:Hide()
 		self.barSpark:Show()
 		self.startTime = startTime / 1000
@@ -209,7 +209,7 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1)
 		self:SetStatusBarColor(barColours.channel.r, barColours.channel.g, barColours.channel.b, conf.transparency.frame)
 		self.barSpark:Show()
 		self.barParentName:Hide()
-		self.spellText:SetText(name)
+		self.spellText:SetText(name:gsub(" %- No Text", ""))
 		self.maxValue = 1
 		self.startTime = startTime / 1000
 		self.endTime = endTime / 1000

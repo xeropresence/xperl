@@ -19,9 +19,9 @@ local UnitPlayerOrPetInParty = UnitPlayerOrPetInParty
 local UnitName = UnitName
 local cos = math.cos
 local sin = math.sin
-local xperlHealComms = XPERL_COMMS_PREFIX.."Heal"
 local playerGUID
 local band = bit.band
+local HealComm
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
@@ -160,7 +160,7 @@ xpHigh.list = {}
 xpHigh.callbacks = {}
 xpHigh.lastExpireCheck = 0
 xpHigh.flashers = {}
-xpHigh.gettingGUIDsFrom = {}
+--xpHigh.gettingGUIDsFrom = {}
 xpHigh.mendingIcons = {}
 xpHigh.shields = {}
 
@@ -284,6 +284,7 @@ function xpHigh:HasEffect(guid, effect)
 end
 
 -- MakeNameToGUIDLookup
+--[[
 function xpHigh:MakeNameToGUIDLookup()
 	del(self.lookup)
 	local l = new()
@@ -314,12 +315,13 @@ function xpHigh:MakeNameToGUIDLookup()
 
 	del(tempGetting)
 end
+]]
 
 -- xpHigh:OnUpdate
 function xpHigh:OnUpdate(elapsed)
 	if (self.rosterUpdate) then
 		self.rosterUpdate = nil
-		if (select(2, IsInInstance()) == "pvp") then
+--[[		if (select(2, IsInInstance()) == "pvp") then
 			self.distribution = "BATTLEGROUND"
 		elseif (GetNumRaidMembers() > 0) then
 			self.distribution = "RAID"
@@ -331,6 +333,7 @@ function xpHigh:OnUpdate(elapsed)
 		end
 
 		self:MakeNameToGUIDLookup()
+]]
 
 		self:RefreshAllAuras()			-- New roster, get all
 		if (not (conf.highlight.enable and (conf.highlight.HOT or conf.highlight.SHIELD or conf.highlight.HEAL))) then
@@ -1520,88 +1523,6 @@ function xpHigh:OnEvent(event, ...)
 	self[event](self, ...)
 end
 
--- xpHigh:UNIT_SPELLCAST_SENT
-function xpHigh:UNIT_SPELLCAST_SENT(unit, spell, rank, targetName)
-	if (unit == "player") then
-		local guid
-		if (UnitName("mouseover") == targetName) then
-			guid = UnitGUID("mouseover")
-		elseif (UnitName("target") == targetName) then
-			guid = UnitGUID("target")
-		elseif (UnitName("focus") == targetName) then
-			guid = UnitGUID("focus")
-		else
-			guid = self.lookup[targetName]
-		end
-
-		local t = healSpells[spell]
-		if (t) then
-			self.castSpell = spell
-			self.castTarget = targetName
-			self.castGUID = guid
-			if (conf.highlight.HEAL) then
-				self:Add(guid or targetName, "HEAL", max(0.5, t), "player")
-			end
-			if (self.distribution) then
-				if (guid) then
-					SendAddonMessage(xperlHealComms, format("HEALG %s %d", guid, t), nil, self.distribution)
-				end
-				SendAddonMessage(xperlHealComms, "HEAL "..targetName, nil, self.distribution)
-			end
-		else
-			t = groupHealSpells[spell]
-			if (t) then
-				local findGUID = t < 0 and guid or UnitGUID(targetName)
-				local targetGroup
-				self.castSpell = spell
-				self.castTarget = targetName
-				self.castGUID = guid
-
-				for unit, unitName, unitClass, group in XPerl_NextMember do
-					if (UnitGUID(unit) == findGUID) then
-						targetGroup = group
-						break
-					end
-				end
-				if (targetGroup) then
-					t = max(0.5, t)
-					for unit, unitName, unitClass, group in XPerl_NextMember do
-						if (group == targetGroup) then
-							if (UnitExists(unit) and UnitIsVisible(unit)) then
-								local guid = UnitGUID(unit)
-								if (conf.highlight.HEAL) then
-									self:Add(guid or unitName, "HEAL", t, "player")
-								end
-								if (self.distribution) then
-									SendAddonMessage(xperlHealComms, "HEAL "..unitName, nil, self.distribution)
-									SendAddonMessage(xperlHealComms, format("HEALG %s %d", guid, t), nil, self.distribution)
-								end
-							end
-						end
-					end
-				end
-			end
-		end
-	end
-end
-
--- xpHigh:UNIT_SPELLCAST_FAILED
-function xpHigh:UNIT_SPELLCAST_FAILED(unit)
-	if (unit == "player" and self.castTarget) then
-		if (conf.highlight.HEAL) then
-			self:Remove(self.castTarget, "HEAL")
-		end
-		if (self.distribution) then
-			SendAddonMessage(xperlHealComms, "FAIL "..self.castTarget, nil, self.distribution)
-		end
-		self.castTarget = nil
-		self.castSpell = nil
-		self.castGUID = nil
-	end
-end
-
-xpHigh.UNIT_SPELLCAST_INTERRUPTED = xpHigh.UNIT_SPELLCAST_FAILED
-
 xpHigh.clEvents = {}
 -- COMBAT_LOG_EVENT_UNFILTERED
 -- Using this instead of UNIT_SPELLCAST_SUCCEEDED so we can use the dstGUID for a guarenteed correct target, rather than implied and not necessarily correct name
@@ -1820,48 +1741,33 @@ function xpHigh:Damage(guid, absorbed)
 end
 
 -- xpHigh:CHAT_MSG_ADDON
-function xpHigh:CHAT_MSG_ADDON(source, msg, channel, player)
+--[[ function xpHigh:CHAT_MSG_ADDON(source, msg, channel, player)
 	if (player ~= playerName and conf.highlight.HEAL) then
 		if (source == "HealComm") then
 			local name, healSize = strmatch(msg, "^(.+):(.+)$")
 			if (name) then
 				self:Add(name, "HEAL", 1, source)
 			end
-		elseif (source == xperlHealComms) then
-			local msgType, name, dur = strmatch(msg, "^(%a+) ([%a%d]+) (%d+)")
-			if (msgType) then
-				if (msgType == "HEALG") then
-					self.gettingGUIDsFrom[source] = true
-					self:Add(name, "HEAL", 1, source)
-				elseif (msgType == "FAILG") then
-					self.gettingGUIDsFrom[source] = true
-					self:Remove(name, "HEAL")
-				end
-			else
-				msgType, name = strmatch(msg, "^(%a+) (%a+)")
-				
-				if (msgType) then
-					if (msgType == "HEAL") then
-						if (not self.gettingGUIDsFrom[source]) then
-							self:Add(name, "HEAL", 1, source)
-						end
-					elseif (msgType == "FAIL") then
-						if (not self.gettingGUIDsFrom[source]) then
-							self:Remove(name, "HEAL")
-						end
-					end
-				--else
-				--	ChatFrame1:AddMessage("Un-parsed X-Perl Heal comms: "..msg)
-				end
-			end
 		end
 	end
-end
+end ]]
 
 -- xpHigh:CommLibCallback()
-function xpHigh:CommLibCallback(sender, senderUnit, action, target, channel, spell, rank, displayName, icon, startTime, endTime, isTradeSkill)
-	if (not channel and healSpells[spell]) then
-		self:Add(target, "HEAL", healSpells[spell], senderUnit)
+--function xpHigh:CommLibCallback(sender, senderUnit, action, target, channel, spell, rank, displayName, icon, startTime, endTime, isTradeSkill)
+--	if (not channel and healSpells[spell]) then
+--		self:Add(target, "HEAL", healSpells[spell], senderUnit)
+--	end
+--end
+
+-- HealComm_DirectHealStart
+function xpHigh:HealComm_DirectHealStart(e, playerName, CastInfoHealingSize, CastInfoEndTime, SentTargetName)
+	self:Add(UnitGUID(SentTargetName), "HEAL", max(1, CastInfoEndTime - GetTime()), playerName)
+end
+
+-- HealComm_DirectHealStop
+function xpHigh:HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
+	for i = 1,select("#", ...) do
+		self:Remove(UnitGUID(select(i, ...)), "HEAL")
 	end
 end
 
@@ -2029,8 +1935,8 @@ function xpHigh:OptionChange()
 	_, playerClass = UnitClass("player")
 	playerName = UnitName("player")
 
-	self:RegisterEvent("UNIT_SPELLCAST_SENT")
-	self:RegisterEvent("UNIT_SPELLCAST_FAILED")
+	--self:RegisterEvent("UNIT_SPELLCAST_SENT")
+	--self:RegisterEvent("UNIT_SPELLCAST_FAILED")
 
 	if (conf.highlight.enable and (conf.highlight.HOT or conf.highlight.SHIELD or conf.highlight.HEAL)) then
 		events = true
@@ -2049,8 +1955,8 @@ function xpHigh:OptionChange()
 
 	if (conf.highlight.enable and conf.highlight.HEAL) then
 		events = true
-		self:RegisterEvent("CHAT_MSG_ADDON")
-		self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+		--self:RegisterEvent("CHAT_MSG_ADDON")
+		--self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 
 		if (not hcTried) then
 			hcTried = true
@@ -2060,17 +1966,28 @@ function xpHigh:OptionChange()
 						LoadAddOn("HealCommLib")		-- Will load if it's enabled and load on demand
 					end
 				end
+				HealComm = LibStub("LibHealComm-3.0", true)
 			end
 
-			LoadAddOn("CastCommLib")
-			local cc = AceLibrary and AceLibrary:HasInstance("CastCommLib") and AceLibrary("CastCommLib")
-			if (cc) then
-				cc:RegisterCallBack(xpHigh, "CommLibCallback")
+			if (HealComm) then
+				HealComm.RegisterCallback(self, "HealComm_DirectHealStart")
+				HealComm.RegisterCallback(self, "HealComm_DirectHealStop")
 			end
+
+			--LoadAddOn("CastCommLib")
+			--local cc = AceLibrary and AceLibrary:HasInstance("CastCommLib") and AceLibrary("CastCommLib")
+			--if (cc) then
+			--	cc:RegisterCallBack(xpHigh, "CommLibCallback")
+			--end
 		end
 	else
-		self:UnregisterEvent("CHAT_MSG_ADDON")
-		self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
+		if (HealComm) then
+			HealComm.UnregisterCallback(self, "HealComm_DirectHealStart")
+			HealComm.UnregisterCallback(self, "HealComm_DirectHealStop")
+		end
+
+		--self:UnregisterEvent("CHAT_MSG_ADDON")
+		--self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 		self:ClearAll("HEAL")
 	end
 
@@ -2112,7 +2029,7 @@ function xpHigh:OptionChange()
 		self:SetScript("OnUpdate", nil)
 	end
 
-	self:MakeNameToGUIDLookup()
+	--self:MakeNameToGUIDLookup()
 
 	playerGUID = UnitGUID("player")
 	if (not playerGUID and self.PLAYER_ENTERING_WORLD) then

@@ -596,7 +596,7 @@ local function CheckRaid()
 		partyAnchor:StopMovingOrSizing()
 
 		local singleGroup = XPerl_Party_SingleGroup()
-		if (pconf.inRaid or (pconf.smallRaid and singleGroup) or GetNumRaidMembers() == 0) then
+		if (not pconf or (pconf.inRaid or (pconf.smallRaid and singleGroup) or GetNumRaidMembers() == 0)) then
 			if (not partyHeader:IsShown()) then
 				partyHeader:Show()
 			end

@@ -312,7 +312,7 @@ local function XPerl_RegisterLDB()
 				self.text = XPerl_Version
 			end
 			ldbSource.OnClick = XPerl_MinimapButton_OnClick
-			ldbSource.OnTooltipShow = XPerl_MinimapButton_Details
+			ldbSource.OnTooltipShow = function(tooltip) XPerl_MinimapButton_Details(tooltip, true) end
 		end
 	end
 	XPerl_RegisterLDB = nil
@@ -390,7 +390,6 @@ function XPerl_Globals_OnEvent(self, event, ...)
 		XPerl_Load_LQHLHC()			-- Load LibHealComm / LibQuickHealth
 
 	elseif (event == "PLAYER_ENTERING_WORLD") then
-		XPerl_GrabPublics()
 		self:UnregisterEvent(event)
 
 		self:SetScript("OnEvent", onEventPostSetup)

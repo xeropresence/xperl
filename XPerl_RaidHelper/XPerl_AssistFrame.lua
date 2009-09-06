@@ -507,7 +507,7 @@ function XPerl_UpdateAssists()
 
 			-- Count enemy targetting us?
 			if (enemyFlag) then
-				if (UnitCanAttack(name.."target", "player")) then	-- not UnitIsFriend("player", name.."target")) then
+				if (UnitCanAttack("player", name.."target")) then	-- not UnitIsFriend("player", name.."target")) then
 					if (XPerl_AddEnemy(anyEnemy, FoundEnemy, name)) then
 						anyEnemy = true
 						targettingCount = targettingCount + 1

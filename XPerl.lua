@@ -1100,10 +1100,12 @@ function XPerl_MinimapButton_OnEnter(self)
 end
 
 -- XPerl_MinimapButton_Details
-function XPerl_MinimapButton_Details(tt)
+function XPerl_MinimapButton_Details(tt, ldb)
 	tt:SetText(XPerl_Version.." "..XPerl_GetRevision(), 1, 1, 1)
 	tt:AddLine(XPERL_MINIMAP_HELP1)
-	tt:AddLine(XPERL_MINIMAP_HELP2)
+	if (not ldb) then
+		tt:AddLine(XPERL_MINIMAP_HELP2)
+	end
 	if (UpdateAddOnMemoryUsage) then
 		if (IsAltKeyDown()) then
 			tt:AddLine(XPERL_MINIMAP_HELP6)
@@ -1895,11 +1897,11 @@ local function BuffException(unit, index, flag, func, exceptions)
 end
 
 -- DebuffException
-local function DebuffException(unit, start, flag)
+local function DebuffException(unit, start, flag, func)
 	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
 	local valid = 0
 	for i = 1,1000 do
-		name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, i, flag, UnitDebuff, DebuffExceptions)
+		name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, i, flag, func, DebuffExceptions)
 		if (not name) then
 			break
 		end
@@ -1914,15 +1916,15 @@ end
 
 -- XPerl_UnitBuff
 function XPerl_UnitBuff(unit, index, flag)
-	return BuffException(unit, index, flag, UnitBuff, BuffExceptions)
+	return BuffException(unit, index, flag, Utopia_UnitBuff or UnitBuff, BuffExceptions)
 end
 
 -- XPerl_UnitBuff
 function XPerl_UnitDebuff(unit, index, flag)
 	if (conf.buffs.ignoreSeasonal) then
-		return DebuffException(unit, index, flag)
+		return DebuffException(unit, index, flag, Utopia_UnitDebuff or UnitDebuff)
 	end
-	return BuffException(unit, index, flag, UnitDebuff, DebuffExceptions)
+	return BuffException(unit, index, flag, Utopia_UnitDebuff or UnitDebuff, DebuffExceptions)
 end
 
 -- XPerl_TooltipSetUnitBuff
@@ -1930,7 +1932,11 @@ end
 function XPerl_TooltipSetUnitBuff(self, unit, ind, flag)
 	local name, rank, buff, count, _, dur, max, caster, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitBuff, BuffExceptions)
 	if (name and index) then
-		self:SetUnitBuff(unit, index)
+		if (Utopia_SetUnitBuff) then
+			Utopia_SetUnitBuff(self, unit, index)
+		else
+			self:SetUnitBuff(unit, index)
+		end
 	end
 end
 
@@ -1939,7 +1945,11 @@ end
 function XPerl_TooltipSetUnitDebuff(self, unit, ind, flag)
 	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = XPerl_UnitDebuff(unit, ind, flag == 1 and "RAID")
 	if (name and index) then
-		self:SetUnitDebuff(unit, index)
+		if (Utopia_SetUnitDebuff) then
+			Utopia_SetUnitDebuff(self, unit, index)
+		else
+			self:SetUnitDebuff(unit, index)
+		end
 	end
 end
 
@@ -2745,7 +2755,10 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			for mine = 1,2 do
 				-- Two passes here now since 3.0.1, cos they did away with the GetPlayerBuff function
 				-- in favor of all in UnitBuff instead. We still want our big buffs first in the list,
-				-- so we have to scan thru twice.
+				-- so we have to scan thru twice. I know what you're thinking; "Why do 2 passes when
+				-- player's buffs are first anyway". Well, usually they are, but in the case of hunters
+				-- and warlocks, the pet triggered buffs can be anywhere, but we still want those alongside
+				-- our own buffs.
 				for buffnum = 1,maxBuffs do
 					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly == 1 and "RAID" or nil)
 					if (not name) then
@@ -3494,13 +3507,6 @@ function XPerl_RegisterScalableFrame(self, anchorFrame, minScale, maxScale, resi
 	self.corner.scaling = true
 	scaleMouseChange(anchorFrame)
 	self.corner.scaling = nil
-end
-
--- XPerl_GrabPublics
-function XPerl_GrabPublics()
-	-- Reassigning here (PLAYER_ENTERING_WORLD) in case someone writes some filtering mechanism (Doing one for Utopia)
-	UnitBuff = _G.UnitBuff
-	UnitDebuff = _G.UnitDebuff
 end
 
 -- HealComm/LibQuickHealth interface

@@ -129,7 +129,7 @@ function XPerl_Player_UpdateLeader(self)
 		nf.leaderIcon:Hide()
 	end
 
-	if (pconf.partyNumber and GetNumRaidMembers() > 0) then
+	if (pconf and pconf.partyNumber and GetNumRaidMembers() > 0) then
 		for i = 1,GetNumRaidMembers() do
 			local name, rank, subgroup = GetRaidRosterInfo(i)
 			if (UnitIsUnit("raid"..i, "player")) then
@@ -257,9 +257,9 @@ local function XPerl_Player_UpdateXP(self)
 			local suffix
 			if (playerxprest > 0) then
 				if (playerxprest > 10000) then
-					suffix = format(" (+%dK)", playerxprest / 1000)
+					suffix = format(" +%dK", playerxprest / 1000)
 				else
-					suffix = format(" (+%d)", playerxprest)
+					suffix = format(" +%d", playerxprest)
 				end
 				color = {r = 0.3, g = 0.3, b = 1}
 			else

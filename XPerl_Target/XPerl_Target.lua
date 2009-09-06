@@ -474,7 +474,7 @@ end
 local XPerl_Target_UpdateTalents
 do
 	local function ShowSpec(self, spec, s1, s2, s3)
-		if (self.conf.talentsAsText) then
+		if (self.conf.talentsAsText and type(spec) == "string") then
 			self.creatureTypeFrame.text:SetText(spec)
 		else
 			self.creatureTypeFrame.text:SetFormattedText("%d / %d / %d", s1, s2, s3)
@@ -545,16 +545,16 @@ do
 
 	function XPerl_Target_UpdateTalents(self)
 		if (not self.creatureTypeFrame:IsShown()) then
+			if (UpdateTalentsLGT and UpdateTalentsLGT(self)) then
+				return
+			end
+
 			local partyid = self.partyid
 			if (self.conf.showTalents and UnitIsVisible(partyid) and UnitExists(partyid) and UnitIsPlayer(partyid) and UnitLevel(partyid) > 10) then
 				local name = UnitName(partyid)
 				if (not name) then
 					return
 				else
-					if (UpdateTalentsLGT and UpdateTalentsLGT(self)) then
-						return
-					end
-
 					local cached = talentCache[name]
 					local name1, name2, name3, num1, num2, num3, iconTexture, background
 					if (cached) then
