@@ -2,7 +2,7 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-local playerClass, playerName
+local playerClass, playerName, playerGUID
 local conf
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
@@ -19,7 +19,6 @@ local UnitPlayerOrPetInParty = UnitPlayerOrPetInParty
 local UnitName = UnitName
 local cos = math.cos
 local sin = math.sin
-local playerGUID
 local band = bit.band
 local HealComm
 
@@ -28,8 +27,6 @@ local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 local hotSpells  = XPERL_HIGHLIGHT_SPELLS.hotSpells
 local pomSpells = XPERL_HIGHLIGHT_SPELLS.pomSpells
 local shieldSpells = XPERL_HIGHLIGHT_SPELLS.shieldSpells
-local healSpells = XPERL_HIGHLIGHT_SPELLS.healSpells
-local groupHealSpells = XPERL_HIGHLIGHT_SPELLS.groupHealSpells
 
 local function GetTalentPosition(findName)
 	for i = 1,GetNumTalentTabs() do
@@ -283,58 +280,10 @@ function xpHigh:HasEffect(guid, effect)
 	end
 end
 
--- MakeNameToGUIDLookup
---[[
-function xpHigh:MakeNameToGUIDLookup()
-	del(self.lookup)
-	local l = new()
-	self.lookup = l
-
-	local tempGetting = copy(self.gettingGUIDsFrom)
-
-	local tempRoster = new()
-	for unit, unitName, unitClass, group in XPerl_NextMember do
-		local name, server = UnitName(unit)
-		if (name) then
-			if (server and server ~= "") then
-				name = format("%s-%s", name, server)
-			end
-			tempGetting[name] = nil
-
-			l[name] = UnitGUID(unit)
-			local petid = unit == "player" and "pet" or unit:gsub("^(%a+)(%d+)$", "%1pet%2")
-			if (UnitExists(petid)) then
-				l[UnitName(petid)] = UnitGUID(petid)
-			end
-		end
-	end
-
-	for name in pairs(tempGetting) do
-		self.gettingGUIDsFrom[name] = nil			-- Left raid, clear the memory
-	end
-
-	del(tempGetting)
-end
-]]
-
 -- xpHigh:OnUpdate
 function xpHigh:OnUpdate(elapsed)
 	if (self.rosterUpdate) then
 		self.rosterUpdate = nil
---[[		if (select(2, IsInInstance()) == "pvp") then
-			self.distribution = "BATTLEGROUND"
-		elseif (GetNumRaidMembers() > 0) then
-			self.distribution = "RAID"
-		elseif (GetNumPartyMembers() > 0) then
-			self.distribution = "PARTY"
-		else
-			self.distribution = nil
-			self.gettingGUIDsFrom = {}
-		end
-
-		self:MakeNameToGUIDLookup()
-]]
-
 		self:RefreshAllAuras()			-- New roster, get all
 		if (not (conf.highlight.enable and (conf.highlight.HOT or conf.highlight.SHIELD or conf.highlight.HEAL))) then
 			self:SetScript("OnUpdate", nil)
@@ -421,8 +370,6 @@ function xpHigh:SetHighlight(frame, guid)
 					hotBar = true
 				elseif (k == "HOTSPARKS" and conf.highlight.extraSparkles) then
 					hotSparks = true
-				--elseif (k == "SHIELD" and conf.highlight.sparkles and conf.highlight.extraSparkles) then
-				--	showShield = true
 				else
 					if (not r1 or t1 == "TARGET") then
 						t1 = k
@@ -464,9 +411,6 @@ function xpHigh:SetHighlight(frame, guid)
 				self:ShowMending(frame, pomActive)
 				self:ShowHotBar(frame, hotBar)
 				self:ShowHotSparks(frame, hotSparks)
-				--self:ShowShield(frame, showShield)
-				--self:ShowShieldBar(frame, showShield)
-
 				self:ShowShieldBar(frame, self.shields[guid])
 				return
 			end
@@ -478,9 +422,6 @@ function xpHigh:SetHighlight(frame, guid)
 	self:ShowMending(frame, pomActive)
 	self:ShowHotBar(frame, hotBar)
 	self:ShowHotSparks(frame, hotSparks)
-	--self:ShowShield(frame, showShield)
-	--self:ShowShieldBar(frame, showShield)
-
 	self:ShowShieldBar(frame, self.shields[guid])
 end
 
@@ -564,7 +505,6 @@ local function hotBarOnUpdate(self, elapsed)
 		self.alphaPulse = "out"
 	end
 
-	--self:SetAlpha(self.alpha)
 	self.spark:SetVertexColor(1, 1, 1, a * fluctuateOnUpdate(self.spark, elapsed))
 	self.shine:SetVertexColor(1, 1, 1, a * fluctuateOnUpdate(self.shine, elapsed))
 	self.alpha = a
@@ -644,142 +584,6 @@ function xpHigh:ShowShieldBar(frame, show)
 		h.shieldBar:SetMinMaxValues(0, 0.1)
 	end
 end
-
--- pulse
--- Pulse an alpha value
---local function pulse(self, var, elapsed)
---	local val = self[var]
---	local key = "_"..var
---	if (self[key] == "out") then
---		val = val - elapsed
---		if (val < 0.2) then
---			val = 0.2
---			self[key] = "in"
---		end
---	else
---		val = val + elapsed
---		if (val >= 1) then
---			val = 1
---			self[key] = "out"
---		end
---	end
---	self[var] = val
---end
-
--- shieldOnShow
---local function shieldOnShow(self)
---	self.alpha = 0
---	self.maxWidth = 1.03
---	self.minWidth = 0.98
---	self.width = self:GetParent():GetWidth() * 1.1
---	self.height = self:GetParent():GetHeight() * 1.1
---	self.speed = 0.1 / (self.maxWidth - self.minWidth)
---	self.size = 0.2
---	self.state = "out"
---	self.fading = nil
---	self.highAlpha = 0
---	self.highlightMode = "in"
---end
-
--- shieldOnUpdate
---local function shieldOnUpdate(self, elapsed)
---	pulse(self, "highAlpha", elapsed * 10)
---
---	if (self.fading) then
---		self.alpha = self.alpha - elapsed
---		if (self.alpha <= 0) then
---			self:Hide()
---		end
---		self.size = self.size + elapsed	* self.speed
---	else
---		if (self.alpha < 1) then
---			self.alpha = min(1, self.alpha + elapsed)
---		end
---
---		if (self.state == "bouncein") then
---			self.size = self.size - elapsed	* self.speed
---			if (self.size < self.minWidth) then
---				self.size = self.minWidth
---				self.state = "bounceout"
---			end
---		else
---			self.size = self.size + elapsed	* self.speed
---			if (self.size > self.maxWidth) then
---				self.size = self.maxWidth
---				if (self.state == "out") then
---					self.speed = 0.01 / (self.maxWidth - self.minWidth)
---				end
---				self.state = "bouncein"
---			end
---		end
---	end
---
---	self:SetWidth(self.width * self.size)
---	self:SetHeight(self.height / max(0.98, self.size))
---	self:SetAlpha(self.alpha)
---
---	self.highlight1:SetAlpha(self.highAlpha)
---	self.highlight2:SetAlpha(1 - self.highAlpha)
---end
-
--- CreateShield
---function xpHigh:CreateShield(frame)
---	local h = frame.highlight
---	local s = CreateFrame("Frame", nil, frame)
---	h.shield = s
---
---	local l = (frame.statsFrame and frame.statsFrame.healthBar) or frame.healthBar or frame
---	s:SetFrameLevel(l:GetFrameLevel() + 1)
---
---	s.tex = s:CreateTexture(nil, "OVERLAY")
---	s.tex:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble")
---	s.tex:SetAllPoints()
---	s.tex:SetBlendMode("ADD")
---	s.tex:SetVertexColor(1, 1, 0.5)
---
---	s.highlight1 = s:CreateTexture("OVERLAY")
---	s.highlight1:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble2")
---	s.highlight1:SetPoint("TOPLEFT", 15, -10)
---	s.highlight1:SetPoint("BOTTOMRIGHT", -15, 10)
---	s.highlight1:SetBlendMode("ADD")
---	s.highlight1:SetVertexColor(1, 1, 0.5)
---
---	s.highlight2 = s:CreateTexture("OVERLAY")
---	s.highlight2:SetTexture("Interface\\Addons\\XPerl\\Images\\Bubble2")
---	s.highlight2:SetPoint("TOPLEFT", 20, -8)
---	s.highlight2:SetPoint("BOTTOMRIGHT", -20, 8)
---	s.highlight2:SetBlendMode("ADD")
---	s.highlight2:SetVertexColor(1, 1, 0.5)
---	s.highlight2:SetTexCoord(rotate(180))
---
---	s:SetPoint("CENTER")
---	s:SetWidth(1)
---	s:SetHeight(1)
---
---	s:SetScript("OnShow", shieldOnShow)
---	s:SetScript("OnUpdate", shieldOnUpdate)
---
---    s:Hide()
---    return s
---end
-
--- ShowShield
---function xpHigh:ShowShield(frame, show)
---	local h = frame.highlight
---	if (show and conf.highlight.SHIELD and conf.highlight.sparkles) then
---		if (not h.shield) then
---			self:CreateShield(frame)
---		end
---		local unit = SecureButton_GetUnit(frame)
---		h.shield.unit = unit
---		h.shield:Show()
---		return
---	end
---
---	if (h.shield) then
---		h.shield.fading = true
---	end
---end
 
 -- CreateShine
 function xpHigh:CreateShine(parent)
@@ -1740,34 +1544,22 @@ function xpHigh:Damage(guid, absorbed)
 	end
 end
 
--- xpHigh:CHAT_MSG_ADDON
---[[ function xpHigh:CHAT_MSG_ADDON(source, msg, channel, player)
-	if (player ~= playerName and conf.highlight.HEAL) then
-		if (source == "HealComm") then
-			local name, healSize = strmatch(msg, "^(.+):(.+)$")
-			if (name) then
-				self:Add(name, "HEAL", 1, source)
-			end
-		end
-	end
-end ]]
-
--- xpHigh:CommLibCallback()
---function xpHigh:CommLibCallback(sender, senderUnit, action, target, channel, spell, rank, displayName, icon, startTime, endTime, isTradeSkill)
---	if (not channel and healSpells[spell]) then
---		self:Add(target, "HEAL", healSpells[spell], senderUnit)
---	end
---end
-
 -- HealComm_DirectHealStart
 function xpHigh:HealComm_DirectHealStart(e, playerName, CastInfoHealingSize, CastInfoEndTime, SentTargetName)
-	self:Add(UnitGUID(SentTargetName), "HEAL", max(1, CastInfoEndTime - GetTime()), playerName)
+	local guid = UnitGUID(SentTargetName)
+	if (guid) then
+		self:Add(guid, "HEAL", max(1, CastInfoEndTime - GetTime()), playerName)
+	end
 end
 
 -- HealComm_DirectHealStop
 function xpHigh:HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
 	for i = 1,select("#", ...) do
-		self:Remove(UnitGUID(select(i, ...)), "HEAL")
+		local who = select(i, ...)
+		local guid = who and UnitGUID(who)
+		if (guid) then
+			self:Remove(guid, "HEAL")
+		end
 	end
 end
 
@@ -1935,9 +1727,6 @@ function xpHigh:OptionChange()
 	_, playerClass = UnitClass("player")
 	playerName = UnitName("player")
 
-	--self:RegisterEvent("UNIT_SPELLCAST_SENT")
-	--self:RegisterEvent("UNIT_SPELLCAST_FAILED")
-
 	if (conf.highlight.enable and (conf.highlight.HOT or conf.highlight.SHIELD or conf.highlight.HEAL)) then
 		events = true
 		self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
@@ -1955,8 +1744,6 @@ function xpHigh:OptionChange()
 
 	if (conf.highlight.enable and conf.highlight.HEAL) then
 		events = true
-		--self:RegisterEvent("CHAT_MSG_ADDON")
-		--self:RegisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 
 		if (not hcTried) then
 			hcTried = true
@@ -1973,12 +1760,6 @@ function xpHigh:OptionChange()
 				HealComm.RegisterCallback(self, "HealComm_DirectHealStart")
 				HealComm.RegisterCallback(self, "HealComm_DirectHealStop")
 			end
-
-			--LoadAddOn("CastCommLib")
-			--local cc = AceLibrary and AceLibrary:HasInstance("CastCommLib") and AceLibrary("CastCommLib")
-			--if (cc) then
-			--	cc:RegisterCallBack(xpHigh, "CommLibCallback")
-			--end
 		end
 	else
 		if (HealComm) then
@@ -1986,8 +1767,6 @@ function xpHigh:OptionChange()
 			HealComm.UnregisterCallback(self, "HealComm_DirectHealStop")
 		end
 
-		--self:UnregisterEvent("CHAT_MSG_ADDON")
-		--self:UnregisterEvent("UNIT_SPELLCAST_INTERRUPTED")
 		self:ClearAll("HEAL")
 	end
 
@@ -2028,8 +1807,6 @@ function xpHigh:OptionChange()
 	else
 		self:SetScript("OnUpdate", nil)
 	end
-
-	--self:MakeNameToGUIDLookup()
 
 	playerGUID = UnitGUID("player")
 	if (not playerGUID and self.PLAYER_ENTERING_WORLD) then
