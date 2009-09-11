@@ -254,19 +254,28 @@ local function XPerl_Player_UpdateXP(self)
 			restBar:SetMinMaxValues(0, playerxpmax)
 			xpBar:SetValue(playerxp)
 
-			local suffix
-			if (playerxprest > 0) then
-				if (playerxprest > 10000) then
-					suffix = format(" +%dK", playerxprest / 1000)
-				else
-					suffix = format(" +%d", playerxprest)
-				end
-				color = {r = 0.3, g = 0.3, b = 1}
-			else
-				color = {r = 0.6, g = 0, b = 0.6}
-			end
+			local w = xpBar:GetRight() - xpBar:GetLeft()
+			for mode = 1,3 do
+				local suffix
+				if (playerxprest > 0) then
+					if (mode == 1) then
+						suffix = format(" +%d", playerxprest)
+					elseif (mode == 2) then
+						suffix = format(" +%.1fK", playerxprest / 1000)
+					else
+						suffix = format(" +%dK", playerxprest / 1000)
+					end
 
-			XPerl_SetValuedText(xpBar.text, playerxp, playerxpmax, suffix)
+					color = {r = 0.3, g = 0.3, b = 1}
+				else
+					color = {r = 0.6, g = 0, b = 0.6}
+				end
+
+				XPerl_SetValuedText(xpBar.text, playerxp, playerxpmax, suffix)
+				if (xpBar.text:GetStringWidth() <= w) then
+					break
+				end
+			end
 
 			xpBar:SetStatusBarColor(color.r, color.g, color.b, 1)
 			xpBar.bg:SetVertexColor(color.r, color.g, color.b, 0.25)

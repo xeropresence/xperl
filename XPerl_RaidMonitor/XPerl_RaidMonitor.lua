@@ -168,7 +168,7 @@ local function UpdateTarget(self)
 
 			local class = select(2, UnitClass(id))
 			if (class) then
-				local c = RAID_CLASS_COLORS[class]
+				local c = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
 				if (c) then
 					self.bar:SetStatusBarColor(c.r, c.g, c.b)
 					self.bar.bg:SetVertexColor(c.r, c.g, c.b, 0.5)
@@ -204,7 +204,7 @@ local function UpdateUnit(self)
 
 		local class = select(2, UnitClass(id))
 		if (class) then
-			local c = RAID_CLASS_COLORS[class]
+			local c = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
 			if (c) then
 				self.bar.name:SetTextColor(c.r, c.g, c.b)
 			end

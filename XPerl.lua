@@ -98,7 +98,7 @@ end
 -- meta table for string based colours. Allows for other mods changing class colours and things all working
 XPerlColourTable = setmetatable({},{
 	__index = function(self, class)
-		local c = RAID_CLASS_COLORS[strupper(class or "")]
+		local c = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[strupper(class or "")]
 		if (c) then
 			c = format("|c00%02X%02X%02X", 255 * c.r, 255 * c.g, 255 * c.b)
 		else
@@ -545,7 +545,7 @@ end
 -- XPerl_GetClassColour
 local defaultColour = {r = 0.5, g = 0.5, b = 1}
 function XPerl_GetClassColour(class)
-	return (class and RAID_CLASS_COLORS[class]) or defaultColour
+	return (class and (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]) or defaultColour
 end
 
 ---------------------------------
@@ -615,7 +615,7 @@ local barColours
 function XPerl_ResetBarColourCache()
 	barColours = setmetatable({}, {
 		__index = function(self, k)
-			local c = RAID_CLASS_COLORS[k]
+			local c = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[k]
 			if (c) then
 				if (not conf.colour.classbarBright) then
 					conf.colour.classbarBright = 1
@@ -639,7 +639,7 @@ function XPerl_ColourHealthBar(self, healthPct, partyid)
 	if (conf.colour.classbar and UnitIsPlayer(partyid)) then
 		local class = select(2, UnitClass(partyid))
 		if (class) then
-			local c = barColours[class]	-- RAID_CLASS_COLORS[class]
+			local c = barColours[class]
 			if (c) then
 				bar:SetStatusBarColor(c.r, c.g, c.b)
 				if (bar.bg) then
@@ -2753,6 +2753,13 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			local buffIconIndex = 1
 			self.buffFrame:Show()
 			for mine = 1,2 do
+				if (self.conf.buffs.onlyMine and mine == 2) then
+					if (not UnitCanAttack("player", partyid)) then
+						break
+					end
+					-- else we'll ignore this option for enemy targets, because
+					-- it's unlikey that we'll be buffing them
+				end
 				-- Two passes here now since 3.0.1, cos they did away with the GetPlayerBuff function
 				-- in favor of all in UnitBuff instead. We still want our big buffs first in the list,
 				-- so we have to scan thru twice. I know what you're thinking; "Why do 2 passes when
@@ -2862,6 +2869,14 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 			self.debuffFrame:Show()
 			lastIcon = 0
 			for mine = 1,2 do
+				if (self.conf.debuffs.onlyMine and mine == 2) then
+					if (UnitCanAttack("player", partyid)) then
+						break
+					end
+					-- Else we'll ignore this option for friendly targets, because it's unlikey
+					-- (except for PW:Shield and HoProtection) that we'll be debuffing friendlies
+				end
+
 				for buffnum = 1,maxDebuffs do
 					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, (isFriendly and curableOnly == 1 or castableOnly == 1) and "RAID" or nil)
 					if (not name) then

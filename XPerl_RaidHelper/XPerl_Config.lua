@@ -302,7 +302,7 @@ end
 if (not XPerl_GetClassColour) then
 	XPerl_GetClassColour = function(class)
 		if (class) then
-			local color = RAID_CLASS_COLORS[class];		-- Now using the WoW class color table
+			local color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class];		-- Now using the WoW class color table
 			if (color) then
 				return color
 			end

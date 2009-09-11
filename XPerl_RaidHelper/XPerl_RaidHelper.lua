@@ -34,7 +34,7 @@ XPERL_UNIT_WIDTH_MAX = 125
 if (not XPerlColourTable) then
 	XPerlColourTable = setmetatable({},{
 		__index = function(self, class)
-			local c = RAID_CLASS_COLORS[class] or {r = 0, g = 0, b = 0}
+			local c = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class] or {r = 0, g = 0, b = 0}
 			return format("|c00%02X%02X%02X", 255 * c.r, 255 * c.g, 255 * c.b)
 		end
 	})
@@ -214,7 +214,7 @@ local function UpdateUnit(self,forcedUpdate)
 			local bar = self.healthBar
 			local class = select(2, UnitClass(xunit))
 			if (class) then
-				local c = RAID_CLASS_COLORS[class]
+				local c = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
 
 				bar:SetStatusBarColor(c.r, c.g, c.b)
 				if (bar.bg) then

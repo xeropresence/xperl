@@ -20,7 +20,7 @@ local UnitName = UnitName
 local cos = math.cos
 local sin = math.sin
 local band = bit.band
-local HealComm
+local HealComm4, HealComm3
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
@@ -1544,20 +1544,44 @@ function xpHigh:Damage(guid, absorbed)
 	end
 end
 
--- HealComm_DirectHealStart
-function xpHigh:HealComm_DirectHealStart(e, playerName, CastInfoHealingSize, CastInfoEndTime, SentTargetName)
-	local guid = UnitGUID(SentTargetName)
-	if (guid) then
-		self:Add(guid, "HEAL", max(1, CastInfoEndTime - GetTime()), playerName)
-	end
-end
-
--- HealComm_DirectHealStop
-function xpHigh:HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
+-- LibHealComm-3.0 - Heal Started
+function xpHigh:HealComm_DirectHealStart(e, healerFullName, CastInfoHealingSize, endTime, ...)
 	for i = 1,select("#", ...) do
 		local who = select(i, ...)
 		local guid = who and UnitGUID(who)
 		if (guid) then
+			self:Add(guid, "HEAL", max(1, endTime - GetTime()), healerFullName)
+		end
+	end
+end
+
+-- LibHealComm-3.0 - Heal Stopped
+function xpHigh:HealComm_DirectHealStop(e, healerFullName, healSize, succeeded, ...)
+	for i = 1,select("#", ...) do
+		local who = select(i, ...)
+		local guid = who and UnitGUID(who)
+		if (guid) then
+			self:Remove(guid, "HEAL")
+		end
+	end
+end
+
+-- LibHealComm-4.0 - Heal Started
+function xpHigh:HealComm_HealStarted(e, healerGUID, spellID, bitType, endTime, ...)
+	if (bit.band(bitType, HealComm4.DIRECT_HEALS) ~= 0) then
+		for i = 1,select("#", ...) do
+			local guid = select(i, ...)
+			local unit = HealComm4.guidToUnit[guid]
+			self:Add(guid, "HEAL", max(1, endTime - GetTime()), unit and UnitName(unit))
+		end
+	end
+end
+
+-- LibHealComm-4.0 - Heal Stopped
+function xpHigh:HealComm_HealStopped(e, healerGUID, spellID, bitType, interrupted, ...)
+	if (bit.band(bitType, HealComm4.DIRECT_HEALS) ~= 0) then
+		for i = 1,select("#", ...) do
+			local guid = select(i, ...)
 			self:Remove(guid, "HEAL")
 		end
 	end
@@ -1748,23 +1772,27 @@ function xpHigh:OptionChange()
 		if (not hcTried) then
 			hcTried = true
 			if (playerClass == "SHAMAN" or playerClass == "PRIEST" or playerClass == "DRUID" or playerClass == "PALADIN") then
-				if (not IsAddOnLoaded("LibHealComm-3.0")) then
-					if (not LoadAddOn("LibHealComm-3.0")) then
-						LoadAddOn("HealCommLib")		-- Will load if it's enabled and load on demand
-					end
+				--HealComm4 = LibStub("LibHealComm-4.0", true)
+				if (not HealComm4) then
+					HealComm3 = LibStub("LibHealComm-3.0", true)
 				end
-				HealComm = LibStub("LibHealComm-3.0", true)
 			end
 
-			if (HealComm) then
-				HealComm.RegisterCallback(self, "HealComm_DirectHealStart")
-				HealComm.RegisterCallback(self, "HealComm_DirectHealStop")
+			if (HealComm4) then
+				HealComm4.RegisterCallback(self, "HealComm_HealStarted")
+				HealComm4.RegisterCallback(self, "HealComm_HealStopped")
+			elseif (HealComm3) then
+				HealComm3.RegisterCallback(self, "HealComm_DirectHealStart")
+				HealComm3.RegisterCallback(self, "HealComm_DirectHealStop")
 			end
 		end
 	else
-		if (HealComm) then
-			HealComm.UnregisterCallback(self, "HealComm_DirectHealStart")
-			HealComm.UnregisterCallback(self, "HealComm_DirectHealStop")
+		if (HealComm4) then
+			HealComm4.UnregisterCallback(self, "HealComm_HealStarted")
+			HealComm4.UnregisterCallback(self, "HealComm_HealStopped")
+		elseif (HealComm3) then
+			HealComm3.UnregisterCallback(self, "HealComm_DirectHealStart")
+			HealComm3.UnregisterCallback(self, "HealComm_DirectHealStop")
 		end
 
 		self:ClearAll("HEAL")

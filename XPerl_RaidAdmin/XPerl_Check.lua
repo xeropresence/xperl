@@ -55,7 +55,7 @@ end
 if (not XPerl_GetClassColour) then
 	XPerl_GetClassColour = function(class)
 		if (class) then
-			local color = RAID_CLASS_COLORS[class];		-- Now using the WoW class color table
+			local color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class];		-- Now using the WoW class color table
 			if (color) then
 				return color
 			end
@@ -67,7 +67,7 @@ end
 if (not XPerlColourTable) then
 	XPerlColourTable = setmetatable({},{
 		__index = function(self, class)
-			local c = RAID_CLASS_COLORS[class] or {r = 0, g = 0, b = 0}
+			local c = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class] or {r = 0, g = 0, b = 0}
 			return format("|c00%02X%02X%02X", 255 * c.r, 255 * c.g, 255 * c.b)
 		end
 	})

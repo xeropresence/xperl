@@ -385,7 +385,7 @@ local function XPerl_ToolTip_AddBuffDuration(self, partyid, buffID, filter)
 			local c
 			if (UnitIsPlayer(caster)) then
 				local _, class = UnitClass(caster)
-				c = class and RAID_CLASS_COLORS[class]
+				c = class and (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
 			else
 				c = XPerl_ReactionColour(caster)
 			end
