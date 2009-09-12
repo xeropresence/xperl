@@ -1929,8 +1929,8 @@ end
 
 -- XPerl_TooltipSetUnitBuff
 -- Retreives the index of the actual unfiltered buff, and uses this on unfiltered tooltip call
-function XPerl_TooltipSetUnitBuff(self, unit, ind, flag)
-	local name, rank, buff, count, _, dur, max, caster, isStealable, index = BuffException(unit, ind, flag == 1 and "RAID", UnitBuff, BuffExceptions)
+function XPerl_TooltipSetUnitBuff(self, unit, ind, filter)
+	local name, rank, buff, count, _, dur, max, caster, isStealable, index = BuffException(unit, ind, filter, UnitBuff, BuffExceptions)
 	if (name and index) then
 		if (Utopia_SetUnitBuff) then
 			Utopia_SetUnitBuff(self, unit, index)
@@ -1942,8 +1942,8 @@ end
 
 -- XPerl_TooltipSetUnitDebuff
 -- Retreives the index of the actual unfiltered debuff, and uses this on unfiltered tooltip call
-function XPerl_TooltipSetUnitDebuff(self, unit, ind, flag)
-	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = XPerl_UnitDebuff(unit, ind, flag == 1 and "RAID")
+function XPerl_TooltipSetUnitDebuff(self, unit, ind, filter)
+	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = XPerl_UnitDebuff(unit, ind, filter)
 	if (name and index) then
 		if (Utopia_SetUnitDebuff) then
 			Utopia_SetUnitDebuff(self, unit, index)
@@ -2767,7 +2767,8 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				-- and warlocks, the pet triggered buffs can be anywhere, but we still want those alongside
 				-- our own buffs.
 				for buffnum = 1,maxBuffs do
-					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, castableOnly == 1 and "RAID" or nil)
+					local filter = castableOnly == 1 and "RAID" or nil
+					local name, rank, buff, count, _, duration, endTime, isMine, isStealable = XPerl_UnitBuff(partyid, buffnum, filter)
 					if (not name) then
 						if (mine == 1) then
 							maxBuffs = buffnum - 1
@@ -2782,6 +2783,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 
 					if (buff and (((mine == 1) and (isMine or isStealable)) or ((mine == 2) and not (isMine or isStealable)))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 0, true, buffnum)
+						button.filter = filter
 						button:SetAlpha(1)
 
 						buffs = buffs + 1
@@ -2878,7 +2880,8 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				end
 
 				for buffnum = 1,maxDebuffs do
-					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, (isFriendly and curableOnly == 1 or castableOnly == 1) and "RAID" or nil)
+					local filter = (isFriendly and curableOnly == 1 or castableOnly == 1) and "RAID" or nil
+					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, filter)
 					if (not name) then
 						if (mine == 1) then
 							maxDebuffs = buffnum - 1
@@ -2894,6 +2897,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 
 					if (debuff and (((mine == 1) and isMine) or ((mine == 2) and not isMine))) then
 						local button = XPerl_GetBuffButton(self, buffIconIndex, 1, true, buffnum)
+						button.filter = filter
 						button:SetAlpha(1)
 
 						debuffs = debuffs + 1
@@ -3262,10 +3266,10 @@ function XPerl_Unit_SetBuffTooltip(self)
 	if (conf and conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.buffHideInCombat or not InCombatLockdown()) then
 			local frame = self:GetParent():GetParent()
-			local partyid = frame.partyid		--:GetAttribute("unit")
+			local partyid = frame.partyid
 			if (partyid) then
 				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT",0,0)
-				XPerl_TooltipSetUnitBuff(GameTooltip, partyid, self:GetID(), frame.conf.buffs.castable)
+				XPerl_TooltipSetUnitBuff(GameTooltip, partyid, self:GetID(), self.filter)
 			end
 		end
 	end
@@ -3276,10 +3280,10 @@ function XPerl_Unit_SetDeBuffTooltip(self)
 	if (conf and conf.tooltip.enableBuffs and XPerl_TooltipModiferPressed(true)) then
 		if (not conf.tooltip.hideInCombat or not InCombatLockdown()) then
 			local frame = self:GetParent():GetParent()
-			local partyid = frame.partyid		--:GetAttribute("unit")
+			local partyid = frame.partyid
 			if (partyid) then
 				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT",0,0)
-				XPerl_TooltipSetUnitDebuff(GameTooltip, partyid, self:GetID(), frame.conf.debuffs.curable)
+				XPerl_TooltipSetUnitDebuff(GameTooltip, partyid, self:GetID(), self.filter)
 			end
 		end
 	end
