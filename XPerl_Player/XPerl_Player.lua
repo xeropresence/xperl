@@ -261,9 +261,17 @@ local function XPerl_Player_UpdateXP(self)
 					if (mode == 1) then
 						suffix = format(" +%d", playerxprest)
 					elseif (mode == 2) then
-						suffix = format(" +%.1fK", playerxprest / 1000)
+						if (playerxprest >= 1000000) then
+							suffix = format(" +%.1fM", playerxprest / 1000000)
+						else
+							suffix = format(" +%.1fK", playerxprest / 1000)
+						end
 					else
-						suffix = format(" +%dK", playerxprest / 1000)
+						if (playerxprest >= 1000000) then
+							suffix = format(" +%dM", playerxprest / 1000000)
+						else
+							suffix = format(" +%dK", playerxprest / 1000)
+						end
 					end
 
 					color = {r = 0.3, g = 0.3, b = 1}

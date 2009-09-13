@@ -544,13 +544,13 @@ do
 	end
 
 	function XPerl_Target_UpdateTalents(self)
-		if (not self.creatureTypeFrame:IsShown()) then
+		if (self.conf.showTalents and self == XPerl_Target and not self.creatureTypeFrame:IsShown()) then
 			if (UpdateTalentsLGT and UpdateTalentsLGT(self)) then
 				return
 			end
 
 			local partyid = self.partyid
-			if (self.conf.showTalents and UnitIsVisible(partyid) and UnitExists(partyid) and UnitIsPlayer(partyid) and UnitLevel(partyid) > 10) then
+			if (UnitIsVisible(partyid) and UnitExists(partyid) and UnitIsPlayer(partyid) and UnitLevel(partyid) > 10) then
 				local name = UnitName(partyid)
 				if (not name) then
 					return
