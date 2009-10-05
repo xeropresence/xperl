@@ -3144,12 +3144,17 @@ end
 
 -- Some models have camera views switched for face/body or just don't look right with face
 local alternateCamera = {
-	[28859] = true,			-- Malygos
+	[21717] = true,			-- Dragonmaw Wrangler
+	[21718] = true,			-- Dragonmaw Subjugator
+	[21719] = true,			-- Dragonmaw Drake-Rider
+	[21720] = true,			-- Dragonmaw Shaman
 	[22231] = true,			-- Dragonmaw Elite
 	[22252] = true,			-- Dragonmaw Peon
 	[23188] = true,			-- Dragonmaw Transporter
+	[28859] = true,			-- Malygos
 	[33136] = true,			-- Guardian of Yogg-Saron
 	[33687] = true,			-- Chillmaw
+	[33845] = true,			-- Quel'dorei Steed
 }
 local dragonmawIllusion = GetSpellInfo(42016)
 
@@ -3595,10 +3600,15 @@ function XPerl_Load_LQHLHC()
 		end
 
 		-- HealComm interface
-		LoadAddOn("LibHealComm-3.0")
-		local HealComm = LibStub("LibHealComm-3.0", true)
+		LoadAddOn("LibHealComm-4.0")
+		local HealComm4 = LibStub and LibStub("LibHealComm-4.0", true)
+		local HealComm3
+		if (not HealComm4) then
+			LoadAddOn("LibHealComm-3.0")
+			HealComm3 = LibStub and LibStub("LibHealComm-3.0", true)
+		end
 
-		if (HealComm and HealComm.UnitIncomingHealGet) then
+		if ((HealComm3 and HealComm3.UnitIncomingHealGet) or (HealComm4 and HealComm4.GetHealAmount)) then
 			local myHeals = {}
 			local hcMiniFrame = CreateFrame("Frame", nil)
 			hcMiniFrame:RegisterEvent("RAID_ROSTER_UPDATE")
@@ -3685,63 +3695,22 @@ function XPerl_Load_LQHLHC()
 				end
 			end
 
-			local function UpdateIncomingHeals(healerFullName, healSize, ...)
-				for i = 1,select("#",...) do
-					local name = select(i, ...)
-					local guid = UnitGUID(name)
-					local f
-
-					if (guid) then
-						if (healSize and UnitIsUnit("player", healerFullName)) then
-							myHeals[guid] = healSize
-						end
-
-						if (XPerl_Raid_GetUnitFrameByGUID) then
-							f = XPerl_Raid_GetUnitFrameByGUID(guid)
-							if (f) then
-								XPerl_Raid_UpdateHealth(f)
-							end
-						end
-
-						if (XPerl_Party_GetUnitFrameByGUID) then
-							f = XPerl_Party_GetUnitFrameByGUID(guid)
-							if (f) then
-								XPerl_Party_UpdateHealth(f)
-							end
-						end
-
-						if (XPerl_Player_UpdateHealth and guid == playerGUID) then
-							XPerl_Player_UpdateHealth(XPerl_Player)
-						elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
-							XPerl_Player_Pet_UpdateHealth(XPerl_Player)
-						elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
-							f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
-							if (f) then
-								XPerl_Party_Pet_UpdateHealth(f)
-							end
-						end
-
-						if (XPerl_Target_SetHealth and guid == targetGUID) then
-							XPerl_Target_SetHealth(XPerl_Target)
-						end
-						if (XPerl_Target_SetHealth and XPerl_Focus and guid == focusGUID) then
-							XPerl_Target_SetHealth(XPerl_Focus)
-						end
-						if (XPerl_Target_SetHealth and XPerl_TargetTarget and guid == targettargetGUID) then
-							XPerl_Target_SetHealth(XPerl_TargetTarget)
-						end
-					end
-				end
-			end
-
 			-- XPerl_ExpectedUnitHealth
 			function XPerl_ExpectedUnitHealth(unit)
 				local health = XPerl_UnitHealth(unit)
-				local incoming = HealComm:UnitIncomingHealGet(unit, GetTime() + 100.0) or 0
-				incoming = incoming + (myHeals[UnitGUID(unit)] or 0)
-				if (incoming > 0) then
-					local effective = incoming * HealComm:UnitHealModifierGet(unit)
-					return health + effective
+				if (HealComm3) then
+					local incoming = HealComm3:UnitIncomingHealGet(unit, GetTime() + 100) or 0
+					incoming = incoming + (myHeals[UnitGUID(unit)] or 0)
+					if (incoming > 0) then
+						local effective = incoming * HealComm3:UnitHealModifierGet(unit)
+						return health + effective
+					end
+				else
+					local incoming = HealComm4:GetHealAmount(UnitGUID(unit), HealComm4.ALL_HEALS, GetTime() + 5)
+					if (incoming and incoming > 0) then
+						local effective = incoming * HealComm4:GetHealModifier(UnitGUID(unit))
+						return health + effective
+					end
 				end
 
 				return health
@@ -3763,27 +3732,140 @@ function XPerl_Load_LQHLHC()
 				end
 			end
 
-			local function xperl_HealComm_DirectHealStart(event, healerFullName, healSize, endTime, ...)
-				--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStart(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-				UpdateIncomingHeals(healerFullName, healSize, ...)
-			end
-			local function xperl_HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
-				--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStop(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-				UpdateIncomingHeals(healerFullName, 0, ...)
-			end
-			local function xperl_HealComm_DirectHealDelayed(event, healerFullName, healSize, endTime, ...)
-				--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealDelayed(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
-				UpdateIncomingHeals(healerFullName, healSize, ...)
-			end
-			local function xperl_HealComm_HealModifierUpdate(event, unit, targetFullName, healModifier)
-				--ChatFrame1:AddMessage(format("xperl_HealComm_HealModifierUpdate(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime)))
-				UpdateIncomingHeals(healerFullName, nil, targetFullName)
-			end
+			if (HealComm3) then
+				local function UpdateIncomingHeals(healerFullName, healSize, ...)
+					for i = 1,select("#",...) do
+						local name = select(i, ...)
+						local guid = UnitGUID(name)
+						local f
 
-			HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStart", xperl_HealComm_DirectHealStart)
-			HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStop", xperl_HealComm_DirectHealStop)
-			HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealDelayed", xperl_HealComm_DirectHealDelayed)
-			HealComm.RegisterCallback("XPerlHealCommCallback", "HealComm_HealModifierUpdate", xperl_HealComm_HealModifierUpdate)
+						if (guid) then
+							if (healSize and UnitIsUnit("player", healerFullName)) then
+								myHeals[guid] = healSize
+							end
+
+							if (XPerl_Raid_GetUnitFrameByGUID) then
+								f = XPerl_Raid_GetUnitFrameByGUID(guid)
+								if (f) then
+									XPerl_Raid_UpdateHealth(f)
+								end
+							end
+
+							if (XPerl_Party_GetUnitFrameByGUID) then
+								f = XPerl_Party_GetUnitFrameByGUID(guid)
+								if (f) then
+									XPerl_Party_UpdateHealth(f)
+								end
+							end
+
+							if (XPerl_Player_UpdateHealth and guid == playerGUID) then
+								XPerl_Player_UpdateHealth(XPerl_Player)
+							elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
+								XPerl_Player_Pet_UpdateHealth(XPerl_Player)
+							elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
+								f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
+								if (f) then
+									XPerl_Party_Pet_UpdateHealth(f)
+								end
+							end
+
+							if (XPerl_Target_SetHealth and guid == targetGUID) then
+								XPerl_Target_SetHealth(XPerl_Target)
+							end
+							if (XPerl_Target_SetHealth and XPerl_Focus and guid == focusGUID) then
+								XPerl_Target_SetHealth(XPerl_Focus)
+							end
+							if (XPerl_Target_SetHealth and XPerl_TargetTarget and guid == targettargetGUID) then
+								XPerl_Target_SetHealth(XPerl_TargetTarget)
+							end
+						end
+					end
+				end
+
+				local function xperl_HealComm_DirectHealStart(event, healerFullName, healSize, endTime, ...)
+					--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStart(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+					UpdateIncomingHeals(healerFullName, healSize, ...)
+				end
+				local function xperl_HealComm_DirectHealStop(event, healerFullName, healSize, succeeded, ...)
+					--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealStop(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+					UpdateIncomingHeals(healerFullName, 0, ...)
+				end
+				local function xperl_HealComm_DirectHealDelayed(event, healerFullName, healSize, endTime, ...)
+					--ChatFrame1:AddMessage(format("xperl_HealComm_DirectHealDelayed(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime), tostring(...)))
+					UpdateIncomingHeals(healerFullName, healSize, ...)
+				end
+				local function xperl_HealComm_HealModifierUpdate(event, unit, targetFullName, healModifier)
+					--ChatFrame1:AddMessage(format("xperl_HealComm_HealModifierUpdate(%s, %s, %s, %s, %s)", tostring(event), tostring(healerFullName), tostring(healSize), tostring(endTime)))
+					UpdateIncomingHeals(healerFullName, nil, targetFullName)
+				end
+
+				HealComm3.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStart", xperl_HealComm_DirectHealStart)
+				HealComm3.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealStop", xperl_HealComm_DirectHealStop)
+				HealComm3.RegisterCallback("XPerlHealCommCallback", "HealComm_DirectHealDelayed", xperl_HealComm_DirectHealDelayed)
+				HealComm3.RegisterCallback("XPerlHealCommCallback", "HealComm_HealModifierUpdate", xperl_HealComm_HealModifierUpdate)
+			elseif (HealComm4) then
+				local function UpdateIncomingHeals(...)
+					for i = 1,select("#",...) do
+						local guid = select(i, ...)
+						local f
+
+						if (guid) then
+							if (XPerl_Raid_GetUnitFrameByGUID) then
+								f = XPerl_Raid_GetUnitFrameByGUID(guid)
+								if (f) then
+									XPerl_Raid_UpdateHealth(f)
+								end
+							end
+
+							if (XPerl_Party_GetUnitFrameByGUID) then
+								f = XPerl_Party_GetUnitFrameByGUID(guid)
+								if (f) then
+									XPerl_Party_UpdateHealth(f)
+								end
+							end
+
+							if (XPerl_Player_UpdateHealth and guid == playerGUID) then
+								XPerl_Player_UpdateHealth(XPerl_Player)
+							elseif (XPerl_Player_Pet_UpdateHealth and guid == petGUID) then
+								XPerl_Player_Pet_UpdateHealth(XPerl_Player)
+							elseif (XPerl_Party_Pet_GetUnitFrameByGUID) then
+								f = XPerl_Party_Pet_GetUnitFrameByGUID(guid)
+								if (f) then
+									XPerl_Party_Pet_UpdateHealth(f)
+								end
+							end
+
+							if (XPerl_Target_SetHealth and guid == targetGUID) then
+								XPerl_Target_SetHealth(XPerl_Target)
+							end
+							if (XPerl_Target_SetHealth and XPerl_Focus and guid == focusGUID) then
+								XPerl_Target_SetHealth(XPerl_Focus)
+							end
+							if (XPerl_Target_SetHealth and XPerl_TargetTarget and guid == targettargetGUID) then
+								XPerl_Target_SetHealth(XPerl_TargetTarget)
+							end
+						end
+					end
+				end
+
+				local function xperl_HealComm4_HealStarted(event, casterGUID, spellID, bitType, endTime, ...)
+					UpdateIncomingHeals(...)
+				end
+				local function xperl_HealComm4_HealStopped(event, casterGUID, spellID, bitType, interrupted, ...)
+					UpdateIncomingHeals(...)
+				end
+				local function xperl_HealComm4_HealDelayed(event, casterGUID, spellID, bitType, endTime, ...)
+					UpdateIncomingHeals(...)
+				end
+				local function xperl_HealComm4_ModifierChanged(event, ...)
+					UpdateIncomingHeals(...)
+				end
+
+				HealComm4.RegisterCallback("XPerlHealCommCallback", "HealComm_HealStarted", xperl_HealComm4_HealStarted)
+				HealComm4.RegisterCallback("XPerlHealCommCallback", "HealComm_HealStopped", xperl_HealComm4_HealStopped)
+				HealComm4.RegisterCallback("XPerlHealCommCallback", "HealComm_HealDelayed", xperl_HealComm4_HealDelayed)
+				HealComm4.RegisterCallback("XPerlHealCommCallback", "HealComm_ModifierChanged", xperl_HealComm4_ModifierChanged)
+			end
 		end
 	end
 	-- End of HealComm/LibQuickHealth

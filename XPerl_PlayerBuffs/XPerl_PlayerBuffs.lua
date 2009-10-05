@@ -141,7 +141,7 @@ function XPerl_Player_Buffs_Position(self)
 		if (pconf.buffs.above) then
 			self.buffFrame:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 3, 0)
 		else
-			if (self.runes and not pconf.hideRunes) then
+			if (self.runes and self.runes:IsShown() and not pconf.hideRunes) then
 				self.buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
 			elseif (pconf.buffs.wrap and ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait)) then
 				self.buffFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
@@ -407,7 +407,9 @@ local function PlayerBuffsInit(self)
 			OnClick = function(self, button)
 				if (button == "RightButton") then
 					local name, rank, buff, count, _, duration, endTime, myCast = UnitBuff("player", self:GetID())
-					CancelUnitBuff("player", name)
+					if (name) then
+						CancelUnitBuff("player", name)
+					end
 				end
 			end,
 		},
@@ -419,7 +421,9 @@ local function PlayerBuffsInit(self)
 				-- Can cancel a few debuffs (Mind Vision for example)
 				if (button == "RightButton") then
 					local name, rank, buff, count, _, duration, endTime, myCast = UnitDebuff("player", self:GetID())
-					CancelUnitBuff("player", name)
+					if (name) then
+						CancelUnitBuff("player", name)
+					end
 				end
 			end,
 		},

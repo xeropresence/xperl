@@ -2,6 +2,13 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.6
+New: LibHealComm-4.0 Support. Will try to use LHC4 first, if it fails will look for LHC3.
+New: Option to show XP deficit in player frame.
+Fixed: Issue with occasional error in party pets.
+Fixed: Should no longer error on PTR with GetFrameType (untested).
+Fixed: LibStub error when it's not present.
+
 3.0.5g
 New: Option for Runic Energy colour.
 Fixed: Default item selection for range finder.

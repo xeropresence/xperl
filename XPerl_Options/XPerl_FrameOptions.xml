@@ -4834,9 +4834,27 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_XPDeficit" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_PlayerXP" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_XPDEFICIT")
+								self.flashFrame = XPerl_PlayerstatsFramexpBar
+								self.configBase = "XPerlDB.player"
+								self.configIndex = "xpDeficit"
+								self.configClick = XPerl_Player_Reset
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_PlayerRep" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_PlayerXP" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPRIGHT" relativeTo="$parent_XPDeficit" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -14000,7 +14018,7 @@
 				</Anchors>
 				<Scripts>
 					<OnVerticalScroll>
-						FauxScrollFrame_OnVerticalScroll(self, value, 1, function() GetParent():FillList() end)
+						FauxScrollFrame_OnVerticalScroll(self, offset, 1, function() GetParent():FillList() end)
 					</OnVerticalScroll>
 					<OnMouseWheel>
 						local f = getglobal(self:GetName().."ScrollBar")

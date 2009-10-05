@@ -204,20 +204,25 @@ end
 
 -- XPerl_Party_Pet_UpdateName
 local function XPerl_Party_Pet_UpdateName(self)
-	local Partypetname = UnitName(self.partyid)
-
-	if (Partypetname ~= nil) then
-		self.nameFrame.text:SetText(Partypetname)
-		if (UnitIsPVP(self.ownerid)) then
-			self.nameFrame.text:SetTextColor(0,1,0)
-		else
-			self.nameFrame.text:SetTextColor(0.5,0.5,1)
+	if (self.partyid) then
+		local Partypetname = UnitName(self.partyid)
+		if (Partypetname ~= nil) then
+			self.nameFrame.text:SetText(Partypetname)
+			if (UnitIsPVP(self.ownerid)) then
+				self.nameFrame.text:SetTextColor(0,1,0)
+			else
+				self.nameFrame.text:SetTextColor(0.5,0.5,1)
+			end
 		end
 	end
 end
 
 -- XPerl_Party_Pet_UpdateHealth
 function XPerl_Party_Pet_UpdateHealth(self)
+	if (not self.partyid) then
+		return
+	end
+
 	local Partypethealth, Partypethealthmax = XPerl_UnitHealth(self.partyid), UnitHealthMax(self.partyid)
 	local healthPct = Partypethealth / Partypethealthmax
 	local phealthPct = format("%3.0f", healthPct * 100)
@@ -261,18 +266,20 @@ end
 
 -- XPerl_Party_Pet_UpdateMana
 local function XPerl_Party_Pet_UpdateMana(self)
-	local Partypetmana = UnitMana(self.partyid)
-	local Partypetmanamax = UnitManaMax(self.partyid)
+	if (self.partyid) then
+		local Partypetmana = UnitMana(self.partyid)
+		local Partypetmanamax = UnitManaMax(self.partyid)
 
-	self.statsFrame.manaBar:SetMinMaxValues(0, Partypetmanamax)
-	self.statsFrame.manaBar:SetValue(Partypetmana)
+		self.statsFrame.manaBar:SetMinMaxValues(0, Partypetmanamax)
+		self.statsFrame.manaBar:SetValue(Partypetmana)
 
-	pmanaPct = (Partypetmana * 100.0) / Partypetmanamax
-	pmanaPct =  format("%3.0f", pmanaPct)
-	if (UnitPowerType(self.partyid) >= 1) then
-		self.statsFrame.manaBar.text:SetText(Partypetmana)
-	else
-		self.statsFrame.manaBar.text:SetFormattedText("%d%%",(100*(Partypetmana / Partypetmanamax))+0.5)
+		pmanaPct = (Partypetmana * 100.0) / Partypetmanamax
+		pmanaPct =  format("%3.0f", pmanaPct)
+		if (UnitPowerType(self.partyid) >= 1) then
+			self.statsFrame.manaBar.text:SetText(Partypetmana)
+		else
+			self.statsFrame.manaBar.text:SetFormattedText("%d%%",(100*(Partypetmana / Partypetmanamax))+0.5)
+		end
 	end
 end
 
@@ -282,24 +289,26 @@ end
 
 -- XPerl_Party_Pet_Buff_UpdateAll
 function XPerl_Party_Pet_Buff_UpdateAll(self)
-	if (petconf.buffs.enable) then
-		if (UnitExists(self.partyid)) then
-			self.buffFrame:Show()
-			if (XPerlDB) then
-				if (not self.conf) then
-					self.conf = conf.partypet
+	if (self.partyid) then
+		if (petconf.buffs.enable) then
+			if (UnitExists(self.partyid)) then
+				self.buffFrame:Show()
+				if (XPerlDB) then
+					if (not self.conf) then
+						self.conf = conf.partypet
+					end
+	
+					XPerl_Unit_UpdateBuffs(self, nil, nil, petconf.buffs.castble, petconf.debuffs.curable)
 				end
-
-				XPerl_Unit_UpdateBuffs(self, nil, nil, petconf.buffs.castble, petconf.debuffs.curable)
+			else
+				self.buffFrame:Hide()
 			end
 		else
 			self.buffFrame:Hide()
 		end
-	else
-		self.buffFrame:Hide()
-	end
 
-	XPerl_CheckDebuffs(self, self.partyid)
+		XPerl_CheckDebuffs(self, self.partyid)
+	end
 end
 
 -- XPerl_Party_Pet_UpdateDisplayAll
@@ -331,7 +340,7 @@ end
 
 -- XPerl_Party_Pet_Update_Control
 local function XPerl_Party_Pet_Update_Control(self)
-	if (UnitIsVisible(self.partyid) and UnitIsCharmed(self.partyid) and not UnitUsingVehicle(self.ownerid)) then
+	if (self.partyid and UnitIsVisible(self.partyid) and UnitIsCharmed(self.partyid) and not UnitUsingVehicle(self.ownerid)) then
 		self.nameFrame.warningIcon:Show()
 	else
 		self.nameFrame.warningIcon:Hide()
@@ -340,15 +349,15 @@ end
 
 -- XPerl_Party_Pet_UpdateCombat
 function XPerl_Party_Pet_UpdateCombat(self)
-        if (UnitIsVisible(self.partyid) and UnitAffectingCombat(self.partyid)) then
+	if (self.partyid and UnitIsVisible(self.partyid) and UnitAffectingCombat(self.partyid)) then
 		self.nameFrame.level:Hide()
 		self.nameFrame.combatIcon:Show()
-        else
+	else
 		self.nameFrame.combatIcon:Hide()
 		if (petconf.level) then
 			self.nameFrame.level:Show()
 		end
-        end
+	end
 	XPerl_Party_Pet_Update_Control(self)
 end
 

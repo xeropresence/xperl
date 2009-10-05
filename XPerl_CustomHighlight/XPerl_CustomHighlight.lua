@@ -96,9 +96,6 @@ function ch:DefaultZoneData()
 				[28522] = true,								-- Icebolt (Sapphiron)
 				[28542] = true,								-- Life Drain (Sapphiron)
 
-				[28084] = true,								-- Negative Charge (Thaddius)
-				[28059] = true,								-- Positive Charge (Thaddius)
-
 				[28410] = true,								-- Chains of Kel'Thuzad (Kel'Thuzad)
 				[27819] = true,								-- Detonate Mana (Kel'Thuzad)
 				[27808] = true,								-- Frost Blast (Kel'Thuzad)

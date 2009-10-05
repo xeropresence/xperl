@@ -62,11 +62,11 @@ function XPerl_OptionsSetMyText(f, str, keep)
 			textFrame:SetText(getglobal(str))
 			f.tooltipText = getglobal(str.."_DESC")
 
-			if (f:GetFrameType() == "CheckButton") then
+			if ((f.GetFrameType or f.GetObjectType)(f) == "CheckButton") then
 				f:SetHitRectInsets(0, -(textFrame:GetStringWidth()), 0, 0)
 			end
 
-		elseif (f:GetFrameType() == "Button") then
+		elseif ((f.GetFrameType or f.GetObjectType)(f) == "Button") then
 			f:SetText(getglobal(str))
 			f.tooltipText = getglobal(str.."_DESC")
 		end
@@ -162,23 +162,23 @@ function XPerl_Options_EnableSibling(sibling, check2nd, check3rd)
 	end
 
 	if (siblingFrame) then
-		if (siblingFrame:GetFrameType() == "Button") then
+		if ((siblingFrame.GetFrameType or siblingFrame.GetObjectType)(siblingFrame) == "Button") then
 			if (result) then
 				siblingFrame:Enable()
 			else
 				siblingFrame:Disable()
 			end
-		elseif (siblingFrame:GetFrameType() == "CheckButton") then
+		elseif ((siblingFrame.GetFrameType or siblingFrame.GetObjectType)(siblingFrame) == "CheckButton") then
 			XPerl_Options_EnableCheck(siblingFrame, result)
 
-		elseif (siblingFrame:GetFrameType() == "Slider") then
+		elseif ((siblingFrame.GetFrameType or siblingFrame.GetObjectType)(siblingFrame) == "Slider") then
 			if (result) then
 				siblingFrame:EnableSlider()
 			else
 				siblingFrame:DisableSlider()
 			end
 		else
-			DEFAULT_CHAT_FRAME:AddMessage("|c00FF0000X-Perl|r - No code to disable '"..siblingFrame:GetName().."' type: "..siblingFrame:GetFrameType())
+			DEFAULT_CHAT_FRAME:AddMessage("|c00FF0000X-Perl|r - No code to disable '"..siblingFrame:GetName().."' type: "..(siblingFrame.GetFrameType or siblingFrame.GetObjectType)(siblingFrame))
 		end
 	else
 		DEFAULT_CHAT_FRAME:AddMessage("|c00FF0000X-Perl|r - No sibling found called '"..siblingName.."'")
@@ -196,7 +196,7 @@ function XPerl_Options_EnableCheck(self, on)
 		textFrame:SetTextColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
 	end
 
-	if (self:GetFrameType() == "Button") then
+	if ((self.GetFrameType or self.GetObjectType)(self) == "Button") then
 		local normalTexture = getglobal(self:GetName().."NormalTexture")
 		local icon = getglobal(self:GetName().."Icon")
 		if (normalTexture and icon) then
@@ -216,7 +216,7 @@ function XPerl_Options_IncrementSibling(sibling)
 	local siblingName = this:GetParent():GetName().."_"..sibling
 	local siblingFrame = getglobal(siblingName)
 
-	if (siblingFrame and siblingFrame:GetFrameType() == "EditBox") then
+	if (siblingFrame and (siblingFrame.GetFrameType or siblingFrame.GetObjectType)(siblingFrame) == "EditBox") then
         	local n = tonumber(siblingFrame:GetText())
 		n = n + 1
 		siblingFrame:SetText(n)
@@ -229,7 +229,7 @@ function XPerl_Options_DecrementSibling(sibling)
 	local siblingName = this:GetParent():GetName().."_"..sibling
 	local siblingFrame = getglobal(siblingName)
 
-	if (siblingFrame and siblingFrame:GetFrameType() == "EditBox") then
+	if (siblingFrame and (siblingFrame.GetFrameType or siblingFrame.GetObjectType)(siblingFrame) == "EditBox") then
         	local n = tonumber(siblingFrame:GetText())
 		n = n - 1
 		siblingFrame:SetText(n)
@@ -731,7 +731,7 @@ local protected = {}
 function XPerl_Options_InCombatChange(inCombat)
 
 	for k,v in pairs(protected) do
-		if (k:GetFrameType() == "CheckButton") then
+		if ((k.GetFrameType or k.GetObjectType)(k) == "CheckButton") then
 			local textFrame = getglobal(k:GetName().."Text")
 
 			if (inCombat) then
@@ -759,7 +759,7 @@ function XPerl_Options_InCombatChange(inCombat)
 				end
 			end
 
-		elseif (k:GetFrameType() == "Slider") then
+		elseif ((k.GetFrameType or k.GetObjectType)(k) == "Slider") then
 			if (inCombat) then
 				k.combatIcon:Show()
 				k:DisableSlider()
@@ -773,7 +773,7 @@ function XPerl_Options_InCombatChange(inCombat)
 				end
 			end
 
-		elseif (k:GetFrameType() == "Button") then
+		elseif ((k.GetFrameType or k.GetObjectType)(k) == "Button") then
 			if (inCombat) then
 				k.combatIcon:Show()
 				k:Disable()
@@ -787,7 +787,7 @@ function XPerl_Options_InCombatChange(inCombat)
 				end
 			end
 
-		elseif (k:GetFrameType() == "EditBox") then
+		elseif ((k.GetFrameType or k.GetObjectType)(k) == "EditBox") then
 			if (inCombat) then
 				k.combatIcon:Show()
 				k:Disable()
@@ -808,9 +808,9 @@ end
 -- XPerl_Options_RegisterProtected
 function XPerl_Options_RegisterProtected(self)
 
-	if (self:GetFrameType() == "Slider") then
+	if ((self.GetFrameType or self.GetObjectType)(self) == "Slider") then
 		XPerl_SliderSetup(self)
-	elseif (self:GetFrameType() == "EditBox") then
+	elseif ((self.GetFrameType or self.GetObjectType)(self) == "EditBox") then
 		XPerl_EditBoxSetup(self)
 	end
 

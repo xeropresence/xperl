@@ -160,15 +160,11 @@ local function XPerl_Player_UpdateCombat(self)
 		nf.combatIcon:SetTexCoord(0.5, 1.0, 0.0, 0.5)
 		nf.combatIcon:Show()
 	else
-		if (UnitIsPVP("player") or UnitIsPVPFreeForAll("player")) then
-			nf.text:SetTextColor(0,1,0)
+		if (self.partyid ~= "player") then
+			local c = conf.colour.reaction.none
+			nf.text:SetTextColor(c.r, c.g, c.b, conf.transparency.text)
 		else
-			if (self.partyid ~= "player") then
-				local c = conf.colour.reaction.none
-				nf.text:SetTextColor(c.r, c.g, c.b, conf.transparency.text)
-			else
-				XPerl_ColourFriendlyUnit(nf.text, self.partyid)
-			end
+			XPerl_ColourFriendlyUnit(nf.text, self.partyid)
 		end
 
 		if (IsResting()) then
@@ -279,7 +275,11 @@ local function XPerl_Player_UpdateXP(self)
 					color = {r = 0.6, g = 0, b = 0.6}
 				end
 
-				XPerl_SetValuedText(xpBar.text, playerxp, playerxpmax, suffix)
+				if (pconf.xpDeficit) then
+					XPerl_SetValuedText(xpBar.text, playerxp - playerxpmax, playerxpmax, suffix)
+				else
+					XPerl_SetValuedText(xpBar.text, playerxp, playerxpmax, suffix)
+				end
 				if (xpBar.text:GetStringWidth() <= w) then
 					break
 				end
@@ -303,8 +303,6 @@ local function XPerl_Player_UpdatePVP(self)
 	local nf = self.nameFrame
 	if (UnitAffectingCombat(self.partyid)) then
 		nf.text:SetTextColor(1,0,0)
-	elseif (not conf.colour.class and UnitIsPVP("player")) then
-		nf.text:SetTextColor(0,1,0)
 	else
 		XPerl_ColourFriendlyUnit(nf.text, "player")
 	end
@@ -761,7 +759,10 @@ function XPerl_Player_Events:PLAYER_REGEN_DISABLED()
 	XPerl_Player_UpdateCombat(self)
 end
 
-XPerl_Player_Events.PLAYER_UPDATE_RESTING = XPerl_Player_Events.PLAYER_REGEN_DISABLED
+function XPerl_Player_Events:PLAYER_UPDATE_RESTING()
+	XPerl_Player_UpdateCombat(self)
+	XPerl_Player_UpdateXP(self)
+end
 
 function XPerl_Player_Events:UNIT_AURA()
 	XPerl_Player_UpdateBuffs(self)
@@ -864,6 +865,10 @@ function XPerl_Player_SetWidth(self)
 	if (XPerl_Player_Buffs_Position) then
 		XPerl_Player_Buffs_Position(self)
 	end
+
+	XPerl_Player_UpdateHealth(self)
+	XPerl_Player_UpdateMana(self)
+	XPerl_Player_UpdateXP(self)
 
 	XPerl_SavePosition(self, true)
 	XPerl_RestorePosition(self)

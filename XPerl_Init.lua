@@ -15,7 +15,7 @@ local highlightPositions = {	{0, 0.25, 0, 0.5},
 				{0.75, 1, 0, 0.5}}
 local function SetTex(self, num)
 	local p = highlightPositions[num]
-	if (self:GetFrameType() == "Button") then
+	if ((self.GetFrameType or self.GetObjectType)(self) == "Button") then
 		if (conf.highlightSelection == 1) then
 			self:SetHighlightTexture("Interface\\Addons\\XPerl\\images\\XPerl_Highlight", "ADD")
 			local tex = self:GetHighlightTexture()
@@ -25,7 +25,7 @@ local function SetTex(self, num)
 			self:SetHighlightTexture("")
 		end
 
-	elseif (self:GetFrameType() == "Frame") then
+	elseif ((self.GetFrameType or self.GetObjectType)(self) == "Frame") then
 		if (self.tex) then
 			self.tex:SetTexture("Interface\\Addons\\XPerl\\images\\XPerl_Highlight", "ADD")
 			self.tex:SetTexCoord(unpack(p))

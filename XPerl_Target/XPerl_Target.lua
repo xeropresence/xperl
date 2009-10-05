@@ -486,7 +486,7 @@ do
 		XPerl_Targets_BuffPositions(self)
 	end
 
-	local LGT = LibStub("LibGroupTalents-1.0", true)
+	local LGT = LibStub and LibStub("LibGroupTalents-1.0", true)
 	local UpdateTalentsLGT
 	if (LGT) then
 		function UpdateTalentsLGT(self)
@@ -502,7 +502,7 @@ do
 	local lastInspectTime = 0
 	local lastInspectName, lastInspectUnit, lastInspectGUID
 	local talentCache = setmetatable({}, {__mode = "kv"})
-	local LTQ = LibStub("LibTalentQuery-1.0", true)
+	local LTQ = LibStub and LibStub("LibTalentQuery-1.0", true)
 	if (LTQ) then
 		local function TalentQuery_Ready(e, name, realm, unit)
 			if (UnitIsUnit(unit, XPerl_Target.partyid)) then
@@ -714,7 +714,8 @@ function XPerl_Target_SetMana(self)
 		mb.percent:SetText(targetmana)
 	end
 
-	mb.text:SetFormattedText("%d/%d", targetmana, targetmanamax)
+	XPerl_SetValuedText(mb.text, targetmana, targetmanamax)
+	--mb.text:SetFormattedText("%d/%d", targetmana, targetmanamax)
 end
 
 -- XPerl_Target_UpdateHealth
@@ -815,7 +816,7 @@ function XPerl_Target_SetHealth(self)
 			end
 		end
 	end
-	
+
 	XPerl_SetHealthBar(self, hp, hpMax)
 
 	if (percent) then

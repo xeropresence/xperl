@@ -542,7 +542,7 @@ local function SelectClickedTickItem()
 	end
 
 	local id
-	if (this:GetFrameType() == "CheckButton") then
+	if ((this.GetFrameType or this.GetObjectType)(this) == "CheckButton") then
 		id = this:GetParent():GetID()
 	else
 		id = this:GetID()
@@ -1311,7 +1311,7 @@ end
 function XPerl_Check_OnEnter()
 
 	local f, anc
-	if (this:GetFrameType() == "CheckButton") then
+	if ((this.GetFrameType or this.GetObjectType)(this) == "CheckButton") then
 		f = getglobal(this:GetParent():GetName().."Name")
 		anc = this:GetParent()
 	else

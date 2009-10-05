@@ -1772,7 +1772,7 @@ function xpHigh:OptionChange()
 		if (not hcTried) then
 			hcTried = true
 			if (playerClass == "SHAMAN" or playerClass == "PRIEST" or playerClass == "DRUID" or playerClass == "PALADIN") then
-				--HealComm4 = LibStub("LibHealComm-4.0", true)
+				HealComm4 = LibStub("LibHealComm-4.0", true)
 				if (not HealComm4) then
 					HealComm3 = LibStub("LibHealComm-3.0", true)
 				end
