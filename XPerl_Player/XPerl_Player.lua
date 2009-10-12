@@ -372,6 +372,10 @@ local function XPerl_Player_UpdateMana(self)
 	else
 		mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
 	end
+	if (not self.statsFrame.greyMana) then
+		mb.text:Show()
+		mb.percent:Show()
+	end
 
 	if (playerClass == "DRUID") then
 		XPerl_Player_DruidBarUpdate(self)
@@ -540,9 +544,15 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 	if (UnitHasVehicleUI("player")) then
 		self.partyid = "vehicle"
 		self:SetAttribute("unit", "vehicle")
+		if (XPerl_ArcaneBar_SetUnit) then
+			XPerl_ArcaneBar_SetUnit(self.nameFrame, "vehicle")
+		end
 	else
 		self.partyid = "player"
 		self:SetAttribute("unit", "player")
+		if (XPerl_ArcaneBar_SetUnit) then
+			XPerl_ArcaneBar_SetUnit(self.nameFrame, "player")
+		end
 	end
 
 	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",

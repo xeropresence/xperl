@@ -554,21 +554,23 @@ end
 
 -- XPerl_BlizzFrameDisable
 function XPerl_BlizzFrameDisable(self)
-	UnregisterUnitWatch(self)		-- Should stop Archaeologist from re-showing target frame
-	self:UnregisterAllEvents()
-	self:Hide()
-	-- Make it so it won't be visible, even if shown by another mod
-	self:ClearAllPoints()
-	self:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", -400, 500)
+	if (self) then
+		UnregisterUnitWatch(self)		-- Should stop Archaeologist from re-showing target frame
+		self:UnregisterAllEvents()
+		self:Hide()
+		-- Make it so it won't be visible, even if shown by another mod
+		self:ClearAllPoints()
+		self:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", -400, 500)
 
-	local healthBar = getglobal(self:GetName().."HealthBar")
-	if (healthBar) then
-		healthBar:UnregisterAllEvents()
-	end
+		local healthBar = getglobal(self:GetName().."HealthBar")
+		if (healthBar) then
+			healthBar:UnregisterAllEvents()
+		end
 
-	local manaBar = getglobal(self:GetName().."ManaBar")
-	if (manaBar) then
-		manaBar:UnregisterAllEvents()
+		local manaBar = getglobal(self:GetName().."ManaBar")
+		if (manaBar) then
+			manaBar:UnregisterAllEvents()
+		end
 	end
 end
 
@@ -2739,7 +2741,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 	local buffs, debuffs, buffsMine, debuffsMine = 0, 0, 0, 0
 	local partyid = self.partyid
 
-	if (UnitExists(partyid)) then
+	if (self.conf and UnitExists(partyid)) then
 		if (not maxBuffs) then maxBuffs = 24 end
 		if (not maxDebuffs) then maxDebuffs = 40 end
 		local lastIcon = 0
@@ -2955,7 +2957,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 	self.perlBuffs = buffs
 	self.perlDebuffs = debuffs
 
-	if (self.conf.buffs.big) then
+	if (self.conf and self.conf.buffs.big) then
 		self.perlBuffsMine = buffsMine
 		self.perlDebuffsMine = debuffsMine
 	else

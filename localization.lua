@@ -134,6 +134,7 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(33763)] = 8,			-- Lifebloom
 		[GetSpellInfo(28880)] = 15,			-- Gift of the Naaru (Racial)
 		[GetSpellInfo(61295)] = 15,			-- Riptide
+		[GetSpellInfo(66922)] = 10,			-- Flash of Light hot
 	},
 	pomSpells = {
 		[GetSpellInfo(33076)] = 30			-- Prayer of Mending

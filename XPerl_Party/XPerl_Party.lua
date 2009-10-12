@@ -222,6 +222,9 @@ local spiritOfRedemption = GetSpellInfo(27827)
 
 -- XPerl_Party_UpdateHealth
 function XPerl_Party_UpdateHealth(self)
+	if (not self.conf) then
+		return
+	end
 	local partyid = self.partyid
 	local Partyhealth, Partyhealthmax = XPerl_UnitHealth(partyid), UnitHealthMax(partyid)
 	local reason
@@ -742,7 +745,7 @@ end
 
 -- XPerl_Party_UpdateDisplay
 function XPerl_Party_UpdateDisplay(self, less)
-	if (self.partyid and UnitExists(self.partyid)) then
+	if (self.conf and self.partyid and UnitExists(self.partyid)) then
 		self.afk, self.dnd = nil,nil
 		XPerl_Party_UpdateName(self)
 		XPerl_Party_UpdateLeader(self)
@@ -888,10 +891,11 @@ end
 -- PLAYER_ENTERING_WORLD
 function XPerl_Party_Events:PLAYER_ENTERING_WORLD()
 	UIParent:UnregisterEvent("RAID_ROSTER_UPDATE")	-- Re-do, in case
-	--if (not startupDone) then
-	--	startupDone = true
-	--	XPerl_ProtectedCall(XPerl_Party_SetInitialAttributes)
-	--end
+	if (not startupDone) then
+		startupDone = true
+		XPerl_ProtectedCall(XPerl_Party_SetInitialAttributes)
+		CheckRaid()
+	end
 	XPerl_Party_Events:PARTY_MEMBER_ENABLE()
 end
 
@@ -1401,14 +1405,20 @@ function XPerl_Party_Set_Bits()
 	XPerl_SavePosition(partyAnchor, true)
 
 	for k,v in pairs(PartyFrames) do
+		if (XPerlDB and not v.conf) then
+			conf = XPerlDB
+			pconf = XPerlDB.party
+			v.conf = XPerlDB.party
+		end
+
 		XPerl_Party_Set_Bits1(v)
 	end
 
-	--if (startupDone) then
-	--	partyHeader:Hide()
-	--	XPerl_Party_SetMainAttributes()
-	--	CheckRaid()
-	--end
+	if (startupDone) then
+		partyHeader:Hide()
+		XPerl_Party_SetMainAttributes()
+		CheckRaid()
+	end
 	XPerl_Party_SetInitialAttributes()
 
 	if (XPerl_Party_AnchorVirtual:IsShown()) then

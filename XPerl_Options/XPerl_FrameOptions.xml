@@ -14018,7 +14018,7 @@
 				</Anchors>
 				<Scripts>
 					<OnVerticalScroll>
-						FauxScrollFrame_OnVerticalScroll(self, offset, 1, function() GetParent():FillList() end)
+						FauxScrollFrame_OnVerticalScroll(self, offset, 1, function() self:GetParent():FillList() end)
 					</OnVerticalScroll>
 					<OnMouseWheel>
 						local f = getglobal(self:GetName().."ScrollBar")
