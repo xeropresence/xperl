@@ -2699,6 +2699,8 @@ function XPerl_Unit_BuffPositions(self, buffList1, buffList2, size1, size2)
 	if (optMix ~= self.buffOptMix) then
 		WieghAnchor(self)
 
+		local buffsFirst = self.buffFrame.buff == buffList1
+
 		self.buffOptMix = optMix
 		self.prevBuff = nil
 
@@ -2717,6 +2719,19 @@ function XPerl_Unit_BuffPositions(self, buffList1, buffList2, size1, size2)
 		end
 		if (buffList2) then
 			XPerl_Unit_BuffPositionsType(self, buffList2, false, size2)
+		end
+
+		if (buffList2) then
+			-- If top row is disabled, then nudge the bottom row into it's place
+			if (buffsFirst) then
+				if (not self.conf.buffs.enable) then
+					buffList2[1]:SetPoint(self.TOPLEFT, self.buffFrame, self.TOPLEFT, 0, self.VSPACING)
+				end
+			else
+				if (not self.conf.debuffs.enable) then
+					buffList2[1]:SetPoint(self.TOPLEFT, self.buffFrame, self.TOPLEFT, 0, self.VSPACING)
+				end
+			end
 		end
 	else
 		if (self.hideFrom1 and buffList1) then
