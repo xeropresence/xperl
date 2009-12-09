@@ -542,8 +542,8 @@ end
 ----------------------------
 
 -- OnEvent
-function XPerl_OnEvent(self, event, a)
-	Events[event](self, a)
+function XPerl_OnEvent(self, event, ...)
+	Events[event](self, ...)
 end
 
 -- XPerl_GetUnit

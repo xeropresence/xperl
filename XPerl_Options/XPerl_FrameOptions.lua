@@ -1660,7 +1660,7 @@ function XPerl_Options_ImportOldConfig(old)
 			buffs = {
 				enable		= Convert(old.PlayerBuffs),
 				above		= Convert(old.PlayerBuffsAbove),
-				size		= old.PlayerBuffSize		or 25,
+				size		= old.PlayerBuffSize		or 15,
 				hideBlizzard	= Convert(old.HideBlizzardBuffBar),
 				count		= old.PlayerBuffMaxDisplay	or 40,
 				cooldown	= Convert(old.PlayerBuffsCooldown),
@@ -1670,7 +1670,7 @@ function XPerl_Options_ImportOldConfig(old)
 			},
 			debuffs = {
 				enable		= Convert(old.PlayerBuffs),
-				size		= old.PlayerBuffSize		or 25,
+				size		= old.PlayerBuffSize		or 19,
 			},
 			size = {
 				width		= old.PlayerWidthBonus		or 0,
@@ -1695,12 +1695,12 @@ function XPerl_Options_ImportOldConfig(old)
 			name			= Convert(old.ShowPlayerPetName),
 			buffs = {
 				enable		= 1,
-				size		= old.PlayerPetBuffSize		or 25,
+				size		= old.PlayerPetBuffSize		or 15,
 				wrap		= 1,			-- 2.3.5
 			},
 			debuffs = {
 				enable		= 1,
-				size		= old.PlayerPetBuffSize		or 25,
+				size		= old.PlayerPetBuffSize		or 19,
 			},
 			healerMode = {
 --				enable		= nil,
@@ -1740,13 +1740,14 @@ function XPerl_Options_ImportOldConfig(old)
 				enable		= 1,
 				wrap		= 1,
 				above		= Convert(old.TargetBuffsAbove),
-				size		= old.TargetBuffSize		or 22,
+				size		= old.TargetBuffSize		or 15,
 				rows		= old.TargetBuffRows		or 3,
 				castable	= old.TargetCastableBuffs	or 0,
 			},
 			debuffs = {
 				enable		= 1,
 				curable		= old.TargetCurableDebuffs	or 0,
+				size		= old.TargetBuffSize		or 19,
 				big		= 1,						-- 2.3.6
 			},
 			reactionHighlight	= Convert(old.TargetReactionHighlight),			-- 1.8.6
@@ -1788,13 +1789,14 @@ function XPerl_Options_ImportOldConfig(old)
 				enable		= 1,
 				wrap		= 1,
 				above		= Convert(old.FocusBuffsAbove),
-				size		= old.FocusBuffSize		or 22,
+				size		= old.FocusBuffSize		or 15,
 				rows		= old.FocusBuffRows		or 3,
 				castable	= old.FocusCastableBuffs	or 0,
 				curable		= old.FocusCurableDebuffs	or 0,
 			},
 			debuffs = {
 				enable		= 1,
+				size		= old.FocusBuffSize		or 19,
 				curable		= old.TargetCurableDebuffs	or 0,
 			},
 			reactionHighlight	= Convert(old.FocusReactionHighlight),			-- 1.8.6
@@ -1816,7 +1818,7 @@ function XPerl_Options_ImportOldConfig(old)
 			buffs = {
 				enable		= Convert(old.TargetTargetBuffs),
 				above		= Convert(old.TargetTargetBuffsAbove),
-				size		= old.FocusBuffSize		or 22,
+				size		= old.FocusBuffSize		or 15,
 				rows		= old.FocusBuffRows		or 3,
 				castable	= old.TargetCastableBuffs	or 0,
 				curable		= old.TargetCurableDebuffs	or 0,
@@ -1824,6 +1826,7 @@ function XPerl_Options_ImportOldConfig(old)
 			},
 			debuffs = {
 				enable		= Convert(old.TargetTargetBuffs),
+				size		= old.FocusBuffSize		or 19,
 			},
 			scale			= old.Scale_TargetTargetFrame	or 0.8,
 			percent			= Convert(old.ShowTargetTargetPercent),
@@ -1839,13 +1842,14 @@ function XPerl_Options_ImportOldConfig(old)
 			buffs = {
 				enable		= Convert(old.TargetTargetTargetBuffs),
 				above		= Convert(old.TargetTargetBuffsAbove),
-				size		= old.FocusBuffSize		or 22,
+				size		= old.FocusBuffSize		or 15,
 				rows		= old.FocusBuffRows		or 3,
 				castable	= old.TargetCastableBuffs	or 0,
 				curable		= old.TargetCurableDebuffs	or 0,
 			},
 			debuffs = {
 				enable		= Convert(old.TargetTargetBuffs),
+				size		= old.FocusBuffSize		or 19,
 			},
 			scale			= old.Scale_TargetTargetFrame	or 0.8,
 			percent			= Convert(old.ShowTargetTargetPercent),
@@ -1861,7 +1865,7 @@ function XPerl_Options_ImportOldConfig(old)
 			buffs = {
 				enable		= Convert(old.FocusTargetBuffs),
 				above		= Convert(old.FocusTargetBuffsAbove),
-				size		= old.FocusBuffSize		or 22,
+				size		= old.FocusBuffSize		or 15,
 				rows		= old.FocusBuffRows		or 3,
 				castable	= old.TargetCastableBuffs	or 0,
 				curable		= old.TargetCurableDebuffs	or 0,
@@ -1869,6 +1873,7 @@ function XPerl_Options_ImportOldConfig(old)
 			},
 			debuffs = {
 				enable		= Convert(old.TargetTargetBuffs),
+				size		= old.FocusBuffSize		or 19,
 			},
 			scale			= old.Scale_FocusTargetFrame	or 0.8,
 			percent			= Convert(old.ShowFocusTargetPercent),
@@ -1884,7 +1889,7 @@ function XPerl_Options_ImportOldConfig(old)
 			buffs = {
 				enable		= Convert(old.PlayerPetTargetBuffs),
 				above		= Convert(old.PlayerPetTargetBuffsAbove),
-				size		= old.TargetBuffSize		or 22,
+				size		= old.TargetBuffSize		or 15,
 				rows		= old.TargetBuffRows		or 3,
 				castable	= old.TargetCastableBuffs	or 0,
 				curable		= old.TargetCurableDebuffs	or 0,
@@ -1892,6 +1897,7 @@ function XPerl_Options_ImportOldConfig(old)
 			},
 			debuffs = {
 				enable		= Convert(old.TargetTargetBuffs),
+				size		= old.TargetBuffSize		or 19,
 			},
 			scale			= old.Scale_PlayerPetTargetFrame or 0.8,
 			percent			= Convert(old.ShowPlayerPetTargetPercent),
@@ -1927,13 +1933,13 @@ function XPerl_Options_ImportOldConfig(old)
 			buffs = {
 				wrap		= 1,
 				enable		= Convert(old.PartyBuffs),
-				size		= old.PartyBuffSize		or 20,
+				size		= old.PartyBuffSize		or 22,
 				castable	= old.PartyCastableBuffs	or 0,
 				rows		= 2,
 			},
 			debuffs = {
 				enable		= Convert(old.PartyDebuffs),
-				size		= old.PartyBuffSize		or 22,
+				size		= old.PartyBuffSize		or 32,
 				curable		= old.PartyCurableDebuffs	or 0,
 				halfSize	= Convert(old.PartyDebuffsHalfSize),			-- 2.2.6
 				below		= Convert(old.PartyDebuffsBelow),

@@ -418,8 +418,8 @@ function XPerl_StopLoad()
 	XPerl_AdminFrame_Controls:Details()
 end
 
-function XPerl_Message(msg)
-	DEFAULT_CHAT_FRAME:AddMessage(XPERL_MSG_PREFIX.."- "..msg)
+function XPerl_Message(...)
+	DEFAULT_CHAT_FRAME:AddMessage(XPERL_MSG_PREFIX.."- "..format(...))
 end
 
 XPerl_AdminCommands = {

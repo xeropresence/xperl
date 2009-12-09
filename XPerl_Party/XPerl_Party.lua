@@ -1404,14 +1404,13 @@ function XPerl_Party_Set_Bits()
 	partyAnchor:SetScale(pconf.scale)
 	XPerl_SavePosition(partyAnchor, true)
 
-	for k,v in pairs(PartyFrames) do
-		if (XPerlDB and not v.conf) then
-			conf = XPerlDB
-			pconf = XPerlDB.party
-			v.conf = XPerlDB.party
+	if (XPerlDB) then
+		conf = XPerlDB
+		pconf = XPerlDB.party
+		for k,v in pairs(PartyFrames) do
+			v.conf = pconf
+			XPerl_Party_Set_Bits1(v)
 		end
-
-		XPerl_Party_Set_Bits1(v)
 	end
 
 	if (startupDone) then

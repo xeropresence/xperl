@@ -105,18 +105,18 @@ local absorbSpells = {
 	},
 	[GetSpellInfo(17)] = {				-- Power Word: Shield
 		ranks = {
-			[17]	= 44,
-			[592]	= 88,
-			[600]	= 158,
-			[3747]	= 234,
-			[6065]	= 301,
-			[6066]	= 381,
-			[10898]	= 484,
-			[10899]	= 605,
-			[10900]	= 763,
-			[10901]	= 942,
-			[25217]	= 1125,
-			[25218]	= 1265,
+			[17]	= 48,
+			[592]	= 94,
+			[600]	= 166,
+			[3747]	= 244,
+			[6065]	= 312,
+			[6066]	= 394,
+			[10898]	= 499,
+			[10899]	= 622,
+			[10900]	= 782,
+			[10901]	= 963,
+			[25217]	= 1143,
+			[25218]	= 1280,
 			[48065]	= 1920,
 			[48066]	= 2230
 		},
@@ -633,17 +633,15 @@ end
 function xpHigh:GetMyHotTime(unit)
 	local maxDur, maxTimeLeft = 0, 0
 	for i = 1,40 do
-		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i, "PLAYER")
 		if (not name) then
 			break
 		end
 
 		if (hotSpells[name]) then
-			if (isMine == "player") then
-				local timeLeft = endTime - GetTime()
-				if (timeLeft > maxTimeLeft) then
-					maxDur, maxTimeLeft = dur, timeLeft
-				end
+			local timeLeft = endTime - GetTime()
+			if (timeLeft > maxTimeLeft) then
+				maxDur, maxTimeLeft = dur, timeLeft
 			end
 		end
 	end
@@ -713,14 +711,12 @@ end
 -- xpHigh:HasMyHOT(unit)
 function xpHigh:HasMyHOT(unit)
 	for i = 1,100 do
-		local name, rank, tex, count, buffType, dur, endTime, caster = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, caster = UnitBuff(unit, i, "PLAYER")
 		if (not name) then
 			break
 		end
 		if (hotSpells[name]) then
-			if (caster == "player") then
-				return true
-			end
+			return true
 		end
 	end
 end
@@ -755,16 +751,12 @@ end
 -- GetMyPomEndTime
 function xpHigh:GetMyPomEndTime(unit)
 	for i = 1,40 do
-		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i, "PLAYER")
 		if (not name) then
 			break
 		end
-
 		if (pomSpells[name]) then
-			if (isMine == "player") then
-				return endTime
-			end
-			break				-- A player can only have 1 POM
+			return endTime
 		end
 	end
 end
@@ -1590,15 +1582,12 @@ end
 -- xpHigh:HasMyPomPom(unit)
 function xpHigh:HasMyPomPom(unit)
 	for i = 1,40 do
-		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i, "PLAYER")
 		if (not name) then
 			break
 		end
-
 		if (pomSpells[name]) then
-			if (isMine == "player") then
-				return endTime - GetTime()
-			end
+			return endTime - GetTime()
 		end
 	end
 end
@@ -1606,15 +1595,12 @@ end
 -- xpHigh:HasMyShield(unit)
 function xpHigh:HasMyShield(unit)
 	for i = 1,20 do
-		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i)
+		local name, rank, tex, count, buffType, dur, endTime, isMine = UnitBuff(unit, i, "PLAYER")
 		if (not name) then
 			break
 		end
-
 		if (shieldSpells[name]) then
-			if (isMine == "player") then
-				return endTime - GetTime()
-			end
+			return endTime - GetTime()
 		end
 	end
 end

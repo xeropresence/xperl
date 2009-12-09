@@ -4,8 +4,8 @@
 
 XPerl_SetModuleRevision("$Revision$")
 
-function XPerl_Message(msg)
-	DEFAULT_CHAT_FRAME:AddMessage(XPERL_MSG_PREFIX.."- "..msg)
+function XPerl_Message(...)
+	DEFAULT_CHAT_FRAME:AddMessage(XPERL_MSG_PREFIX.."- "..format(...))
 end
 
 function XPerl_SetupFrames()

@@ -8889,8 +8889,8 @@
 								if (XPerlDB.focus.buffs.size ~= value) then
 									XPerlDB.focus.buffs.size = value
 									XPerlDB.focustarget.buffs.size = value
-									XPerl_Target_Set_Bits(XPerl_Focus)
-									XPerl_Target_UpdateDisplay(XPerl_Focus)
+									XPerl_Target_Reset()
+									XPerl_TargetTarget_Reset()
 								end
 								getglobal(self:GetName().."Current"):SetText(value)
 							</OnValueChanged>
@@ -8923,6 +8923,7 @@
 									XPerlDB.focus.debuffs.size = value
 									XPerlDB.focustarget.debuffs.size = value
 									XPerl_Target_Reset()
+									XPerl_TargetTarget_Reset()
 								end
 								getglobal(self:GetName().."Current"):SetText(value)
 							</OnValueChanged>
