@@ -2,7 +2,10 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-3.07
+3.0.8
+NEW: Added Dungeon Finder role icons to party and player name frame.
+
+3.0.7
 Changed: TOC 30300
 
 3.0.6 (proper)
