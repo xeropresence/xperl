@@ -142,6 +142,17 @@
 							</Anchors>
 						</Texture>
 
+						<Texture name="$parentroleIcon" file="Interface\GroupFrame\UI-Group-MainAssistIcon" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset>
+										<AbsDimension x="40" y="5"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<Size><AbsDimension x="16" y="16"/></Size>
+						</Texture>
+
 						<!-- Warning Icon -->
 						<Texture name="$parentwarningIcon" file="Interface\Minimap\Ping\ping6" alphaMode="ADD" hidden="true">
 							<Size>

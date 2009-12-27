@@ -411,12 +411,14 @@ function XPerl_GetUsage(unitName, unitID)
 	local ver = XPerl_Usage[unitName]
 	if (not ver and XPerlTest) then
 		if (unitID and unitName ~= UNKNOWN and (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
-			if (not mod.directQueries) then
-				mod.directQueries = {}
-			end
-			if (not mod.directQueries[unitName]) then
-				mod.directQueries[unitName] = true
-				SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true), "WHISPER", unitName)
+			if (not strfind(unitName, "%-") or select(2, IsInInstance()) == "battleground") then
+				if (not mod.directQueries) then
+					mod.directQueries = {}
+				end
+				if (not mod.directQueries[unitName]) then
+					mod.directQueries[unitName] = true
+					SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true), "WHISPER", unitName)
+				end
 			end
 		end
 	end

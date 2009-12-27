@@ -233,6 +233,17 @@
 							</Anchors>
 						</Texture>
 
+						<Texture name="$parentroleIcon" file="Interface\GroupFrame\UI-Group-MainAssistIcon" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset>
+										<AbsDimension x="10" y="5"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<Size><AbsDimension x="16" y="16"/></Size>
+						</Texture>
+
 						<!-- Rest/Combat Icon -->
 						<Texture name="$parentcombatIcon" file="Interface\CharacterFrame\UI-StateIcon" hidden="true">
 							<Size>

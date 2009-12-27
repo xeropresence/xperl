@@ -462,6 +462,44 @@ local function XPerl_Party_UpdateName(self)
 	end
 end
 
+-- UpdateAssignedRoles
+local function UpdateAssignedRoles(self)
+	local unit = self.partyid
+	local icon = self.nameFrame.roleIcon
+	local isTank, isHealer, isDamage = UnitGroupRolesAssigned(unit)
+
+	icon:ClearAllPoints()
+	if (self.nameFrame.masterIcon:IsShown()) then
+		icon:SetPoint("LEFT", self.nameFrame.masterIcon, "RIGHT")
+	elseif (self.nameFrame.leaderIcon:IsShown()) then
+		icon:SetPoint("LEFT", self.nameFrame.leaderIcon, "RIGHT")
+	else
+		icon:SetPoint("TOPLEFT", 5, 5)
+	end
+
+	if isTank then
+		icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainTankIcon")
+		icon:Show()
+	elseif isHealer then
+		icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer")
+		icon:Show()
+	elseif isDamage then
+		icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainAssistIcon")
+		icon:Show()
+	else
+		icon:Hide()
+	end
+end
+
+-- UpdateAllAssignedRoles
+local function UpdateAllAssignedRoles()
+	for unit,frame in pairs(PartyFrames) do
+		if (frame:IsShown()) then
+			UpdateAssignedRoles(frame)
+		end
+	end
+end
+
 -- XPerl_Party_UpdateLeader
 local function XPerl_Party_UpdateLeader(self)
 	if ("party"..GetPartyLeaderIndex() == self.partyid) then
@@ -478,6 +516,8 @@ local function XPerl_Party_UpdateLeader(self)
 	else
 		self.nameFrame.masterIcon:Hide()
 	end
+
+	UpdateAssignedRoles(self)
 end
 
 -- XPerl_Party_UpdatePVP
@@ -937,6 +977,7 @@ do
 		BuildGuidMap()
 		checkRaidNextUpdate = 3
 		CheckRaid()
+		UpdateAllAssignedRoles()
 	end
 end
 
@@ -1423,4 +1464,5 @@ function XPerl_Party_Set_Bits()
 	if (XPerl_Party_AnchorVirtual:IsShown()) then
 		XPerl_Party_Virtual(true)
 	end
+	UpdateAllAssignedRoles()
 end

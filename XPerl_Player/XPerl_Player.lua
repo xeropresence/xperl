@@ -92,6 +92,26 @@ function XPerl_Player_HighlightCallback(self, updateGUID)
 	end
 end
 
+-- UpdateAssignedRoles
+local function UpdateAssignedRoles(self)
+	local unit = self.partyid
+	local icon = self.nameFrame.roleIcon
+	local isTank, isHealer, isDamage = UnitGroupRolesAssigned("player")
+
+	if isTank then
+		icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainTankIcon")
+		icon:Show()
+	elseif isHealer then
+		icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer")
+		icon:Show()
+	elseif isDamage then
+		icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainAssistIcon")
+		icon:Show()
+	else
+		icon:Hide()
+	end
+end
+
 -------------------------
 -- The Update Function --
 -------------------------
@@ -128,6 +148,8 @@ function XPerl_Player_UpdateLeader(self)
 	else
 		nf.leaderIcon:Hide()
 	end
+
+	UpdateAssignedRoles(self)
 
 	if (pconf and pconf.partyNumber and GetNumRaidMembers() > 0) then
 		for i = 1,GetNumRaidMembers() do
@@ -1098,6 +1120,8 @@ function XPerl_Player_Set_Bits(self)
 	if (XPerl_Voice) then
 		XPerl_Voice:Register(self)
 	end
+
+	UpdateAssignedRoles(self)
 end
 
 -- XPerl_Player_InitDK
