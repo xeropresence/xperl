@@ -466,7 +466,12 @@ end
 local function UpdateAssignedRoles(self)
 	local unit = self.partyid
 	local icon = self.nameFrame.roleIcon
-	local isTank, isHealer, isDamage = UnitGroupRolesAssigned(unit)
+	local isTank, isHealer, isDamage
+	if (select(2, IsInInstance()) == "party") then
+		-- No point getting it otherwise, as they can be wrong. Usually the values you had
+		-- from previous instance if you're running more than one with the same people
+		isTank, isHealer, isDamage = UnitGroupRolesAssigned(unit)
+	end
 
 	icon:ClearAllPoints()
 	if (self.nameFrame.masterIcon:IsShown()) then
