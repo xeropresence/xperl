@@ -401,8 +401,12 @@ local function XPerl_Player_UpdateMana(self)
 		mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
 	end
 	if (not self.statsFrame.greyMana) then
-		mb.text:Show()
-		mb.percent:Show()
+		if (pconf.values) then
+			mb.text:Show()
+		end
+		if (pconf.percent) then
+			mb.percent:Show()
+		end
 	end
 
 	if (playerClass == "DRUID") then
