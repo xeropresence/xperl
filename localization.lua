@@ -47,6 +47,8 @@ XPERL_LOC_ZONE_NAXXRAMAS = "Naxxramas"
 XPERL_LOC_ZONE_OBSIDIAN_SANCTUM = "The Obsidian Sanctum"
 XPERL_LOC_ZONE_EYE_OF_ETERNITY = "The Eye of Eternity"
 XPERL_LOC_ZONE_ULDUAR = "Ulduar"
+XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Trial of the Crusader"
+XPERL_LOC_ZONE_ICECROWN_CITADEL = "Icecrown Citadel"
 
 -- Status
 XPERL_LOC_DEAD		= DEAD			-- "Dead"
