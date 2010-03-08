@@ -169,6 +169,16 @@ function ch:DefaultZoneData()
 				[64152] = true,								-- Draining Poison (Yogg-Saron)
 				[64125] = true,								-- Squeeze (Yogg-Saron)
 			},
+		[XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER] =
+			{
+				[66237] = true,								-- Incinerate Flesh (Lord Jaraxxus)
+			},
+		[XPERL_LOC_ZONE_ICECROWN_CITADEL] =
+			{
+				[69065] = true,								-- Impaled (Lord Marrowgars)
+				[72293] = true,								-- Mark of the Fallen Champion (Deathbringer Saurfang)
+				[72438] = true,								-- Blood Nova (Deathbringer Saurfang)
+			},
 		}
 end
 
