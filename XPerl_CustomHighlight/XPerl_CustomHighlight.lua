@@ -178,6 +178,7 @@ function ch:DefaultZoneData()
 				[69065] = true,								-- Impaled (Lord Marrowgars)
 				[72293] = true,								-- Mark of the Fallen Champion (Deathbringer Saurfang)
 				[72438] = true,								-- Blood Nova (Deathbringer Saurfang)
+				[70337] = true,								-- Necrotic Plague (The Lich King)
 			},
 		}
 end
