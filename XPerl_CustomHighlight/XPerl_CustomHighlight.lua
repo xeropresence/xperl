@@ -172,13 +172,44 @@ function ch:DefaultZoneData()
 		[XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER] =
 			{
 				[66237] = true,								-- Incinerate Flesh (Lord Jaraxxus)
+
+				[67700] = true,								-- Penetrating Cold (Anub'arak)
+				[65775] = true,								-- Acid-Drenched Mandibles (Anub'arak)
 			},
 		[XPERL_LOC_ZONE_ICECROWN_CITADEL] =
 			{
+				[72865] = true,								-- Death Plague (Trash)
+				[70451] = true,								-- Blood Mirror (Trash)
+				[70432] = true,								-- Blood Sap (Trash)
+				[71154] = true,								-- Rend Flesh (Trash)
+				[70645] = true,								-- Chains of Shadow (Trash)
+
 				[69065] = true,								-- Impaled (Lord Marrowgars)
+
+				[71289] = true,								-- Dominate Mind (Lady Deathwhisper)
+
 				[72293] = true,								-- Mark of the Fallen Champion (Deathbringer Saurfang)
 				[72438] = true,								-- Blood Nova (Deathbringer Saurfang)
+
+				[73020] = true,								-- Vile Gas (Festergut/Heroic Rotface)
+				[69674] = true,								-- Mutated Infection (Rotface)
+				
+				[70672] = true,								-- Gaseous Bloat (Professor Putricide)
+				[70447] = true,								-- Volatile Ooze Adhesive (Professor Putricide)
+				[72855] = true,								-- Unbound Plague (Professor Putricide)
+
+				[71340] = true,								-- Pact of the Darkfallen (Blood Queen Lanathel)
+
+				[71283] = true,								-- Gut Spray (Valithria Dreamwalker)
+				[70751] = true,								-- Corrosion (Valithria Dreamwalker)
+
+				[70126] = true,								-- Frost Beacon (Sindragosa)
+				[69762] = true,								-- Unchained Magic (Sindragosa)
+
 				[70337] = true,								-- Necrotic Plague (The Lich King)
+				[70541] = true,								-- Infest (The Lich King)
+				[69409] = true,								-- Soul Reaper (The Lich King)
+				[68980] = true,								-- Harvest Soul (The Lich King)
 			},
 		}
 end
