@@ -564,9 +564,10 @@ function XPerl_StatsFrameSetup(self, others, offset)
 		end
 	end
 
-	if (conf.bar.fat) then
-	        healthBar:SetWidth(0)
-		manaBar:SetWidth(0)
+	healthBar:SetWidth(0)
+	manaBar:SetWidth(0)
+	
+	if (conf.bar.fat) then       
 		if (StatsFrame == XPerl_Player_PetstatsFrame) then
 			healthBarText:SetFontObject(GameFontNormalSmall)
 		else
