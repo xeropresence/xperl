@@ -543,9 +543,12 @@ function XPerl_StatsFrameSetup(self, others, offset)
 	end
 
 	offset = (offset or 0)
+	
+	healthBar:SetWidth(0)
 
 	if (manaBar:IsShown()) then
 		secondaryBarsShown = secondaryBarsShown + 1
+		manaBar:SetWidth(0)
 	end
 
 	local needTicker = 0
@@ -559,13 +562,11 @@ function XPerl_StatsFrameSetup(self, others, offset)
 				tinsert(otherBars, bar)
 				if (bar:IsShown()) then
 					secondaryBarsShown = secondaryBarsShown + 1
+					bar:SetWidth(0)
 				end
 			end
 		end
 	end
-
-	healthBar:SetWidth(0)
-	manaBar:SetWidth(0)
 	
 	if (conf.bar.fat) then       
 		if (StatsFrame == XPerl_Player_PetstatsFrame) then
