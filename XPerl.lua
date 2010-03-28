@@ -2178,6 +2178,9 @@ local function GetFreeFader(parent)
 
 		local tex = parent:GetStatusBarTexture()
 		bar:SetStatusBarTexture(tex:GetTexture())
+		-- Attempt fix some error messages, suggested by Spotz
+		bar:GetStatusBarTexture():SetHorizTile(false)
+		bar:GetStatusBarTexture():SetVertTile(false)
 
 		local r, g, b = bar.tex:GetVertexColor()
 		bar:SetStatusBarColor(r, g, b)

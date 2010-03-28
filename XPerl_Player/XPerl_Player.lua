@@ -516,11 +516,14 @@ function XPerl_Player_OnUpdate(self, elapsed)
 	end
 
 	XPerl_Player_UpdateMana(self)
+	
+	-- Attempt to fix "not-updating bug", suggested by Taylla @ Curse
+	-- comment 1st, 2nd and 4th line.
+	-- if (self.updateAFK) then
+	-- 	self.updateAFK = nil
+	        XPerl_Player_UpdateHealth(self)
+	-- end	
 
-	if (self.updateAFK) then
-		self.updateAFK = nil
-		XPerl_Player_UpdateHealth(self)
-	end
 end
 
 -- XPerl_Player_UpdateBuffs
