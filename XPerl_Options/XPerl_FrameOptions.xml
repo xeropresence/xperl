@@ -3463,6 +3463,23 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_BlizzardsBuffs" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_IgnoreSeasonal" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_BUFFBLIZZARDTOO")
+								self.configBase = "XPerlDB.buffs"
+								self.configIndex = "blizzardCooldowns"
+								self.configClick = BuffFrame_Update
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<Slider name="$parent_BuffCountdownStart" inherits="XPerlSlider">
 						<Size><AbsDimension x="100" y="16"/></Size>
 						<Anchors>

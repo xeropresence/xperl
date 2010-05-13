@@ -371,6 +371,9 @@ function XPerl_ArcaneBar_OnLoad(self)
 
 	self.barFlash.tex:SetTexture("Interface\\AddOns\\XPerl\\Images\\XPerl_ArcaneBarFlash")
 	self.tex:SetTexture("Interface\\AddOns\\XPerl\\Images\\XPerl_StatusBar")
+	self.tex:SetHorizTile(false)
+	self.tex:SetVertTile(false)
+	
 	self.casting = nil
 	self.holdTime = 0
 

@@ -370,7 +370,7 @@ function XPerl_MTRosterChanged()
 
 	blizzMTanks, ctraTanks = 0, 0
 	
-	if (conf.UseCTRATargets == 1) then
+	if (conf and conf.UseCTRATargets == 1) then
 		for index,entry in pairs(XPerl_MainTanks) do
 			local raidid = GetRaidIDByName(entry[2])
 			if (raidid) then
@@ -383,7 +383,7 @@ function XPerl_MTRosterChanged()
 	-- Blizzard defined main tanks bit. Looks a bit convoluted, but this is all so the order of the tanks is defined
 	-- by they order that they were assigned. It's a reasonable assumption that the MT is promoted first. There's no
 	-- guarentees of course. This is up to your raid leader, but imo it's better than the default raid ID ordering.
-	if (conf.UseBlizzardMTTargets == 1) then
+	if (conf and conf.UseBlizzardMTTargets == 1) then
 		-- Remember old tanks
 		local oldBlizzardNames = new()
 		for i,n in ipairs(BlizzardMainTanks) do
@@ -1036,7 +1036,7 @@ function XPerl_MakeTankList()
 		pendingTankListChange = nil
 	end
 
-	if (not XPerlConfigHelper or conf.RaidHelper == 0 or GetNumRaidMembers() == 0) then
+	if (not XPerlConfigHelper or (conf and conf.RaidHelper == 0) or GetNumRaidMembers() == 0) then
 		XPerl_SetFrameSizes()
 		return
 	end
@@ -1216,14 +1216,16 @@ function XPerl_SetFrameSizes()
 
 		XPerl_SwitchAnchor(XPerl_MTList_Anchor, (conf.MTListUpward == 1 and "BOTTOMLEFT") or "TOPLEFT")
 
-		XPerl_MTTargets:SetHeight((conf.UnitHeight * tanks) + (XGaps * GAP_SPACING))
+		if (conf) then
+			XPerl_MTTargets:SetHeight((conf.UnitHeight * tanks) + (XGaps * GAP_SPACING))
 
-		local ExtraWidth = (conf.MTLabels * 10);	-- 0 for off, 10 for on
-		XPerl_Frame:SetWidth(DisplayableColumns() * conf.UnitWidth + 6 + ExtraWidth)
+			local ExtraWidth = (conf.MTLabels * 10);	-- 0 for off, 10 for on
+			XPerl_Frame:SetWidth(DisplayableColumns() * conf.UnitWidth + 6 + ExtraWidth)
 
-		XPerl_Frame:SetHeight((conf.UnitHeight * tanks) + (XGaps * GAP_SPACING) + 6 + XPerl_Frame_TitleBar:GetHeight())
+			XPerl_Frame:SetHeight((conf.UnitHeight * tanks) + (XGaps * GAP_SPACING) + 6 + XPerl_Frame_TitleBar:GetHeight())
 
-		XPerl_RegisterScalableFrame(XPerl_Frame, XPerl_MTList_Anchor, nil, nil, conf.MTListUpward == 1)
+			XPerl_RegisterScalableFrame(XPerl_Frame, XPerl_MTList_Anchor, nil, nil, conf.MTListUpward == 1)
+		end
 		XPerl_Frame_Pin:SetButtonTex()
 
 		CheckArrowPosition()

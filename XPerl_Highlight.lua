@@ -532,7 +532,6 @@ function xpHigh:CreateShieldBar(frame)
 	f.shine:SetPoint("CENTER", f, "LEFT")
 
 	f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	-- Attempt fix some error messages, suggested by Spotz
 	f:GetStatusBarTexture():SetHorizTile(false)
 	f:GetStatusBarTexture():SetVertTile(false)
 	f:SetStatusBarColor(1, 0.4, 1)
@@ -621,7 +620,6 @@ function xpHigh:CreateHotBar(frame)
 	f.shine:SetPoint("CENTER", f, "LEFT")
 
 	f:SetStatusBarTexture("Interface\\TargetingFrame\\UI-StatusBar")
-	-- Attempt fix some error messages, suggested by Spotz
 	f:GetStatusBarTexture():SetHorizTile(false)
 	f:GetStatusBarTexture():SetVertTile(false)
 	f:SetStatusBarColor(1, 1, 0)

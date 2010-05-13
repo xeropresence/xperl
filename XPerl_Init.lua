@@ -642,6 +642,8 @@ end
 local function Set1Bar(bar, tex)
 	if (bar.tex) then
 		bar.tex:SetTexture(tex)
+		bar.tex:SetHorizTile(false)
+		bar.tex:SetVertTile(false)
 	end
 	if (bar.bg) then
 		if (conf.bar.background) then
@@ -649,6 +651,8 @@ local function Set1Bar(bar, tex)
 		else
 			bar.bg:SetTexture("Interface\\TargetingFrame\\UI-StatusBar")
 		end
+		bar.bg:SetHorizTile(false)
+		bar.bg:SetVertTile(false)
 	end
 end
 
@@ -708,4 +712,8 @@ function XPerl_OptionActions(which)
 
 	XPerl_pcall(XPerl_SetTextTransparency)
 	doneOptions = true
+
+	if (conf.buffs.blizzardCooldowns and BuffFrame and BuffFrame:IsShown()) then
+		BuffFrame_Update()
+	end
 end

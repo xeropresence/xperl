@@ -524,6 +524,18 @@ function XPerl_Player_OnUpdate(self, elapsed)
 	        XPerl_Player_UpdateHealth(self)
 	-- end	
 
+	if (IsResting() and UnitLevel("player") < MAX_PLAYER_LEVEL) then
+		self.restingDelay = (self.restingDelay or 2) - elapsed
+		if (self.restingDelay <= 0) then
+			self.restingDelay = 2
+			XPerl_Player_UpdateXP(self)
+		end
+	end
+
+	if (self.updateAFK) then
+		self.updateAFK = nil
+		XPerl_Player_UpdateHealth(self)
+	end
 end
 
 -- XPerl_Player_UpdateBuffs

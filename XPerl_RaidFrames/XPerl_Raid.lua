@@ -731,7 +731,7 @@ local function UpdateBuffs(self)
 	if (show) then
 		if (show == "b") then
 			if (rconf.buffs.untilDebuffed) then
-				local name, rank, buff = XPerl_UnitDebuff(partyid, 1, cureCast)
+				local name, rank, buff = XPerl_UnitDebuff(partyid, 1, cureCast, true)
 				if (name) then
 					self.debuffsForced = true
 					show = "d"
@@ -742,9 +742,9 @@ local function UpdateBuffs(self)
 		for buffnum=1,maxBuff do
 			local name, rank, buff
 			if (show == "b") then
-				name, rank, buff = XPerl_UnitBuff(partyid, buffnum, cureCast)
+				name, rank, buff = XPerl_UnitBuff(partyid, buffnum, cureCast, true)
 			else
-				name, rank, buff = XPerl_UnitDebuff(partyid, buffnum, cureCast)
+				name, rank, buff = XPerl_UnitDebuff(partyid, buffnum, cureCast, true)
 			end
 			local button = GetBuffButton(self, buffnum, buff)	-- 'buff' flags whether to create icon
 			if (button) then
@@ -1759,9 +1759,9 @@ function XPerl_Raid_SetBuffTooltip(self)
 				show = "d"
 			end
 			if (show == "b") then
-				XPerl_TooltipSetUnitBuff(GameTooltip, partyid, self:GetID(), cureCast)
+				XPerl_TooltipSetUnitBuff(GameTooltip, partyid, self:GetID(), cureCast, true)
 			elseif (show == "d") then
-				XPerl_TooltipSetUnitDebuff(GameTooltip, partyid, self:GetID(), cureCast)
+				XPerl_TooltipSetUnitDebuff(GameTooltip, partyid, self:GetID(), cureCast, true)
 			end
 		end
 	end

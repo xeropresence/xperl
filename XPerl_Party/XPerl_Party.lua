@@ -403,38 +403,42 @@ end
 
 -- XPerl_Party_BuffPositions
 local function XPerl_Party_BuffPositions(self)
-	if (pconf.debuffs.below) then
-		if (pconf.buffs.wrap) then
-			XPerl_Unit_BuffPositions(self, self.buffFrame.buff, self.buffFrame.debuff, self.conf.buffs.size, self.conf.debuffs.size)
+	if (self.conf) then
+		if (pconf.debuffs.below) then
+			if (pconf.buffs.wrap) then
+				XPerl_Unit_BuffPositions(self, self.buffFrame.buff, self.buffFrame.debuff, self.conf.buffs.size, self.conf.debuffs.size)
+			end
+		else
+			-- Debuffs handled seperately by legacy code, so just do buffs
+			if (pconf.buffs.wrap) then
+				XPerl_Unit_BuffPositions(self, self.buffFrame.buff, nil, self.conf.buffs.size)
+			end
+			XPerl_Party_SetDebuffLocation(self)
 		end
-	else
-		-- Debuffs handled seperately by legacy code, so just do buffs
-		if (pconf.buffs.wrap) then
-			XPerl_Unit_BuffPositions(self, self.buffFrame.buff, nil, self.conf.buffs.size)
-		end
-		XPerl_Party_SetDebuffLocation(self)
 	end
 end
 
 -- XPerl_Party_Buff_UpdateAll
 local function XPerl_Party_Buff_UpdateAll(self)
-	if (not pconf.buffs.enable and not pconf.debuffs.enable) then
-		self.buffFrame:Hide()
-		self.debuffFrame:Hide()
-	else
-		XPerl_Unit_UpdateBuffs(self, nil, nil, pconf.buffs.castable, pconf.debuffs.curable)
-		XPerl_Party_BuffPositions(self)
-	end
-
-	if (select(2, UnitClass(self.partyid)) == "HUNTER") then
-		local feigning = UnitIsFeignDeath(self.partyid)
-		if (feigning ~= self.feigning) then
-			self.feigning = feigning
-			XPerl_Party_UpdateHealth(self)
+	if (self.conf) then
+		if (not pconf.buffs.enable and not pconf.debuffs.enable) then
+			self.buffFrame:Hide()
+			self.debuffFrame:Hide()
+		else
+			XPerl_Unit_UpdateBuffs(self, nil, nil, pconf.buffs.castable, pconf.debuffs.curable)
+			XPerl_Party_BuffPositions(self)
 		end
+	
+		if (select(2, UnitClass(self.partyid)) == "HUNTER") then
+			local feigning = UnitIsFeignDeath(self.partyid)
+			if (feigning ~= self.feigning) then
+				self.feigning = feigning
+				XPerl_Party_UpdateHealth(self)
+			end
+		end
+	
+		XPerl_CheckDebuffs(self, self.partyid)
 	end
-
-	XPerl_CheckDebuffs(self, self.partyid)
 end
 
 -------------------------

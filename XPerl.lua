@@ -1826,9 +1826,15 @@ local SeasonalDebuffs = {
 	[GetSpellInfo(69127)] = true,					-- Chill of the Throne
 }
 
+local RaidFrameIgnores = {
+	[GetSpellInfo(26013)] = true,					-- Deserter
+	[GetSpellInfo(71041)] = true,					-- Dungeon Deserter
+	[GetSpellInfo(71328)] = true,					-- Dungeon Cooldown
+}
+
 -- BuffException
 local showInfo
-local function BuffException(unit, index, flag, func, exceptions)
+local function BuffException(unit, index, flag, func, exceptions, raidFrames)
 	local name, rank, buff, count, debuffType, dur, max, isMine, isStealable
 	if (flag ~= "RAID") then
 		-- Not filtered, just return it
@@ -1901,15 +1907,15 @@ local function BuffException(unit, index, flag, func, exceptions)
 end
 
 -- DebuffException
-local function DebuffException(unit, start, flag, func)
+local function DebuffException(unit, start, flag, func, raidFrames)
 	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
 	local valid = 0
 	for i = 1,1000 do
-		name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, i, flag, func, DebuffExceptions)
+		name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = BuffException(unit, i, flag, func, DebuffExceptions, raidFrames)
 		if (not name) then
 			break
 		end
-		if (not SeasonalDebuffs[name]) then
+		if (not SeasonalDebuffs[name] and not (raidFrames and RaidFrameIgnores[name])) then
 			valid = valid + 1
 			if (valid == start) then
 				return name, rank, buff, count, debuffType, dur, max, caster, isStealable, index
@@ -1919,22 +1925,22 @@ local function DebuffException(unit, start, flag, func)
 end
 
 -- XPerl_UnitBuff
-function XPerl_UnitBuff(unit, index, flag)
-	return BuffException(unit, index, flag, Utopia_UnitBuff or UnitBuff, BuffExceptions)
+function XPerl_UnitBuff(unit, index, flag, raidFrames)
+	return BuffException(unit, index, flag, Utopia_UnitBuff or UnitBuff, BuffExceptions, raidFrames)
 end
 
 -- XPerl_UnitBuff
-function XPerl_UnitDebuff(unit, index, flag)
-	if (conf.buffs.ignoreSeasonal) then
-		return DebuffException(unit, index, flag, Utopia_UnitDebuff or UnitDebuff)
+function XPerl_UnitDebuff(unit, index, flag, raidFrames)
+	if (conf.buffs.ignoreSeasonal or raidFrames) then
+		return DebuffException(unit, index, flag, Utopia_UnitDebuff or UnitDebuff, raidFrames)
 	end
-	return BuffException(unit, index, flag, Utopia_UnitDebuff or UnitDebuff, DebuffExceptions)
+	return BuffException(unit, index, flag, Utopia_UnitDebuff or UnitDebuff, DebuffExceptions, raidFrames)
 end
 
 -- XPerl_TooltipSetUnitBuff
 -- Retreives the index of the actual unfiltered buff, and uses this on unfiltered tooltip call
-function XPerl_TooltipSetUnitBuff(self, unit, ind, filter)
-	local name, rank, buff, count, _, dur, max, caster, isStealable, index = BuffException(unit, ind, filter, UnitBuff, BuffExceptions)
+function XPerl_TooltipSetUnitBuff(self, unit, ind, filter, raidFrames)
+	local name, rank, buff, count, _, dur, max, caster, isStealable, index = BuffException(unit, ind, filter, UnitBuff, BuffExceptions, raidFrames)
 	if (name and index) then
 		if (Utopia_SetUnitBuff) then
 			Utopia_SetUnitBuff(self, unit, index)
@@ -1946,8 +1952,8 @@ end
 
 -- XPerl_TooltipSetUnitDebuff
 -- Retreives the index of the actual unfiltered debuff, and uses this on unfiltered tooltip call
-function XPerl_TooltipSetUnitDebuff(self, unit, ind, filter)
-	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = XPerl_UnitDebuff(unit, ind, filter)
+function XPerl_TooltipSetUnitDebuff(self, unit, ind, filter, raidFrames)
+	local name, rank, buff, count, debuffType, dur, max, caster, isStealable, index = XPerl_UnitDebuff(unit, ind, filter, raidFrames)
 	if (name and index) then
 		if (Utopia_SetUnitDebuff) then
 			Utopia_SetUnitDebuff(self, unit, index)
@@ -2178,7 +2184,6 @@ local function GetFreeFader(parent)
 
 		local tex = parent:GetStatusBarTexture()
 		bar:SetStatusBarTexture(tex:GetTexture())
-		-- Attempt fix some error messages, suggested by Spotz
 		bar:GetStatusBarTexture():SetHorizTile(false)
 		bar:GetStatusBarTexture():SetVertTile(false)
 
@@ -2462,15 +2467,17 @@ end
 
 -- BuffCooldownDisplay
 local function BuffCooldownDisplay(self)
-	local t = GetTime()
-	if (t > self.endTime - 1) then
-		self.countdown:SetText(strsub(format("%.1f", max(0, self.endTime - t)), 2, 10))
-		self.countdown:Show()
-	elseif (t > self.endTime - conf.buffs.countdownStart) then
-		self.countdown:SetText(max(0, floor(self.endTime - t)))
-		self.countdown:Show()
-	else
-		self.countdown:Hide()
+	if (self.countdown) then
+		local t = GetTime()
+		if (t > self.endTime - 1) then
+			self.countdown:SetText(strsub(format("%.1f", max(0, self.endTime - t)), 2, 10))
+			self.countdown:Show()
+		elseif (t > self.endTime - conf.buffs.countdownStart) then
+			self.countdown:SetText(max(0, floor(self.endTime - t)))
+			self.countdown:Show()
+		else
+			self.countdown:Hide()
+		end
 	end
 end
 
@@ -2492,6 +2499,56 @@ function XPerl_CooldownFrame_SetTimer(self, start, duration, enable, mine)
 		self:Hide()
 	end
 end
+
+-- AuraButtonOnShow
+local function AuraButtonOnShow(self)
+	if (not conf.buffs.blizzardCooldowns) then
+		if (self.cooldown) then
+			self.cooldown:Hide()
+		end
+		return
+	end
+
+	local cd = self.cooldown
+	if (not cd) then
+		cd = CreateFrame("Cooldown", nil, self, "CooldownFrameTemplate")
+		self.cooldown = cd
+		cd:SetAllPoints()
+	end
+	cd:SetReverse(true)
+	cd:SetDrawEdge(true)
+	
+	if (not cd.countdown) then
+		cd.countdown = self.cooldown:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
+		cd.countdown:SetPoint("TOPLEFT")
+		cd.countdown:SetPoint("BOTTOMRIGHT", -1, 2)
+		cd.countdown:SetTextColor(1, 1, 0)
+	end
+
+	local name, rank, buff, count, _, duration, endTime, caster, isStealable = UnitAura("player", self.xindex, self.xfilter)
+
+	local start = endTime - duration
+	XPerl_CooldownFrame_SetTimer(self.cooldown, start, duration, 1, caster == "player")
+end
+
+-- XPerl_AuraButton_Update
+-- Hook for Blizzard aura button setup to add cooldowns if we have them enabled
+local function XPerl_AuraButton_Update(buttonName, index, filter)
+	if (conf.buffs.blizzardCooldowns and BuffFrame:IsShown()) then
+		local buffName = buttonName..index
+		local button = _G[buffName]
+		if (button) then
+			button.xindex = index
+			button.xfilter = filter
+			button:SetScript("OnShow", AuraButtonOnShow)
+			if (button:IsShown()) then
+				AuraButtonOnShow(button)
+			end
+		end
+	end
+end
+
+hooksecurefunc("AuraButton_Update", XPerl_AuraButton_Update)
 
 -- XPerl_Unit_BuffSpacing
 local function XPerl_Unit_BuffSpacing(self)
@@ -3177,6 +3234,8 @@ local alternateCamera = {
 	[33136] = true,			-- Guardian of Yogg-Saron
 	[33687] = true,			-- Chillmaw
 	[33845] = true,			-- Quel'dorei Steed
+	[37230] = true,			-- Spire Frostwyrm (ICC)
+	[37955] = true,			-- Blood Queen Lana'thel
 }
 local dragonmawIllusion = GetSpellInfo(42016)
 

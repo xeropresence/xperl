@@ -82,6 +82,8 @@ function XPerl_Target_OnLoad(self, partyid)
 	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 
 	self.nameFrame.cpMeter:SetMinMaxValues(0, 5)
+	self.nameFrame.cpMeter:GetStatusBarTexture():SetHorizTile(false)
+	self.nameFrame.cpMeter:GetStatusBarTexture():SetVertTile(false)
 
 	local BuffOnUpdate, DebuffOnUpdate, BuffUpdateTooltip, DebuffUpdateTooltip
 	BuffUpdateTooltip = XPerl_Unit_SetBuffTooltip
