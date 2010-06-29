@@ -238,7 +238,7 @@ function XPerl_Player_BuffSetup(self)
 	end
 
 	XPerl_SetBuffSize(self)
-
+  
 	if (pconf.buffs.hideBlizzard) then
 		BuffFrame:UnregisterEvent("UNIT_AURA")
 		BuffFrame:Hide()
@@ -277,7 +277,9 @@ function XPerl_Player_TempEnchantUpdate(self)
 	if (not self.buffFrame) then
 		return
 	end
-
+  
+  -- check to see if the player is a shaman and sets the fullDuration to 30 minutes. Shaman weapon enchants are only 30 minutes.
+  local playerClass, playerClass1 = UnitClass("player");
 	local time = GetTime()
 	local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges = GetWeaponEnchantInfo();
 
@@ -303,17 +305,25 @@ function XPerl_Player_TempEnchantUpdate(self)
 	end
 
 	local function DoEnchant(index, slotID, hasEnchant, expire, charges)
-		local button = te[index]
-		if (hasEnchant) then
-			if (not button.fullDuration) then
-				button.fullDuration = expire - time
-				if (button.fullDuration > 1 * 60) then
-					button.fullDuration = 60 * 60
-				end
-			end
-
+	local button = te[index]
+	if (hasEnchant) then
+                -- Fix to check to see if the player is a shaman and sets the fullDuration to 30 minutes. Shaman weapon enchants are only 30 minutes.
+                if (playerClass1 == "SHAMAN") then
+                        if ((expire / 1000) > 30 * 60) then
+                                buff.fullDuration = 60 * 60
+                        else         
+                                button.fullDuration = 30 * 60
+                        end
+                end
+                if (not button.fullDuration) then
+                        button.fullDuration = expire - time
+                        if (button.fullDuration > 1 * 60) then
+                                button.fullDuration = 60 * 60
+                        end
+                end
+        
 			button:Show()
-
+			
 			local textureName = GetInventoryItemTexture("player", slotID)	-- Weapon Icon
 			button:SetID(slotID)
 			button.icon:SetTexture(textureName)
