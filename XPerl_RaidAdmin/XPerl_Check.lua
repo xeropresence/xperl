@@ -601,9 +601,12 @@ function XPerl_Check_OnClickItem(button)
 
 	if (button == "LeftButton") then
 		if (IsShiftKeyDown()) then
-			if (ChatFrameEditBox:IsVisible()) then
-				ChatFrameEditBox:Insert(GetCursorItemLink())
-			end
+                        -- ticket 658: Patch 3.3.5 ChatFrameEditBox obsoleted fix. 
+                        local activeWindow = ChatEdit_GetActiveWindow();
+                        if ( activeWindow ) then
+                                activeWindow:Insert(GetCursorItemLink());
+                        end
+                
 		elseif (IsControlKeyDown()) then
 			DressUpItemLink(GetCursorItemLink())
 
