@@ -41,6 +41,9 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_LOC_ZONE_KARAZHAN = "Каражан"
 	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Плато Солнечного Колодца"
 	XPERL_LOC_ZONE_ULDUAR = "Ульдуар"
+	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Испытание крестоносца"
+	XPERL_LOC_ZONE_ICECROWN_CITADEL = "Цитадель Ледяной Короны"
+	XPERL_LOC_ZONE_RUBY_SANCTUM = "Рубиновое святилище"
 
 -- Status
 	XPERL_LOC_DEAD			= DEAD		-- "Dead"

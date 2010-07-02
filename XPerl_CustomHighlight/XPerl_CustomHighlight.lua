@@ -199,6 +199,7 @@ function ch:DefaultZoneData()
 				[72855] = true,								-- Unbound Plague (Professor Putricide)
 
 				[71340] = true,								-- Pact of the Darkfallen (Blood Queen Lanathel)
+				[71473] = true,								-- Essence of the Blood Queen (Blood Queen Lanathel)
 
 				[71283] = true,								-- Gut Spray (Valithria Dreamwalker)
 				[70751] = true,								-- Corrosion (Valithria Dreamwalker)
@@ -210,6 +211,18 @@ function ch:DefaultZoneData()
 				[70541] = true,								-- Infest (The Lich King)
 				[69409] = true,								-- Soul Reaper (The Lich King)
 				[68980] = true,								-- Harvest Soul (The Lich King)
+			},
+		[XPERL_LOC_ZONE_RUBY_SANCTUM] =
+			{
+				[74505] = true,								-- Enervating Brand (Baltharus)
+
+				[74453] = true,								-- Flame Beacon (Saviana)
+				[74456] = true,								-- Conflagration (Saviana)
+
+				[74367] = true,								-- Cleave Armor (Zarithrian)
+
+				[74792] = true,								-- Shadow Consumption (Halion)
+				[74562] = true,								-- Fiery Combustion (Halion)
 			},
 		}
 end

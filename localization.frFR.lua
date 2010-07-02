@@ -26,6 +26,9 @@ if (GetLocale() == "frFR") then
 	XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
 	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Plateau du Puits de soleil"
 	XPERL_LOC_ZONE_ULDUAR = "Ulduar"
+	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "L'épreuve du croisé"
+	XPERL_LOC_ZONE_ICECROWN_CITADEL = "Citadelle de la Couronne de glace"
+	XPERL_LOC_ZONE_RUBY_SANCTUM = "Le sanctum Rubis"
 
 	XPERL_LOC_DEAD = "Mort"
 	XPERL_LOC_GHOST = "Fant\195\180me"

@@ -38,6 +38,9 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
 	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Meseta de la Fuente del Sol"
 	XPERL_LOC_ZONE_ULDUAR = "Ulduar"
+	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Prueba del Cruzado"
+	XPERL_LOC_ZONE_ICECROWN_CITADEL = "Ciudadela de la Corona de Hielo"
+	XPERL_LOC_ZONE_RUBY_SANCTUM = "El Sagrario Rubí"
 
 	-- Status
 	XPERL_LOC_DEAD		= "Muerto"

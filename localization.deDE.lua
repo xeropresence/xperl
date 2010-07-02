@@ -40,6 +40,9 @@ if (GetLocale() == "deDE") then
 	XPERL_LOC_ZONE_OBSIDIAN_SANCTUM = "Das Obsidiansanktum"
 	XPERL_LOC_ZONE_EYE_OF_ETERNITY = "Das Auge der Ewigkeit"
 	XPERL_LOC_ZONE_ULDUAR = "Ulduar"
+	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Prüfung des Kreuzfahrers"
+	XPERL_LOC_ZONE_ICECROWN_CITADEL = "Eiskronenzitadelle"
+	XPERL_LOC_ZONE_RUBY_SANCTUM = "Das Rubinsanktum"
 
 -- Status
 	XPERL_LOC_DEAD		= DEAD			-- "Dead"
