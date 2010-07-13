@@ -2,6 +2,16 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.0.9 (Community Updates)
+mysticalos: Added missing zones to all locals, including Ruby Sanctum
+mysticalos: Added Ruby sanctum custom highlights
+playerlin: Ticket 658 fix : ChatFrameEditBox obsoleted fix on Parch 3.3.5, thanks titanrecount.
+playerlin: Ticket 649 fix: Shaman Weapon Enchants buffs will giving the right duration now. (Temporarily fix by only1yzerman, needed more work?)
+StingerSoft: ruRU update
+playerlin: zhTW update
+Zek: Fix for the textures on status bars.
+Zek: Added option to apply cooldown/countdown coolness to blizzard default buffs/debuffs.
+
 3.0.8
 NEW: Added Dungeon Finder role icons to party and player name frame.
 
