@@ -370,14 +370,19 @@ function XPerl_MTRosterChanged()
 
 	blizzMTanks, ctraTanks = 0, 0
 	
-	if (conf and conf.UseCTRATargets == 1) then
-		for index,entry in pairs(XPerl_MainTanks) do
-			local raidid = GetRaidIDByName(entry[2])
-			if (raidid) then
-				ctraTanks = ctraTanks + 1
-				tinsert(MainTanks, new(raidid, UnitName("raid"..raidid)))
-			end
-		end
+	-- if conf is nothing, just return.
+	if (conf == nil) then
+                return
+        else
+                if (conf and conf.UseCTRATargets == 1) then
+                        for index,entry in pairs(XPerl_MainTanks) do
+                                local raidid = GetRaidIDByName(entry[2])
+                                if (raidid) then
+                                        ctraTanks = ctraTanks + 1
+                                        tinsert(MainTanks, new(raidid, UnitName("raid"..raidid)))
+                                end
+                        end
+                end
 	end
 
 	-- Blizzard defined main tanks bit. Looks a bit convoluted, but this is all so the order of the tanks is defined

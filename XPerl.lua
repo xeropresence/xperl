@@ -4,6 +4,7 @@
 
 local conf
 XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
+XPerl_SetModuleRevision("$Revision$")
 local percD	= "%d"..PERCENT_SYMBOL
 local perc1F = "%.1f"..PERCENT_SYMBOL
 
