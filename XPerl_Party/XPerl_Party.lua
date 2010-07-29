@@ -487,13 +487,13 @@ local function UpdateAssignedRoles(self)
 	end
 
 	if isTank then
-		icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainTankIcon")
+		icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleTank")
 		icon:Show()
 	elseif isHealer then
 		icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer")
 		icon:Show()
 	elseif isDamage then
-		icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainAssistIcon")
+		icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleDamage")
 		icon:Show()
 	else
 		icon:Hide()
