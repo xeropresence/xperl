@@ -4431,7 +4431,24 @@
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
-
+					
+                                        -- added by playerlin 20100820
+                                        <CheckButton name="$parent_XPerlOldRoleIcons" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_ShowReadyCheck" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="-84" y="-6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_XPERLOLDROLEICONS")
+								self.configBase = "XPerlDB"
+								self.configIndex = "xperlOldroleicons"
+								self.configClick = XPerl_OptionActions
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+                                        
 					<CheckButton name="$parent_SettingsMethod" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMRIGHT">

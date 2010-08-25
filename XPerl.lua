@@ -3,8 +3,8 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 local conf
-XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
 XPerl_SetModuleRevision("$Revision$")
+XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
 local percD	= "%d"..PERCENT_SYMBOL
 local perc1F = "%.1f"..PERCENT_SYMBOL
 
