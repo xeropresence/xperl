@@ -107,7 +107,25 @@ local function UpdateAssignedRoles(self)
 	if (select(2, IsInInstance()) == "party") then
 		-- No point getting it otherwise, as they can be wrong. Usually the values you had
 		-- from previous instance if you're running more than one with the same people
-		isTank, isHealer, isDamage = UnitGroupRolesAssigned("player")
+		
+		-- According to http://forums.worldofwarcraft.com/thread.html?topicId=26560499864
+		-- this is the new way to check for roles
+		if select(4, _G.GetBuildInfo()) >= 40000 then
+			role = UnitGroupRolesAssigned(unit)
+			isTank = false;
+			isHealer = false;
+			isDamage = false;
+			if role == "TANK" then
+				isTank = true
+			elseif role == "HEALER" then
+				isHealer = true
+			elseif role == "DAMAGER" then
+				isDamage = true
+			end
+		else
+			isTank, isHealer, isDamage = UnitGroupRolesAssigned("player")
+		end
+		
 	end
 	
 	-- role icons option check by playerlin
