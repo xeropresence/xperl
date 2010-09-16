@@ -174,7 +174,7 @@ function XPerl_Party_Pet_OnLoad(self)
 	XPerl_RegisterHighlight(self.highlight, 2)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame})
 
-	this.FlashFrames = {self.nameFrame, self.statsFrame}
+	self.FlashFrames = {self.nameFrame, self.statsFrame}
 
 	self:SetScript("OnShow",
 		function(self)
@@ -492,7 +492,7 @@ end
 -- XPerl_Party_Pet_Set_Bits1
 function XPerl_Party_Pet_Set_Bits1(self)
 	if (not self:GetParent()) then
-		self:SetParent(getglobal("XPerl_party"..self:GetID()))
+		self:SetParent(_G["XPerl_party"..self:GetID()])
 	end
 
 	if (petconf.name) then

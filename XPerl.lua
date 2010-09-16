@@ -42,6 +42,7 @@ local hugeNumDiv10 = hugeNumDiv * 10
 local largeNumDiv100 = largeNumDiv * 100
 local ArcaneExclusions = XPerl_ArcaneExclusions
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
+local is_cata = select(4, _G.GetBuildInfo()) >= 40000
 
 ------------------------------------------------------------------------------
 -- Re-usable tables
@@ -145,7 +146,7 @@ function XPerl_ShowMessage(cMsg)
 
 	local tail, doit = ""
 	for i = 9,theEnd,-1 do
-		local v = getglobal("arg"..i)
+		local v = _G["arg"..i]
 		if (v or doit) then
 			if (tail ~= "") then
 				tail = tostring(v)..", "..tail
@@ -167,8 +168,8 @@ function XPerl_ShowMessage(cMsg)
 	if (not cf:IsVisible()) then
 		cf = DEFAULT_CHAT_FRAME
 	end
-	if (this and this.GetName and this:GetName()) then
-		cf:AddMessage("|c00007F7F"..this:GetName().."|r - "..str)
+	if (self and self.GetName and self:GetName()) then
+		cf:AddMessage("|c00007F7F"..self:GetName().."|r - "..str)
 	else
 		cf:AddMessage(str)
 	end
@@ -563,12 +564,12 @@ function XPerl_BlizzFrameDisable(self)
 		self:ClearAllPoints()
 		self:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", -400, 500)
 
-		local healthBar = getglobal(self:GetName().."HealthBar")
+		local healthBar = _G[self:GetName().."HealthBar"]
 		if (healthBar) then
 			healthBar:UnregisterAllEvents()
 		end
 
-		local manaBar = getglobal(self:GetName().."ManaBar")
+		local manaBar = _G[self:GetName().."ManaBar"]
 		if (manaBar) then
 			manaBar:UnregisterAllEvents()
 		end
@@ -694,15 +695,21 @@ function XPerl_SetHealthBar(self, hp, Max)
 	local bar = self.statsFrame.healthBar
 
 	bar:SetMinMaxValues(0, Max)
-	if (conf.bar.inverse) then
+    local percent = max(0, hp / Max) -- Fix for SetFormatted text displaying -21474... for 0 / 0			
+            
+    if (conf.bar.inverse) then
+
 		bar:SetValue(Max - hp)
+		bar.tex:SetTexCoord(0, max(0,(1 - percent)), 0, 1)
+	
 	else
+
 		bar:SetValue(hp)
+		bar.tex:SetTexCoord(0, max(0, percent), 0, 1)
+	
 	end
 
-	local percent = max(0, hp / Max)		-- Fix for SetFormatted text displaying -21474... for 0 / 0
 	XPerl_ColourHealthBar(self, percent)
-
 	if (bar.percent) then
 		if (self.conf.healerMode and self.conf.healerMode.enable and self.conf.healerMode.type == 2) then
 			bar.percent:SetText(hp - Max)
@@ -1267,7 +1274,7 @@ function XPerl_PlayerTip(self, unitid)
 		end
 	end
 
-	GameTooltip_SetDefaultAnchor(GameTooltip, this)
+	GameTooltip_SetDefaultAnchor(GameTooltip, self)
 	GameTooltip:SetUnit(unitid)
 
 	if (XPerl_RaidTipExtra) then
@@ -1721,7 +1728,7 @@ function XPerl_RestoreAllPositions()
 				-- And now a change to XPerl_Check to XPerl_CheckAnchor and XPerl_AdminFrame to XPerl_AdminFrameAnchor
 				table[k] = nil
 			else
-				local frame = getglobal(k)
+				local frame = _G[k]
 				if (frame) then
 					if (v.left and v.top) then
 						frame:ClearAllPoints()
@@ -1742,7 +1749,61 @@ function XPerl_RestoreAllPositions()
 	end
 end
 
-local BuffExceptions = {
+if is_cata then--If client is cataclysm client, use these buff exceptions
+	local BuffExceptions = {
+	PRIEST = {
+		[GetSpellInfo(774)] = true,					-- Rejuvenation
+		[GetSpellInfo(8936)] = true,				-- Regrowth
+		[GetSpellInfo(33076)] = true,				-- Prayer of Mending
+	},
+	DRUID = {
+		[GetSpellInfo(139)] = true,					-- Renew
+	},
+	WARLOCK = {
+		[GetSpellInfo(20707)] = true,				-- Soulstone Resurrection
+	},
+	HUNTER = {
+		
+		[GetSpellInfo(13165)] = "HUNTER",			-- Aspect of the Hawk
+		[GetSpellInfo(5118)] = "HUNTER",			-- Aspect of the Cheetah
+		[GetSpellInfo(13159)] = true,				-- Aspect of the Pack
+		[GetSpellInfo(20043)] = true,				-- Aspect of the Wild
+		[GetSpellInfo(61648)] = "HUNTER",			-- Aspect of the Beast
+		-- [GetSpellInfo(13163)] = "HUNTER",			-- Aspect of the Monkey
+		[GetSpellInfo(19506)] = true,				-- Trueshot Aura
+		[GetSpellInfo(5384)] = "HUNTER",			-- Feign Death
+	},
+	ROGUE = {
+		[GetSpellInfo(1784)] = "ROGUE",				-- Stealth
+		[GetSpellInfo(1856)] = "ROGUE",			-- Vanish
+		[GetSpellInfo(2983)] = "ROGUE",			-- Sprint
+		[GetSpellInfo(13750)] = "ROGUE",			-- Adrenaline Rush
+		[GetSpellInfo(13877)] = "ROGUE",			-- Blade Flurry
+	},
+	PALADIN = {
+		[GetSpellInfo(20154)] = true,				-- Seal of Righteousness
+		[GetSpellInfo(20165)] = true,				-- Seal of Insight
+		[GetSpellInfo(20164)] = true,				-- Seal of Justice
+		[GetSpellInfo(31801)] = true,				-- Seal of Truth
+		-- [GetSpellInfo(20375)] = true,				-- Seal of Command
+		-- [GetSpellInfo(20166)] = true,				-- Seal of Wisdom
+		-- [GetSpellInfo(20165)] = true,				-- Seal of Light
+		-- [GetSpellInfo(53736)] = true,				-- Seal of Corruption
+		-- [GetSpellInfo(31892)] = true,				-- Seal of Blood
+		-- [GetSpellInfo(31801)] = true,				-- Seal of Vengeance
+		
+		[GetSpellInfo(465)] = true,				-- Devotion Aura
+		[GetSpellInfo(7294)] = true,				-- Retribution Aura
+		[GetSpellInfo(19746)] = true,				-- Concentration Aura
+		[GetSpellInfo(19891)] = true,				-- Resistance Aura
+		[GetSpellInfo(32223)] = true,				-- Crusader Aura
+		[GetSpellInfo(25780)] = true,				-- Righteous Fury
+		[GetSpellInfo(20925)] = true,				-- Holy Shield
+		[GetSpellInfo(54428)] = true,				-- Divine Plea
+	},
+}
+else--It's not cataclysm client, use old buff exceptions
+	local BuffExceptions = {
 	PRIEST = {
 		[GetSpellInfo(26982)] = true,				-- Rejuvenation
 		[GetSpellInfo(26980)] = true,				-- Regrowth
@@ -1793,6 +1854,7 @@ local BuffExceptions = {
 		[GetSpellInfo(54428)] = true,				-- Divine Plea
 	},
 }
+end
 
 local DebuffExceptions = {
 	ALL = {
@@ -1981,7 +2043,7 @@ function XPerl_GuildStatusUpdate()
 		for i=1, GUILDMEMBERS_TO_DISPLAY, 1 do
 			local guildIndex = guildOffset + i
 
-			local button = getglobal("GuildFrameButton"..i);
+			local button = _G["GuildFrameButton"..i];
 			button.guildIndex = guildIndex;
 			local name, rank, rankIndex, level, class, zone, note, officernote, online = GetGuildRosterInfo(guildIndex)
 			if (not name) then
@@ -1994,15 +2056,15 @@ function XPerl_GuildStatusUpdate()
 				if (u) then
 					if (online) then
 						if (u.old) then
-							getglobal("GuildFrameButton"..i.."Name"):SetTextColor(1, 0.4, 0.1)
+							_G["GuildFrameButton"..i.."Name"]:SetTextColor(1, 0.4, 0.1)
 						else
-							getglobal("GuildFrameButton"..i.."Name"):SetTextColor(1, 0.4, 0.4)
+							_G["GuildFrameButton"..i.."Name"]:SetTextColor(1, 0.4, 0.4)
 						end
 					else
 						if (u.old) then
-							getglobal("GuildFrameButton"..i.."Name"):SetTextColor(0.5, 0.2, 0.05)
+							_G["GuildFrameButton"..i.."Name"]:SetTextColor(0.5, 0.2, 0.05)
 						else
-							getglobal("GuildFrameButton"..i.."Name"):SetTextColor(0.5, 0.2, 0.2)
+							_G["GuildFrameButton"..i.."Name"]:SetTextColor(0.5, 0.2, 0.2)
 						end
 					end
 				end
@@ -2015,33 +2077,38 @@ function XPerl_GuildStatusUpdate()
 					local color = XPerl_GetClassColour(class)
 					if (color) then
 						if (online) then
-							getglobal("GuildFrameButton"..i.."Class"):SetTextColor(color.r, color.g, color.b)
+							_G["GuildFrameButton"..i.."Class"]:SetTextColor(color.r, color.g, color.b)
 						else
-							getglobal("GuildFrameButton"..i.."Class"):SetTextColor(color.r / 2, color.g / 2, color.b / 2)
+							_G["GuildFrameButton"..i.."Class"]:SetTextColor(color.r / 2, color.g / 2, color.b / 2)
 						end
 					end
 				end
 
 				if (zone == myZone) then
 					if (online) then
-						getglobal("GuildFrameButton"..i.."Zone"):SetTextColor(0, 1, 0)
+						_G["GuildFrameButton"..i.."Zone"]:SetTextColor(0, 1, 0)
 					else
-						getglobal("GuildFrameButton"..i.."Zone"):SetTextColor(0, 0.5, 0)
+						_G["GuildFrameButton"..i.."Zone"]:SetTextColor(0, 0.5, 0)
 					end
 				end
 
 				local color = GetDifficultyColor(level)
 				if (online) then
-					getglobal("GuildFrameButton"..i.."Level"):SetTextColor(color.r, color.g, color.b)
+					_G["GuildFrameButton"..i.."Level"]:SetTextColor(color.r, color.g, color.b)
 				else
-					getglobal("GuildFrameButton"..i.."Level"):SetTextColor(color.r / 2, color.g / 2, color.b / 2)
+					_G["GuildFrameButton"..i.."Level"]:SetTextColor(color.r / 2, color.g / 2, color.b / 2)
 				end
 			end
 		end
 	end
 end
 
-hooksecurefunc("GuildStatus_Update", XPerl_GuildStatusUpdate)
+--cataclysm hooksecurefunc removed, check it.
+if is_cata then
+	--hooksecurefunc("GuildStatus_Update", XPerl_GuildStatusUpdate)
+else
+	hooksecurefunc("GuildStatus_Update", XPerl_GuildStatusUpdate)
+end
 
 -- XPerl_WhoList_Update
 function XPerl_WhoList_Update()
@@ -2060,11 +2127,11 @@ function XPerl_WhoList_Update()
 				break
 			end
 
-			getglobal("WhoFrameButton"..i.."Name"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+			_G["WhoFrameButton"..i.."Name"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 			if (conf.tooltip.xperlInfo and XPerl_GetUsage) then
 				local u = XPerl_GetUsage(name)
 				if (u) then
-					getglobal("WhoFrameButton"..i.."Name"):SetTextColor(1, 0.4, 0.4)
+					_G["WhoFrameButton"..i.."Name"]:SetTextColor(1, 0.4, 0.4)
 				end
 			end
 
@@ -2072,40 +2139,40 @@ function XPerl_WhoList_Update()
 				if (UIDropDownMenu_GetSelectedID(WhoFrameDropDown) == 1) then
 					-- Zone
 					if (zone == myZone) then
-						getglobal("WhoFrameButton"..i.."Variable"):SetTextColor(0, 1, 0)
+						_G["WhoFrameButton"..i.."Variable"]:SetTextColor(0, 1, 0)
 					else
-						getglobal("WhoFrameButton"..i.."Variable"):SetTextColor(1, 1, 1)
+						_G["WhoFrameButton"..i.."Variable"]:SetTextColor(1, 1, 1)
 					end
 				elseif (UIDropDownMenu_GetSelectedID(WhoFrameDropDown) == 2) then
 					if (guild == myGuild) then
-						getglobal("WhoFrameButton"..i.."Variable"):SetTextColor(0, 1, 0)
+						_G["WhoFrameButton"..i.."Variable"]:SetTextColor(0, 1, 0)
 					else
-						getglobal("WhoFrameButton"..i.."Variable"):SetTextColor(1, 1, 1)
+						_G["WhoFrameButton"..i.."Variable"]:SetTextColor(1, 1, 1)
 					end
 
 				elseif (UIDropDownMenu_GetSelectedID(WhoFrameDropDown) == 3) then
 					if (race == myRace) then
-						getglobal("WhoFrameButton"..i.."Variable"):SetTextColor(0, 1, 0)
+						_G["WhoFrameButton"..i.."Variable"]:SetTextColor(0, 1, 0)
 					else
-						getglobal("WhoFrameButton"..i.."Variable"):SetTextColor(1, 1, 1)
+						_G["WhoFrameButton"..i.."Variable"]:SetTextColor(1, 1, 1)
 					end
 				end
 
-				getglobal("WhoFrameButton"..i.."Class"):SetTextColor(1, 1, 1)
+				_G["WhoFrameButton"..i.."Class"]:SetTextColor(1, 1, 1)
 				class = colourList[class]
 				if (class) then
 					local color = XPerl_GetClassColour(class)
 					if (color) then
-						getglobal("WhoFrameButton"..i.."Class"):SetTextColor(color.r, color.g, color.b)
+						_G["WhoFrameButton"..i.."Class"]:SetTextColor(color.r, color.g, color.b)
 					end
 				end
 
 				local color = GetDifficultyColor(level)
-				getglobal("WhoFrameButton"..i.."Level"):SetTextColor(color.r, color.g, color.b)
+				_G["WhoFrameButton"..i.."Level"]:SetTextColor(color.r, color.g, color.b)
 			else
-				getglobal("WhoFrameButton"..i.."Variable"):SetTextColor(1, 1, 1)
-				getglobal("WhoFrameButton"..i.."Level"):SetTextColor(1, 1, 1)
-				getglobal("WhoFrameButton"..i.."Class"):SetTextColor(1, 1, 1)
+				_G["WhoFrameButton"..i.."Variable"]:SetTextColor(1, 1, 1)
+				_G["WhoFrameButton"..i.."Level"]:SetTextColor(1, 1, 1)
+				_G["WhoFrameButton"..i.."Class"]:SetTextColor(1, 1, 1)
 			end
 		end
 	end
@@ -2136,7 +2203,7 @@ end
 -- XPerl_BarUpdate
 --local speakerTimer = 0
 --local speakerCycle = 0
-function XPerl_BarUpdate()
+function XPerl_BarUpdate(self, arg1)
 	local did
 	for k,v in pairs(fadeBars) do
 		if (k:IsShown()) then

@@ -456,7 +456,7 @@ function XPerl_Init()
 		if (CT_RAPTTGroup) then	CT_RAPTTGroup:UnregisterEvent("UNIT_NAME_UPDATE")	end
 		if (CT_RAGroup1) then
 			for i = 1,8 do
-				local f = getglobal("CT_RAGroup"..i)
+				local f = _G["CT_RAGroup"..i]
 				if (f) then	f:UnregisterEvent("UNIT_NAME_UPDATE")		end
 			end
 		end

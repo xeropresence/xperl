@@ -25,9 +25,9 @@
 	<StatusBar name="XPerl_RaidMonitor_StatusBarTemplate" virtual="true">
 		<Scripts>
 			<OnLoad>
-				self.bg = getglobal(self:GetName().."bg")
-				self.name = getglobal(self:GetName().."name")
-				self.tex = getglobal(self:GetName().."tex")
+				self.bg = _G[self:GetName().."bg"]
+				self.name = _G[self:GetName().."name"]
+				self.tex = _G[self:GetName().."tex"]
 				XPerl_RegisterBar(self)
 			</OnLoad>
 		</Scripts>
@@ -75,7 +75,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				self.bar = getglobal(self:GetName().."Bar")
+				self.bar = _G[self:GetName().."Bar"]
 				self:RegisterForClicks("AnyUp")
 				XPerl_RegisterHighlight(self, 3)
 			</OnLoad>
@@ -91,13 +91,13 @@
 	<Button name="XPerl_RaidMonitor_UnitTemplate" inherits="SecureUnitButtonTemplate" virtual="true">
 		<Scripts>
 			<OnLoad>
-				self.bar = getglobal(self:GetName().."Bar")
-				self.groupedIcon = getglobal(self:GetName().."BarGrouped")
-				self.castBar = getglobal(self:GetName().."BarCastBar")
-				self.castBar.icon = getglobal(self:GetName().."BarCastBarIcon")
-				self.castBar.spark = getglobal(self:GetName().."BarCastBarSpark")
+				self.bar = _G[self:GetName().."Bar"]
+				self.groupedIcon = _G[self:GetName().."BarGrouped"]
+				self.castBar = _G[self:GetName().."BarCastBar"]
+				self.castBar.icon = _G[self:GetName().."BarCastBarIcon"]
+				self.castBar.spark = _G[self:GetName().."BarCastBarSpark"]
 				self.castBar.bg:Hide()
-				self.target = getglobal(self:GetName().."Target")
+				self.target = _G[self:GetName().."Target"]
 				self:RegisterForClicks("AnyUp")
 				XPerl_CastMon_ChildUnits(self)
 			</OnLoad>
@@ -235,7 +235,7 @@
 	<Frame name="XPerl_RaidMonitor_Frame" enableMouse="true" parent="XPerl_RaidMonitor_Anchor" clampedToScreen="true">
 		<Scripts>
 			<OnLoad>
-				self.area = getglobal(self:GetName().."Area")
+				self.area = _G[self:GetName().."Area"]
 				XPerl_RaidMonitor_OnLoad(self)
 				self:RegisterForDrag("LeftButton")
 			</OnLoad>
@@ -456,10 +456,10 @@
 				<Scripts>
 					<OnLoad>
 						self:GetParent().totals = self
-						self.RaidMana = getglobal(self:GetName().."RaidMana")
-						self.LowMana = getglobal(self:GetName().."LowMana")
-						self.HighMana = getglobal(self:GetName().."HighMana")
-						self.RaidHealth = getglobal(self:GetName().."RaidHealth")
+						self.RaidMana = _G[self:GetName().."RaidMana"]
+						self.LowMana = _G[self:GetName().."LowMana"]
+						self.HighMana = _G[self:GetName().."HighMana"]
+						self.RaidHealth = _G[self:GetName().."RaidHealth"]
 
 						self.RaidMana.name:SetJustifyH("CENTER")
 						self.LowMana.name:SetJustifyH("CENTER")
@@ -471,7 +471,7 @@
 						self.HighMana:SetMinMaxValues(1, 100)
 						self.RaidHealth:SetMinMaxValues(1, 100)
 
-						self.sep = getglobal(self:GetName().."Separator")
+						self.sep = _G[self:GetName().."Separator"]
 					</OnLoad>
 				</Scripts>
 				<Size><AbsDimension x="160" y="26"/></Size>

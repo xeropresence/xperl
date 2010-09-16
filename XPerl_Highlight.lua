@@ -694,7 +694,7 @@ function xpHigh:CreateHotCount(frame)
 	f:SetTextColor(0, 1, 0)
 	f:Hide()
 
-	local sf = getglobal(frame:GetName().."statsFrame")
+	local sf = _G[frame:GetName().."statsFrame"]
 	if (sf) then
 		if (strfind(frame:GetName(), "XPerl_Raid_Grp")) then
 			f:SetTextHeight(15)

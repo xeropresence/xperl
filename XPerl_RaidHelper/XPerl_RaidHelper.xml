@@ -33,7 +33,7 @@
 			<OnLoad>
 				XPerl_SetChildMembers(self)
 				self:RegisterForClicks("AnyUp")
-				XPerl_RegisterBar(getglobal(self:GetName().."healthBar"))
+				XPerl_RegisterBar(_G[self:GetName().."healthBar"])
 
 				if (not strmatch(self:GetName(), "Targets.+Target")) then
 					XPerl_MTList_ChildUnits(self)
@@ -66,9 +66,9 @@
 			<StatusBar name="$parenthealthBar" enableMouse="false">
 				<Scripts>
 					<OnLoad>
-						self.text = getglobal(self:GetName().."text")
-						self.tex = getglobal(self:GetName().."tex")
-						self.bg = getglobal(self:GetName().."bg")
+						self.text = _G[self:GetName().."text"]
+						self.tex = _G[self:GetName().."tex"]
+						self.bg = _G[self:GetName().."bg"]
 					</OnLoad>
 				</Scripts>
 				<Size>

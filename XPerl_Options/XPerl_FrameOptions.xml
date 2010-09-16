@@ -14,7 +14,7 @@
 		<Scripts>
 			<OnLoad>
 				self.Setup = function(self)
-					local text = getglobal(self:GetName().."_Text")
+					local text = _G[self:GetName().."_Text"]
 					text:SetTextColor(1,1,1,1)
 					text:SetText(XPerl_Version.." "..XPerl_GetRevision())
 					XPerl_DoGradient(self, true)
@@ -218,7 +218,7 @@
 		</Size>
 		<Scripts>
 			<OnShow>
-				self:SetWidth(getglobal(self:GetName().."Text"):GetStringWidth() * 1.1 + 10)
+				self:SetWidth(_G[self:GetName().."Text"]:GetStringWidth() * 1.1 + 10)
 			</OnShow>
 		</Scripts>
 	</Button>
@@ -350,7 +350,7 @@
 			<OnEnter>
 				if (self.xperlSliderEnabled) then
 					if ( self.tooltipText ) then
-						local p = getglobal(self:GetName().."Text")
+						local p = _G[self:GetName().."Text"]
 						local title = p and p:GetText()
 						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 						if (title) then
@@ -361,18 +361,18 @@
 						end
 						GameTooltip:Show()
 					end
-					getglobal(self:GetName().."Text"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+					_G[self:GetName().."Text"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 				end
 			</OnEnter>
 			<OnLeave>
 				if (self.xperlSliderEnabled) then
-					getglobal(self:GetName().."Text"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+					_G[self:GetName().."Text"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 				end
 				GameTooltip:Hide();
 			</OnLeave>
 			<OnMouseWheel>
 				local s = self:GetScript("OnValueChanged")
-				local newValue = self:GetValue() + (self:GetValueStep() * arg1)
+				local newValue = self:GetValue() + (self:GetValueStep() * delta)
 				self:SetValue(newValue)
 			</OnMouseWheel>
 		</Scripts>
@@ -438,7 +438,7 @@
 		<Scripts>
 			<OnEnter>
 				if ( self.tooltipText ) then
-					local p = getglobal(self:GetName().."Text")
+					local p = _G[self:GetName().."Text"]
 					local title = p and p:GetText()
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 					if (title) then
@@ -449,10 +449,10 @@
 					end
 					GameTooltip:Show()
 				end
-				getglobal(self:GetName().."Text"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+				_G[self:GetName().."Text"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 			</OnEnter>
 			<OnLeave>
-				getglobal(self:GetName().."Text"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+				_G[self:GetName().."Text"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
@@ -595,8 +595,8 @@
 		</HighlightTexture>
 		<Scripts>
 			<OnShow>
-				self:SetText(getglobal("XPERL_CONF_TITLE"..self:GetID()))
-				local f = getglobal(self:GetName().."Text")
+				self:SetText(_G["XPERL_CONF_TITLE"..self:GetID()])
+				local f = _G[self:GetName().."Text"]
 				self:SetWidth(f:GetStringWidth() + 18)
 				XPerl_Options_SetTabColor(self, XPerlDB.optionsColour)
 				self:SetScript("OnShow", nil)
@@ -611,7 +611,7 @@
 		<Scripts>
 			<OnEnter function="XPerl_Options_CheckButton_OnEnter"/>
 			<OnLeave>
-				getglobal(self:GetName().."Text"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+				_G[self:GetName().."Text"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 				if (self.flashFrame and not InCombatLockdown()) then
 					local array
 					if (table.getn(self.flashFrame) == 0) then
@@ -656,7 +656,7 @@
 					end
 				elseif (self.XconfigVar) then
 					if (self.XconfigVars) then
-						local sets = getglobal(self.XconfigVars)
+						local sets = _G[self.XconfigVars]
 						if (sets) then
 							sets[self.XconfigVar] = XPerl_GetCheck(self)
 						end
@@ -681,7 +681,7 @@
 
 				elseif (self.XconfigVar) then
 					if (self.XconfigVars) then
-						local sets = getglobal(self.XconfigVars)
+						local sets = _G[self.XconfigVars]
 						if (sets) then
 							self:SetChecked(sets[self.XconfigVar])
 						end
@@ -772,7 +772,7 @@
 		<Scripts>
 			<OnEnter>
 				if ( self.tooltipText ) then
-					local p = getglobal(self:GetName().."Text")
+					local p = _G[self:GetName().."Text"]
 					local title = p and p:GetText()
 					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 					if (title) then
@@ -783,10 +783,10 @@
 					end
 					GameTooltip:Show()
 				end
-				getglobal(self:GetName().."Text"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+				_G[self:GetName().."Text"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 			</OnEnter>
 			<OnLeave>
-				getglobal(self:GetName().."Text"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+				_G[self:GetName().."Text"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 				GameTooltip:Hide()
 			</OnLeave>
 		</Scripts>
@@ -842,10 +842,10 @@
 						self.varGet = nil
 					</OnHide>
 					<OnColorSelect>
-						getglobal(self:GetParent():GetName().."_ColorSelect_Swatch"):SetTexture(r, g, b)
-						XPerl_ColourPickerRed:SetText(floor(arg1 * 255))
-						XPerl_ColourPickerGreen:SetText(floor(arg2 * 255))
-						XPerl_ColourPickerBlue:SetText(floor(arg3 * 255))
+						_G[self:GetParent():GetName().."_ColorSelect_Swatch"]:SetTexture(r, g, b)
+						XPerl_ColourPickerRed:SetText(floor(r * 255))
+						XPerl_ColourPickerGreen:SetText(floor(g * 255))
+						XPerl_ColourPickerBlue:SetText(floor(b * 255))
 					</OnColorSelect>
 				</Scripts>
 				<ColorWheelTexture>
@@ -914,7 +914,7 @@
 						self:SetText(XPERL_OK)
 					</OnLoad>
 					<OnClick>
-						local r, g, b = getglobal(self:GetParent():GetName().."_ColorSelect"):GetColorRGB()
+						local r, g, b = _G[self:GetParent():GetName().."_ColorSelect"]:GetColorRGB()
 						local a = XPerl_ColourPicker_Alpha:GetValue()
 
 						local varSet = XPerl_ColourPicker.varSet
@@ -980,12 +980,12 @@
 				<Scripts>
 					<OnLoad>
 						XPerl_OptionsSetMyText(self, "XPERL_CONF_ALPHA")
-						getglobal(self:GetName().."Low"):SetText("0%")
-						getglobal(self:GetName().."High"):SetText("100%")
+						_G[self:GetName().."Low"]:SetText("0%")
+						_G[self:GetName().."High"]:SetText("100%")
 					</OnLoad>
 					<OnValueChanged>
 						XPerl_ColourPicker.alphaValue = value
-						getglobal(self:GetName().."Current"):SetText(floor(100 * value + 0.5).."%")
+						_G[self:GetName().."Current"]:SetText(floor(100 * value + 0.5).."%")
 					</OnValueChanged>
 				</Scripts>
 			</Slider>
@@ -1031,7 +1031,7 @@
 		<Size><AbsDimension x="170" y="15"/></Size>
 		<Scripts>
 			<OnLoad>
-				self.name = getglobal(self:GetName().."name")
+				self.name = _G[self:GetName().."name"]
 				self.tex = self:GetNormalTexture()
 			</OnLoad>
 			<OnClick>
@@ -1039,7 +1039,7 @@
 				self:GetParent():SetBarColours()
 			</OnClick>
 			<OnMouseWheel>
-				if (arg1 > 0) then
+				if (delta > 0) then
 				        self:GetParent().scrollBar.bar:SetValue(self:GetParent().scrollBar.bar:GetValue() - 1)
 				else
 				        self:GetParent().scrollBar.bar:SetValue(self:GetParent().scrollBar.bar:GetValue() + 1)
@@ -1085,7 +1085,7 @@
 				XPerl_Options_Mask:Hide()
 			</OnHide>
 			<OnMouseWheel>
-				if (arg1 > 0) then
+				if (delta > 0) then
 				        self.scrollBar.bar:SetValue(self.scrollBar.bar:GetValue() - 1)
 				else
 				        self.scrollBar.bar:SetValue(self.scrollBar.bar:GetValue() + 1)
@@ -1181,13 +1181,13 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.bar = getglobal(self:GetName().."ScrollBar")
+						self.bar = _G[self:GetName().."ScrollBar"]
 					</OnLoad>
 					<OnVerticalScroll>
 						FauxScrollFrame_OnVerticalScroll(self, offset, 1, self:GetParent().UpdateFunction)
 					</OnVerticalScroll>
 					<OnMouseWheel>
-						if (arg1 > 0) then
+						if (delta > 0) then
 							self.bar:SetValue(self.bar:GetValue() - 1)
 						else
 							self.bar:SetValue(self.bar:GetValue() + 1)
@@ -1249,7 +1249,7 @@
 					</OnLoad>
 					<OnShow>
 						local class = XPerlDB.raid.class[self:GetID()].name
-						local textFrame = getglobal(self:GetName().."Text")
+						local textFrame = _G[self:GetName().."Text"]
 						textFrame:SetText(LOCALIZED_CLASS_NAMES_MALE[class])
 						self:SetHitRectInsets(0, -(textFrame:GetStringWidth()), 0, 0)
 						self:SetChecked(XPerlDB.raid.class[self:GetID()].enable)
@@ -1471,7 +1471,7 @@
 						else
 							XPerlDB.tooltip.modifier = "all"
 						end
-						XPerl_Options_CheckRadio({"TooltipAlways", "TooltipAlt", "TooltipShift", "TooltipCtrl"})
+						XPerl_Options_CheckRadio(self,{"TooltipAlways", "TooltipAlt", "TooltipShift", "TooltipCtrl"})
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -1499,7 +1499,7 @@
 						else
 							XPerlDB.tooltip.modifier = "alt"
 						end
-						XPerl_Options_CheckRadio({"TooltipAlways", "TooltipAlt", "TooltipShift", "TooltipCtrl"})
+						XPerl_Options_CheckRadio(self,{"TooltipAlways", "TooltipAlt", "TooltipShift", "TooltipCtrl"})
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -1527,7 +1527,7 @@
 						else
 							XPerlDB.tooltip.modifier = "shift"
 						end
-						XPerl_Options_CheckRadio({"TooltipAlways", "TooltipAlt", "TooltipShift", "TooltipCtrl"})
+						XPerl_Options_CheckRadio(self,{"TooltipAlways", "TooltipAlt", "TooltipShift", "TooltipCtrl"})
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -1555,7 +1555,7 @@
 						else
 							XPerlDB.tooltip.modifier = "control"
 						end
-						XPerl_Options_CheckRadio({"TooltipAlways", "TooltipAlt", "TooltipShift", "TooltipCtrl"})
+						XPerl_Options_CheckRadio(self,{"TooltipAlways", "TooltipAlt", "TooltipShift", "TooltipCtrl"})
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -1573,9 +1573,9 @@
 					<OnLoad>
 						XPerl_OptionsSetMyText(self, "XPERL_CONF_HEALER_MODE", true)
 						self.Validate = function()
-							XPerl_Options_EnableSibling("DeficitOnly")
-							XPerl_Options_EnableSibling("DeficitMax")
-							XPerl_Options_EnableSibling("CurMaxDeficit")
+							XPerl_Options_EnableSibling(self, "DeficitOnly")
+							XPerl_Options_EnableSibling(self,"DeficitMax")
+							XPerl_Options_EnableSibling(self,"CurMaxDeficit")
 						end
 					</OnLoad>
 					<OnShow>
@@ -1609,7 +1609,7 @@
 					</OnShow>
 					<OnClick>
 						self:GetParent().setType(0)
-						XPerl_Options_CheckRadio({"DeficitOnly", "DeficitMax", "CurMaxDeficit"})
+						XPerl_Options_CheckRadio(self,{"DeficitOnly", "DeficitMax", "CurMaxDeficit"})
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -1634,7 +1634,7 @@
 					</OnShow>
 					<OnClick>
 						self:GetParent().setType(1)
-						XPerl_Options_CheckRadio({"DeficitOnly", "DeficitMax", "CurMaxDeficit"})
+						XPerl_Options_CheckRadio(self,{"DeficitOnly", "DeficitMax", "CurMaxDeficit"})
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -1659,7 +1659,7 @@
 					</OnShow>
 					<OnClick>
 						self:GetParent().setType(2)
-						XPerl_Options_CheckRadio({"DeficitOnly", "DeficitMax", "CurMaxDeficit"})
+						XPerl_Options_CheckRadio(self,{"DeficitOnly", "DeficitMax", "CurMaxDeficit"})
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -1686,7 +1686,7 @@
 				self.master:FillList()
 			</OnClick>
 			<OnMouseWheel>
-				if (arg1 > 0) then
+				if (delta > 0) then
 					self.master.scrollBar.bar:SetValue(self.master.scrollBar.bar:GetValue() - 2)
 				else
 					self.master.scrollBar.bar:SetValue(self.master.scrollBar.bar:GetValue() + 2)
@@ -1775,7 +1775,7 @@
 							tab:SetPoint("BOTTOMLEFT", lastTab, "BOTTOMRIGHT", -1, 0)
 							tab:Show()
 
-							totalTabWidth = totalTabWidth + (19 + getglobal(tab:GetName().."Text"):GetStringWidth())
+							totalTabWidth = totalTabWidth + (19 + _G[tab:GetName().."Text"]:GetStringWidth())
 						end
 						lastTab = tab
 					end
@@ -1806,7 +1806,7 @@
 				self:UnregisterEvent("PLAYER_REGEN_DISABLED")
 			</OnHide>
 			<OnUpdate>
-				XPerl_Options_OnUpdate()
+				XPerl_Options_OnUpdate(self,elapsed)
 			</OnUpdate>
 			<OnHide>
                 XPerl_OptionsAnchor:StopMovingOrSizing()
@@ -1939,7 +1939,7 @@
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
 							<OnClick>
-								local new = XPerl_Options_DecrementSibling("Gap")
+								local new = XPerl_Options_DecrementSibling(self,"Gap")
 								XPerl_Player_SetGap(new)
 							</OnClick>
 						</Scripts>
@@ -1994,7 +1994,7 @@
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
 							<OnClick>
-								local new = XPerl_Options_IncrementSibling("Gap")
+								local new = XPerl_Options_IncrementSibling(self,"Gap")
 								XPerl_Player_SetGap(new)
 							</OnClick>
 						</Scripts>
@@ -2068,7 +2068,7 @@
 				<Scripts>
 					<OnShow>
 						if (not IsAddOnLoaded("XPerl_PartyPet")) then
-							getglobal(self:GetName().."_ScalePets"):Hide()
+							_G[self:GetName().."_ScalePets"]:Hide()
 						end
 					</OnShow>
 				</Scripts>
@@ -2109,7 +2109,7 @@
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
 							<OnClick>
-								local new = XPerl_Options_DecrementSibling("Gap")
+								local new = XPerl_Options_DecrementSibling(self,"Gap")
 								XPerl_Party_SetGap(new)
 							</OnClick>
 						</Scripts>
@@ -2137,7 +2137,7 @@
 						</Layers>
 						<Scripts>
 							<OnLoad>
-								getglobal(self:GetName().."Text"):SetText(XPERL_CONF_ALIGN_SPACING)
+								_G[self:GetName().."Text"]:SetText(XPERL_CONF_ALIGN_SPACING)
 							</OnLoad>
 						</Scripts>
 					</Button>
@@ -2191,7 +2191,7 @@
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
 							<OnClick>
-								local new = XPerl_Options_IncrementSibling("Gap")
+								local new = XPerl_Options_IncrementSibling(self,"Gap")
 								XPerl_Party_SetGap(new)
 							</OnClick>
 						</Scripts>
@@ -2220,7 +2220,7 @@
 						</Layers>
 						<Scripts>
 							<OnLoad>
-								XPerl_Options_RegisterProtected(getglobal(self:GetName().."Button"))
+								XPerl_Options_RegisterProtected(_G[self:GetName().."Button"])
 								self.varGet = function() return (XPerlDB and XPerlDB.party.anchor) or "TOP" end
 								self.varSet = function(n) XPerlDB.party.anchor = n end
 								self.setFunc = function() if (XPerl_Party_SetMainAttributes) then XPerl_Party_SetMainAttributes() XPerl_Party_Virtual(true) end end
@@ -2232,10 +2232,10 @@
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)
 								GameTooltip:SetText(XPERL_CONF_ANCHORMENU_DESC, nil, nil, nil, nil, 1)
-								getglobal(self:GetName().."Label"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+								_G[self:GetName().."Label"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 							</OnEnter>
 							<OnLeave>
-								getglobal(self:GetName().."Label"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+								_G[self:GetName().."Label"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 								GameTooltip:Hide()
 							</OnLeave>
 						</Scripts>
@@ -2352,7 +2352,7 @@
 						</Layers>
 						<Scripts>
 							<OnLoad>
-								XPerl_Options_RegisterProtected(getglobal(self:GetName().."Button"))
+								XPerl_Options_RegisterProtected(_G[self:GetName().."Button"])
 								self.varGet = function() return (XPerlDB and XPerlDB.raid.anchor) or "TOP" end
 								self.varSet = function(n) XPerlDB.raid.anchor = n end
 								self.setFunc = XPerl_Raid_ChangeAttributes
@@ -2364,10 +2364,10 @@
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)
 								GameTooltip:SetText(XPERL_CONF_ANCHORMENU_DESC, nil, nil, nil, nil, 1)
-								getglobal(self:GetName().."Label"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+								_G[self:GetName().."Label"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 							</OnEnter>
 							<OnLeave>
-								getglobal(self:GetName().."Label"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+								_G[self:GetName().."Label"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 								GameTooltip:Hide()
 							</OnLeave>
 						</Scripts>
@@ -2430,7 +2430,7 @@
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
 							<OnClick>
-								local new = XPerl_Options_DecrementSibling("Gap")
+								local new = XPerl_Options_DecrementSibling(self,"Gap")
 								XPerl_Raid_SetGap(new)
 							</OnClick>
 						</Scripts>
@@ -2483,7 +2483,7 @@
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
 							<OnClick>
-								local new = XPerl_Options_IncrementSibling("Gap")
+								local new = XPerl_Options_IncrementSibling(self,"Gap")
 								XPerl_Raid_SetGap(new)
 							</OnClick>
 						</Scripts>
@@ -2505,7 +2505,7 @@
 							</OnLoad>
 							<OnClick>
 								XPerl_Options.raidAlign = "all"
-								XPerl_Options_CheckRadio({"All", "Odds", "Evens", "First4", "Last4"})
+								XPerl_Options_CheckRadio(self,{"All", "Odds", "Evens", "First4", "Last4"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -2523,7 +2523,7 @@
 							</OnLoad>
 							<OnClick>
 								XPerl_Options.raidAlign = "odd"
-								XPerl_Options_CheckRadio({"All", "Odds", "Evens", "First4", "Last4"})
+								XPerl_Options_CheckRadio(self,{"All", "Odds", "Evens", "First4", "Last4"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -2541,7 +2541,7 @@
 							</OnLoad>
 							<OnClick>
 								XPerl_Options.raidAlign = "even"
-								XPerl_Options_CheckRadio({"All", "Odds", "Evens", "First4", "Last4"})
+								XPerl_Options_CheckRadio(self,{"All", "Odds", "Evens", "First4", "Last4"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -2559,7 +2559,7 @@
 							</OnLoad>
 							<OnClick>
 								XPerl_Options.raidAlign = "first4"
-								XPerl_Options_CheckRadio({"All", "Odds", "Evens", "First4", "Last4"})
+								XPerl_Options_CheckRadio(self,{"All", "Odds", "Evens", "First4", "Last4"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -2577,7 +2577,7 @@
 							</OnLoad>
 							<OnClick>
 								XPerl_Options.raidAlign = "last4"
-								XPerl_Options_CheckRadio({"All", "Odds", "Evens", "First4", "Last4"})
+								XPerl_Options_CheckRadio(self,{"All", "Odds", "Evens", "First4", "Last4"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -2662,20 +2662,20 @@
 								local me = format("%s(%s)", GetRealmName(), UnitName("player"))
 								local t = self:GetText()
 								if (t and t ~= "" and strlower(t) ~= strlower(me)) then
-									XPerl_Options_GetSibling("Save"):Enable()
+									XPerl_Options_GetSibling("Save",self):Enable()
 								else
-									XPerl_Options_GetSibling("Save"):Disable()
+									XPerl_Options_GetSibling("Save",self):Disable()
 								end
 								local curLayout = self:GetParent():GetLayout(t)
 								if (curLayout and strlower(t) ~= strlower(me)) then
-									XPerl_Options_GetSibling("Load"):Enable()
+									XPerl_Options_GetSibling("Load",self):Enable()
 								else
-									XPerl_Options_GetSibling("Load"):Disable()
+									XPerl_Options_GetSibling("Load",self):Disable()
 								end
 								if (curLayout and strlower(t) ~= strlower(me)) then
-									XPerl_Options_GetSibling("Delete"):Enable()
+									XPerl_Options_GetSibling("Delete",self):Enable()
 								else
-									XPerl_Options_GetSibling("Delete"):Disable()
+									XPerl_Options_GetSibling("Delete",self):Disable()
 								end
 							</OnTextChanged>
 						</Scripts>
@@ -2694,7 +2694,7 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_FRAME_LAYOUT_SAVE")
 							</OnLoad>
 							<OnClick>
-								local name = XPerl_Options_GetSibling("Name"):GetText()
+								local name = XPerl_Options_GetSibling("Name",self):GetText()
 								if (strlower(name) ~= "current") then
 									XPerl_Options_SaveFrameLayout(name)
 									self:GetParent():FillList(true)
@@ -2713,7 +2713,7 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_FRAME_LAYOUT_LOAD")
 							</OnLoad>
 							<OnClick>
-								XPerl_Options_LoadFrameLayout(XPerl_Options_GetSibling("Name"):GetText())
+								XPerl_Options_LoadFrameLayout(XPerl_Options_GetSibling("Name",self):GetText())
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -2747,7 +2747,7 @@
 								self:SetScale(0.5)
 							</OnLoad>
 							<OnClick>
-								if (XPerl_Options_DeleteFrameLayout(XPerl_Options_GetSibling("Name"):GetText())) then
+								if (XPerl_Options_DeleteFrameLayout(XPerl_Options_GetSibling("Name",self):GetText())) then
 									self:GetParent():FillList(true)
 								end
 							</OnClick>
@@ -2777,6 +2777,7 @@
 								self:SetScale(0.9)
 							</OnLoad>
 							<OnMouseWheel>
+								local arg1 = delta
 								if (arg1 > 0) then
 									self:GetParent().scrollBar.bar:SetValue(self:GetParent().scrollBar.bar:GetValue() - 2)
 								else
@@ -2858,7 +2859,8 @@
 										FauxScrollFrame_OnVerticalScroll(self, offset, 1, function() XPerl_Options_LayoutFill(XPerl_Options_Layout) end)
 									</OnVerticalScroll>
 									<OnMouseWheel>
-										local f = getglobal(self:GetName().."ScrollBar")
+										local arg1 = delta
+										local f = _G[self:GetName().."ScrollBar"]
 										if (arg1 > 0) then
 											f:SetValue(f:GetValue() + 3)
 										else
@@ -2894,13 +2896,13 @@
 						self.SelectTab = function(self, id)
 
 							for i=1,table.getn(self.frameNames) do
-								local frame = getglobal(self:GetParent():GetName()..self.frameNames[i])
+								local frame = _G[self:GetParent():GetName()..self.frameNames[i]]
 								--if (frame) then
 								--	For when we need to find more space in options:
 								--	frame:SetScale(0.9)
 								--end
 
-								local tab = getglobal(self:GetName()..i)
+								local tab = _G[self:GetName()..i]
 								if (i == id) then
 									XPerl_Options_EnableTab(tab, true)
 									if (frame) then
@@ -3106,7 +3108,7 @@
 							</OnLoad>
 							<OnShow>
 								if (XPerlDB.bar.texture and XPerlDB.bar.texture[1]) then
-									getglobal(self:GetName().."Name"):SetText(XPerlDB.bar.texture[1])
+									_G[self:GetName().."Name"]:SetText(XPerlDB.bar.texture[1])
 								end
 								local tex = XPerl_GetBarTexture()
 								self:SetNormalTexture(tex)
@@ -3148,7 +3150,7 @@
 								self.configBase = "XPerlDB.bar"
 								self.configIndex = "fading"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("FadeTime")
+									XPerl_Options_EnableSibling(self,"FadeTime")
 								end
 							</OnLoad>
 						</Scripts>
@@ -3169,14 +3171,14 @@
 							<OnLoad>
 								self:SetScale(0.8)
 
-								local t = XPerl_Options_GetSibling("FadingBars")
+								local t = XPerl_Options_GetSibling("FadingBars",self)
 								local t2 = getglobal(t:GetName().."Text")
 								self:SetPoint("LEFT", t, "RIGHT", (t2:GetStringWidth() + 10) / 0.8, 0)
 
 								XPerl_SliderSetup(self)
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_BAR_FADING_TIME")
-								getglobal(self:GetName().."Low"):SetText("0.2")
-								getglobal(self:GetName().."High"):SetText("2.0")
+								_G[self:GetName().."Low"]:SetText("0.2")
+								_G[self:GetName().."High"]:SetText("2.0")
 								self:SetMinMaxValues(2, 20)
 								self:SetValueStep(1)
 							</OnLoad>
@@ -3185,7 +3187,7 @@
 							</OnShow>
 							<OnValueChanged>
 								XPerlDB.bar.fadeTime = value / 10
-								getglobal(self:GetName().."Current"):SetText(string.format("%.1f", XPerlDB.bar.fadeTime))
+								_G[self:GetName().."Current"]:SetText(string.format("%.1f", XPerlDB.bar.fadeTime))
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -3265,10 +3267,10 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_OptionActions
 								self.Validate = function()
-									XPerl_Options_EnableSibling("HighBackground")
-									XPerl_Options_EnableSibling("HighBorder")
-									XPerl_Options_EnableSibling("HighBoth")
-									XPerl_Options_EnableSibling("HighlightClass")
+									XPerl_Options_EnableSibling(self,"HighBackground")
+									XPerl_Options_EnableSibling(self,"HighBorder")
+									XPerl_Options_EnableSibling(self,"HighBoth")
+									XPerl_Options_EnableSibling(self,"HighlightClass")
 								end
 							</OnLoad>
 						</Scripts>
@@ -3290,7 +3292,7 @@
 							<OnClick>
 								XPerlDB.highlightDebuffs.border = nil
 								XPerlDB.highlightDebuffs.frame = 1
-								XPerl_Options_CheckRadio({"HighBackground", "HighBorder", "HighBoth"})
+								XPerl_Options_CheckRadio(self,{"HighBackground", "HighBorder", "HighBoth"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -3311,7 +3313,7 @@
 							<OnClick>
 								XPerlDB.highlightDebuffs.border = 1
 								XPerlDB.highlightDebuffs.frame = nil
-								XPerl_Options_CheckRadio({"HighBackground", "HighBorder", "HighBoth"})
+								XPerl_Options_CheckRadio(self,{"HighBackground", "HighBorder", "HighBoth"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -3332,7 +3334,7 @@
 							<OnClick>
 								XPerlDB.highlightDebuffs.border = 1
 								XPerlDB.highlightDebuffs.frame = 1
-								XPerl_Options_CheckRadio({"HighBackground", "HighBorder", "HighBoth"})
+								XPerl_Options_CheckRadio(self,{"HighBackground", "HighBorder", "HighBoth"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -3367,10 +3369,10 @@
 								self.configIndex = "cooldown"
 								self.configClick = XPerl_OptionActions
 								self.Validate = function()
-									XPerl_Options_EnableSibling("BuffCooldownAny")
-									XPerl_Options_EnableSibling("BuffCountdown")
-									XPerl_Options_EnableSibling("BuffCountdownAny", "BuffCountdown")
-									XPerl_Options_EnableSibling("BuffCountdownStart", "BuffCountdown")
+									XPerl_Options_EnableSibling(self,"BuffCooldownAny")
+									XPerl_Options_EnableSibling(self,"BuffCountdown")
+									XPerl_Options_EnableSibling(self,"BuffCountdownAny", "BuffCountdown")
+									XPerl_Options_EnableSibling(self,"BuffCountdownStart", "BuffCountdown")
 								end
 							</OnLoad>
 						</Scripts>
@@ -3407,8 +3409,8 @@
 								self.configIndex = "countdown"
 								self.configClick = XPerl_OptionActions
 								self.Validate = function()
-									XPerl_Options_EnableSibling("BuffCountdownStart")
-									XPerl_Options_EnableSibling("BuffCountdownAny", "BuffCooldown")
+									XPerl_Options_EnableSibling(self,"BuffCountdownStart")
+									XPerl_Options_EnableSibling(self,"BuffCountdownAny", "BuffCooldown")
 								end
 							</OnLoad>
 						</Scripts>
@@ -3505,7 +3507,7 @@
 							</OnShow>
 							<OnValueChanged>
 								XPerlDB.buffs.countdownStart = value
-								getglobal(self:GetName().."Current"):SetText(XPerlDB.buffs.countdownStart)
+								_G[self:GetName().."Current"]:SetText(XPerlDB.buffs.countdownStart)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -3522,28 +3524,28 @@
 								self.configBase = "XPerlDB.highlight"
 								self.configIndex = "enable"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("HighlightHoTs")
-									XPerl_Options_EnableSibling("HighlightHEAL")
-									XPerl_Options_EnableSibling("HighlightAggro")
-									XPerl_Options_EnableSibling("HighlightShields")
-									XPerl_Options_EnableSibling("HighlightHotcount")
-									XPerl_Options_EnableSibling("HighlightTarget")
-									XPerl_Options_EnableSibling("HighlightMending")
-									XPerl_Options_EnableSibling("HighlightSparkles")
-									XPerl_Options_EnableSibling("ExtraSparkles")
+									XPerl_Options_EnableSibling(self,"HighlightHoTs")
+									XPerl_Options_EnableSibling(self,"HighlightHEAL")
+									XPerl_Options_EnableSibling(self,"HighlightAggro")
+									XPerl_Options_EnableSibling(self,"HighlightShields")
+									XPerl_Options_EnableSibling(self,"HighlightHotcount")
+									XPerl_Options_EnableSibling(self,"HighlightTarget")
+									XPerl_Options_EnableSibling(self,"HighlightMending")
+									XPerl_Options_EnableSibling(self,"HighlightSparkles")
+									XPerl_Options_EnableSibling(self,"ExtraSparkles")
 
 									local _, class = UnitClass("player")
 									if (class ~= "DRUID" and class ~= "PRIEST" and class ~= "SHAMAN") then
 										XPerlDB.highlight.HOT = nil
-										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightHoTs"), false)
+										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightHoTs",self), false)
 									end
 									if (class ~= "PRIEST" and class ~= "SHAMAN" and class ~= "MAGE" and class ~= "PALADIN") then
 										XPerlDB.highlight.SHIELD = nil
-										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightShields"), false)
+										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightShields",self), false)
 									end
 									if (class ~= "PRIEST") then
 										XPerlDB.highlight.POM = nil
-										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightMending"), false)
+										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightMending",self), false)
 									end
 								end
 							</OnLoad>
@@ -3710,7 +3712,7 @@
 								self.Refresh = function(self)
 									local a = {"Enable", "FadeAmount", "CustomSpell", "CombineWithHealth", "RangeHealthAmount", "DebuffCheck", "InteractNone", "Interact10", "Interact30", "Interact40"}
 									for k,v in pairs(a) do
-										local f = getglobal(self:GetName().."_"..v)
+										local f = _G[self:GetName().."_"..v]
 										if (f) then
 											f:Hide()
 											f:Show()
@@ -3747,15 +3749,15 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_RANGEFINDER")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("OnlyInRaid")
-											XPerl_Options_EnableSibling("Main")
-											XPerl_Options_EnableSibling("NameFrame")
-											XPerl_Options_EnableSibling("StatsFrame")
-											XPerl_Options_EnableSibling("Enable")
-											XPerl_Options_EnableSibling("InteractNone")
-											XPerl_Options_EnableSibling("Interact10")
-											XPerl_Options_EnableSibling("Interact30")
-											XPerl_Options_EnableSibling("Interact40")
+											XPerl_Options_EnableSibling(self,"OnlyInRaid")
+											XPerl_Options_EnableSibling(self,"Main")
+											XPerl_Options_EnableSibling(self,"NameFrame")
+											XPerl_Options_EnableSibling(self,"StatsFrame")
+											XPerl_Options_EnableSibling(self,"Enable")
+											XPerl_Options_EnableSibling(self,"InteractNone")
+											XPerl_Options_EnableSibling(self,"Interact10")
+											XPerl_Options_EnableSibling(self,"Interact30")
+											XPerl_Options_EnableSibling(self,"Interact40")
 										end
 									</OnLoad>
 									<OnShow>
@@ -3804,7 +3806,7 @@
 									</OnLoad>
 									<OnClick>
 										XPerl_Options.optRange = "Main"
-										XPerl_Options_CheckRadio({"Main", "NameFrame", "StatsFrame"})
+										XPerl_Options_CheckRadio(self,{"Main", "NameFrame", "StatsFrame"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -3823,7 +3825,7 @@
 									</OnLoad>
 									<OnClick>
 										XPerl_Options.optRange = "NameFrame"
-										XPerl_Options_CheckRadio({"Main", "NameFrame", "StatsFrame"})
+										XPerl_Options_CheckRadio(self,{"Main", "NameFrame", "StatsFrame"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -3842,7 +3844,7 @@
 									</OnLoad>
 									<OnClick>
 										XPerl_Options.optRange = "StatsFrame"
-										XPerl_Options_CheckRadio({"Main", "NameFrame", "StatsFrame"})
+										XPerl_Options_CheckRadio(self,{"Main", "NameFrame", "StatsFrame"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -3860,8 +3862,8 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_RANGE_ENABLE")
 									</OnLoad>
 									<OnShow>
-										local t = XPerl_Options_GetSibling("On")
-										local t2 = getglobal(t:GetName().."Text")
+										local t = XPerl_Options_GetSibling("On",self)
+										local t2 = _G[t:GetName().."Text"]
 										self:SetPoint("LEFT", t, "RIGHT", t2:GetStringWidth() + 10, 0)
 										self:SetChecked(XPerlDB.rangeFinder[XPerl_Options.optRange].enabled)
 										XPerl_Options_EnableCheck(self, XPerlDB.rangeFinder.enabled)
@@ -3884,8 +3886,8 @@
 									<OnLoad>
 										XPerl_SliderSetup(self)
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_RANGEFADEAMOUNT")
-										getglobal(self:GetName().."Low"):SetText(" ")
-										getglobal(self:GetName().."High"):SetText(" ")
+										_G[self:GetName().."Low"]:SetText(" ")
+										_G[self:GetName().."High"]:SetText(" ")
 										self:SetMinMaxValues(0.1, 0.8)
 										self:SetValueStep(0.1)
 									</OnLoad>
@@ -3899,7 +3901,7 @@
 									</OnShow>
 									<OnValueChanged>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].FadeAmount = floor((value + 0.05) * 10) / 10
-										getglobal(self:GetName().."Current"):SetText(string.format("%d%%", XPerlDB.rangeFinder[XPerl_Options.optRange].FadeAmount * 100))
+										_G[self:GetName().."Current"]:SetText(string.format("%d%%", XPerlDB.rangeFinder[XPerl_Options.optRange].FadeAmount * 100))
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -3913,8 +3915,8 @@
 								<Scripts>
 									<OnLoad>
 										self.ShowMe = function(self)
-											local icon = getglobal(self:GetName().."Icon")
-											local label = getglobal(self:GetName().."Text")
+											local icon = _G[self:GetName().."Icon"]
+											local label = _G[self:GetName().."Text"]
 
 											local tex, name = XPerl_Options_GetRangeTexture(self)
 
@@ -3988,11 +3990,11 @@
 										end
 									</OnMouseUp>
 									<OnEnter>
-										getglobal(self:GetName().."Text"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+										_G[self:GetName().."Text"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 										XPerl_Options_DoRangeTooltip(self)
 									</OnEnter>
 									<OnLeave>
-										getglobal(self:GetName().."Text"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+										_G[self:GetName().."Text"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 										GameTooltip:Hide()
 									</OnLeave>
 									<OnShow>
@@ -4034,14 +4036,14 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_RANGE_INTERACTNONE")
 									</OnLoad>
 									<OnShow>
-										local t = XPerl_Options_GetSibling("OnlyInRaid")
-										local t2 = getglobal(t:GetName().."Text")
+										local t = XPerl_Options_GetSibling("OnlyInRaid",self)
+										local t2 = _G[t:GetName().."Text"]
 										self:SetPoint("LEFT", t, "RIGHT", t2:GetStringWidth() + 15, 0)
 										self:SetChecked(XPerlDB.rangeFinder[XPerl_Options.optRange].interact == nil)
 									</OnShow>
 									<OnClick>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].interact = nil
-										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30", "Interact40"})
+										XPerl_Options_CheckRadio(self,{"InteractNone", "Interact10", "Interact30", "Interact40"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -4063,7 +4065,7 @@
 									</OnShow>
 									<OnClick>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].interact = 3
-										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30", "Interact40"})
+										XPerl_Options_CheckRadio(self,{"InteractNone", "Interact10", "Interact30", "Interact40"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -4085,7 +4087,7 @@
 									</OnShow>
 									<OnClick>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].interact = 1
-										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30", "Interact40"})
+										XPerl_Options_CheckRadio(self,{"InteractNone", "Interact10", "Interact30", "Interact40"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -4107,7 +4109,7 @@
 									</OnShow>
 									<OnClick>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].interact = 5
-										XPerl_Options_CheckRadio({"InteractNone", "Interact10", "Interact30", "Interact40"})
+										XPerl_Options_CheckRadio(self,{"InteractNone", "Interact10", "Interact30", "Interact40"})
 										self:GetParent():Refresh()
 									</OnClick>
 								</Scripts>
@@ -4162,7 +4164,7 @@
 									</OnShow>
 									<OnValueChanged>
 										XPerlDB.rangeFinder[XPerl_Options.optRange].HealthLowPoint = value / 100
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -4202,11 +4204,11 @@
 								self.configBase = "XPerlDB.tooltip"
 								self.configIndex = "enableBuffs"
 								--self.Validate = function()
-								--	XPerl_Options_EnableSibling("NotInCombat", "or", "UnitTooltips")
-								--	XPerl_Options_EnableSibling("TooltipAlways", "or", "UnitTooltips")
-								--	XPerl_Options_EnableSibling("TooltipAlt", "or", "UnitTooltips")
-								--	XPerl_Options_EnableSibling("TooltipShift", "or", "UnitTooltips")
-								--	XPerl_Options_EnableSibling("TooltipCtrl", "or", "UnitTooltips")
+								--	XPerl_Options_EnableSibling(self,"NotInCombat", "or", "UnitTooltips")
+								--	XPerl_Options_EnableSibling(self,"TooltipAlways", "or", "UnitTooltips")
+								--	XPerl_Options_EnableSibling(self,"TooltipAlt", "or", "UnitTooltips")
+								--	XPerl_Options_EnableSibling(self,"TooltipShift", "or", "UnitTooltips")
+								--	XPerl_Options_EnableSibling(self,"TooltipCtrl", "or", "UnitTooltips")
 								--end
 							</OnLoad>
 							<OnEnter>
@@ -4232,11 +4234,11 @@
 								self.configBase = "XPerlDB.tooltip"
 								self.configIndex = "enable"
 								--self.Validate = function()
-								--	XPerl_Options_EnableSibling("NotInCombat", "or", "BuffTooltips")
-								--	XPerl_Options_EnableSibling("TooltipAlways", "or", "BuffTooltips")
-								--	XPerl_Options_EnableSibling("TooltipAlt", "or", "BuffTooltips")
-								--	XPerl_Options_EnableSibling("TooltipShift", "or", "BuffTooltips")
-								--	XPerl_Options_EnableSibling("TooltipCtrl", "or", "BuffTooltips")
+								--	XPerl_Options_EnableSibling(self,"NotInCombat", "or", "BuffTooltips")
+								--	XPerl_Options_EnableSibling(self,"TooltipAlways", "or", "BuffTooltips")
+								--	XPerl_Options_EnableSibling(self,"TooltipAlt", "or", "BuffTooltips")
+								--	XPerl_Options_EnableSibling(self,"TooltipShift", "or", "BuffTooltips")
+								--	XPerl_Options_EnableSibling(self,"TooltipCtrl", "or", "BuffTooltips")
 								--end
 							</OnLoad>
 							<OnEnter>
@@ -4277,8 +4279,8 @@
 								self.configBase = "XPerlDB.player.fullScreen"
 								self.configIndex = "enable"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("FullscreenWarn")
-									XPerl_Options_EnableSibling("FullscreenOK")
+									XPerl_Options_EnableSibling(self,"FullscreenWarn")
+									XPerl_Options_EnableSibling(self,"FullscreenOK")
 								end
 							</OnLoad>
 						</Scripts>
@@ -4312,7 +4314,7 @@
 									XPerl_Options_Global_Options_FullscreenOK:SetMinMaxValues(XPerlDB.player.fullScreen.lowHP, 100)
 									XPerl_Options_Global_Options_FullscreenOKLow:SetText(XPerlDB.player.fullScreen.lowHP)
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlDB.player.fullScreen.lowHP)
+								_G[self:GetName().."Current"]:SetText(XPerlDB.player.fullScreen.lowHP)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -4341,7 +4343,7 @@
 							</OnShow>
 							<OnValueChanged>
 								XPerlDB.player.fullScreen.highHP = floor(value + 0.5)
-								getglobal(self:GetName().."Current"):SetText(XPerlDB.player.fullScreen.highHP)
+								_G[self:GetName().."Current"]:SetText(XPerlDB.player.fullScreen.highHP)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -4517,7 +4519,7 @@
 						</Layers>
 						<Scripts>
 							<OnLoad>
-								XPerl_Options_RegisterProtected(getglobal(self:GetName().."Button"))
+								XPerl_Options_RegisterProtected(_G[self:GetName().."Button"])
 								XPerl_Options_LoadSettings_OnLoad(self)
 							</OnLoad>
 							<OnShow>
@@ -4529,10 +4531,10 @@
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)
 								GameTooltip:SetText(XPERL_CONF_LOAD_SETTINGS_DESC, nil, nil, nil, nil, 1)
-								getglobal(self:GetName().."Label"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+								_G[self:GetName().."Label"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 							</OnEnter>
 							<OnLeave>
-								getglobal(self:GetName().."Label"):SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+								_G[self:GetName().."Label"]:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
 								GameTooltip:Hide()
 							</OnLeave>
 						</Scripts>
@@ -4594,9 +4596,9 @@
 					<OnShow>
 						if (not IsAddOnLoaded("XPerl_ArcaneBar")) then
 							local n = self:GetName().."_"
-							getglobal(n.."OldCastBar"):Disable()
-							getglobal(n.."CastTime"):Disable()
-							getglobal(n.."ArcaneBar"):Disable()
+							_G[n.."OldCastBar"]:Disable()
+							_G[n.."CastTime"]:Disable()
+							_G[n.."ArcaneBar"]:Disable()
 						end
 					</OnShow>
 				</Scripts>
@@ -4616,9 +4618,9 @@
 								self.configIndex = "portrait"
 								self.configClick = XPerl_Player_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Portrait3D")
-									XPerl_Options_EnableSibling("Extend")
-									XPerl_Options_EnableSibling("HitIndicator")
+									XPerl_Options_EnableSibling(self,"Portrait3D")
+									XPerl_Options_EnableSibling(self,"Extend")
+									XPerl_Options_EnableSibling(self,"HitIndicator")
 								end
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
@@ -4694,7 +4696,7 @@
 								self.configIndex = "showRunes"
 								self.configClick = XPerl_Player_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("DockRunes")
+									XPerl_Options_EnableSibling(self,"DockRunes")
 								end
 							</OnLoad>
 						</Scripts>
@@ -4739,9 +4741,9 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_ArcaneBar_Set
 								self.Validate = function()
-									XPerl_Options_EnableSibling("CastTime")
-									XPerl_Options_EnableSibling("PreCast")
-									XPerl_Options_EnableSibling("CastTimeInside", "CastTime")
+									XPerl_Options_EnableSibling(self,"CastTime")
+									XPerl_Options_EnableSibling(self,"PreCast")
+									XPerl_Options_EnableSibling(self,"CastTimeInside", "CastTime")
 								end
 							</OnLoad>
 						</Scripts>
@@ -4776,7 +4778,7 @@
 								self.configBase = "XPerlDB.player.castBar"
 								self.configIndex = "castTime"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("CastTimeInside")
+									XPerl_Options_EnableSibling(self,"CastTimeInside")
 								end
 							</OnLoad>
 						</Scripts>
@@ -4988,7 +4990,7 @@
 								self.configIndex = "partyNumber"
 								self.configClick = function() XPerl_Player_UpdateLeader(XPerl_Player) end
 								self.Validate = function()
-									XPerl_Options_EnableSibling("WithName")
+									XPerl_Options_EnableSibling(self,"WithName")
 								end
 							</OnLoad>
 						</Scripts>
@@ -5058,7 +5060,7 @@
 									XPerlDB.player.size.width = value
 									XPerl_Player_SetWidth(XPerl_Player)
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlDB.player.size.width)
+								_G[self:GetName().."Current"]:SetText(XPerlDB.player.size.width)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -5125,14 +5127,14 @@
 											BuffFrame_Update()
 										end
 										self.Validate = function()
-											XPerl_Options_EnableSibling("PlayerDebuffs")
-											XPerl_Options_EnableSibling("PlayerBuffsAbove")
-											XPerl_Options_EnableSibling("HideBlizzardBuffBar")
-											XPerl_Options_EnableSibling("FlashExpiring")
-											XPerl_Options_EnableSibling("Cooldowns")
-											XPerl_Options_EnableSibling("MaxBuffs")
-											XPerl_Options_EnableSibling("BuffSize")
-											XPerl_Options_EnableSibling("DebuffSize")
+											XPerl_Options_EnableSibling(self,"PlayerDebuffs")
+											XPerl_Options_EnableSibling(self,"PlayerBuffsAbove")
+											XPerl_Options_EnableSibling(self,"HideBlizzardBuffBar")
+											XPerl_Options_EnableSibling(self,"FlashExpiring")
+											XPerl_Options_EnableSibling(self,"Cooldowns")
+											XPerl_Options_EnableSibling(self,"MaxBuffs")
+											XPerl_Options_EnableSibling(self,"BuffSize")
+											XPerl_Options_EnableSibling(self,"DebuffSize")
 										end
 									</OnLoad>
 								</Scripts>
@@ -5264,7 +5266,7 @@
 												XPerl_Player_BuffSetup(XPerl_Player)
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -5293,7 +5295,7 @@
 												XPerl_Player_BuffSetup(XPerl_Player)
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -5322,7 +5324,7 @@
 												XPerl_Player_BuffSetup(XPerl_Player)
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -5341,7 +5343,7 @@
 										self.configIndex = "wrap"
 										self.configClick = XPerl_Player_Reset
 										self.Validate = function()
-											XPerl_Options_EnableSibling("MaxRows")
+											XPerl_Options_EnableSibling(self,"MaxRows")
 										end
 									</OnLoad>
 								</Scripts>
@@ -5362,8 +5364,8 @@
 										self:SetMinMaxValues(1, 10)
 										self:SetValueStep(1)
 
-										local t = XPerl_Options_GetSibling("BuffWrap")
-										local t2 = getglobal(t:GetName().."Text")
+										local t = XPerl_Options_GetSibling("BuffWrap",self)
+										local t2 = _G[t:GetName().."Text"]
 										self:SetPoint("LEFT", t, "RIGHT", (t2:GetStringWidth() + 10) / 0.8, 0)
 
 										XPerl_SliderSetup(self)
@@ -5377,7 +5379,7 @@
 											XPerlDB.player.buffs.rows = value
 											XPerl_Player_Reset()
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -5459,7 +5461,7 @@
 												XPerl_Player_SetTotems(XPerl_Player)
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -5488,7 +5490,7 @@
 												XPerl_Player_SetTotems(XPerl_Player)
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -5537,9 +5539,9 @@
 								self.configIndex = "portrait"
 								self.configClick = XPerl_Player_Pet_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Portrait3D")
-									XPerl_Options_EnableSibling("Extend")
-									XPerl_Options_EnableSibling("HitIndicator")
+									XPerl_Options_EnableSibling(self,"Portrait3D")
+									XPerl_Options_EnableSibling(self,"Extend")
+									XPerl_Options_EnableSibling(self,"HitIndicator")
 								end
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
@@ -5628,7 +5630,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.pet.threatMode = "nameFrame"
-								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Options_CheckRadio(self,{"ThreatName", "ThreatPortrait"})
 								XPerl_Target_UpdateDisplay(XPerl_Target)
 							</OnClick>
 						</Scripts>
@@ -5649,7 +5651,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.pet.threatMode = "portraitFrame"
-								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Options_CheckRadio(self,{"ThreatName", "ThreatPortrait"})
 								XPerl_Target_UpdateDisplay(XPerl_Target)
 							</OnClick>
 						</Scripts>
@@ -5681,8 +5683,8 @@
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_PET_HAPPINESS")
 								self.Validate = function()
-									XPerl_Options_EnableSibling("OnlySad")
-									XPerl_Options_EnableSibling("FlashSad")
+									XPerl_Options_EnableSibling(self,"OnlySad")
+									XPerl_Options_EnableSibling(self,"FlashSad")
 								end
 								self.flashFrame = XPerl_Player_PethappyFrame
 								self.configBase = "XPerlDB.pet.happiness"
@@ -5831,7 +5833,7 @@
 									XPerlDB.pet.size.width = value
 									XPerl_Player_Pet_SetWidth(XPerl_Player_Pet)
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -5892,21 +5894,21 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_PET_TARGET")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("Buffs")
-											XPerl_Options_EnableSibling("BigBuffs", "Buffs")
-											XPerl_Options_EnableSibling("BigDebuffs", "Buffs")
-											XPerl_Options_EnableSibling("BigPet", "Buffs", "BigBuffs")
-											XPerl_Options_EnableSibling("Above", "Buffs")
-											XPerl_Options_EnableSibling("Level")
-											XPerl_Options_EnableSibling("Values")
-											XPerl_Options_EnableSibling("Percent")
-											XPerl_Options_EnableSibling("Mana")
-											XPerl_Options_EnableSibling("ScalePT")
-											XPerl_Options_EnableSibling("Width")
-											XPerl_Options_EnableSibling("Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_DeficitOnly", "Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_DeficitMax", "Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_CurMaxDeficit", "Healer_Healer")
+											XPerl_Options_EnableSibling(self,"Buffs")
+											XPerl_Options_EnableSibling(self,"BigBuffs", "Buffs")
+											XPerl_Options_EnableSibling(self,"BigDebuffs", "Buffs")
+											XPerl_Options_EnableSibling(self,"BigPet", "Buffs", "BigBuffs")
+											XPerl_Options_EnableSibling(self,"Above", "Buffs")
+											XPerl_Options_EnableSibling(self,"Level")
+											XPerl_Options_EnableSibling(self,"Values")
+											XPerl_Options_EnableSibling(self,"Percent")
+											XPerl_Options_EnableSibling(self,"Mana")
+											XPerl_Options_EnableSibling(self,"ScalePT")
+											XPerl_Options_EnableSibling(self,"Width")
+											XPerl_Options_EnableSibling(self,"Healer_Healer")
+											XPerl_Options_EnableSibling(self,"Healer_DeficitOnly", "Healer_Healer")
+											XPerl_Options_EnableSibling(self,"Healer_DeficitMax", "Healer_Healer")
+											XPerl_Options_EnableSibling(self,"Healer_CurMaxDeficit", "Healer_Healer")
 										end
 										self.flashFrame = XPerl_TargetTarget
 										self.configClick = XPerl_TargetTarget_Set_Bits
@@ -5933,9 +5935,9 @@
 										self.configIndex = "enable"
 										self.configClick = XPerl_TargetTarget_Set_Bits
 										self.Validate = function()
-											XPerl_Options_EnableSibling("BigBuffs")
-											XPerl_Options_EnableSibling("BigDebuffs")
-											XPerl_Options_EnableSibling("Above")
+											XPerl_Options_EnableSibling(self,"BigBuffs")
+											XPerl_Options_EnableSibling(self,"BigDebuffs")
+											XPerl_Options_EnableSibling(self,"Above")
 										end
 									</OnLoad>
 								</Scripts>
@@ -5974,7 +5976,7 @@
 										self.configIndex = "big"
 										self.configClick = XPerl_TargetTarget_Reset
 										self.Validate = function()
-											XPerl_Options_EnableSibling("BigPet")
+											XPerl_Options_EnableSibling(self,"BigPet")
 										end
 									</OnLoad>
 								</Scripts>
@@ -6135,7 +6137,7 @@
 												XPerl_TargetTarget_SetWidth(XPerl_PetTarget)
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -6176,8 +6178,8 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Player_Pet_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Castable")
-									XPerl_Options_EnableSibling("BuffSize")
+									XPerl_Options_EnableSibling(self,"Castable")
+									XPerl_Options_EnableSibling(self,"BuffSize")
 								end
 							</OnLoad>
 						</Scripts>
@@ -6213,8 +6215,8 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Player_Pet_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Curable")
-									XPerl_Options_EnableSibling("DebuffSize")
+									XPerl_Options_EnableSibling(self, "Curable")
+									XPerl_Options_EnableSibling(self, "DebuffSize")
 								end
 							</OnLoad>
 						</Scripts>
@@ -6267,7 +6269,7 @@
 								self.configIndex = "big"
 								self.configClick = XPerl_Player_Pet_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("BigPet")
+									XPerl_Options_EnableSibling(self, "BigPet")
 								end
 							</OnLoad>
 						</Scripts>
@@ -6338,8 +6340,8 @@
 								self:SetMinMaxValues(1, 10)
 								self:SetValueStep(1)
 
-								local t = XPerl_Options_GetSibling("BuffWrap")
-								local t2 = getglobal(t:GetName().."Text")
+								local t = XPerl_Options_GetSibling("BuffWrap",self)
+								local t2 = _G[t:GetName().."Text"]
 								self:SetPoint("LEFT", t, "RIGHT", (t2:GetStringWidth() + 10) / 0.8, 0)
 
 								XPerl_SliderSetup(self)
@@ -6356,7 +6358,7 @@
 									XPerl_Target_Reset()
 									XPerl_TargetTarget_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -6383,7 +6385,7 @@
 									XPerlDB.pet.buffs.size = value
 									XPerl_Player_Pet_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -6410,7 +6412,7 @@
 									XPerlDB.pet.debuffs.size = value
 									XPerl_Player_Pet_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -6431,7 +6433,7 @@
 					<OnShow>
 						if (not IsAddOnLoaded("XPerl_ArcaneBar")) then
 							local n = self:GetName().."_"
-							getglobal(n.."ArcaneBar"):Disable()
+							_G[n.."ArcaneBar"]:Disable()
 						end
 					</OnShow>
 				</Scripts>
@@ -6451,9 +6453,9 @@
 								self.configIndex = "portrait"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Portrait3D")
-									XPerl_Options_EnableSibling("HitIndicator")
-									XPerl_Options_EnableSibling("OnlyMine", "HitIndicator")
+									XPerl_Options_EnableSibling(self, "Portrait3D")
+									XPerl_Options_EnableSibling(self, "HitIndicator")
+									XPerl_Options_EnableSibling(self, "OnlyMine", "HitIndicator")
 								end
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
@@ -6491,7 +6493,7 @@
 								self.configBase = "XPerlDB.target"
 								self.configIndex = "hitIndicator"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("OnlyMine")
+									XPerl_Options_EnableSibling(self, "OnlyMine")
 								end
 							</OnLoad>
 						</Scripts>
@@ -6573,7 +6575,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.threatMode = "nameFrame"
-								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Options_CheckRadio(self,{"ThreatName", "ThreatPortrait"})
 								XPerl_Target_UpdateDisplay(XPerl_Target)
 							</OnClick>
 						</Scripts>
@@ -6594,7 +6596,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.threatMode = "portraitFrame"
-								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Options_CheckRadio(self,{"ThreatName", "ThreatPortrait"})
 								XPerl_Target_UpdateDisplay(XPerl_Target)
 							</OnClick>
 						</Scripts>
@@ -6663,7 +6665,7 @@
 								self.configIndex = "classIcon"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("ClassText")
+									XPerl_Options_EnableSibling(self, "ClassText")
 								end
 							</OnLoad>
 						</Scripts>
@@ -6738,7 +6740,7 @@
 							<OnClick>
 								XPerlDB.target.elite = true
 								XPerlDB.target.eliteGfx = nil
-								XPerl_Options_CheckRadio({"Elite", "EliteGfx"})
+								XPerl_Options_CheckRadio(self,{"Elite", "EliteGfx"})
 								XPerl_Target_UpdateDisplay(XPerl_Target)
 							</OnClick>
 						</Scripts>
@@ -6760,7 +6762,7 @@
 							<OnClick>
 								XPerlDB.target.elite = true
 								XPerlDB.target.eliteGfx = true
-								XPerl_Options_CheckRadio({"Elite", "EliteGfx"})
+								XPerl_Options_CheckRadio(self,{"Elite", "EliteGfx"})
 								XPerl_Target_UpdateDisplay(XPerl_Target)
 							</OnClick>
 						</Scripts>
@@ -6815,7 +6817,7 @@
 								self.configIndex = "showTalents"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("TalentsAsText")
+									XPerl_Options_EnableSibling(self, "TalentsAsText")
 								end
 							</OnLoad>
 						</Scripts>
@@ -6870,10 +6872,10 @@
 								self.configIndex = "blizzard"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Top")
-									XPerl_Options_EnableSibling("Bottom")
-									XPerl_Options_EnableSibling("Left")
-									XPerl_Options_EnableSibling("Right")
+									XPerl_Options_EnableSibling(self, "Top")
+									XPerl_Options_EnableSibling(self, "Bottom")
+									XPerl_Options_EnableSibling(self, "Left")
+									XPerl_Options_EnableSibling(self, "Right")
 								end
 							</OnLoad>
 						</Scripts>
@@ -6894,7 +6896,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.combo.pos = "top"
-								XPerl_Options_CheckRadio({"Top", "Bottom", "Left", "Right"})
+								XPerl_Options_CheckRadio(self,{"Top", "Bottom", "Left", "Right"})
 								XPerl_Target_Reset()
 							</OnClick>
 						</Scripts>
@@ -6915,7 +6917,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.combo.pos = "bottom"
-								XPerl_Options_CheckRadio({"Top", "Bottom", "Left", "Right"})
+								XPerl_Options_CheckRadio(self,{"Top", "Bottom", "Left", "Right"})
 								XPerl_Target_Reset()
 							</OnClick>
 						</Scripts>
@@ -6936,7 +6938,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.combo.pos = "left"
-								XPerl_Options_CheckRadio({"Top", "Bottom", "Left", "Right"})
+								XPerl_Options_CheckRadio(self,{"Top", "Bottom", "Left", "Right"})
 								XPerl_Target_Reset()
 							</OnClick>
 						</Scripts>
@@ -6957,7 +6959,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.combo.pos = "right"
-								XPerl_Options_CheckRadio({"Top", "Bottom", "Left", "Right"})
+								XPerl_Options_CheckRadio(self,{"Top", "Bottom", "Left", "Right"})
 								XPerl_Target_Reset()
 							</OnClick>
 						</Scripts>
@@ -7062,7 +7064,7 @@
 										XPerl_Target_SetWidth(XPerl_Target)
 									end
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -7123,22 +7125,22 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGETS_TARGET")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("TargetsTargetsTarget")
-											XPerl_Options_EnableSibling("Buffs")
-											XPerl_Options_EnableSibling("BigBuffs", "Buffs")
-											XPerl_Options_EnableSibling("BigDebuffs", "Buffs")
-											XPerl_Options_EnableSibling("Above", "Buffs")
-											XPerl_Options_EnableSibling("TTTBuffs", "TargetsTargetsTarget")
-											XPerl_Options_EnableSibling("Level")
-											XPerl_Options_EnableSibling("Values")
-											XPerl_Options_EnableSibling("Percent")
-											XPerl_Options_EnableSibling("Mana")
-											XPerl_Options_EnableSibling("ScaleTT")
-											XPerl_Options_EnableSibling("Width")
-											XPerl_Options_EnableSibling("Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_DeficitOnly", "Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_DeficitMax", "Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_CurMaxDeficit", "Healer_Healer")
+											XPerl_Options_EnableSibling(self, "TargetsTargetsTarget")
+											XPerl_Options_EnableSibling(self, "Buffs")
+											XPerl_Options_EnableSibling(self, "BigBuffs", "Buffs")
+											XPerl_Options_EnableSibling(self, "BigDebuffs", "Buffs")
+											XPerl_Options_EnableSibling(self, "Above", "Buffs")
+											XPerl_Options_EnableSibling(self, "TTTBuffs", "TargetsTargetsTarget")
+											XPerl_Options_EnableSibling(self, "Level")
+											XPerl_Options_EnableSibling(self, "Values")
+											XPerl_Options_EnableSibling(self, "Percent")
+											XPerl_Options_EnableSibling(self, "Mana")
+											XPerl_Options_EnableSibling(self, "ScaleTT")
+											XPerl_Options_EnableSibling(self, "Width")
+											XPerl_Options_EnableSibling(self, "Healer_Healer")
+											XPerl_Options_EnableSibling(self, "Healer_DeficitOnly", "Healer_Healer")
+											XPerl_Options_EnableSibling(self, "Healer_DeficitMax", "Healer_Healer")
+											XPerl_Options_EnableSibling(self, "Healer_CurMaxDeficit", "Healer_Healer")
 										end
 										self.flashFrame = XPerl_TargetTarget
 										self.configBase = "XPerlDB.targettarget"
@@ -7164,8 +7166,8 @@
 										self.configIndex = "enable"
 										self.configClick = XPerl_TargetTarget_Reset
 										self.Validate = function()
-											XPerl_Options_EnableSibling("BigBuffs")
-											XPerl_Options_EnableSibling("BigDebuffs")
+											XPerl_Options_EnableSibling(self, "BigBuffs")
+											XPerl_Options_EnableSibling(self, "BigDebuffs")
 										end
 									</OnLoad>
 								</Scripts>
@@ -7210,7 +7212,7 @@
 											XPerl_TargetTarget_Reset ()
 										end
 										self.Validate = function()
-											XPerl_Options_EnableSibling("BigPet")
+											XPerl_Options_EnableSibling(self, "BigPet")
 										end
 									</OnLoad>
 								</Scripts>
@@ -7269,7 +7271,7 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGETS_TARGETS_TARGET")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("TTTBuffs")
+											XPerl_Options_EnableSibling(self, "TTTBuffs")
 										end
 										self.flashFrame = XPerl_TargetTargetTarget
 										self.configBase = "XPerlDB.targettargettarget"
@@ -7289,7 +7291,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetWidth(160)
+										_G[self:GetName().."Text"]:SetWidth(160)
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGETTARGETTARGET_BUFFS")
 										self.flashFrame = XPerl_TargetTargetTarget_BuffFrame
 										self.configBase = "XPerlDB.targettargettarget.buffs"
@@ -7437,7 +7439,7 @@
 												end
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -7481,12 +7483,12 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Castable")
-									XPerl_Options_EnableSibling("OnlyMyBuffs")
-									XPerl_Options_EnableSibling("BigBuffs")
-									XPerl_Options_EnableSibling("BigPet", "BigBuffs")
-									XPerl_Options_EnableSibling("BigBuffsStealable")
-									XPerl_Options_EnableSibling("BuffSize")
+									XPerl_Options_EnableSibling(self, "Castable")
+									XPerl_Options_EnableSibling(self, "OnlyMyBuffs")
+									XPerl_Options_EnableSibling(self, "BigBuffs")
+									XPerl_Options_EnableSibling(self, "BigPet", "BigBuffs")
+									XPerl_Options_EnableSibling(self, "BigBuffsStealable")
+									XPerl_Options_EnableSibling(self, "BuffSize")
 								end
 							</OnLoad>
 						</Scripts>
@@ -7551,7 +7553,7 @@
 								self.configIndex = "big"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("BigPet")
+									XPerl_Options_EnableSibling(self, "BigPet")
 								end
 							</OnLoad>
 						</Scripts>
@@ -7607,10 +7609,10 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Curable")
-									XPerl_Options_EnableSibling("OnlyMyDebuffs")
-									XPerl_Options_EnableSibling("BigDebuffs")
-									XPerl_Options_EnableSibling("DebuffSize")
+									XPerl_Options_EnableSibling(self, "Curable")
+									XPerl_Options_EnableSibling(self, "OnlyMyDebuffs")
+									XPerl_Options_EnableSibling(self, "BigDebuffs")
+									XPerl_Options_EnableSibling(self, "DebuffSize")
 								end
 							</OnLoad>
 						</Scripts>
@@ -7706,7 +7708,7 @@
 									XPerl_Target_Reset()
 									XPerl_TargetTarget_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -7740,7 +7742,7 @@
 									XPerl_Target_Reset()
 									XPerl_TargetTarget_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -7765,7 +7767,7 @@
 											XPerl_TargetTarget_Reset()
 										end
 								self.Validate = function()
-									XPerl_Options_EnableSibling("MaxRows")
+									XPerl_Options_EnableSibling(self, "MaxRows")
 								end
 							</OnLoad>
 						</Scripts>
@@ -7786,8 +7788,8 @@
 								self:SetMinMaxValues(1, 10)
 								self:SetValueStep(1)
 
-								local t = XPerl_Options_GetSibling("BuffWrap")
-								local t2 = getglobal(t:GetName().."Text")
+								local t = XPerl_Options_GetSibling("BuffWrap",self)
+								local t2 = _G[t:GetName().."Text"]
 								self:SetPoint("LEFT", t, "RIGHT", (t2:GetStringWidth() + 10) / 0.8, 0)
 
 								XPerl_SliderSetup(self)
@@ -7804,7 +7806,7 @@
 									XPerl_Target_Reset()
 									XPerl_TargetTarget_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -7839,9 +7841,9 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("All")
-									XPerl_Options_EnableSibling("Friend")
-									XPerl_Options_EnableSibling("Enemy")
+									XPerl_Options_EnableSibling(self, "All")
+									XPerl_Options_EnableSibling(self, "Friend")
+									XPerl_Options_EnableSibling(self, "Enemy")
 								end
 							</OnLoad>
 						</Scripts>
@@ -7864,7 +7866,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.highlightDebuffs.who = 1
-								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+								XPerl_Options_CheckRadio(self,{"All", "Friend", "Enemy"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -7884,7 +7886,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.highlightDebuffs.who = 2
-								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+								XPerl_Options_CheckRadio(self,{"All", "Friend", "Enemy"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -7904,7 +7906,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.highlightDebuffs.who = 3
-								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+								XPerl_Options_CheckRadio(self,{"All", "Friend", "Enemy"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -7925,7 +7927,7 @@
 					<OnShow>
 						if (not IsAddOnLoaded("XPerl_ArcaneBar")) then
 							local n = self:GetName().."_"
-							getglobal(n.."ArcaneBar"):Disable()
+							_G[n.."ArcaneBar"]:Disable()
 						end
 					</OnShow>
 				</Scripts>
@@ -7945,46 +7947,46 @@
 								self.configClick = XPerl_Target_Reset
 								XPerl_Options_RegisterProtected(self)
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Portrait")
-									XPerl_Options_EnableSibling("Portrait3D", "Portrait")
-									XPerl_Options_EnableSibling("HitIndicator", "Portrait")
-									XPerl_Options_EnableSibling("OnlyMine", "HitIndicator", "Enable")
-									XPerl_Options_EnableSibling("Threat")
-									XPerl_Options_EnableSibling("ThreatName", "Threat")
-									XPerl_Options_EnableSibling("ThreatPortrait", "Threat")
-									XPerl_Options_EnableSibling("ArcaneBar")
-									XPerl_Options_EnableSibling("Mana")
-									XPerl_Options_EnableSibling("Reaction")
-									XPerl_Options_EnableSibling("ClassIcon")
-									XPerl_Options_EnableSibling("ClassText", "ClassIcon")
-									XPerl_Options_EnableSibling("MobType")
-									XPerl_Options_EnableSibling("Level")
-									XPerl_Options_EnableSibling("Elite")
-									XPerl_Options_EnableSibling("EliteGfx")
-									XPerl_Options_EnableSibling("Values")
-									XPerl_Options_EnableSibling("Percent")
-									XPerl_Options_EnableSibling("PVPIcon")
-									XPerl_Options_EnableSibling("Healer_Healer")
-									XPerl_Options_EnableSibling("Healer_DeficitOnly", "Healer_Healer")
-									XPerl_Options_EnableSibling("Healer_DeficitMax", "Healer_Healer")
-									XPerl_Options_EnableSibling("Healer_CurMaxDeficit", "Healer_Healer")
-									XPerl_Options_EnableSibling("Width")
-									XPerl_Options_EnableSibling("Buffs")
-									XPerl_Options_EnableSibling("Debuffs")
-									XPerl_Options_EnableSibling("BuffSize")
-									XPerl_Options_EnableSibling("DebuffSize")
-									XPerl_Options_EnableSibling("BuffWrap")
-									XPerl_Options_EnableSibling("MaxRows")
-									XPerl_Options_EnableSibling("Castable")
-									XPerl_Options_EnableSibling("Curable")
-									XPerl_Options_EnableSibling("Above")
-									XPerl_Options_EnableSibling("BigBuffs")
-									XPerl_Options_EnableSibling("BigDebuffs")
-									XPerl_Options_EnableSibling("BigPet", "BigBuffs")
-									XPerl_Options_EnableSibling("DebuffHighlight")
-									XPerl_Options_EnableSibling("All", "DebuffHighlight")
-									XPerl_Options_EnableSibling("Friend", "DebuffHighlight")
-									XPerl_Options_EnableSibling("Enemy", "DebuffHighlight")
+									XPerl_Options_EnableSibling(self, "Portrait")
+									XPerl_Options_EnableSibling(self, "Portrait3D", "Portrait")
+									XPerl_Options_EnableSibling(self, "HitIndicator", "Portrait")
+									XPerl_Options_EnableSibling(self, "OnlyMine", "HitIndicator", "Enable")
+									XPerl_Options_EnableSibling(self, "Threat")
+									XPerl_Options_EnableSibling(self, "ThreatName", "Threat")
+									XPerl_Options_EnableSibling(self, "ThreatPortrait", "Threat")
+									XPerl_Options_EnableSibling(self, "ArcaneBar")
+									XPerl_Options_EnableSibling(self, "Mana")
+									XPerl_Options_EnableSibling(self, "Reaction")
+									XPerl_Options_EnableSibling(self, "ClassIcon")
+									XPerl_Options_EnableSibling(self, "ClassText", "ClassIcon")
+									XPerl_Options_EnableSibling(self, "MobType")
+									XPerl_Options_EnableSibling(self, "Level")
+									XPerl_Options_EnableSibling(self, "Elite")
+									XPerl_Options_EnableSibling(self, "EliteGfx")
+									XPerl_Options_EnableSibling(self, "Values")
+									XPerl_Options_EnableSibling(self, "Percent")
+									XPerl_Options_EnableSibling(self, "PVPIcon")
+									XPerl_Options_EnableSibling(self, "Healer_Healer")
+									XPerl_Options_EnableSibling(self, "Healer_DeficitOnly", "Healer_Healer")
+									XPerl_Options_EnableSibling(self, "Healer_DeficitMax", "Healer_Healer")
+									XPerl_Options_EnableSibling(self, "Healer_CurMaxDeficit", "Healer_Healer")
+									XPerl_Options_EnableSibling(self, "Width")
+									XPerl_Options_EnableSibling(self, "Buffs")
+									XPerl_Options_EnableSibling(self, "Debuffs")
+									XPerl_Options_EnableSibling(self, "BuffSize")
+									XPerl_Options_EnableSibling(self, "DebuffSize")
+									XPerl_Options_EnableSibling(self, "BuffWrap")
+									XPerl_Options_EnableSibling(self, "MaxRows")
+									XPerl_Options_EnableSibling(self, "Castable")
+									XPerl_Options_EnableSibling(self, "Curable")
+									XPerl_Options_EnableSibling(self, "Above")
+									XPerl_Options_EnableSibling(self, "BigBuffs")
+									XPerl_Options_EnableSibling(self, "BigDebuffs")
+									XPerl_Options_EnableSibling(self, "BigPet", "BigBuffs")
+									XPerl_Options_EnableSibling(self, "DebuffHighlight")
+									XPerl_Options_EnableSibling(self, "All", "DebuffHighlight")
+									XPerl_Options_EnableSibling(self, "Friend", "DebuffHighlight")
+									XPerl_Options_EnableSibling(self, "Enemy", "DebuffHighlight")
 								end
 							</OnLoad>
 						</Scripts>
@@ -8004,9 +8006,9 @@
 								self.configIndex = "portrait"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Portrait3D", "Enable")
-									XPerl_Options_EnableSibling("OnlyMine", "HitIndicator", "Enable")
-									XPerl_Options_EnableSibling("HitIndicator", "Enable")
+									XPerl_Options_EnableSibling(self, "Portrait3D", "Enable")
+									XPerl_Options_EnableSibling(self, "OnlyMine", "HitIndicator", "Enable")
+									XPerl_Options_EnableSibling(self, "HitIndicator", "Enable")
 								end
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
@@ -8044,7 +8046,7 @@
 								self.configBase = "XPerlDB.focus"
 								self.configIndex = "hitIndicator"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("OnlyMine")
+									XPerl_Options_EnableSibling(self, "OnlyMine")
 								end
 							</OnLoad>
 						</Scripts>
@@ -8096,7 +8098,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.focus.threatMode = "nameFrame"
-								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Options_CheckRadio(self,{"ThreatName", "ThreatPortrait"})
 								XPerl_Target_UpdateDisplay(XPerl_Focus)
 							</OnClick>
 						</Scripts>
@@ -8117,7 +8119,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.focus.threatMode = "portraitFrame"
-								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Options_CheckRadio(self,{"ThreatName", "ThreatPortrait"})
 								XPerl_Target_UpdateDisplay(XPerl_Focus)
 							</OnClick>
 						</Scripts>
@@ -8187,7 +8189,7 @@
 								self.configClick = XPerl_Target_Reset
 								XPerl_Options_RegisterProtected(self)
 								self.Validate = function()
-									XPerl_Options_EnableSibling("ClassText", "Enable")
+									XPerl_Options_EnableSibling(self, "ClassText", "Enable")
 								end
 							</OnLoad>
 						</Scripts>
@@ -8262,7 +8264,7 @@
 							<OnClick>
 								XPerlDB.focus.elite = true
 								XPerlDB.focus.eliteGfx = nil
-								XPerl_Options_CheckRadio({"Elite", "EliteGfx"})
+								XPerl_Options_CheckRadio(self,{"Elite", "EliteGfx"})
 								XPerl_Target_UpdateDisplay(XPerl_Focus)
 							</OnClick>
 						</Scripts>
@@ -8284,7 +8286,7 @@
 							<OnClick>
 								XPerlDB.focus.elite = true
 								XPerlDB.focus.eliteGfx = true
-								XPerl_Options_CheckRadio({"Elite", "EliteGfx"})
+								XPerl_Options_CheckRadio(self,{"Elite", "EliteGfx"})
 								XPerl_Target_UpdateDisplay(XPerl_Focus)
 							</OnClick>
 						</Scripts>
@@ -8391,7 +8393,7 @@
 										XPerl_Target_SetWidth(XPerl_Focus)
 									end
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -8452,21 +8454,21 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_TARGET")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("Buffs")
-											XPerl_Options_EnableSibling("BigBuffs", "Buffs")
-											XPerl_Options_EnableSibling("BigDebuffs", "Buffs")
-											XPerl_Options_EnableSibling("BigPet", "Buffs", "BigBuffs")
-											XPerl_Options_EnableSibling("Above", "Buffs")
-											XPerl_Options_EnableSibling("Level")
-											XPerl_Options_EnableSibling("Values")
-											XPerl_Options_EnableSibling("Percent")
-											XPerl_Options_EnableSibling("Mana")
-											XPerl_Options_EnableSibling("ScaleFT")
-											XPerl_Options_EnableSibling("Width")
-											XPerl_Options_EnableSibling("Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_DeficitOnly", "Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_DeficitMax", "Healer_Healer")
-											XPerl_Options_EnableSibling("Healer_CurMaxDeficit", "Healer_Healer")
+											XPerl_Options_EnableSibling(self, "Buffs")
+											XPerl_Options_EnableSibling(self, "BigBuffs", "Buffs")
+											XPerl_Options_EnableSibling(self, "BigDebuffs", "Buffs")
+											XPerl_Options_EnableSibling(self, "BigPet", "Buffs", "BigBuffs")
+											XPerl_Options_EnableSibling(self, "Above", "Buffs")
+											XPerl_Options_EnableSibling(self, "Level")
+											XPerl_Options_EnableSibling(self, "Values")
+											XPerl_Options_EnableSibling(self, "Percent")
+											XPerl_Options_EnableSibling(self, "Mana")
+											XPerl_Options_EnableSibling(self, "ScaleFT")
+											XPerl_Options_EnableSibling(self, "Width")
+											XPerl_Options_EnableSibling(self, "Healer_Healer")
+											XPerl_Options_EnableSibling(self, "Healer_DeficitOnly", "Healer_Healer")
+											XPerl_Options_EnableSibling(self, "Healer_DeficitMax", "Healer_Healer")
+											XPerl_Options_EnableSibling(self, "Healer_CurMaxDeficit", "Healer_Healer")
 										end
 										self.flashFrame = XPerl_FocusTarget
 										self.configBase = "XPerlDB.focustarget"
@@ -8492,9 +8494,9 @@
 										self.configIndex = "enable"
 										self.configClick = XPerl_TargetTarget_Reset
 										self.Validate = function()
-											XPerl_Options_EnableSibling("Above")
-											XPerl_Options_EnableSibling("BigBuffs")
-											XPerl_Options_EnableSibling("BigDebuffs")
+											XPerl_Options_EnableSibling(self, "Above")
+											XPerl_Options_EnableSibling(self, "BigBuffs")
+											XPerl_Options_EnableSibling(self, "BigDebuffs")
 										end
 									</OnLoad>
 								</Scripts>
@@ -8533,7 +8535,7 @@
 										self.configIndex = "big"
 										self.configClick = XPerl_TargetTarget_Reset
 										self.Validate = function()
-											XPerl_Options_EnableSibling("BigPet")
+											XPerl_Options_EnableSibling(self, "BigPet")
 										end
 									</OnLoad>
 								</Scripts>
@@ -8694,7 +8696,7 @@
 												XPerl_TargetTarget_SetWidth(XPerl_FocusTarget)
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -8736,11 +8738,11 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Castable")
-									XPerl_Options_EnableSibling("OnlyMyBuffs")
-									XPerl_Options_EnableSibling("BigBuffs")
-									XPerl_Options_EnableSibling("BigPet", "BigBuffs")
-									XPerl_Options_EnableSibling("BuffSize")
+									XPerl_Options_EnableSibling(self, "Castable")
+									XPerl_Options_EnableSibling(self, "OnlyMyBuffs")
+									XPerl_Options_EnableSibling(self, "BigBuffs")
+									XPerl_Options_EnableSibling(self, "BigPet", "BigBuffs")
+									XPerl_Options_EnableSibling(self, "BuffSize")
 								end
 							</OnLoad>
 						</Scripts>
@@ -8833,10 +8835,10 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Curable")
-									XPerl_Options_EnableSibling("OnlyMyDebuffs")
-									XPerl_Options_EnableSibling("BigDebuffs")
-									XPerl_Options_EnableSibling("DebuffSize")
+									XPerl_Options_EnableSibling(self, "Curable")
+									XPerl_Options_EnableSibling(self, "OnlyMyDebuffs")
+									XPerl_Options_EnableSibling(self, "BigDebuffs")
+									XPerl_Options_EnableSibling(self, "DebuffSize")
 								end
 							</OnLoad>
 						</Scripts>
@@ -8894,7 +8896,7 @@
 								self.configIndex = "big"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("BigPet")
+									XPerl_Options_EnableSibling(self, "BigPet")
 								end
 							</OnLoad>
 						</Scripts>
@@ -8926,7 +8928,7 @@
 									XPerl_Target_Reset()
 									XPerl_TargetTarget_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -8959,7 +8961,7 @@
 									XPerl_Target_Reset()
 									XPerl_TargetTarget_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -8982,7 +8984,7 @@
 											XPerl_TargetTarget_Reset()
 										end
 								self.Validate = function()
-									XPerl_Options_EnableSibling("MaxRows")
+									XPerl_Options_EnableSibling(self, "MaxRows")
 								end
 							</OnLoad>
 						</Scripts>
@@ -9003,8 +9005,8 @@
 								self:SetMinMaxValues(1, 10)
 								self:SetValueStep(1)
 
-								local t = XPerl_Options_GetSibling("BuffWrap")
-								local t2 = getglobal(t:GetName().."Text")
+								local t = XPerl_Options_GetSibling("BuffWrap",self)
+								local t2 = _G[t:GetName().."Text"]
 								self:SetPoint("LEFT", t, "RIGHT", (t2:GetStringWidth() + 10) / 0.8, 0)
 
 								XPerl_SliderSetup(self)
@@ -9020,7 +9022,7 @@
 									XPerl_Target_Reset()
 									XPerl_TargetTarget_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -9055,9 +9057,9 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("All")
-									XPerl_Options_EnableSibling("Friend")
-									XPerl_Options_EnableSibling("Enemy")
+									XPerl_Options_EnableSibling(self, "All")
+									XPerl_Options_EnableSibling(self, "Friend")
+									XPerl_Options_EnableSibling(self, "Enemy")
 								end
 							</OnLoad>
 						</Scripts>
@@ -9080,7 +9082,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.focus.highlightDebuffs.who = 1
-								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+								XPerl_Options_CheckRadio(self,{"All", "Friend", "Enemy"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -9100,7 +9102,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.focus.highlightDebuffs.who = 2
-								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+								XPerl_Options_CheckRadio(self,{"All", "Friend", "Enemy"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -9120,7 +9122,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.focus.highlightDebuffs.who = 3
-								XPerl_Options_CheckRadio({"All", "Friend", "Enemy"})
+								XPerl_Options_CheckRadio(self,{"All", "Friend", "Enemy"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -9138,7 +9140,7 @@
 					<OnShow>
 						if (not IsAddOnLoaded("XPerl_ArcaneBar")) then
 							local n = self:GetName().."_"
-							getglobal(n.."ArcaneBar"):Disable()
+							_G[n.."ArcaneBar"]:Disable()
 						end
 					</OnShow>
 				</Scripts>
@@ -9176,8 +9178,8 @@
 								self.configIndex = "portrait"
 								self.configClick = XPerl_Party_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Portrait3D")
-									XPerl_Options_EnableSibling("HitIndicator")
+									XPerl_Options_EnableSibling(self, "Portrait3D")
+									XPerl_Options_EnableSibling(self, "HitIndicator")
 								end
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
@@ -9248,7 +9250,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.party.threatMode = "nameFrame"
-								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Options_CheckRadio(self,{"ThreatName", "ThreatPortrait"})
 								XPerl_Party_Reset()
 							</OnClick>
 						</Scripts>
@@ -9269,7 +9271,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.party.threatMode = "portraitFrame"
-								XPerl_Options_CheckRadio({"ThreatName", "ThreatPortrait"})
+								XPerl_Options_CheckRadio(self,{"ThreatName", "ThreatPortrait"})
 								XPerl_Party_Reset()
 							</OnClick>
 						</Scripts>
@@ -9323,8 +9325,8 @@
 								self.configClick = XPerl_Party_Reset
 								XPerl_Options_RegisterProtected(self)
 								self.Validate = function()
-									XPerl_Options_EnableSibling("TargetSize")
-									XPerl_Options_EnableSibling("TargetLarge")
+									XPerl_Options_EnableSibling(self, "TargetSize")
+									XPerl_Options_EnableSibling(self, "TargetLarge")
 								end
 							</OnLoad>
 						</Scripts>
@@ -9364,8 +9366,8 @@
 								self:SetMinMaxValues(66, 200)
 								self:SetValueStep(1)
 
-								local t = XPerl_Options_GetSibling("Target")
-								local t2 = getglobal(t:GetName().."Text")
+								local t = XPerl_Options_GetSibling("Target",self)
+								local t2 = _G[t:GetName().."Text"]
 								self:SetPoint("LEFT", t, "RIGHT", (t2:GetStringWidth() + 10) / 0.8, 0)
 
 								XPerl_SliderSetup(self)
@@ -9376,7 +9378,7 @@
 							</OnShow>
 							<OnValueChanged>
 								XPerlDB.party.target.size = value
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 								XPerl_Party_Set_Bits()
 							</OnValueChanged>
 						</Scripts>
@@ -9550,14 +9552,14 @@
 								if (XPerlDB.party.size.width ~= value) then
 									XPerlDB.party.size.width = value
 									for i = 1,4 do
-										local f = getglobal("XPerl_party"..i)
+										local f = _G["XPerl_party"..i]
 										if (f) then
 											XPerl_Party_SetWidth(f)
 										end
 									end
 									XPerl_Party_Virtual(true)
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -9576,9 +9578,9 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_Party_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Castable")
-									XPerl_Options_EnableSibling("OnlyMyBuffs")
-									XPerl_Options_EnableSibling("BuffSize")
+									XPerl_Options_EnableSibling(self, "Castable")
+									XPerl_Options_EnableSibling(self, "OnlyMyBuffs")
+									XPerl_Options_EnableSibling(self, "BuffSize")
 								end
 							</OnLoad>
 						</Scripts>
@@ -9630,10 +9632,10 @@
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_DEBUFFS")
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Curable")
-									XPerl_Options_EnableSibling("Below")
-									XPerl_Options_EnableSibling("HalfSize")
-									XPerl_Options_EnableSibling("DebuffSize")
+									XPerl_Options_EnableSibling(self, "Curable")
+									XPerl_Options_EnableSibling(self, "Below")
+									XPerl_Options_EnableSibling(self, "HalfSize")
+									XPerl_Options_EnableSibling(self, "DebuffSize")
 								end
 								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
 								self.configBase = "XPerlDB.party.debuffs"
@@ -9724,7 +9726,7 @@
 									XPerlDB.party.buffs.size = value
 									XPerl_Party_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -9751,7 +9753,7 @@
 									XPerlDB.party.debuffs.size = value
 									XPerl_Party_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -9770,7 +9772,7 @@
 								self.configIndex = "wrap"
 								self.configClick = XPerl_Party_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("MaxRows")
+									XPerl_Options_EnableSibling(self, "MaxRows")
 								end
 							</OnLoad>
 						</Scripts>
@@ -9791,8 +9793,8 @@
 								self:SetMinMaxValues(1, 10)
 								self:SetValueStep(1)
 
-								local t = XPerl_Options_GetSibling("BuffWrap")
-								local t2 = getglobal(t:GetName().."Text")
+								local t = XPerl_Options_GetSibling("BuffWrap",self)
+								local t2 = _G[t:GetName().."Text"]
 								self:SetPoint("LEFT", t, "RIGHT", (t2:GetStringWidth() + 10) / 0.8, 0)
 
 								XPerl_SliderSetup(self)
@@ -9806,7 +9808,7 @@
 									XPerlDB.party.buffs.rows = value
 									XPerl_Party_Reset()
 								end
-								getglobal(self:GetName().."Current"):SetText(value)
+								_G[self:GetName().."Current"]:SetText(value)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -9825,7 +9827,7 @@
 								self.configIndex = "big"
 								self.configClick = XPerl_Party_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling("BigPet")
+									XPerl_Options_EnableSibling(self, "BigPet")
 								end
 							</OnLoad>
 						</Scripts>
@@ -9912,12 +9914,12 @@
 											XPerl_PartyPet_Reset()
 										end
 										self.Validate = function()
-											XPerl_Options_EnableSibling("PetNames")
-											XPerl_Options_EnableSibling("PetLevel", "PetNames")
-											XPerl_Options_EnableSibling("PetMana")
-											XPerl_Options_EnableSibling("PetBuffs")
-											XPerl_Options_EnableSibling("BuffSize", "PetBuffs")
-											XPerl_Options_EnableSibling("DebuffSize", "PetBuffs")
+											XPerl_Options_EnableSibling(self, "PetNames")
+											XPerl_Options_EnableSibling(self, "PetLevel", "PetNames")
+											XPerl_Options_EnableSibling(self, "PetMana")
+											XPerl_Options_EnableSibling(self, "PetBuffs")
+											XPerl_Options_EnableSibling(self, "BuffSize", "PetBuffs")
+											XPerl_Options_EnableSibling(self, "DebuffSize", "PetBuffs")
 										end
 										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
@@ -9939,7 +9941,7 @@
 										self.configIndex = "name"
 										self.configClick = XPerl_PartyPet_Reset
 										self.Validate = function()
-											XPerl_Options_EnableSibling("PetLevel")
+											XPerl_Options_EnableSibling(self, "PetLevel")
 										end
 										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
@@ -9997,8 +9999,8 @@
 										self.configIndex = "enable"
 										self.configClick = XPerl_PartyPet_Reset
 										self.Validate = function()
-											XPerl_Options_EnableSibling("BuffSize")
-											XPerl_Options_EnableSibling("DebuffSize")
+											XPerl_Options_EnableSibling(self, "BuffSize")
+											XPerl_Options_EnableSibling(self, "DebuffSize")
 										end
 									</OnLoad>
 								</Scripts>
@@ -10028,7 +10030,7 @@
 											XPerlDB.partypet.buffs.size = value
 											XPerl_Party_Reset()
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -10056,7 +10058,7 @@
 											XPerlDB.partypet.debuffs.size = value
 											XPerl_Party_Reset()
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -10083,39 +10085,39 @@
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_SHOW")
 								self.Validate = function()
-									XPerl_Options_EnableSibling("NotInBG")
-									XPerl_Options_EnableSibling("Titles")
-									XPerl_Options_EnableSibling("Mana")
-									XPerl_Options_EnableSibling("ManaPercent", "Mana")
-									XPerl_Options_EnableSibling("HealthText")
-									XPerl_Options_EnableSibling("Percent", "HealthText")
-									XPerl_Options_EnableSibling("Values", "HealthText")
-									XPerl_Options_EnableSibling("Buffs")
-									XPerl_Options_EnableSibling("Debuffs")
-									XPerl_Options_EnableSibling("Castable")
-									XPerl_Options_EnableSibling("BuffsRight")
-									XPerl_Options_EnableSibling("BuffsInside", "BuffsRight")
-									XPerl_Options_EnableSibling("BuffsUntilDebuffed")
-									XPerl_Options_EnableSibling("BuffTooltipHelper")
-									XPerl_Options_EnableSibling("BuffHelperNoSort", "BuffTooltipHelper")
-									XPerl_Options_EnableSibling("BuffHelperSortGroup", "BuffTooltipHelper")
-									XPerl_Options_EnableSibling("BuffHelperSortClass", "BuffTooltipHelper")
-									XPerl_Options_EnableSibling("BuffTooltipHelperVis", "BuffTooltipHelper")
-									XPerl_Options_EnableSibling("Healer")
+									XPerl_Options_EnableSibling(self, "NotInBG")
+									XPerl_Options_EnableSibling(self, "Titles")
+									XPerl_Options_EnableSibling(self, "Mana")
+									XPerl_Options_EnableSibling(self, "ManaPercent", "Mana")
+									XPerl_Options_EnableSibling(self, "HealthText")
+									XPerl_Options_EnableSibling(self, "Percent", "HealthText")
+									XPerl_Options_EnableSibling(self, "Values", "HealthText")
+									XPerl_Options_EnableSibling(self, "Buffs")
+									XPerl_Options_EnableSibling(self, "Debuffs")
+									XPerl_Options_EnableSibling(self, "Castable")
+									XPerl_Options_EnableSibling(self, "BuffsRight")
+									XPerl_Options_EnableSibling(self, "BuffsInside", "BuffsRight")
+									XPerl_Options_EnableSibling(self, "BuffsUntilDebuffed")
+									XPerl_Options_EnableSibling(self, "BuffTooltipHelper")
+									XPerl_Options_EnableSibling(self, "BuffHelperNoSort", "BuffTooltipHelper")
+									XPerl_Options_EnableSibling(self, "BuffHelperSortGroup", "BuffTooltipHelper")
+									XPerl_Options_EnableSibling(self, "BuffHelperSortClass", "BuffTooltipHelper")
+									XPerl_Options_EnableSibling(self, "BuffTooltipHelperVis", "BuffTooltipHelper")
+									XPerl_Options_EnableSibling(self, "Healer")
 									for i = 1,10 do
-										XPerl_Options_EnableSibling("Groups_Grp"..i)
+										XPerl_Options_EnableSibling(self, "Groups_Grp"..i)
 									end
 									for i = 1,10 do
-										XPerl_Options_EnableSibling("Groups_ClassSel"..i.."_Enable")
-										XPerl_Options_EnableSibling("Groups_ClassSel"..i.."_Up")
-										XPerl_Options_EnableSibling("Groups_ClassSel"..i.."_Down")
+										XPerl_Options_EnableSibling(self, "Groups_ClassSel"..i.."_Enable")
+										XPerl_Options_EnableSibling(self, "Groups_ClassSel"..i.."_Up")
+										XPerl_Options_EnableSibling(self, "Groups_ClassSel"..i.."_Down")
 									end
 
-									XPerl_Options_EnableSibling("Groups_All")
-									XPerl_Options_EnableSibling("Groups_None")
-									XPerl_Options_EnableSibling("Groups_ByClass")
-									XPerl_Options_EnableSibling("Groups_Alphabetical")
-									XPerl_Options_EnableSibling("Groups_VSpacing")
+									XPerl_Options_EnableSibling(self, "Groups_All")
+									XPerl_Options_EnableSibling(self, "Groups_None")
+									XPerl_Options_EnableSibling(self, "Groups_ByClass")
+									XPerl_Options_EnableSibling(self, "Groups_Alphabetical")
+									XPerl_Options_EnableSibling(self, "Groups_VSpacing")
 								end
 								self.configBase = "XPerlDB.raid"
 								self.configIndex = "enable"
@@ -10156,9 +10158,9 @@
 								self.configIndex = "enable"
 								self.configClick = XPerl_RaidPets_OptionActions
 								self.Validate = function()
-									--XPerl_Options_EnableSibling("Huntards")
-									--XPerl_Options_EnableSibling("Moredots")
-									XPerl_Options_EnableSibling("AlignToRaid")
+									--XPerl_Options_EnableSibling(self, "Huntards")
+									--XPerl_Options_EnableSibling(self, "Moredots")
+									XPerl_Options_EnableSibling(self, "AlignToRaid")
 								end
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
@@ -10192,17 +10194,17 @@
 						<Scripts>
 							<OnShow>
 								if (IsAddOnLoaded("XPerl_RaidPets")) then
-									XPerl_Options_GetSibling("RaidPets"):Show()
-									--XPerl_Options_GetSibling("Huntards"):Show()
-									--XPerl_Options_GetSibling("Moredots"):Show()
-									XPerl_Options_GetSibling("AlignToRaid"):Show()
-									self:SetPoint("TOP", XPerl_Options_GetSibling("AlignToRaid"), "BOTTOMLEFT", 0, 6)
+									XPerl_Options_GetSibling("RaidPets",self):Show()
+									--XPerl_Options_GetSibling("Huntards",self):Show()
+									--XPerl_Options_GetSibling("Moredots",self):Show()
+									XPerl_Options_GetSibling("AlignToRaid",self):Show()
+									self:SetPoint("TOP", XPerl_Options_GetSibling("AlignToRaid",self), "BOTTOMLEFT", 0, 6)
 								else
-									XPerl_Options_GetSibling("RaidPets"):Hide()
-									--XPerl_Options_GetSibling("Huntards"):Hide()
-									--XPerl_Options_GetSibling("Moredots"):Hide()
-									XPerl_Options_GetSibling("AlignToRaid"):Hide()
-									self:SetPoint("TOPLEFT", XPerl_Options_GetSibling("Enable"), "BOTTOMLEFT", 0, 6)
+									XPerl_Options_GetSibling("RaidPets",self):Hide()
+									--XPerl_Options_GetSibling("Huntards",self):Hide()
+									--XPerl_Options_GetSibling("Moredots",self):Hide()
+									XPerl_Options_GetSibling("AlignToRaid",self):Hide()
+									self:SetPoint("TOPLEFT", XPerl_Options_GetSibling("Enable",self), "BOTTOMLEFT", 0, 6)
 								end
 							</OnShow>
 							<OnLoad>
@@ -10228,8 +10230,8 @@
 								self.configIndex = "percent"
 								self.configClick = XPerl_Raid_OptionActions
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Percent")
-									XPerl_Options_EnableSibling("Values")
+									XPerl_Options_EnableSibling(self, "Percent")
+									XPerl_Options_EnableSibling(self, "Values")
 								end
 							</OnLoad>
 						</Scripts>
@@ -10252,7 +10254,7 @@
 								self:SetChecked(true)
 								XPerlDB.raid.values = nil
 								XPerl_Raid_OptionActions()
-								XPerl_Options_CheckRadio({"Percent", "Values"})
+								XPerl_Options_CheckRadio(self,{"Percent", "Values"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -10274,7 +10276,7 @@
 								self:SetChecked(true)
 								XPerlDB.raid.values = 1
 								XPerl_Raid_OptionActions()
-								XPerl_Options_CheckRadio({"Percent", "Values"})
+								XPerl_Options_CheckRadio(self,{"Percent", "Values"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -10292,7 +10294,7 @@
 								self.configIndex = "mana"
 								self.configClick = XPerl_Raid_OptionActions
 								self.Validate = function()
-									XPerl_Options_EnableSibling("ManaPercent")
+									XPerl_Options_EnableSibling(self, "ManaPercent")
 								end
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
@@ -10329,12 +10331,12 @@
 								self.configBase = "XPerlDB.raid.buffs"
 								self.configIndex = "enable"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Castable", "or", getglobal(self:GetParent():GetName().."_Debuffs"))
+									XPerl_Options_EnableSibling(self, "Castable", "or", _G[self:GetParent():GetName().."_Debuffs"])
 								end
 								self.configClick = function()
 										if (XPerlDB.raid.buffs.enable) then
 											XPerlDB.raid.debuffs.enable = nil
-											getglobal(self:GetParent():GetName().."_Debuffs"):SetChecked(0)
+											_G[self:GetParent():GetName().."_Debuffs"]:SetChecked(0)
 										end
 										self.Validate()
 										XPerl_Raid_OptionActions()
@@ -10355,12 +10357,12 @@
 								self.configBase = "XPerlDB.raid.debuffs"
 								self.configIndex = "enable"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Castable", "or", "Buffs")
+									XPerl_Options_EnableSibling(self, "Castable", "or", "Buffs")
 								end
 								self.configClick = function()
 										if (XPerlDB.raid.debuffs.enable) then
 											XPerlDB.raid.buffs.enable = nil
-											getglobal(self:GetParent():GetName().."_Buffs"):SetChecked(0)
+											_G[self:GetParent():GetName().."_Buffs"]:SetChecked(0)
 										end
 										self.Validate()
 										XPerl_Raid_OptionActions()
@@ -10399,7 +10401,7 @@
 								self.configIndex = "right"
 								self.configClick = XPerl_Raid_OptionActions
 								self.Validate = function()
-									XPerl_Options_EnableSibling("BuffsInside")
+									XPerl_Options_EnableSibling(self, "BuffsInside")
 								end
 							</OnLoad>
 						</Scripts>
@@ -10449,10 +10451,10 @@
 								self.configBase = "XPerlDB.buffHelper"
 								self.configIndex = "enable"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("BuffTooltipHelperVis")
-									XPerl_Options_EnableSibling("BuffHelperNoSort")
-									XPerl_Options_EnableSibling("BuffHelperSortGroup")
-									XPerl_Options_EnableSibling("BuffHelperSortClass")
+									XPerl_Options_EnableSibling(self, "BuffTooltipHelperVis")
+									XPerl_Options_EnableSibling(self, "BuffHelperNoSort")
+									XPerl_Options_EnableSibling(self, "BuffHelperSortGroup")
+									XPerl_Options_EnableSibling(self, "BuffHelperSortClass")
 								end
 							</OnLoad>
 						</Scripts>
@@ -10474,7 +10476,7 @@
 							<OnClick>
 								self:SetChecked(true)
 								XPerlDB.buffHelper.sort = nil
-								XPerl_Options_CheckRadio({"BuffHelperSortGroup", "BuffHelperSortClass"})
+								XPerl_Options_CheckRadio(self,{"BuffHelperSortGroup", "BuffHelperSortClass"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -10495,7 +10497,7 @@
 							<OnClick>
 								self:SetChecked(true)
 								XPerlDB.buffHelper.sort = "group"
-								XPerl_Options_CheckRadio({"BuffHelperNoSort", "BuffHelperSortClass"})
+								XPerl_Options_CheckRadio(self,{"BuffHelperNoSort", "BuffHelperSortClass"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -10516,7 +10518,7 @@
 							<OnClick>
 								self:SetChecked(true)
 								XPerlDB.buffHelper.sort = "class"
-								XPerl_Options_CheckRadio({"BuffHelperNoSort", "BuffHelperSortGroup"})
+								XPerl_Options_CheckRadio(self,{"BuffHelperNoSort", "BuffHelperSortGroup"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -10602,7 +10604,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("1")
+										_G[self:GetName().."Text"]:SetText("1")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 1
@@ -10619,7 +10621,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("2")
+										_G[self:GetName().."Text"]:SetText("2")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 2
@@ -10636,7 +10638,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("3")
+										_G[self:GetName().."Text"]:SetText("3")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 3
@@ -10653,7 +10655,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("4")
+										_G[self:GetName().."Text"]:SetText("4")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 4
@@ -10670,7 +10672,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("5")
+										_G[self:GetName().."Text"]:SetText("5")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 5
@@ -10687,7 +10689,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("6")
+										_G[self:GetName().."Text"]:SetText("6")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 6
@@ -10704,7 +10706,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("7")
+										_G[self:GetName().."Text"]:SetText("7")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 7
@@ -10721,7 +10723,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("8")
+										_G[self:GetName().."Text"]:SetText("8")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 8
@@ -10738,7 +10740,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("9")
+										_G[self:GetName().."Text"]:SetText("9")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 9
@@ -10755,7 +10757,7 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										getglobal(self:GetName().."Text"):SetText("10")
+										_G[self:GetName().."Text"]:SetText("10")
 										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
 										self.configBase = "XPerlDB.raid.group"
 										self.configIndex = 10
@@ -10923,7 +10925,7 @@
 											XPerl_Raid_ChangeAttributes()
 											XPerl_RaidTitles()
 										end
-										getglobal(self:GetName().."Current"):SetText(value)
+										_G[self:GetName().."Current"]:SetText(value)
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -10967,10 +10969,10 @@
 											end
 										end
 										self.Validate = function()
-											XPerl_Options_EnableSibling("Config")
-											XPerl_Options_EnableSibling("Alpha")
-											XPerl_Options_EnableSibling("Add")
-											XPerl_Options_EnableSibling("Blend")
+											XPerl_Options_EnableSibling(self, "Config")
+											XPerl_Options_EnableSibling(self, "Alpha")
+											XPerl_Options_EnableSibling(self, "Add")
+											XPerl_Options_EnableSibling(self, "Blend")
 										end
 									</OnLoad>
 								</Scripts>
@@ -11007,8 +11009,8 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_CUSTOM_ALPHA")
 										self:SetMinMaxValues(0, 1)
 										self:SetValueStep(0.05)
-										getglobal(self:GetName().."Low"):SetText("0%")
-										getglobal(self:GetName().."High"):SetText("100%")
+										_G[self:GetName().."Low"]:SetText("0%")
+										_G[self:GetName().."High"]:SetText("100%")
 									</OnLoad>
 									<OnShow>
 										self:SetValue(XPerlDB.custom and XPerlDB.custom.alpha or 0.5)
@@ -11016,7 +11018,7 @@
 									<OnValueChanged>
 										if (XPerlDB.custom) then
 											XPerlDB.custom.alpha = self:GetValue()
-											getglobal(self:GetName().."Current"):SetFormattedText("%d%%", XPerlDB.custom.alpha * 100)
+											_G[self:GetName().."Current"]:SetFormattedText("%d%%", XPerlDB.custom.alpha * 100)
 										end
 									</OnValueChanged>
 								</Scripts>
@@ -11036,7 +11038,7 @@
 										if (XPerlDB.custom) then
 											XPerlDB.custom.blend = "ADD"
 										end
-										XPerl_Options_CheckRadio({"Add", "Blend"})
+										XPerl_Options_CheckRadio(self,{"Add", "Blend"})
 									</OnClick>
 								</Scripts>
 							</CheckButton>
@@ -11055,7 +11057,7 @@
 										if (XPerlDB.custom) then
 											XPerlDB.custom.blend = "BLEND"
 										end
-										XPerl_Options_CheckRadio({"Add", "Blend"})
+										XPerl_Options_CheckRadio(self,{"Add", "Blend"})
 									</OnClick>
 								</Scripts>
 							</CheckButton>							
@@ -11283,7 +11285,7 @@
 									if (XPerl_FocusTarget) then	XPerl_TargetTarget_SetWidth(XPerl_FocusTarget)	end
 									if (XPerl_Party_Virtual) then
 										for i = 1,4 do
-											local f = getglobal("XPerl_party"..i)
+											local f = _G["XPerl_party"..i]
 											if (f) then
 												XPerl_Party_SetWidth(f)
 											end
@@ -11291,7 +11293,7 @@
 										end
 									end
 
-									getglobal(self:GetName().."Current"):SetText(value)
+									_G[self:GetName().."Current"]:SetText(value)
 								end
 							</OnValueChanged>
 						</Scripts>
@@ -11346,8 +11348,8 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_ADDON_PLAYER")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("PlayerPet")
-											XPerl_Options_EnableSibling("PlayerBuffs")
+											XPerl_Options_EnableSibling(self, "PlayerPet")
+											XPerl_Options_EnableSibling(self, "PlayerBuffs")
 										end
 									</OnLoad>
 									<OnShow>
@@ -11420,7 +11422,7 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_ADDON_TARGET")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("TargetTarget")
+											XPerl_Options_EnableSibling(self, "TargetTarget")
 										end
 									</OnLoad>
 									<OnShow>
@@ -11470,7 +11472,7 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_ADDON_PARTY")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("PartyPet")
+											XPerl_Options_EnableSibling(self, "PartyPet")
 										end
 									</OnLoad>
 									<OnShow>
@@ -11543,7 +11545,7 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_ADDON_RAID")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("RaidPets")
+											XPerl_Options_EnableSibling(self, "RaidPets")
 										end
 									</OnLoad>
 									<OnShow>
@@ -11671,7 +11673,7 @@
 
 											local enable
 											for i,name in pairs(list) do
-												if (XPerl_Options_GetSiblingChecked(name) ~= IsAddOnLoaded("XPerl_"..name)) then
+												if (XPerl_Options_GetSiblingChecked(name,self) ~= IsAddOnLoaded("XPerl_"..name)) then
 													enable = true
 													break;
 												end
@@ -11756,7 +11758,7 @@
 										self.configIndex = "class"
 										self.configClick = XPerl_OptionActions
 										self.Validate = function()
-											XPerl_Options_EnableSibling("ApplyToGuild")
+											XPerl_Options_EnableSibling(self, "ApplyToGuild")
 										end
 									</OnLoad>
 								</Scripts>
@@ -11793,7 +11795,7 @@
 										self.configIndex = "classbar"
 										self.configClick = XPerl_OptionActions
 										self.Validate = function()
-											XPerl_Options_EnableSibling("Brightness")
+											XPerl_Options_EnableSibling(self, "Brightness")
 										end
 									</OnLoad>
 								</Scripts>
@@ -11814,14 +11816,14 @@
 									<OnLoad>
 										self:SetScale(0.8)
 
-										local t = XPerl_Options_GetSibling("ClassBar")
-										local t2 = getglobal(t:GetName().."Text")
+										local t = XPerl_Options_GetSibling("ClassBar",self)
+										local t2 = _G[t:GetName().."Text"]
 										self:SetPoint("LEFT", t, "RIGHT", (t2:GetStringWidth() + 10) / 0.8, 0)
 
 										XPerl_SliderSetup(self)
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_CLASSBARS_BRIGHT")
-										getglobal(self:GetName().."Low"):SetText("0.5")
-										getglobal(self:GetName().."High"):SetText("2")
+										_G[self:GetName().."Low"]:SetText("0.5")
+										_G[self:GetName().."High"]:SetText("2")
 										self:SetMinMaxValues(5, 200)
 										self:SetValueStep(1)
 									</OnLoad>
@@ -11830,7 +11832,7 @@
 									</OnShow>
 									<OnValueChanged>
 										XPerlDB.colour.classbarBright = value / 100
-										getglobal(self:GetName().."Current"):SetText(string.format("%.2f", XPerlDB.colour.classbarBright))
+										_G[self:GetName().."Current"]:SetText(string.format("%.2f", XPerlDB.colour.classbarBright))
 										XPerl_ResetBarColourCache()
 										XPerl_OptionActions()
 									</OnValueChanged>
@@ -11864,12 +11866,12 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_HEALTHEMPTY")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.bar.healthEmpty.r, XPerlDB.colour.bar.healthEmpty.g, XPerlDB.colour.bar.healthEmpty.b)
 									</OnShow>
 									<OnClick>
 										XPerlDB.colour.classic = nil
-										getglobal(self:GetParent():GetName().."_ClassicHealth"):SetChecked(0)
+										_G[self:GetParent():GetName().."_ClassicHealth"]:SetChecked(0)
 
 										XPerlLocked = 1
 										XPerl_ColourPicker.ParentFrame = XPerl_Options
@@ -11898,12 +11900,12 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_HEALTHFULL")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.bar.healthFull.r, XPerlDB.colour.bar.healthFull.g, XPerlDB.colour.bar.healthFull.b)
 									</OnShow>
 									<OnClick>
 										XPerlDB.colour.classic = nil
-										getglobal(self:GetParent():GetName().."_ClassicHealth"):SetChecked(0)
+										_G[self:GetParent():GetName().."_ClassicHealth"]:SetChecked(0)
 
 										XPerlLocked = 1
 										XPerl_ColourPicker.ParentFrame = XPerl_Options
@@ -11932,7 +11934,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_MANA")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.bar.mana.r, XPerlDB.colour.bar.mana.g, XPerlDB.colour.bar.mana.b)
 									</OnShow>
 									<OnClick>
@@ -11963,7 +11965,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_ENERGY")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.bar.energy.r, XPerlDB.colour.bar.energy.g, XPerlDB.colour.bar.energy.b)
 									</OnShow>
 									<OnClick>
@@ -11994,7 +11996,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_RAGE")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.bar.rage.r, XPerlDB.colour.bar.rage.g, XPerlDB.colour.bar.rage.b)
 									</OnShow>
 									<OnClick>
@@ -12025,7 +12027,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_FOCUS")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.bar.focus.r, XPerlDB.colour.bar.focus.g, XPerlDB.colour.bar.focus.b)
 									</OnShow>
 									<OnClick>
@@ -12056,7 +12058,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_RUNIC")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.bar.runic_power.r, XPerlDB.colour.bar.runic_power.g, XPerlDB.colour.bar.runic_power.b)
 									</OnShow>
 									<OnClick>
@@ -12150,7 +12152,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_FRIEND")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.reaction.friend.r, XPerlDB.colour.reaction.friend.g, XPerlDB.colour.reaction.friend.b)
 									</OnShow>
 									<OnClick>
@@ -12181,7 +12183,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_NEUTRAL")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.reaction.neutral.r, XPerlDB.colour.reaction.neutral.g, XPerlDB.colour.reaction.neutral.b)
 									</OnShow>
 									<OnClick>
@@ -12212,7 +12214,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_UNFRIENDLY")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.reaction.unfriendly.r, XPerlDB.colour.reaction.unfriendly.g, XPerlDB.colour.reaction.unfriendly.b)
 									</OnShow>
 									<OnClick>
@@ -12243,7 +12245,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_ENEMY")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.reaction.enemy.r, XPerlDB.colour.reaction.enemy.g, XPerlDB.colour.reaction.enemy.b)
 									</OnShow>
 									<OnClick>
@@ -12274,7 +12276,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_NONE")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.reaction.none.r, XPerlDB.colour.reaction.none.g, XPerlDB.colour.reaction.none.b)
 									</OnShow>
 									<OnClick>
@@ -12306,7 +12308,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_TAPPED")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.reaction.tapped.r, XPerlDB.colour.reaction.tapped.g, XPerlDB.colour.reaction.tapped.b)
 									</OnShow>
 									<OnClick>
@@ -12403,7 +12405,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_GLOBAL_BORDERS")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.border.r, XPerlDB.colour.border.g, XPerlDB.colour.border.b)
 									</OnShow>
 									<OnClick>
@@ -12435,7 +12437,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_GLOBAL_BACKGROUND")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.frame.r, XPerlDB.colour.frame.g, XPerlDB.colour.frame.b)
 									</OnShow>
 									<OnClick>
@@ -12475,7 +12477,7 @@
 											XPerlDB.transparency.frame = value / 100
 											XPerl_SetAllFrames()
 										end
-										getglobal(self:GetName().."Current"):SetText(floor(value + 0.5).."%")
+										_G[self:GetName().."Current"]:SetText(floor(value + 0.5).."%")
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -12501,7 +12503,7 @@
 											XPerlDB.transparency.text = value / 100
 											XPerl_SetTextTransparency()
 										end
-										getglobal(self:GetName().."Current"):SetText(floor(value + 0.5).."%")
+										_G[self:GetName().."Current"]:SetText(floor(value + 0.5).."%")
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -12529,7 +12531,7 @@
 											XPerlDB.maximumScale = value / 100
 											XPerl_Options_MaxScaleSet()
 										end
-										getglobal(self:GetName().."Current"):SetText(floor(value + 0.5).."%")
+										_G[self:GetName().."Current"]:SetText(floor(value + 0.5).."%")
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -12614,10 +12616,10 @@
 													XPerl_OptionActions()
 												end
 										self.Validate = function()
-											XPerl_Options_EnableSibling("Vertical")
-											XPerl_Options_EnableSibling("Horizontal")
-											XPerl_Options_EnableSibling("Start")
-											XPerl_Options_EnableSibling("End")
+											XPerl_Options_EnableSibling(self, "Vertical")
+											XPerl_Options_EnableSibling(self, "Horizontal")
+											XPerl_Options_EnableSibling(self, "Start")
+											XPerl_Options_EnableSibling(self, "End")
 										end
 									</OnLoad>
 								</Scripts>
@@ -12642,7 +12644,7 @@
 									<OnClick>
 										XPerlDB.colour.gradient.horizontal = nil
 										XPerl_OptionActions()
-										XPerl_Options_CheckRadio({"Vertical", "Horizontal"})
+										XPerl_Options_CheckRadio(self,{"Vertical", "Horizontal"})
 									</OnClick>
 								</Scripts>
 							</CheckButton>
@@ -12668,7 +12670,7 @@
 									<OnClick>
 										XPerlDB.colour.gradient.horizontal = 1
 										XPerl_OptionActions()
-										XPerl_Options_CheckRadio({"Vertical", "Horizontal"})
+										XPerl_Options_CheckRadio(self,{"Vertical", "Horizontal"})
 									</OnClick>
 								</Scripts>
 							</CheckButton>
@@ -12686,7 +12688,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_FRAMES_GRADSTART")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.gradient.s.r, XPerlDB.colour.gradient.s.g, XPerlDB.colour.gradient.s.b)
 									</OnShow>
 									<OnClick>
@@ -12716,7 +12718,7 @@
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_COLOUR_FRAMES_GRADEND")
 									</OnLoad>
 									<OnShow>
-										local f = getglobal(self:GetName().."_Colour")
+										local f = _G[self:GetName().."_Colour"]
 										f:SetVertexColor(XPerlDB.colour.gradient.e.r, XPerlDB.colour.gradient.e.g, XPerlDB.colour.gradient.e.b)
 									</OnShow>
 									<OnClick>
@@ -12806,20 +12808,20 @@
 										   end
 
 								self.Validate = function()
-									XPerl_Options_EnableSibling("CTTargets")
-									XPerl_Options_EnableSibling("BlizzTargets")
-									XPerl_Options_EnableSibling("NoAuto")
-									XPerl_Options_EnableSibling("Tooltips")
-									XPerl_Options_EnableSibling("GrowUp")
-									XPerl_Options_EnableSibling("Healer_Healer")
-									XPerl_Options_EnableSibling("Healer_DeficitOnly", "Healer_Healer")
-									XPerl_Options_EnableSibling("Healer_DeficitMax", "Healer_Healer")
-									XPerl_Options_EnableSibling("Healer_CurMaxDeficit", "Healer_Healer")
-									XPerl_Options_EnableSibling("MaxTanks")
-									XPerl_Options_EnableSibling("UnitWidth")
-									XPerl_Options_EnableSibling("UnitHeight")
-									XPerl_Options_EnableSibling("Transparency")
-									XPerl_Options_EnableSibling("BkTransparency")
+									XPerl_Options_EnableSibling(self, "CTTargets")
+									XPerl_Options_EnableSibling(self, "BlizzTargets")
+									XPerl_Options_EnableSibling(self, "NoAuto")
+									XPerl_Options_EnableSibling(self, "Tooltips")
+									XPerl_Options_EnableSibling(self, "GrowUp")
+									XPerl_Options_EnableSibling(self, "Healer_Healer")
+									XPerl_Options_EnableSibling(self, "Healer_DeficitOnly", "Healer_Healer")
+									XPerl_Options_EnableSibling(self, "Healer_DeficitMax", "Healer_Healer")
+									XPerl_Options_EnableSibling(self, "Healer_CurMaxDeficit", "Healer_Healer")
+									XPerl_Options_EnableSibling(self, "MaxTanks")
+									XPerl_Options_EnableSibling(self, "UnitWidth")
+									XPerl_Options_EnableSibling(self, "UnitHeight")
+									XPerl_Options_EnableSibling(self, "Transparency")
+									XPerl_Options_EnableSibling(self, "BkTransparency")
 								end
 							</OnLoad>
 						</Scripts>
@@ -12947,7 +12949,7 @@
 									XPerl_MakeTankList()
 									XPerl_SetTitle()
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlConfigHelper.MaxMainTanks)
+								_G[self:GetName().."Current"]:SetText(XPerlConfigHelper.MaxMainTanks)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -12983,7 +12985,7 @@
 									XPerl_MTList_ApplyUnitSizes()
 									XPerl_SetFrameSizes()
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlConfigHelper.UnitWidth)
+								_G[self:GetName().."Current"]:SetText(XPerlConfigHelper.UnitWidth)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13019,7 +13021,7 @@
 									XPerl_MTList_ApplyUnitSizes()
 									XPerl_SetFrameSizes()
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlConfigHelper.UnitHeight)
+								_G[self:GetName().."Current"]:SetText(XPerlConfigHelper.UnitHeight)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13048,7 +13050,7 @@
 									XPerlConfigHelper.Targets_Transparency = value / 100
 									XPerl_Frame:SetAlpha(XPerlConfigHelper.Targets_Transparency)
 								end
-								getglobal(self:GetName().."Current"):SetText(value.."%")
+								_G[self:GetName().."Current"]:SetText(value.."%")
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13081,7 +13083,7 @@
 										XPerl_SetupFrameSimple(XPerl_Frame, XPerlConfigHelper.Background_Transparency)
 									end
 								end
-								getglobal(self:GetName().."Current"):SetText(value.."%")
+								_G[self:GetName().."Current"]:SetText(value.."%")
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13097,9 +13099,9 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAIDHELP_TOOLTIPS")
 								self.XconfigVar = "Tooltips"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("TooltipTarget", XPerl_Options_Helper_Options_Enabled)
-									XPerl_Options_EnableSibling("TooltipTank", XPerl_Options_Helper_Options_Enabled)
-									XPerl_Options_EnableSibling("TooltipBoth", XPerl_Options_Helper_Options_Enabled)
+									XPerl_Options_EnableSibling(self, "TooltipTarget", XPerl_Options_Helper_Options_Enabled)
+									XPerl_Options_EnableSibling(self, "TooltipTank", XPerl_Options_Helper_Options_Enabled)
+									XPerl_Options_EnableSibling(self, "TooltipBoth", XPerl_Options_Helper_Options_Enabled)
 								end
 							</OnLoad>
 						</Scripts>
@@ -13120,7 +13122,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlConfigHelper.TooltipsWhich = 0
-								XPerl_Options_CheckRadio({"TooltipTarget", "TooltipTank", "TooltipBoth"})
+								XPerl_Options_CheckRadio(self,{"TooltipTarget", "TooltipTank", "TooltipBoth"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -13140,7 +13142,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlConfigHelper.TooltipsWhich = 1
-								XPerl_Options_CheckRadio({"TooltipTarget", "TooltipTank", "TooltipBoth"})
+								XPerl_Options_CheckRadio(self,{"TooltipTarget", "TooltipTank", "TooltipBoth"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -13160,7 +13162,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlConfigHelper.TooltipsWhich = 2
-								XPerl_Options_CheckRadio({"TooltipTarget", "TooltipTank", "TooltipBoth"})
+								XPerl_Options_CheckRadio(self,{"TooltipTarget", "TooltipTank", "TooltipBoth"})
 							</OnClick>
 						</Scripts>
 					</CheckButton>
@@ -13214,12 +13216,12 @@
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGET_COUNTERS")
 										self.Validate = function()
-											XPerl_Options_EnableSibling("TargetCountersSelf")
-											XPerl_Options_EnableSibling("Enemy")
-											XPerl_Options_EnableSibling("ShowCounters")
-											XPerl_Options_EnableSibling("AggroWarning")
-											XPerl_Options_EnableSibling("Transparency")
-											XPerl_Options_EnableSibling("BackTransparency")
+											XPerl_Options_EnableSibling(self, "TargetCountersSelf")
+											XPerl_Options_EnableSibling(self, "Enemy")
+											XPerl_Options_EnableSibling(self, "ShowCounters")
+											XPerl_Options_EnableSibling(self, "AggroWarning")
+											XPerl_Options_EnableSibling(self, "Transparency")
+											XPerl_Options_EnableSibling(self, "BackTransparency")
 										end
 										self.XconfigVar = "TargetCounters"
 										self.configClick = function()
@@ -13328,7 +13330,7 @@
 											XPerlConfigHelper.AssistsFrame_Transparency = value / 100
 											XPerl_SetupFrames()
 										end
-										getglobal(self:GetName().."Current"):SetText(value.."%")
+										_G[self:GetName().."Current"]:SetText(value.."%")
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -13361,7 +13363,7 @@
 												XPerl_SetupFrameSimple(XPerl_Assists_Frame, XPerlConfigHelper.Assists_BackTransparency)
 											end
 										end
-										getglobal(self:GetName().."Current"):SetText(value.."%")
+										_G[self:GetName().."Current"]:SetText(value.."%")
 									</OnValueChanged>
 								</Scripts>
 							</Slider>
@@ -13388,24 +13390,24 @@
 								self.XconfigVars = "XPerlRaidMonConfig"
 								self.XconfigVar = "enabled"
 								self.Validate = function()
-									XPerl_Options_EnableSibling("Priest")
-									XPerl_Options_EnableSibling("Druid")
-									XPerl_Options_EnableSibling("Shaman")
-									XPerl_Options_EnableSibling("Paladin")
-									XPerl_Options_EnableSibling("Mage")
-									XPerl_Options_EnableSibling("Warlock")
-									XPerl_Options_EnableSibling("Hunter")
-									XPerl_Options_EnableSibling("Rogue")
-									XPerl_Options_EnableSibling("Warrior")
-									XPerl_Options_EnableSibling("LowMana")
-									XPerl_Options_EnableSibling("HighMana")
-									XPerl_Options_EnableSibling("UnitWidth")
-									XPerl_Options_EnableSibling("UnitHeight")
-									XPerl_Options_EnableSibling("TargetWidth")
-									XPerl_Options_EnableSibling("GrowUp")
-									XPerl_Options_EnableSibling("Tooltips")
-									XPerl_Options_EnableSibling("Alpha")
-									XPerl_Options_EnableSibling("BackgroundAlpha")
+									XPerl_Options_EnableSibling(self, "Priest")
+									XPerl_Options_EnableSibling(self, "Druid")
+									XPerl_Options_EnableSibling(self, "Shaman")
+									XPerl_Options_EnableSibling(self, "Paladin")
+									XPerl_Options_EnableSibling(self, "Mage")
+									XPerl_Options_EnableSibling(self, "Warlock")
+									XPerl_Options_EnableSibling(self, "Hunter")
+									XPerl_Options_EnableSibling(self, "Rogue")
+									XPerl_Options_EnableSibling(self, "Warrior")
+									XPerl_Options_EnableSibling(self, "LowMana")
+									XPerl_Options_EnableSibling(self, "HighMana")
+									XPerl_Options_EnableSibling(self, "UnitWidth")
+									XPerl_Options_EnableSibling(self, "UnitHeight")
+									XPerl_Options_EnableSibling(self, "TargetWidth")
+									XPerl_Options_EnableSibling(self, "GrowUp")
+									XPerl_Options_EnableSibling(self, "Tooltips")
+									XPerl_Options_EnableSibling(self, "Alpha")
+									XPerl_Options_EnableSibling(self, "BackgroundAlpha")
 								end
 								self.configClick = function()	XPerl_RaidMonitor_Frame:Init()	end
 							</OnLoad>
@@ -13647,7 +13649,7 @@
 								if (XPerlRaidMonConfig.LowMana ~= value) then
 									XPerlRaidMonConfig.LowMana = value
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlRaidMonConfig.LowMana)
+								_G[self:GetName().."Current"]:SetText(XPerlRaidMonConfig.LowMana)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13675,7 +13677,7 @@
 								if (XPerlRaidMonConfig.HighMana ~= value) then
 									XPerlRaidMonConfig.HighMana = value
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlRaidMonConfig.HighMana)
+								_G[self:GetName().."Current"]:SetText(XPerlRaidMonConfig.HighMana)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13707,7 +13709,7 @@
 									XPerl_RaidMonitor_Frame:SetUnitSizes()
 									XPerl_RaidMonitor_Frame:SetFrameSizes()
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlRaidMonConfig.UnitWidth)
+								_G[self:GetName().."Current"]:SetText(XPerlRaidMonConfig.UnitWidth)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13737,7 +13739,7 @@
 									XPerl_RaidMonitor_Frame:SetUnitSizes()
 									XPerl_RaidMonitor_Frame:SetFrameSizes()
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlRaidMonConfig.UnitHeight)
+								_G[self:GetName().."Current"]:SetText(XPerlRaidMonConfig.UnitHeight)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13767,7 +13769,7 @@
 									XPerl_RaidMonitor_Frame:SetUnitSizes()
 									XPerl_RaidMonitor_Frame:SetFrameSizes()
 								end
-								getglobal(self:GetName().."Current"):SetText(XPerlRaidMonConfig.TargetWidth)
+								_G[self:GetName().."Current"]:SetText(XPerlRaidMonConfig.TargetWidth)
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13832,7 +13834,7 @@
 									XPerlRaidMonConfig.Alpha = value / 100
 									XPerl_RaidMonitor_Frame:SetupAlpha()
 								end
-								getglobal(self:GetName().."Current"):SetText(floor(100 * XPerlRaidMonConfig.Alpha + 0.5).."%")
+								_G[self:GetName().."Current"]:SetText(floor(100 * XPerlRaidMonConfig.Alpha + 0.5).."%")
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13861,7 +13863,7 @@
 									XPerlRaidMonConfig.BackgroundAlpha = value / 100
 									XPerl_RaidMonitor_Frame:SetupAlpha()
 								end
-								getglobal(self:GetName().."Current"):SetText(floor(100 * XPerlRaidMonConfig.BackgroundAlpha + 0.5).."%")
+								_G[self:GetName().."Current"]:SetText(floor(100 * XPerlRaidMonConfig.BackgroundAlpha + 0.5).."%")
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13917,7 +13919,7 @@
 										XPerl_AdminSetupFrames()
 									end
 								end
-								getglobal(self:GetName().."Current"):SetText(floor(100 * XPerl_Admin.Transparency + 0.5).."%")
+								_G[self:GetName().."Current"]:SetText(floor(100 * XPerl_Admin.Transparency + 0.5).."%")
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -13952,6 +13954,7 @@
 				XPerl_Options_Custom_Buttons(XPerl_Custom_Config)
 			</OnClick>
 			<OnMouseWheel>
+				local arg1 = delta
 				if (arg1 > 0) then
 					self.master.scrollBar.bar:SetValue(self.master.scrollBar.bar:GetValue() - 2)
 				else
@@ -13973,6 +13976,7 @@
 		</Size>
 		<Scripts>
 			<OnMouseWheel>
+				local arg1 = delta
 				if (arg1 > 0) then
 					self.scrollBar.bar:SetValue(self.scrollBar.bar:GetValue() - 2)
 				else
@@ -14056,7 +14060,8 @@
 						FauxScrollFrame_OnVerticalScroll(self, offset, 1, function() self:GetParent():FillList() end)
 					</OnVerticalScroll>
 					<OnMouseWheel>
-						local f = getglobal(self:GetName().."ScrollBar")
+						local arg1 = delta
+						local f = _G[self:GetName().."ScrollBar"]
 						if (arg1 > 0) then
 							f:SetValue(f:GetValue() + 3)
 						else

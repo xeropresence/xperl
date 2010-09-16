@@ -68,7 +68,7 @@
 				<Scripts>
 					<OnLoad>
 						self:RegisterForClicks("AnyUp")
-						XPerl_RegisterUnitText(getglobal(self:GetName().."text"))
+						XPerl_RegisterUnitText(_G[self:GetName().."text"])
 					</OnLoad>
 					<OnEnter>
 						XPerl_PlayerTip(self)
@@ -205,7 +205,7 @@
 							<OnLoad>
 								XPerl_SetChildMembers(self)
 								XPerl_RegisterBar(self)
-								self:SetFrameLevel(getglobal(self:GetParent():GetName().."healthBar"):GetFrameLevel() - 1)
+								self:SetFrameLevel(_G[self:GetParent():GetName().."healthBar"]:GetFrameLevel() - 1)
 							</OnLoad>
 						</Scripts>
 					</StatusBar>

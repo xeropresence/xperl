@@ -215,33 +215,33 @@ function mod:GeneralTooltip(name, anchor)
 end
 
 -- GuildMateTooltip
-local function XPerl_GuildMateTooltip()
+local function XPerl_GuildMateTooltip(self)
 	if (not conf.tooltip.xperlInfo) then
 		return
 	end
 
-	local name, rank, rankIndex, level, class, zone, note, officernote, online = GetGuildRosterInfo(this.guildIndex)
-	mod:GeneralTooltip(name, this)
+	local name, rank, rankIndex, level, class, zone, note, officernote, online = GetGuildRosterInfo(self.guildIndex)
+	mod:GeneralTooltip(name, self)
 end
 
 -- XPerl_FriendTooltip
-local function XPerl_FriendTooltip()
+local function XPerl_FriendTooltip(self)
 	if (not conf.tooltip.xperlInfo) then
 		return
 	end
 
-	local name, level, class, area, connected, status = GetFriendInfo(this:GetID())
-	mod:GeneralTooltip(name, this)
+	local name, level, class, area, connected, status = GetFriendInfo(self:GetID())
+	mod:GeneralTooltip(name, self)
 end
 
 -- XPerl_WhoTooltip
-local function XPerl_WhoTooltip()
+local function XPerl_WhoTooltip(self)
 	if (not conf.tooltip.xperlInfo) then
 		return
 	end
 
-	local name, guild, level, race, class, zone = GetWhoInfo(this.whoIndex)
-	mod:GeneralTooltip(name, this)
+	local name, guild, level, race, class, zone = GetWhoInfo(self.whoIndex)
+	mod:GeneralTooltip(name, self)
 end
 
 -- XPerl_UsageStartup
@@ -251,12 +251,12 @@ function mod:PLAYER_ENTERING_WORLD()
 
 		-- Hook the guild name list to show tooltip for X-Perl users
 		for i = 1,GUILDMEMBERS_TO_DISPLAY do
-			local f = getglobal("GuildFrameButton"..i)
+			local f = _G["GuildFrameButton"..i]
 			if (f) then
 				f:SetScript("OnEnter", XPerl_GuildMateTooltip)
 				f:SetScript("OnLeave", XPerl_PlayerTipHide)
 			end
-			f = getglobal("GuildFrameGuildStatusButton"..i)
+			f = _G["GuildFrameGuildStatusButton"..i]
 			if (f) then
 				f:SetScript("OnEnter", XPerl_GuildMateTooltip)
 				f:SetScript("OnLeave", XPerl_PlayerTipHide)
@@ -264,7 +264,7 @@ function mod:PLAYER_ENTERING_WORLD()
 		end
 
 		for i = 1,FRIENDS_TO_DISPLAY do
-			local f = getglobal("FriendsFrameFriendButton"..i)
+			local f = _G["FriendsFrameFriendButton"..i]
 			if (f) then
 				f:SetScript("OnEnter", XPerl_FriendTooltip)
 				f:SetScript("OnLeave", XPerl_PlayerTipHide)
@@ -272,7 +272,7 @@ function mod:PLAYER_ENTERING_WORLD()
 		end
 
 		for i = 1,WHOS_TO_DISPLAY do
-			local f = getglobal("WhoFrameButton"..i)
+			local f = _G["WhoFrameButton"..i]
 			if (f) then
 				f:SetScript("OnEnter", XPerl_WhoTooltip)
 				f:SetScript("OnLeave", XPerl_PlayerTipHide)

@@ -77,7 +77,7 @@
 		</Layers>
 		<Scripts>
 			<OnEscapePressed>
-				this:ClearFocus();
+				self:ClearFocus();
 			</OnEscapePressed>
 		</Scripts>
 		<FontString inherits="ChatFontNormal"/>
@@ -91,7 +91,7 @@
 		</Size>
 		<Scripts>
 			<OnClick>
-				local text = this:GetText()
+				local text = self:GetText()
 				XPerl_AdminFrame_Controls_Edit:SetText(text)
 			</OnClick>
 		</Scripts>
@@ -510,7 +510,7 @@
 												FauxScrollFrame_OnVerticalScroll(self, value, 1, XPerl_AdminFrame_Controls.MakeList)
 											</OnVerticalScroll>
 											<OnMouseWheel>
-												local f = getglobal(self:GetName().."ScrollBar")
+												local f = _G[self:GetName().."ScrollBar"]
 												if (arg1 > 0) then
 													f:SetValue(f:GetValue() + 3)
 												else

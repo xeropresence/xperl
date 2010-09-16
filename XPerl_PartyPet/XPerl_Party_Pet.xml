@@ -21,8 +21,8 @@
 				<Scripts>
 					<OnLoad>
 						self:RegisterForClicks("AnyUp")
-						XPerl_RegisterUnitText(getglobal(self:GetName().."text"))
-						XPerl_RegisterUnitText(getglobal(self:GetName().."level"))
+						XPerl_RegisterUnitText(_G[self:GetName().."text"])
+						XPerl_RegisterUnitText(_G[self:GetName().."level"])
 						self:SetScript("OnEnter", function(self) XPerl_Unit_OnEnter(self:GetParent()) end)
 						self:SetScript("OnLeave", function(self) XPerl_Unit_OnLeave(self:GetParent()) end)
 					</OnLoad>

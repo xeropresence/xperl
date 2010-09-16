@@ -7,17 +7,17 @@ XPerl_SetModuleRevision("$Revision$")
 function XPerl_OptionsFrame_DisableSlider(slider)
 	local name = slider:GetName();
 	getmetatable(slider).__index.Disable(slider);
-	getglobal(name.."Text"):SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
-	getglobal(name.."Low"):SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
-	getglobal(name.."High"):SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+	_G[name.."Text"]:SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+	_G[name.."Low"]:SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
+	_G[name.."High"]:SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
 end
 
 function XPerl_OptionsFrame_EnableSlider(slider)
 	local name = slider:GetName();
 	getmetatable(slider).__index.Enable(slider);
-	getglobal(name.."Text"):SetVertexColor(NORMAL_FONT_COLOR.r , NORMAL_FONT_COLOR.g , NORMAL_FONT_COLOR.b);
-	getglobal(name.."Low"):SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-	getglobal(name.."High"):SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	_G[name.."Text"]:SetVertexColor(NORMAL_FONT_COLOR.r , NORMAL_FONT_COLOR.g , NORMAL_FONT_COLOR.b);
+	_G[name.."Low"]:SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
+	_G[name.."High"]:SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
 end
 
 
@@ -52,23 +52,23 @@ end
 function XPerl_OptionsSetMyText(f, str, keep)
 
 	if (f and str) then
-		local textFrame = getglobal(f:GetName().."Text")
+		local textFrame = _G[f:GetName().."Text"]
 
 		if (not keep and not strfind(str, "^XPERL")) then
 			ChatFrame1:AddMessage("WARNING: Not keeping '"..str.."'")
 		end
 
 		if (textFrame) then
-			textFrame:SetText(getglobal(str))
-			f.tooltipText = getglobal(str.."_DESC")
+			textFrame:SetText(_G[str])
+			f.tooltipText = _G[str.."_DESC"]
 
 			if ((f.GetFrameType or f.GetObjectType)(f) == "CheckButton") then
 				f:SetHitRectInsets(0, -(textFrame:GetStringWidth()), 0, 0)
 			end
 
 		elseif ((f.GetFrameType or f.GetObjectType)(f) == "Button") then
-			f:SetText(getglobal(str))
-			f.tooltipText = getglobal(str.."_DESC")
+			f:SetText(_G[str])
+			f.tooltipText = _G[str.."_DESC"]
 		end
 
 		if (not keep) then
@@ -97,7 +97,7 @@ function XPerl_Options_CheckButton_OnEnter(self)
 		end
 	end
 	if ( self.tooltipText ) then
-		local p = getglobal(self:GetName().."Text")
+		local p = _G[self:GetName().."Text"]
 		local title = p and p:GetText()
 		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 		if (title) then
@@ -109,7 +109,7 @@ function XPerl_Options_CheckButton_OnEnter(self)
 		GameTooltip:Show()
 	end
 
-	getglobal(self:GetName().."Text"):SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
+	_G[self:GetName().."Text"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 end
 
 -- XPerl_GetCheck
@@ -121,16 +121,16 @@ function XPerl_GetCheck(f)
 	end
 end
 
--- XPerl_Options_GetSibling(sibling)
-function XPerl_Options_GetSibling(sibling)
-	return getglobal(this:GetParent():GetName().."_"..sibling)
+-- XPerl_Options_GetSibling(sibling,self)
+function XPerl_Options_GetSibling(sibling,self)
+	return _G[self:GetParent():GetName().."_"..sibling]
 end
 
 -- XPerl_Options_EnableSibling
-function XPerl_Options_EnableSibling(sibling, check2nd, check3rd)
+function XPerl_Options_EnableSibling(self,sibling, check2nd, check3rd)
 
-	local siblingName = this:GetParent():GetName().."_"..sibling
-	local siblingFrame = getglobal(siblingName)
+	local siblingName = self:GetParent():GetName().."_"..sibling
+	local siblingFrame = _G[siblingName]
 	local second = true
 	local condition = "and"
 
@@ -142,8 +142,8 @@ function XPerl_Options_EnableSibling(sibling, check2nd, check3rd)
 		if (type(check2nd) == "table") then
 			second = check2nd:GetChecked()
 		elseif (type(check2nd) == "string") then
-			local sib2 = this:GetParent():GetName().."_"..check2nd
-			local sibf2 = getglobal(sib2)
+			local sib2 = self:GetParent():GetName().."_"..check2nd
+			local sibf2 = _G[sib2]
 			if (sibf2) then
 				second = sibf2:GetChecked()
 			else
@@ -156,9 +156,9 @@ function XPerl_Options_EnableSibling(sibling, check2nd, check3rd)
 
 	local result
 	if (condition == "and") then
-		result = (this:GetChecked() and second)
+		result = (self:GetChecked() and second)
 	elseif (condition == "or") then
-		result = (this:GetChecked() or second)
+		result = (self:GetChecked() or second)
 	end
 
 	if (siblingFrame) then
@@ -187,7 +187,7 @@ end
 
 -- XPerl_Options_EnableCheck
 function XPerl_Options_EnableCheck(self, on)
-	local textFrame = getglobal(self:GetName().."Text")
+	local textFrame = _G[self:GetName().."Text"]
 	if (on) then
 		self:Enable()
 		textFrame:SetTextColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
@@ -197,8 +197,8 @@ function XPerl_Options_EnableCheck(self, on)
 	end
 
 	if ((self.GetFrameType or self.GetObjectType)(self) == "Button") then
-		local normalTexture = getglobal(self:GetName().."NormalTexture")
-		local icon = getglobal(self:GetName().."Icon")
+		local normalTexture = _G[self:GetName().."NormalTexture"]
+		local icon = _G[self:GetName().."Icon"]
 		if (normalTexture and icon) then
 			if (on) then
 				icon:SetVertexColor(1, 1, 1)
@@ -212,9 +212,9 @@ function XPerl_Options_EnableCheck(self, on)
 end
 
 -- XPerl_Options_IncrementSibling
-function XPerl_Options_IncrementSibling(sibling)
-	local siblingName = this:GetParent():GetName().."_"..sibling
-	local siblingFrame = getglobal(siblingName)
+function XPerl_Options_IncrementSibling(self,sibling)
+	local siblingName = self:GetParent():GetName().."_"..sibling
+	local siblingFrame = _G[siblingName]
 
 	if (siblingFrame and (siblingFrame.GetFrameType or siblingFrame.GetObjectType)(siblingFrame) == "EditBox") then
         	local n = tonumber(siblingFrame:GetText())
@@ -225,9 +225,9 @@ function XPerl_Options_IncrementSibling(sibling)
 end
 
 -- XPerl_Options_DecrementSibling
-function XPerl_Options_DecrementSibling(sibling)
-	local siblingName = this:GetParent():GetName().."_"..sibling
-	local siblingFrame = getglobal(siblingName)
+function XPerl_Options_DecrementSibling(self,sibling)
+	local siblingName = self:GetParent():GetName().."_"..sibling
+	local siblingFrame = _G[siblingName]
 
 	if (siblingFrame and (siblingFrame.GetFrameType or siblingFrame.GetObjectType)(siblingFrame) == "EditBox") then
         	local n = tonumber(siblingFrame:GetText())
@@ -238,22 +238,22 @@ function XPerl_Options_DecrementSibling(sibling)
 end
 
 -- XPerl_Options_CheckRadio
-function XPerl_Options_CheckRadio(buttons)
-	local prefix = this:GetParent():GetName().."_"
-
+function XPerl_Options_CheckRadio(self,buttons)
+	local prefix = self:GetParent():GetName().."_"
+	
 	for i,name in pairs(buttons) do
-		if (prefix..name == this:GetName()) then
-			getglobal(prefix..name):SetChecked(true)
+		if (prefix..name == self:GetName()) then
+			_G[prefix..name]:SetChecked(true)
 		else
-			getglobal(prefix..name):SetChecked(false)
+			_G[prefix..name]:SetChecked(false)
 		end
 	end
 end
 
 -- XPerl_Options_GetSiblingChecked
-function XPerl_Options_GetSiblingChecked(name)
-	local prefix = this:GetParent():GetName().."_"
-	return getglobal(prefix..name):GetChecked()
+function XPerl_Options_GetSiblingChecked(name,self)
+	local prefix = self:GetParent():GetName().."_"
+	return _G[prefix..name]:GetChecked()
 end
 
 -- XPerl_Raid_OptionActions
@@ -269,27 +269,27 @@ function XPerl_Raid_OptionActions()
 end
 
 -- XPerl_Options_OnUpdate
-function XPerl_Options_OnUpdate()
-
-	if (this.Fading) then
-	        local alpha = this:GetAlpha()
-	        if (this.Fading == "in") then
+function XPerl_Options_OnUpdate(self,arg1)
+	
+	if (self.Fading) then
+	        local alpha = self:GetAlpha()
+	        if (self.Fading == "in") then
 	                alpha = alpha + (arg1 * 2)		-- elapsed * 2 == fade in/out in 1/2 second
 	                if (alpha > 1) then
 	                        alpha = 1
 	                end
-	        elseif (this.Fading == "out") then
+	        elseif (self.Fading == "out") then
 	                alpha = alpha - (arg1 * 2)
 	                if (alpha < 0) then
 	                        alpha = 0
 	                end
 	        end
-	        this:SetAlpha(alpha)
+	        self:SetAlpha(alpha)
 	        if (alpha == 0) then
-	                this.Fading = nil
-	                this:Hide()
+	                self.Fading = nil
+	                self:Hide()
 	        elseif (alpha == 1) then
-	                this.Fading = nil
+	                self.Fading = nil
 	        end
 	else
 		local f = GetMouseFocus()
@@ -319,8 +319,8 @@ function XPerl_Options_MaxScaleSet()
 
         	slider:SetMinMaxValues(min, max)
 
-        	getglobal(slider:GetName().."Low"):SetFormattedText("%d"..PERCENT_SYMBOL, min)
-        	getglobal(slider:GetName().."High"):SetFormattedText("%d"..PERCENT_SYMBOL, max)
+        	_G[slider:GetName().."Low"]:SetFormattedText("%d"..PERCENT_SYMBOL, min)
+        	_G[slider:GetName().."High"]:SetFormattedText("%d"..PERCENT_SYMBOL, max)
 
 		if (old > max) then
 			slider:SetValue(max)
@@ -339,19 +339,19 @@ function XPerl_SliderSetup(self, percent)
 	self.DisableSlider = function(self)
 	        self.xperlSliderEnabled = false
 	        XPerl_OptionsFrame_DisableSlider(self)
-	        getglobal(self:GetName().."Current"):SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
+	        _G[self:GetName().."Current"]:SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
 		self:EnableMouse(false)
 		self:EnableMouseWheel(false)
 	end
 	self.EnableSlider = function(self)
 	        self.xperlSliderEnabled = true
 	        XPerl_OptionsFrame_EnableSlider(self)
-	        getglobal(self:GetName().."Current"):SetVertexColor(0.4, 0.4, 0.80)
+	        _G[self:GetName().."Current"]:SetVertexColor(0.4, 0.4, 0.80)
 		self:EnableMouse(true)
 		self:EnableMouseWheel(true)
 	end
 
-	local low = getglobal(self:GetName().."Low")
+	local low = _G[self:GetName().."Low"]
 	if (not tonumber(low:GetText())) then
 		local min, max = self:GetMinMaxValues()
 		if (min and max) then
@@ -360,7 +360,7 @@ function XPerl_SliderSetup(self, percent)
 				max = format("%d"..PERCENT_SYMBOL, max)
 			end
 			low:SetText(min)
-			getglobal(self:GetName().."High"):SetText(max)
+			_G[self:GetName().."High"]:SetText(max)
 		end
 	end
 
@@ -450,7 +450,7 @@ local function scalingOnValueChanged(self, value)
 				self.configClick()
 			end
 		end
-		getglobal(self:GetName().."Current"):SetText(floor(value + 0.5).."%")
+		_G[self:GetName().."Current"]:SetText(floor(value + 0.5).."%")
 	end
 end
 
@@ -472,8 +472,8 @@ function XPerl_Options_RegisterScalingSlider(self, min, max)
 		max = floor(((XPerlDB and XPerlDB.maximumScale) or 1.5) * 100 + 0.5)
 	end
 
-        getglobal(self:GetName().."Low"):SetFormattedText("%d"..PERCENT_SYMBOL, min)
-        getglobal(self:GetName().."High"):SetFormattedText("%d"..PERCENT_SYMBOL, max)
+        _G[self:GetName().."Low"]:SetFormattedText("%d"..PERCENT_SYMBOL, min)
+        _G[self:GetName().."High"]:SetFormattedText("%d"..PERCENT_SYMBOL, max)
 
         self:SetMinMaxValues(min, max)
         self:SetValueStep(1)
@@ -588,8 +588,8 @@ end
 function XPerl_Options_Anchor_OnClick()
 	local obj = UIDROPDOWNMENU_OPEN_MENU
 
-	obj.varSet(XPerl_AnchorList[this:GetID()])
-	MyIndex = this:GetID()
+	obj.varSet(XPerl_AnchorList[self:GetID()])
+	MyIndex = self:GetID()
 	UIDropDownMenu_SetSelectedID(obj, MyIndex, 1)
 
 	XPerl_ProtectedCall(obj.setFunc)
@@ -607,7 +607,7 @@ end
 local CopyFrom
 local function CopySelectedSettings()
 	--ChatFrame7:AddMessage("Copying settings from "..CopyFrom)
-	--UIDropDownMenu_SetSelectedID(XPerl_Options_DropDown_LoadSettings, this:GetID(), 1)
+	--UIDropDownMenu_SetSelectedID(XPerl_Options_DropDown_LoadSettings, self:GetID(), 1)
 
 	XPerlDB = XPerl_CopyTable(CopyFrom.config)
 
@@ -636,8 +636,8 @@ function XPerl_Options_LoadSettings_OnClick()
 
 	local list = GetPlayerList()
 
-	if (this:GetID() ~= MyIndex) then
-		local entry = list[this:GetID()]
+	if (self:GetID() ~= MyIndex) then
+		local entry = list[self:GetID()]
 
 		if (entry) then
 			CopyFrom = entry
@@ -650,7 +650,7 @@ end
 function XPerl_Options_TextureSelect_Onload(self)
 
 	self.Setup = XPerl_Options_SetupFunc
-	self.scrollBar = getglobal(self:GetName().."scrollBar")
+	self.scrollBar = _G[self:GetName().."scrollBar"]
 	self.list = XPerl_AllBarTextures()
 	self.Selection = 1
 	if (self.list) then
@@ -659,8 +659,8 @@ function XPerl_Options_TextureSelect_Onload(self)
 		self.scrollBar.bar:SetValue(1)
 	end
 
-	self.UpdateFunction = function()
-		this:GetParent():SetBarColours()
+	self.UpdateFunction = function(self)
+		self:GetParent():SetBarColours()
 	end
 
 	self.SetBarColours = function(self)
@@ -672,7 +672,7 @@ function XPerl_Options_TextureSelect_Onload(self)
 			else
 				r, g, b = 0.5, 0.5, 0.5
 			end
-			local f = getglobal(self:GetName()..i)
+			local f = _G[self:GetName()..i]
 			if (f) then
 				if (i + offset + 1 > #self.list) then
 					f:Hide()
@@ -699,7 +699,7 @@ end
 function XPerl_Options_SetTabColor(self, color)
 	for i,y in pairs({"Enabled", "Disabled"}) do
 		for j,z in pairs({"Left", "Right", "Middle"}) do
-			local f = getglobal(self:GetName()..y..z)
+			local f = _G[self:GetName()..y..z]
 			--if (XPerlDB and XPerlDB.colour.gradient.enable) then
 				local c = XPerlDB.colour.gradient.s
 				f:SetVertexColor(c.r, c.g, c.b, c.a)
@@ -714,7 +714,7 @@ end
 function XPerl_Options_EnableTab(self, enable)
 	for i,y in pairs({"Enabled", "Disabled"}) do
 		for j,z in pairs({"Left", "Right", "Middle"}) do
-			local f = getglobal(self:GetName()..y..z)
+			local f = _G[self:GetName()..y..z]
 
 			if ((i == 1 and enable) or (i == 2 and not enable)) then
 				f:Show()
@@ -732,7 +732,7 @@ function XPerl_Options_InCombatChange(inCombat)
 
 	for k,v in pairs(protected) do
 		if ((k.GetFrameType or k.GetObjectType)(k) == "CheckButton") then
-			local textFrame = getglobal(k:GetName().."Text")
+			local textFrame = _G[k:GetName().."Text"]
 
 			if (inCombat) then
 				k.wasChecked = k:GetChecked()
@@ -967,7 +967,7 @@ local function SetClassNames(self)
 
 	local prefix = self:GetParent():GetParent():GetName().."_"
 	for i = 1,10 do
-		local f = getglobal(prefix.."ClassSel"..i.."_EnableText")
+		local f = _G[prefix.."ClassSel"..i.."_EnableText"]
 		if (f) then
 			local class = XPerlDB.raid.class[i].name
 			f:SetText(LOCALIZED_CLASS_NAMES_MALE[class])
@@ -1009,13 +1009,13 @@ function XPerl_Options_RaidSelectAll(self, enable)
 	local prefix = self:GetParent():GetName().."_"
 
 	for i = 1,10 do
-		local f = getglobal(prefix.."Grp"..i)
+		local f = _G[prefix.."Grp"..i]
 		if (f) then
 			f:SetChecked(enable)
 			XPerlDB.raid.group[i] = enable
 		end
 
-		f = getglobal(prefix.."ClassSel"..i.."_Enable")
+		f = _G[prefix.."ClassSel"..i.."_Enable"]
 		if (f) then
 			f:SetChecked(enable)
 			XPerlDB.raid.class[i].enable = enable
@@ -1043,8 +1043,8 @@ function XPerl_Options_SetupStatsFrames()
 	XPerl_StatsFrameSetup(XPerl_PetTarget)
 
 	for i = 1,4 do
-		XPerl_StatsFrameSetup(getglobal("XPerl_party"..i))
-		XPerl_StatsFrameSetup(getglobal("XPerl_partypet"..i), nil, 2)
+		XPerl_StatsFrameSetup(_G["XPerl_party"..i])
+		XPerl_StatsFrameSetup(_G["XPerl_partypet"..i], nil, 2)
 	end
 end
 
@@ -1234,23 +1234,23 @@ local function InterestingFrames()
 
 	if (interest == "all") then
 		for i = 1,10 do
-			tinsert(ret, getglobal("XPerl_Raid_Title"..i))
+			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	elseif (interest == "odd") then
 		for i = 1,10,2 do
-			tinsert(ret, getglobal("XPerl_Raid_Title"..i))
+			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	elseif (interest == "even") then
 		for i = 2,10,2 do
-			tinsert(ret, getglobal("XPerl_Raid_Title"..i))
+			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	elseif (interest == "first4") then
 		for i = 1,4 do
-			tinsert(ret, getglobal("XPerl_Raid_Title"..i))
+			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	elseif (interest == "last4") then
 		for i = 5,9 do
-			tinsert(ret, getglobal("XPerl_Raid_Title"..i))
+			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	end
 	return ret
@@ -2714,8 +2714,8 @@ function XPerl_Options_Custom_InitList(self, type)
 	self.type = type
 	self.start = 1
 	self.selection = 1
-	self.scrollBar = getglobal(self:GetName().."scrollBar")
-	self.scrollBar.bar = getglobal(self:GetName().."scrollBarScrollBar")
+	self.scrollBar = _G[self:GetName().."scrollBar"]
+	self.scrollBar.bar = _G[self:GetName().."scrollBarScrollBar"]
 	self.FillList = XPerl_Options_Custom_FillList
 	self.OnClick = XPerl_Options_Custom_OnClick
 	self:FillList()
@@ -2816,7 +2816,7 @@ function XPerl_Options_Custom_ScanForIcons(self)
 				if (not icon) then
 					icon = CreateFrame("Button", "XPerlOptionsCustomIcon"..iconNum, XPerl_Custom_ConfigNew_Icons, "ActionButtonTemplate")
 					self.icons.icon[iconNum] = icon
-					icon.tex = getglobal(icon:GetName().."Icon")
+					icon.tex = _G[icon:GetName().."Icon"]
 
 					icon:SetScript("OnClick",
 						function(self)

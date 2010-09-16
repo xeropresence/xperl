@@ -318,7 +318,7 @@ local function XPerl_RegisterLDB()
 	XPerl_RegisterLDB = nil
 end
 
-local function startupCheckSettings(self)
+local function startupCheckSettings(self,event)
 	playerName = UnitName("player")
 	self:UnregisterEvent(event)
 
@@ -385,7 +385,7 @@ function XPerl_Globals_OnEvent(self, event, ...)
 
 	elseif (event == "PLAYER_LOGIN") then
 		self:UnregisterEvent(event)
-		startupCheckSettings(self)
+		startupCheckSettings(self,event)
 		XPerl_MinimapButton_Init(XPerl_MinimapButton_Frame)
 		XPerl_Load_LQHLHC()			-- Load LibHealComm / LibQuickHealth
 

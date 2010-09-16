@@ -696,7 +696,7 @@ function cast:Init()
 
 	self.area:UnregisterEvent("UNIT_NAME_UPDATE")	-- Fix for WoW 2.1 UNIT_NAME_UPDATE issue
 
-	self.area = getglobal(self:GetName().."Area")
+	self.area = _G[self:GetName().."Area"]
 
 	if (config.GrowUp) then
 		self.area:SetAttribute("point", "BOTTOM")

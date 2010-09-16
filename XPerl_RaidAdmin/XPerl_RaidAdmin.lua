@@ -480,7 +480,7 @@ function XPerl_Admin_ControlsOnLoad(self)
 	        local Offset = XPerl_AdminFrame_Controls_RosterScrollBarScrollBar:GetValue() + 1
 	        for name,roster in pairs(XPerl_Admin.SavedRosters) do
 	                if (index >= Offset) then
-	                        local f = getglobal("XPerl_AdminFrame_Controls_Roster"..line)
+	                        local f = _G["XPerl_AdminFrame_Controls_Roster"..line]
 	                        if (f) then
 	                                if (name == find) then
 	                                        f:LockHighlight()
@@ -495,7 +495,7 @@ function XPerl_Admin_ControlsOnLoad(self)
 	                index = index + 1
 	        end
 	        for i = line,5 do
-	                local f = getglobal("XPerl_AdminFrame_Controls_Roster"..i)
+	                local f = _G["XPerl_AdminFrame_Controls_Roster"..i]
 	                if (f) then
 	                        f:SetText("")
 	                        f:UnlockHighlight()
@@ -524,7 +524,7 @@ function XPerl_Admin_ControlsOnLoad(self)
 	        local Offset = XPerl_AdminFrame_Controls_RosterScrollBarScrollBar:GetValue()
 	        for name,roster in pairs(XPerl_Admin.SavedRosters) do
 	                if (index - 1 >= Offset) then
-	                	local f = getglobal("XPerl_AdminFrame_Controls_Roster"..line)
+	                	local f = _G["XPerl_AdminFrame_Controls_Roster"..line]
 				if (not f) then
 					break
 				end

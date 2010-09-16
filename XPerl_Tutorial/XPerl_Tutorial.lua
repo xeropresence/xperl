@@ -62,7 +62,7 @@ function xpTut:NewTutorial(tutorialID)
 		button:SetPoint("BOTTOM", "TutorialFrameParent", "BOTTOM", 0, 0)
 	end
 	button.id = tutorialID
-	button.tooltip = XPerl_ShortProductName.." "..getglobal("XPERL_TUTORIAL_TITLE"..tutorialID)
+	button.tooltip = XPerl_ShortProductName.." ".._G["XPERL_TUTORIAL_TITLE"..tutorialID]
 	LAST_TUTORIAL_BUTTON_SHOWN = button
 	button:Show()
 	SetButtonPulse(button, 10, 0.5)
@@ -98,8 +98,8 @@ hooksecurefunc("TutorialFrame_Update",
 -- XPerl_Tutorial:Update(currentTutorial)
 function xpTut:Update(currentTutorial)
 	TutorialFrame.id = currentTutorial
-	local title = XPerl_ShortProductName.." "..getglobal("XPERL_TUTORIAL_TITLE"..currentTutorial)
-	local text = getglobal("XPERL_TUTORIAL"..currentTutorial)
+	local title = XPerl_ShortProductName.." ".._G["XPERL_TUTORIAL_TITLE"..currentTutorial]
+	local text = _G["XPERL_TUTORIAL"..currentTutorial]
 	if ( title and text) then
 		TutorialFrameTitle:SetText(title)
 		TutorialFrameText:SetText(text)
@@ -118,7 +118,7 @@ function xpTut:Update(currentTutorial)
 	local button
 	LAST_TUTORIAL_BUTTON_SHOWN = nil
 	for index, value in pairs(TUTORIALFRAME_QUEUE) do
-		button = getglobal(value[2])
+		button = _G[value[2]]
 		if ( LAST_TUTORIAL_BUTTON_SHOWN and LAST_TUTORIAL_BUTTON_SHOWN ~= button ) then
 			button:SetPoint("BOTTOM", LAST_TUTORIAL_BUTTON_SHOWN, "BOTTOM", 36, 0)
 		else

@@ -47,7 +47,7 @@
 					<OnLoad>
 						self:RegisterForClicks("AnyUp")
 						self:RegisterForDrag("LeftButton")
-						XPerl_RegisterUnitText(getglobal(self:GetName().."text"))
+						XPerl_RegisterUnitText(_G[self:GetName().."text"])
 						self:SetScript("OnEnter", function(self) XPerl_Unit_OnEnter(self:GetParent()) end)
 						self:SetScript("OnLeave", function(self) XPerl_Unit_OnLeave(self:GetParent()) end)
 					</OnLoad>
@@ -179,7 +179,7 @@
 				</Layers>
 				<Scripts>
 					<OnLoad>
-						XPerl_RegisterUnitText(getglobal(self:GetName().."text"))
+						XPerl_RegisterUnitText(_G[self:GetName().."text"])
 					</OnLoad>
 				</Scripts>
 			</Frame>

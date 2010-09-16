@@ -256,7 +256,7 @@ function XPerl_Player_Pet_SetHappiness(self)
 	if (pconf.happiness.enable and (not pconf.happiness.onlyWhenSad or happiness < 3)) then
 		self.happyFrame:Show()
 
-		icon.tooltip = getglobal("PET_HAPPINESS"..happiness)
+		icon.tooltip = _G["PET_HAPPINESS"..happiness]
 		icon.tooltipDamage = format(PET_DAMAGE_PERCENTAGE, damagePercentage)
 
 		if (pconf.happiness.flashWhenSad and happiness < 3) then

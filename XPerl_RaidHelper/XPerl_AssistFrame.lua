@@ -190,7 +190,7 @@ end
 -- FillList
 local function FillList(List, cFrame, title)
 	local text = XPerl_MakeAssistsString(List, title)
-	getglobal("XPerl_Target_Assists_ScrollChild_"..cFrame.."Text"):SetText(text)
+	_G["XPerl_Target_Assists_ScrollChild_"..cFrame.."Text"]:SetText(text)
 end
 
 -- XPerl_ShowAssists()
@@ -341,8 +341,8 @@ end
 
 -- XPerl_Assists_OnUpdate
 local UpdateTime = 0
-function XPerl_Assists_OnUpdate()
-
+function XPerl_Assists_OnUpdate(self, arg1)
+	
 	UpdateTime = arg1 + UpdateTime
 	if (doUpdate or UpdateTime >= 0.2) then
 		if (doUpdate or #enemyUnitList > 0) then

@@ -24,6 +24,7 @@ local UnitPowerType = UnitPowerType
 local XPerl_SetHealthBar = XPerl_SetHealthBar
 
 local XPerl_Player_InitDK
+local XPerl_Player_InitWarlock
 
 local XPerl_PlayerStatus_OnUpdate
 local XPerl_Player_HighlightCallback
@@ -67,6 +68,11 @@ function XPerl_Player_OnLoad(self)
 
 	XPerl_Player_InitDK(self)
 	XPerl_Player_SetupDK(self)
+
+	--Only initalize this function if it's cataclym client.
+	if is_cata then
+		XPerl_Player_InitWarlock(self)
+	end
 
 	XPerl_RegisterHighlight(self.highlight, 3)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
@@ -273,6 +279,8 @@ local function XPerl_Player_UpdateRep(self)
 			local perc = (value * 100) / max
 			rb.percent:SetFormattedText(perc1F, perc)
 
+			rb.tex:SetTexCoord(0, perc/100, 0, 1)
+
 			if (max == 1) then
 				rb.text:SetText(name)
 			else
@@ -332,11 +340,12 @@ local function XPerl_Player_UpdateXP(self)
 
 			xpBar:SetStatusBarColor(color.r, color.g, color.b, 1)
 			xpBar.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
+			xpBar.tex:SetTexCoord(0, (playerxp * 100 / playerxpmax), 0, 1)
 
 			restBar:SetValue(playerxp + playerxprest)
 			restBar:SetStatusBarColor(color.r, color.g, color.b, 0.5)
+			restBar.tex:SetTexCoord(0, (playerxp * 100 / playerxpmax), 0, 1)
 			restBar.bg:SetVertexColor(color.r, color.g, color.b, 0.5)
-
 			xpBar.percent:SetFormattedText(percD, (playerxp * 100) / playerxpmax)
 		end
 	end
@@ -417,6 +426,9 @@ local function XPerl_Player_UpdateMana(self)
 	else
 		mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
 	end
+	
+	mb.tex:SetTexCoord(0, max(0, (playermana / playermanamax)), 0, 1)
+	
 	if (not self.statsFrame.greyMana) then
 		if (pconf.values) then
 			mb.text:Show()
@@ -598,7 +610,7 @@ function XPerl_Player_OnEvent(self, event, arg1, ...)
 			XPerl_Player_Events[event](self, ...)
 		end
 	else
-		XPerl_Player_Events[event](self, arg1, ...)
+		XPerl_Player_Events[event](self, event, arg1, ...)
 	end
 end
 
@@ -670,7 +682,7 @@ end
 -- VARIABLES_LOADED
 function XPerl_Player_Events:VARIABLES_LOADED()
 	self.doubleCheckAFK = 2		-- Check during 2nd UPDATE_FACTION, which are the last guarenteed events to come after logging in
-	self:UnregisterEvent(event)
+	self:UnregisterEvent("VARIABLES_LOADED")
 
 	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBERS_CHANGED", "PARTY_LEADER_CHANGED",
 			"PARTY_LOOT_METHOD_CHANGED", "RAID_ROSTER_UPDATE", "PLAYER_UPDATE_RESTING", "PLAYER_REGEN_ENABLED",
@@ -678,8 +690,8 @@ function XPerl_Player_Events:VARIABLES_LOADED()
 			"UPDATE_FACTION", "UNIT_AURA", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
 			"UNIT_COMBAT"}
 
-	for i,event in pairs(events) do
-		self:RegisterEvent(event)
+	for i,eventE in pairs(events) do
+		self:RegisterEvent(eventE)
 	end
 
 	XPerl_Player_Events.VARIABLES_LOADED = nil
@@ -1166,6 +1178,47 @@ function XPerl_Player_Set_Bits(self)
 	UpdateAssignedRoles(self)
 end
 
+-- XPerl_Player_InitWarlock
+function XPerl_Player_InitWarlock(self)
+	local myClass = select(2,UnitClass("player"))
+	
+	if myClass == "WARLOCK"  then
+		self.shards= CreateFrame("Frame", "XPerl_Runes", self)
+		
+		self.shards:SetMovable(true)
+		self.shards:RegisterForDrag("LeftButton")
+		self.shards:SetScript("OnDragStart",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StartMoving()
+				end
+			end)
+		self.shards:SetScript("OnDragStop",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StopMovingOrSizing()
+					XPerl_SavePosition(self)
+				end
+			end)
+
+		self.shards.unit = ShardBarFrame:GetParent().unit
+			
+		ShardBarFrame:SetParent(self.shards)
+		ShardBarFrame:ClearAllPoints()
+		ShardBarFrame:SetPoint("TOPLEFT", 3, 0)
+		ShardBarFrame:SetPoint("BOTTOMRIGHT", 15, 5)
+		ShardBarFrame:Show()
+				
+		self.shards:Show()
+		
+		self.shards:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+		self.shards:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20)
+
+	end
+	
+	XPerl_Player_InitWarlock = nil
+end
+
 -- XPerl_Player_InitDK
 function XPerl_Player_InitDK(self)
 	if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
@@ -1215,14 +1268,12 @@ function XPerl_Player_InitDK(self)
 		RuneFrame:SetPoint("TOPLEFT", 5, -5)
 		RuneFrame:SetPoint("BOTTOMRIGHT", -5, 5)
 
-		for i = 1,6 do
-			local rune = RuneFrame.runes[i]
-			if (rune) then
-				rune:Hide()
-			end
-		end
-
-		RuneFrame.runes = {}
+		RuneButtonIndividual1:Hide()
+		RuneButtonIndividual2:Hide()
+		RuneButtonIndividual3:Hide()
+		RuneButtonIndividual4:Hide()
+		RuneButtonIndividual5:Hide()
+		RuneButtonIndividual6:Hide()
 
 		local prev
 		local idSwitch = {1, 2, 5, 6, 3, 4}		-- Non sequential rune IDs.. gg
@@ -1241,6 +1292,7 @@ function XPerl_Player_InitDK(self)
 			end
 			prev = rune
 		end
+
 	end
 	
 	XPerl_Player_InitDK = nil
@@ -1253,6 +1305,7 @@ function XPerl_Player_SetupDK(self)
 			self.runes:Show()
 
 			self.runes:ClearAllPoints()
+
 			if (not pconf or pconf.dockRunes) then
 				self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 				self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
@@ -1264,7 +1317,7 @@ function XPerl_Player_SetupDK(self)
 			end
 
 			for i = 1,6 do
-				local rune = getglobal("XPerl_RuneButtonIndividual"..i)
+				local rune = _G["XPerl_RuneButtonIndividual"..i]
 				self.runes.list[i] = rune
 				rune:ClearAllPoints()
 				rune:SetWidth(22)
@@ -1285,6 +1338,7 @@ function XPerl_Player_SetupDK(self)
 				end
 				prev = rune
 			end
+
 		else
 			self.runes:Hide()
 		end

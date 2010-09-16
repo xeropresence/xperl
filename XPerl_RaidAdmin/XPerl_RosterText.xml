@@ -75,7 +75,7 @@
 		<Size><AbsDimension x="50" y="22"/></Size>
 		<Scripts>
 			<OnShow>
-				self.text = getglobal(self:GetName().."Text")
+				self.text = _G[self:GetName().."Text"]
 				if (self:GetID() == 0) then
 					self.text:SetText(XPERL_ROSTERTEXT_TOGGLE)
 					self.tooltipText = XPERL_ROSTERTEXT_TOGGLE_DESC

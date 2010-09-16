@@ -634,7 +634,7 @@ local old_CT_RA_IsSendingWithVersion
 
 -- VARIABLES_LOADED
 function Events:VARIABLES_LOADED()
-	this:UnregisterEvent(event)
+	self:UnregisterEvent("VARIABLES_LOADED")
 
 	conf = XPerlConfigHelper
 

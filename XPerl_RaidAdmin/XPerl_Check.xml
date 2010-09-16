@@ -127,7 +127,7 @@
 					<OnLeave>
 						GameTooltip:Hide()
 						for k,v in pairs(XPerl_CheckItems) do
-							if (v.link == getglobal(self:GetParent():GetName().."Name"):GetText()) then
+							if (v.link == _G[self:GetParent():GetName().."Name"]:GetText()) then
 								if (not v.selected) then
 									self:GetParent():UnlockHighlight()
 								end
@@ -504,8 +504,8 @@
 				</Frames>
 				<Scripts>
 					<OnLoad>
-						getglobal(self:GetName().."Name"):SetText(XPERL_CHECK_NAME)
-						getglobal(self:GetName().."Count"):SetText("#")
+						_G[self:GetName().."Name"]:SetText(XPERL_CHECK_NAME)
+						_G[self:GetName().."Count"]:SetText("#")
 					</OnLoad>
 				</Scripts>
 			</Button>
@@ -1309,10 +1309,10 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								XPerl_Check_Channels_OnLoad()
+								XPerl_Check_Channels_OnLoad(self)
 							</OnLoad>
 							<OnShow>
-								XPerl_Check_Channels_OnLoad()
+								XPerl_Check_Channels_OnLoad(self)
 							</OnShow>
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)

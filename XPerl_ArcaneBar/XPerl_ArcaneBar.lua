@@ -166,7 +166,7 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1)
 		end
 
 	elseif (event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_INTERRUPTED") then
-		if (this:IsShown() and not ActiveCasting(self)) then
+		if (self:IsShown() and not ActiveCasting(self)) then
 			if (event == "UNIT_SPELLCAST_FAILED") then
 				self.spellText:SetText(FAILED)
 			else
@@ -283,12 +283,12 @@ function XPerl_ArcaneBar_OnUpdate(self, elapsed)
 	local text = format("%.1f", current_time)
 
 	self.castTimeText:SetText(text)
-
+        
 	if (self.casting) then
 		local status = getTime
 		if (status > self.maxValue) then
 			status = self.maxValue
-
+			self.tex:SetTexCoord(0,1,0,1)
 			self.casting = nil
 			self.barFlash:SetAlpha(0.0)
 			self.barFlash:Show()
@@ -299,6 +299,8 @@ function XPerl_ArcaneBar_OnUpdate(self, elapsed)
 			self.fadeOut = 1
 			return
 		end
+		
+		self.tex:SetTexCoord(0, (status - self.startTime) / (self.maxValue - self.startTime), 0, 1)
 		self:SetValue(status)
 		self.barFlash:Hide()
 
@@ -326,7 +328,8 @@ function XPerl_ArcaneBar_OnUpdate(self, elapsed)
 			self.fadeOut = 1
 			return
 		end
-		local barValue = self.startTime + (self.endTime - time)
+		local barValue = self.startTime + (self.endTime - time)		
+		self.tex:SetTexCoord(0, (barValue - self.startTime) / (self.endTime - self.startTime), 0, 1)
 		self:SetValue( barValue )
 		self.barFlash:Hide()
 

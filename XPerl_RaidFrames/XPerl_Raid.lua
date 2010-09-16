@@ -87,8 +87,8 @@ function XPerl_Raid_OnLoad(self)
 	end
 
 	for i = 1,WoWclassCount do			-- Fix for WoW 2.1 UNIT_NAME_UPDATE issue
-		getglobal("XPerl_Raid_Grp"..i):UnregisterEvent("UNIT_NAME_UPDATE")
-		tinsert(raidHeaders, getglobal(XPERL_RAIDGRP_PREFIX..i))
+		_G["XPerl_Raid_Grp"..i]:UnregisterEvent("UNIT_NAME_UPDATE")
+		tinsert(raidHeaders, _G[XPERL_RAIDGRP_PREFIX..i])
 	end
 
 	self.time = 0
@@ -114,8 +114,8 @@ end
 -- XPerl_Raid_HeaderOnLoad
 function XPerl_Raid_HeaderOnLoad(self)
 	self:RegisterForDrag("LeftButton")
-	self.text = getglobal(self:GetName().."TitleText")
-	self.virtual = getglobal(self:GetName().."Virtual")
+	self.text = _G[self:GetName().."TitleText"]
+	self.virtual = _G[self:GetName().."Virtual"]
 	XPerl_RegisterUnitText(self.text)
 	--XPerl_SavePosition(self, true)
 end
@@ -221,9 +221,9 @@ function XPerl_RaidFrameDropDown_Initialize(self, ct)
 	if (DropDownList1.numButtons == 0 and (IsRaidOfficer() or (ct and CT_RATab_AutoPromotions))) then
 		titleDone = true
 		info = UIDropDownMenu_CreateInfo()
-		info.text = this.name
-		if (this.server) then
-			info.text = info.text.."-"..this.server
+		info.text = self.name
+		if (self.server) then
+			info.text = info.text.."-"..self.server
 		end
 		info.isTitle = 1
 		info.notCheckable = 1
@@ -257,8 +257,8 @@ function XPerl_RaidFrameDropDown_Initialize(self, ct)
 	if (ct and CT_RATab_AutoPromotions) then
 		info = UIDropDownMenu_CreateInfo()
 		info.text = XPERL_RAID_AUTOPROMOTE
-		info.checked = CT_RATab_AutoPromotions[this.name]	-- Must be 'this'
-		info.value = this.id					-- Must be 'this'
+		info.checked = CT_RATab_AutoPromotions[self.name]	-- Must be 'this'
+		info.value = self.id					-- Must be 'this'
 		info.func = CT_RATab_AutoPromote_OnClick
 		UIDropDownMenu_AddButton(info)
 	end
@@ -310,6 +310,8 @@ local function XPerl_Raid_UpdateName(self)
 			return
 		end
 	end
+
+
 
 	local name = UnitName(partyid)
 	self.lastName, self.lastID = name, partyid -- These stored, so we can at least make a small effort in reducing workload on attribute changes.
@@ -433,6 +435,8 @@ local spiritOfRedemption = GetSpellInfo(27827)
 
 -- XPerl_Raid_UpdateHealth
 function XPerl_Raid_UpdateHealth(self)
+
+
 	local partyid = self.partyid
 	if (not partyid) then
 		return
@@ -875,12 +879,18 @@ local function XPerl_Raid_UpdateCombat(self)
 end
 
 -- XPerl_Raid_UpdatePlayerFlags(self)
-local function XPerl_Raid_UpdatePlayerFlags(self, partyid)
+local function XPerl_Raid_UpdatePlayerFlags(self, partyid,...)
+	
 	if (not partyid) then
+
 		partyid = self:GetAttribute("unit")
 	end
+
+
+
 	local f = FrameArray[partyid]
 	if (f) then
+
 		self = f
 
 		local unitName = UnitName(partyid)
@@ -1142,7 +1152,7 @@ end
 -- PLAYER_ENTERING_WORLD
 function XPerl_Raid_Events:PLAYER_ENTERING_WORLD()
 	--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-
+	
 	XPerl_Raid_ChangeAttributes()
 	XPerl_RaidTitles()
 
@@ -1206,8 +1216,8 @@ end
 
 XPerl_Raid_Events.UNIT_DYNAMIC_FLAGS = XPerl_Raid_Events.UNIT_FLAGS
 
-function XPerl_Raid_Events:PLAYER_FLAGS_CHANGED(unit)
-	XPerl_Raid_UpdatePlayerFlags(self, unit)
+function XPerl_Raid_Events:PLAYER_FLAGS_CHANGED(unit,...)
+	XPerl_Raid_UpdatePlayerFlags(self, unit,...)
 end
 
 -- UNIT_FACTION
@@ -1382,7 +1392,7 @@ do
 			tip = CreateFrame("GameTooltip", "XPerlDurCheckTooltip")
 		end
 
-		tip:SetOwner(this, "ANCHOR_RIGHT")
+		tip:SetOwner(self, "ANCHOR_RIGHT")
 		tip:ClearAllPoints()
 		tip:SetPoint("TOP", UIParent, "BOTTOM", -200, 0)
 		for i = 1, 18 do
@@ -1393,7 +1403,7 @@ do
 			tip:SetInventoryItem("player", i)
 
 			for j = 1,tip:NumLines() do
-				local line = getglobal(tip:GetName().."TextLeft"..j)
+				local line = _G[tip:GetName().."TextLeft"..j]
 				if (line) then
 					local text = line:GetText()
 					if (text) then
@@ -1625,7 +1635,7 @@ end
 -- XPerl_ScaleRaid
 function XPerl_ScaleRaid()
 	for frame = 1,WoWclassCount do
-		local f = getglobal("XPerl_Raid_Title"..frame)
+		local f = _G["XPerl_Raid_Title"..frame]
 		if (f) then
 			f:SetScale(rconf.scale)
 		end
@@ -1644,7 +1654,7 @@ function XPerl_RaidTitles()
 	local c
 	for i = 1,WoWclassCount do
 		local confClass = rconf.class[i].name
-		local frame = getglobal("XPerl_Raid_Title"..i)
+		local frame = _G["XPerl_Raid_Title"..i]
 		local titleFrame = frame.text
 		local virtualFrame = frame.virtual
 
@@ -1733,7 +1743,7 @@ end
 -- XPerl_EnableRaidMouse()
 function XPerl_EnableRaidMouse()
 	for i = 1,WoWclassCount do
-		local frame = getglobal("XPerl_Raid_Title"..i)
+		local frame = _G["XPerl_Raid_Title"..i]
 		if (XPerlLocked == 0) then
 			frame:EnableMouse(true)
 		else
@@ -2011,7 +2021,7 @@ end
 -- initialConfigFunction
 local function initialConfigFunction(self)
 	-- This is the only place we're allowed to set attributes whilst in combat
-
+	
 	self:SetScript("OnAttributeChanged", onAttrChanged)
 	XPerl_RegisterClickCastFrame(self)
 	XPerl_RegisterClickCastFrame(self.nameFrame)
@@ -2158,7 +2168,7 @@ function XPerl_Raid_Set_Bits(self)
 	XPerl_ScaleRaid()
 
 	for i = 1,WoWclassCount do
-		XPerl_SavePosition(getglobal("XPerl_Raid_Title"..i), true)
+		XPerl_SavePosition(_G["XPerl_Raid_Title"..i], true)
 	end
 
 	for i,frame in pairs(FrameArray) do

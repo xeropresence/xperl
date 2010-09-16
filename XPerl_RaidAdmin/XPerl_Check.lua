@@ -522,7 +522,7 @@ end
 
 -- GetCursorItem
 local function GetCursorItemLink()
-	local id = this:GetID() + XPerl_CheckListItemsScrollBar.offset
+	local id = self:GetID() + XPerl_CheckListItemsScrollBar.offset
 	local item = XPerl_CheckItems[id]
 	if (item and not item.fixed) then
 		return item.link
@@ -542,10 +542,10 @@ local function SelectClickedTickItem()
 	end
 
 	local id
-	if ((this.GetFrameType or this.GetObjectType)(this) == "CheckButton") then
-		id = this:GetParent():GetID()
+	if ((self.GetFrameType or self.GetObjectType)(self) == "CheckButton") then
+		id = self:GetParent():GetID()
 	else
-		id = this:GetID()
+		id = self:GetID()
 	end
 
 	if (id and id > 0) then
@@ -699,12 +699,12 @@ function XPerl_Check_UpdateItemList()
 			break
 		end
 		if (i >= XPerl_CheckListItemsScrollBar.offset) then
-			local frame = getglobal("XPerl_CheckListItems"..index)
-			local nameFrame = getglobal("XPerl_CheckListItems"..index.."Name")
-			local countFrame = getglobal("XPerl_CheckListItems"..index.."Count")
-			local iconFrame = getglobal("XPerl_CheckListItems"..index.."Icon")
-			local gaugeFrame = getglobal("XPerl_CheckListItems"..index.."Gauge")
-			local tickFrame = getglobal("XPerl_CheckListItems"..index.."Tick")
+			local frame = _G["XPerl_CheckListItems"..index]
+			local nameFrame = _G["XPerl_CheckListItems"..index.."Name"]
+			local countFrame = _G["XPerl_CheckListItems"..index.."Count"]
+			local iconFrame = _G["XPerl_CheckListItems"..index.."Icon"]
+			local gaugeFrame = _G["XPerl_CheckListItems"..index.."Gauge"]
+			local tickFrame = _G["XPerl_CheckListItems"..index.."Tick"]
 
 			frame:Show()
 			if (v.selected) then
@@ -801,7 +801,7 @@ function XPerl_Check_UpdateItemList()
 	end
 
 	for i = index,ITEMLISTSIZE do
-			getglobal("XPerl_CheckListItems"..i):Hide()
+			_G["XPerl_CheckListItems"..i]:Hide()
 	end
 
 	if (FauxScrollFrame_Update(XPerl_CheckListItemsScrollBar, #XPerl_CheckItems, ITEMLISTSIZE, 1)) then
@@ -887,8 +887,8 @@ function XPerl_Check_MakePlayerList()
 	local function ShowResists(show)
 		local r = {"FR", "FRR", "NR", "SR", "AR"}
 		for k,v in pairs(r) do
-			local title = getglobal("XPerl_CheckListPlayersTitle"..v)
-			local total = getglobal("XPerl_CheckListPlayersTotals"..v)
+			local title = _G["XPerl_CheckListPlayersTitle"..v]
+			local total = _G["XPerl_CheckListPlayersTotals"..v]
 			if (show) then
 				title:Show()
 				total:Show()
@@ -1079,16 +1079,16 @@ function XPerl_Check_UpdatePlayerList()
 		end
 
 		if (i >= XPerl_CheckListPlayersScrollBar.offset + 1 and index <= PLAYERLISTSIZE) then
-			local frame = getglobal("XPerl_CheckListPlayers"..index)
-			local iconFrame = getglobal("XPerl_CheckListPlayers"..index.."Icon")
-			local nameFrame = getglobal("XPerl_CheckListPlayers"..index.."Name")
-			local countFrame = getglobal("XPerl_CheckListPlayers"..index.."Count")
-			local resFrameFR = getglobal("XPerl_CheckListPlayers"..index.."FR")
-			local resFrameFRR = getglobal("XPerl_CheckListPlayers"..index.."FRR")
-			local resFrameNR = getglobal("XPerl_CheckListPlayers"..index.."NR")
-			local resFrameSR = getglobal("XPerl_CheckListPlayers"..index.."SR")
-			local resFrameAR = getglobal("XPerl_CheckListPlayers"..index.."AR")
-			local resFrameEquiped = getglobal("XPerl_CheckListPlayers"..index.."Equiped")
+			local frame = _G["XPerl_CheckListPlayers"..index]
+			local iconFrame = _G["XPerl_CheckListPlayers"..index.."Icon"]
+			local nameFrame = _G["XPerl_CheckListPlayers"..index.."Name"]
+			local countFrame = _G["XPerl_CheckListPlayers"..index.."Count"]
+			local resFrameFR = _G["XPerl_CheckListPlayers"..index.."FR"]
+			local resFrameFRR = _G["XPerl_CheckListPlayers"..index.."FRR"]
+			local resFrameNR = _G["XPerl_CheckListPlayers"..index.."NR"]
+			local resFrameSR = _G["XPerl_CheckListPlayers"..index.."SR"]
+			local resFrameAR = _G["XPerl_CheckListPlayers"..index.."AR"]
+			local resFrameEquiped = _G["XPerl_CheckListPlayers"..index.."Equiped"]
 
 			if (v.name == SelectedPlayer) then
 				frame:LockHighlight()
@@ -1108,7 +1108,7 @@ function XPerl_Check_UpdatePlayerList()
 				iconFrame:Hide()
 			end
 
-			getglobal("XPerl_CheckListPlayers"..index):Show()
+			_G["XPerl_CheckListPlayers"..index]:Show()
 
 			local function ShowScanIcon()
 				if (XPerl_ActiveScan) then
@@ -1243,7 +1243,7 @@ function XPerl_Check_UpdatePlayerList()
 	end
 
 	for i = index,PLAYERLISTSIZE do
-		getglobal("XPerl_CheckListPlayers"..i):Hide()
+		_G["XPerl_CheckListPlayers"..i]:Hide()
 	end
 
 	if (resType == "dur") then
@@ -1314,12 +1314,12 @@ end
 function XPerl_Check_OnEnter()
 
 	local f, anc
-	if ((this.GetFrameType or this.GetObjectType)(this) == "CheckButton") then
-		f = getglobal(this:GetParent():GetName().."Name")
-		anc = this:GetParent()
+	if ((self.GetFrameType or self.GetObjectType)(self) == "CheckButton") then
+		f = _G[self:GetParent():GetName().."Name"]
+		anc = self:GetParent()
 	else
-		f = getglobal(this:GetName().."Name")
-		anc = this
+		f = _G[self:GetName().."Name"]
+		anc = self
 	end
 	if (f) then
 		local link = f:GetText()
@@ -1344,9 +1344,9 @@ end
 
 -- XPerl_Check_OnClickStart
 function XPerl_Check_OnClickTick()
-	local id = this:GetParent():GetID() + XPerl_CheckListItemsScrollBar.offset
+	local id = self:GetParent():GetID() + XPerl_CheckListItemsScrollBar.offset
 	if (XPerl_CheckItems[id]) then
-		XPerl_CheckItems[id].ticked = this:GetChecked()
+		XPerl_CheckItems[id].ticked = self:GetChecked()
 	end
 	XPerl_Check_ValidateButtons()
 end
@@ -1782,7 +1782,7 @@ function XPerl_Check_Report(showNames)
 							if (ActiveScanTotals and ActiveScanTotals.missing == 0) then
 								showTitle = link..XPERL_CHECK_REPORT_EQUIPED
 							else
-								showTitle = link..getglobal("XPERL_CHECK_REPORT_WITH"..equipable)
+								showTitle = link.._G["XPERL_CHECK_REPORT_WITH"..equipable]
 							end
 							if (#with > 0) then
 								showList = with
@@ -1791,7 +1791,7 @@ function XPerl_Check_Report(showNames)
 							if (ActiveScanTotals and ActiveScanTotals.missing == 0) then
 								showTitle = link..XPERL_CHECK_REPORT_NOTEQUIPED
 							else
-								showTitle = link..getglobal("XPERL_CHECK_REPORT_WITHOUT"..equipable)
+								showTitle = link.._G["XPERL_CHECK_REPORT_WITHOUT"..equipable]
 							end
 							if (#without > 0) then
 								showList = without
@@ -1867,7 +1867,7 @@ end
 -- XPerl_Check_PlayerOnClick
 function XPerl_Check_PlayerOnClick(button)
 
-	local index = this:GetID() + XPerl_CheckListPlayersScrollBar.offset
+	local index = self:GetID() + XPerl_CheckListPlayersScrollBar.offset
 
 	if (index < 1 or index > #XPerl_PlayerList) then
 		return
@@ -2041,7 +2041,7 @@ function XPerl_GetChannelList()
 	local cList = {}
 	local l = {"RAID", "OFFICER", "GUILD", "PARTY", "SAY"}
 	for k,v in pairs(l) do
-		tinsert(cList, {display = getglobal("CHAT_MSG_"..v), channel = v, colour = GetChatColour(v)})
+		tinsert(cList, {display = _G["CHAT_MSG_"..v], channel = v, colour = GetChatColour(v)})
 	end
 
 	for i = 1,10 do
@@ -2056,14 +2056,14 @@ end
 end
 
 -- XPerl_Check_Channels_OnLoad
-function XPerl_Check_Channels_OnLoad()
+function XPerl_Check_Channels_OnLoad(self)
 	if (not outputChannelSelection) then
 		outputChannelSelection = 1
 	end
 
-	this.displayMode = "MENU"
-	UIDropDownMenu_Initialize(this, XPerl_Check_Channels_Initialize)
-	UIDropDownMenu_SetSelectedID(this, outputChannelSelection)
+	self.displayMode = "MENU"
+	UIDropDownMenu_Initialize(self, XPerl_Check_Channels_Initialize)
+	UIDropDownMenu_SetSelectedID(self, outputChannelSelection)
 	UIDropDownMenu_SetWidth(XPerl_CheckButtonChannel, 100)
 	XPerl_CheckButtonChannelText:SetTextColor(unpack(outputChannelColour))
 end

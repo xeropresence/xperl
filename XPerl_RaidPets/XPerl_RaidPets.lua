@@ -395,7 +395,7 @@ function XPerl_RaidPets_Align()
 		end
 
 		if (lastUsed > 0) then
-			local relative = getglobal("XPerl_Raid_Title"..lastUsed)
+			local relative = _G["XPerl_Raid_Title"..lastUsed]
 			if (relative) then
 				XPerl_Raid_TitlePets:SetPoint("TOPLEFT", relative, "TOPRIGHT", raidconf.spacing, 0)
 				XPerl_Raid_TitlePets:SetUserPlaced(true)

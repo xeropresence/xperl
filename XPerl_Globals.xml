@@ -16,19 +16,19 @@
 	<Button name="XPerl_BasicButton" virtual="true">
 		<Scripts>
 			<OnEnter>
-				if (this.tooltipText) then
-					local str1 = getglobal(this.tooltipText)
+				if (self.tooltipText) then
+					local str1 = _G[self.tooltipText]
 					local str2
 					if (not str1) then
-						str1 = getglobal(this.tooltipText.."1")
-						str2 = getglobal(this.tooltipText.."2")
+						str1 = _G[self.tooltipText.."1"]
+						str2 = _G[self.tooltipText.."2"]
 					end
 					if (not str1) then
-						str1 = this.tooltipText
+						str1 = self.tooltipText
 						str2 = nil
 					end
 
-					GameTooltip:SetOwner(this, "ANCHOR_RIGHT")
+					GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 
 					if (str2) then
 						GameTooltip:SetText(str1, HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
@@ -207,7 +207,7 @@
 					<OnLoad>
 						XPerl_SetChildMembers(self)
 						XPerl_RegisterBar(self)
-						self:SetFrameLevel(getglobal(self:GetParent():GetName().."healthBar"):GetFrameLevel() - 1)
+						self:SetFrameLevel(_G[self:GetParent():GetName().."healthBar"]:GetFrameLevel() - 1)
 					</OnLoad>
 				</Scripts>
 			</StatusBar>
@@ -366,7 +366,7 @@
 				XPerl_SetChildMembers(self)
 
 				local p = self:GetParent()
-				local f = getglobal(p:GetName().."statsFrame")
+				local f = _G[p:GetName().."statsFrame"]
 				if (f) then
 					self:SetFrameLevel(f:GetFrameLevel() + 1)
 				end
