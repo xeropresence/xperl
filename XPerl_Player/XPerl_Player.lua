@@ -1286,13 +1286,25 @@ function XPerl_Player_InitDK(self)
 		RuneFrame:SetPoint("TOPLEFT", 5, -5)
 		RuneFrame:SetPoint("BOTTOMRIGHT", -5, 5)
 
-		RuneButtonIndividual1:Hide()
-		RuneButtonIndividual2:Hide()
-		RuneButtonIndividual3:Hide()
-		RuneButtonIndividual4:Hide()
-		RuneButtonIndividual5:Hide()
-		RuneButtonIndividual6:Hide()
-
+		-- If client is Cata 4.0 or later, use new code.
+		if select(4, _G.GetBuildInfo()) >= 40000 then
+				RuneButtonIndividual1:Hide()
+				RuneButtonIndividual2:Hide()
+				RuneButtonIndividual3:Hide()
+				RuneButtonIndividual4:Hide()
+				RuneButtonIndividual5:Hide()
+				RuneButtonIndividual6:Hide()
+		
+		else
+		-- Else use 3.x code instead, make sure it didn't display nothing on 3.x.
+				for i = 1,6 do
+						local rune = RuneFrame.runes[i]
+						if (rune) then
+								rune:Hide()
+						end
+				end
+		RuneFrame.runes = {}
+		end
 		local prev
 		local idSwitch = {1, 2, 5, 6, 3, 4}		-- Non sequential rune IDs.. gg
 		for i = 1,6 do
