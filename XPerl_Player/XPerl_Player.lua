@@ -1297,13 +1297,13 @@ function XPerl_Player_InitDK(self)
 		
 		else
 		-- Else use 3.x code instead, make sure it didn't display nothing on 3.x.
-				for i = 1,6 do
-						local rune = RuneFrame.runes[i]
-						if (rune) then
-								rune:Hide()
-						end
+			for i = 1,6 do
+				local rune = RuneFrame.runes[i]
+				if (rune) then
+					rune:Hide()
 				end
-		RuneFrame.runes = {}
+			end
+			RuneFrame.runes = {}
 		end
 
 		local prev
