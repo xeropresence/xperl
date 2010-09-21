@@ -82,7 +82,7 @@
 
 				<Scripts>
 					<OnLoad>
-						this.SetButtonTex = function()
+						self.SetButtonTex = function()
 							local tex = XPerlAssistPin:GetNormalTexture()
 							if (XPerlConfigHelper.AssistPinned) then
 								tex:SetTexCoord(0.5, 0.96875, 0, 0.453125)
@@ -103,11 +103,11 @@
 								tex:SetTexCoord(0, 0.46875, 0.5, 0.953125)
 							end
 						end
-						this.tooltipText = XPERL_BUTTON_HELPER_PIN
+						self.tooltipText = XPERL_BUTTON_HELPER_PIN
 					</OnLoad>
 					<OnClick>
 						XPerlConfigHelper.AssistPinned = not XPerlConfigHelper.AssistPinned
-						this:SetButtonTex()
+						self:SetButtonTex()
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -210,7 +210,7 @@
 	<Frame>
 		<Scripts>
 			<OnLoad>
-				this:SetScript("OnUpdate", XPerl_Assists_OnUpdate)
+				self:SetScript("OnUpdate", XPerl_Assists_OnUpdate)
 			</OnLoad>
 		</Scripts>
 	</Frame>
@@ -268,7 +268,7 @@
 
 				local t = XPerl_MakeAssistsString(XPerl_Assists_Frame.targetting, title)
 				t = "|c00FFFFFF"..t.."\r|c009F6000"..XPERL_TOOLTIP_HELP
-				GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
+				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
 				GameTooltip:SetText(t)
 				GameTooltip:Show()
 			</OnEnter>
@@ -319,7 +319,7 @@
 			<OnEnter>
 				local t = XPerl_MakeAssistsString(XPerl_Assists_Frame.assists, XPERL_TOOLTIP_ASSISTING)
 				t = "|c00FFFFFF"..t.."\r|c009F6000"..XPERL_TOOLTIP_HELP
-				GameTooltip:SetOwner(this, "ANCHOR_BOTTOMRIGHT")
+				GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
 				GameTooltip:SetText(t)
 				GameTooltip:Show()
 			</OnEnter>
