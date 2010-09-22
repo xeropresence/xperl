@@ -64,7 +64,7 @@ local function getRankAmount(self, spellId)
 	end
 end
 
-local shieldSpells = {
+local absorbSpells = {
 	[GetSpellInfo(11426)] = {			-- Ice Barrier
 		ranks = {
 			[11426]	= 438,				-- Spell IDs and amounts per rank
@@ -1442,9 +1442,9 @@ end
 function xpHigh.clEvents:SPELL_AURA_APPLIED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, auraType)
 	if (conf.highlight.SHIELD) then
 		if ((srcGUID == dstGUID or srcGUID == playerGUID or dstGUID == playerGUID) and band(dstFlags, dstMask) ~= 0) then
-			local def = shieldSpells[spellName]
+			local def = absorbSpells[spellName]
 			if (not def) then
-				def = shieldSpells[spellId]
+				def = absorbSpells[spellId]
 			end
 			if (def) then
 				local rankAmount = def:GetRankAmount(spellId)
@@ -1484,9 +1484,9 @@ xpHigh.clEvents.SPELL_AURA_REFRESH = xpHigh.clEvents.SPELL_AURA_APPLIED
 function xpHigh.clEvents:SPELL_AURA_REMOVED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, spellId, spellName, spellSchool, auraType, ...)
 	if (conf.highlight.SHIELD) then
 		if (band(dstFlags, dstMask) ~= 0) then
-			local def = shieldSpells[spellName]
+			local def = absorbSpells[spellName]
 			if (not def) then
-				def = shieldSpells[spellId]
+				def = absorbSpells[spellId]
 			end
 			if (def) then
 				local rankAmount = def:GetRankAmount(spellId)
