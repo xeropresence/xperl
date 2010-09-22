@@ -48,7 +48,7 @@ end
 function xpTut:NewTutorial(tutorialID)
 	self:FlagTutorial(tutorialID)
 	-- Get tutorial button
-	local button = TutorialFrame_GetAlertButton()
+	local button = TutorialFrameAlertButton()
 	-- Not enough tutorial buttons, not sure how to handle this right now
 	if ( not button ) then
 		return
