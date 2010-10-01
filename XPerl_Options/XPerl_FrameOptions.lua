@@ -636,6 +636,10 @@ function XPerl_Options_LoadSettings_OnClick()
 
 	local list = GetPlayerList()
 
+	-- Check for some user complain about cannot copy setting like ticket 732.
+	-- "self" for 4.0 and later
+	if select(4, _G.GetBuildInfo()) >= 40000 then
+	
 	if (self:GetID() ~= MyIndex) then
 		local entry = list[self:GetID()]
 
@@ -643,6 +647,19 @@ function XPerl_Options_LoadSettings_OnClick()
 			CopyFrom = entry
 			XPerl_Popup(format("Copy settings from %s?", entry.name), CopySelectedSettings)
 		end
+	end
+	
+	else
+	
+	-- "this" for 3.3.5 and older	
+	if (this:GetID() ~= MyIndex) then
+                local entry = list[this:GetID()]
+                if (entry) then
+			CopyFrom = entry
+			XPerl_Popup(format("Copy settings from %s?", entry.name), CopySelectedSettings)
+		end
+		end
+
 	end
 end
 

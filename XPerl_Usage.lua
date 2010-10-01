@@ -248,19 +248,21 @@ end
 function mod:PLAYER_ENTERING_WORLD()
 	if (conf.tooltip.xperlInfo) then			-- FOR TESTING
 		-- If this cures taint problem, then put a frame mask over whole guild area and use MouseIsOver()
-
-		-- Hook the guild name list to show tooltip for X-Perl users
-		for i = 1,GUILDMEMBERS_TO_DISPLAY do
-			local f = _G["GuildFrameButton"..i]
-			if (f) then
-				f:SetScript("OnEnter", XPerl_GuildMateTooltip)
-				f:SetScript("OnLeave", XPerl_PlayerTipHide)
-			end
-			f = _G["GuildFrameGuildStatusButton"..i]
-			if (f) then
-				f:SetScript("OnEnter", XPerl_GuildMateTooltip)
-				f:SetScript("OnLeave", XPerl_PlayerTipHide)
-			end
+		-- Check for nil for GUILDMEMBERS_TO_DISPLAY
+		if not (GUILDMEMBERS_TO_DISPLAY == nil) then 
+                        -- Hook the guild name list to show tooltip for X-Perl users
+                        for i = 1,GUILDMEMBERS_TO_DISPLAY do
+                                local f = _G["GuildFrameButton"..i]
+                                if (f) then
+                                        f:SetScript("OnEnter", XPerl_GuildMateTooltip)
+                                        f:SetScript("OnLeave", XPerl_PlayerTipHide)
+                                end
+                                f = _G["GuildFrameGuildStatusButton"..i]
+                                if (f) then
+                                        f:SetScript("OnEnter", XPerl_GuildMateTooltip)
+                                        f:SetScript("OnLeave", XPerl_PlayerTipHide)
+                                end
+                        end
 		end
 
 		for i = 1,FRIENDS_TO_DISPLAY do

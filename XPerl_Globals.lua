@@ -239,16 +239,29 @@ end
 
 -- XPerl_RegisterBasics
 function XPerl_RegisterBasics(self, eventArray)
+
+        --WoW 4.0 UNIT_POWER change, thanks Brounks helps me fix this.
+        
+        
+        --local events = {"UNIT_POWER", "UNIT_MAXPOWER", "UNIT_HEALTH", "UNIT_MAXHEALTH",
+        --                "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
+
+        --if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
+        --        tinsert(events, "UNIT_POWER")
+        --end
+   
 	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY",
-			"UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER", "UNIT_HEALTH", "UNIT_MAXHEALTH",
-			"UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
+			"UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER", "UNIT_POWER", "UNIT_MAXPOWER",
+			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER",
+			"UNIT_NAME_UPDATE"}
 
-	if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
-		tinsert(events, "UNIT_MANA")
-		tinsert(events, "UNIT_ENERGY")
-		tinsert(events, "UNIT_RUNIC_POWER")
-	end
-
+        if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
+                tinsert(events, "UNIT_MANA")
+                tinsert(events, "UNIT_ENERGY")
+                tinsert(events, "UNIT_RUNIC_POWER")
+                tinsert(events, "UNIT_POWER")
+        end
+               
 	XPerl_UnitEvents(self, eventArray, events)
 end
 

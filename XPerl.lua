@@ -1934,9 +1934,17 @@ local function BuffException(unit, index, flag, func, exceptions, raidFrames)
 
 	-- Nothing found by default, so look for exceptions that we want to tack onto the end
 	local unitClass
-	local foundValid = 0
-	local classExceptions = exceptions[playerClass]
-	local allExceptions = exceptions.ALL
+	local foundValid = 0	
+	local classExceptions
+	local allExceptions
+	-- "AddOns\XPerl\XPerl.lua line 1938: attempt to index local 'exceptions' (a nil value)"
+	-- fix by Hoyel @ Curse
+	-- check for null.
+        if (exceptions) then
+                classExcepions = exceptions[playerClass]
+                allExceptions = exceptions.ALL
+        end 
+        
 	for i = 1,1000 do
 		name, rank, buff, count, debuffType, dur, max, isMine, isStealable = func(unit, i)
 		if (not name) then
