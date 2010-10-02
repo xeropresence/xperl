@@ -86,9 +86,10 @@ function XPerl_Player_Pet_OnLoad(self)
 	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "pet", nil, PetFrameDropDown, PetFrame.menu)
 
 	--RegisterUnitWatch(self)
-
+        --Added UNIT_POWER/UNIT_MAXPOWER shit on events list by PlayerLin
 	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",
-					"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+					"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_POWER",
+					"UNIT_MAXPOWER", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 					"UNIT_MANA", "UNIT_ENERGY", "UNIT_RUNIC_POWER", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
 					"UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS", "UNIT_AURA",
 					"UNIT_PET", "PET_ATTACK_START", "UNIT_COMBAT", "UNIT_SPELLMISS", "VARIABLES_LOADED",
@@ -368,20 +369,42 @@ function XPerl_Player_Pet_Events:UNIT_HEALTH()
 end
 XPerl_Player_Pet_Events.UNIT_MAXHEALTH = XPerl_Player_Pet_Events.UNIT_HEALTH
 
--- UNIT_RAGE
+-- Ticket 727 Player Pet frame's happiness not update fix.
+-- Ticket 735 Player Pet frame's power bar fix.
+-- Thanks Brounks pointed out again... -.- By PlayerLin
+
+-- UNIT_POWER/UNIT_MAXPOWER shit for 4.0 and later.
+-- All power bars and Pet Happiness will firing UNIT_POWER/UNIT_MAXPOWER shit.
+
+function XPerl_Player_Pet_Events:UNIT_POWER()
+	XPerl_Player_Pet_UpdateMana(self)
+end
+
+XPerl_Player_Pet_Events.UNIT_MAXPOWER = XPerl_Player_Pet_Events.UNIT_POWER
+
+-- UNIT_RAGE / others for 3.3.5 and older.
+
 function XPerl_Player_Pet_Events:UNIT_RAGE()
 	XPerl_Player_Pet_UpdateMana(self)
 end
 
 XPerl_Player_Pet_Events.UNIT_MAXRAGE		= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_ENERGY			= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_ENERGY		= XPerl_Player_Pet_Events.UNIT_RAGE
 XPerl_Player_Pet_Events.UNIT_MAXENERGY		= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_MANA			= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_MANA		= XPerl_Player_Pet_Events.UNIT_RAGE
 XPerl_Player_Pet_Events.UNIT_MAXMANA		= XPerl_Player_Pet_Events.UNIT_RAGE
-XPerl_Player_Pet_Events.UNIT_FOCUS			= XPerl_Player_Pet_Events.UNIT_RAGE
+XPerl_Player_Pet_Events.UNIT_FOCUS		= XPerl_Player_Pet_Events.UNIT_RAGE
 XPerl_Player_Pet_Events.UNIT_MAXFOCUS		= XPerl_Player_Pet_Events.UNIT_RAGE
 XPerl_Player_Pet_Events.UNIT_MAXRUNIC_POWER	= XPerl_Player_Pet_Events.UNIT_RAGE
 XPerl_Player_Pet_Events.UNIT_RUNIC_POWER	= XPerl_Player_Pet_Events.UNIT_RAGE
+
+-- UNIT_HAPPINESS (Same as for 3.3.5 and older)
+-- Happiness events come while you have a pet up, each 2 secs
+function XPerl_Player_Pet_Events:UNIT_HAPPINESS()
+	--XPerl_Player_Pet_UpdateDisplay();	-- Update all, fixes bug with stables in 1.11
+	XPerl_Player_Pet_SetHappiness(self)
+	XPerl_Player_Pet_UpdateCombat(self)
+end
 
 -- UNIT_LEVEL
 function XPerl_Player_Pet_Events:UNIT_LEVEL()
@@ -393,14 +416,6 @@ XPerl_Player_Pet_Events.UNIT_PET_EXPERIENCE = XPerl_Player_Pet_Events.UNIT_LEVEL
 -- UNIT_DISPLAYPOWER
 function XPerl_Player_Pet_Events:UNIT_DISPLAYPOWER()
 	XPerl_SetManaBarType(self)
-end
-
--- UNIT_HAPPINESS
--- Happiness events come while you have a pet up, each 2 secs
-function XPerl_Player_Pet_Events:UNIT_HAPPINESS()
-	--XPerl_Player_Pet_UpdateDisplay();	-- Update all, fixes bug with stables in 1.11
-	XPerl_Player_Pet_SetHappiness(self)
-	XPerl_Player_Pet_UpdateCombat(self)
 end
 
 -- PET_ATTACK_START
