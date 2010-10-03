@@ -492,7 +492,7 @@ local function UpdateAssignedRoles(self)
 				isDamage = true
 			end
 		else
-			isTank, isHealer, isDamage = UnitGroupRolesAssigned("player")
+			isTank, isHealer, isDamage = UnitGroupRolesAssigned(unit)
 		end
 	end
 
