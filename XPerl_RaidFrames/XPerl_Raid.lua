@@ -74,13 +74,14 @@ local raidHeaders = {}
 
 -- XPerl_Raid_OnLoad
 function XPerl_Raid_OnLoad(self)
+	-- Added UNIT_POWER/UNIT_MAXPOWER to events list for 4.0 (By PlayerLin)
 	local events = {"CHAT_MSG_ADDON",	-- "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER", "CHAT_MSG_PARTY",
 			"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE", "UNIT_FACTION",
-			"UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_HEALTH", "UNIT_MAXHEALTH",
-			"UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED", "UNIT_COMBAT", "UNIT_SPELLCAST_START",
-			"UNIT_SPELLCAST_STOP", "UNIT_SPELLCAST_FAILED", "UNIT_SPELLCAST_INTERRUPTED",
-			"READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED", "RAID_TARGET_UPDATE",
-			"PLAYER_LOGIN"
+			"UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_POWER", "UNIT_MAXPOWER",
+			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
+			"UNIT_COMBAT", "UNIT_SPELLCAST_START", "UNIT_SPELLCAST_STOP", "UNIT_SPELLCAST_FAILED",
+			"UNIT_SPELLCAST_INTERRUPTED", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED",
+			"RAID_TARGET_UPDATE", "PLAYER_LOGIN"
 			}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
@@ -1247,6 +1248,17 @@ function XPerl_Raid_Events:UNIT_DISPLAYPOWER()
 	XPerl_Raid_UpdateMana(self)
 end
 
+-- WoW 4.0 UNIT_POWER shit (Added by PlayerLin)
+
+function XPerl_Raid_Events:UNIT_POWER()
+	if (rconf.mana) then
+		XPerl_Raid_UpdateMana(self)
+	end
+end
+
+XPerl_Raid_Events.UNIT_MAXPOWER   = XPerl_Raid_Events.UNIT_POWER
+
+-- WoW 3.3.5 and older.
 -- UNIT_MANA
 function XPerl_Raid_Events:UNIT_MANA()
 	if (rconf.mana) then

@@ -38,10 +38,11 @@ local XPerl_Party_HighlightCallback
 -- Loading Function --
 ----------------------
 function XPerl_Party_Events_OnLoad(self)
+	-- Added UNIT_POWER/UNIT_MAXPOWER to events list for 4.0 (By PlayerLin)
 	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBER_ENABLE", "PARTY_MEMBER_DISABLE", "RAID_ROSTER_UPDATED", "PARTY_MEMBERS_CHANGED",
 			"UNIT_COMBAT", "UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_PORTRAIT_UPDATE",
 			"UNIT_TARGET", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA", "UNIT_RUNIC_POWER", "UNIT_MAXRUNIC_POWER",
-			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
+			"UNIT_POWER", "UNIT_MAXPOWER, "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
 			"RAID_TARGET_UPDATE", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED", "PLAYER_LOGIN", "UNIT_THREAT_LIST_UPDATE",
 			"PLAYER_TARGET_CHANGED"}
 	for i,event in pairs(events) do
@@ -474,7 +475,25 @@ local function UpdateAssignedRoles(self)
 	if (select(2, IsInInstance()) == "party") then
 		-- No point getting it otherwise, as they can be wrong. Usually the values you had
 		-- from previous instance if you're running more than one with the same people
-		isTank, isHealer, isDamage = UnitGroupRolesAssigned(unit)
+		
+		-- According to http://forums.worldofwarcraft.com/thread.html?topicId=26560499864
+		-- this is the new way to check for roles
+		-- Port this from XPerl_Player.lua by PlayerLin
+		if select(4, _G.GetBuildInfo()) >= 40000 then
+			role = UnitGroupRolesAssigned(unit)
+			isTank = false;
+			isHealer = false;
+			isDamage = false;
+			if role == "TANK" then
+				isTank = true
+			elseif role == "HEALER" then
+				isHealer = true
+			elseif role == "DAMAGER" then
+				isDamage = true
+			end
+		else
+			isTank, isHealer, isDamage = UnitGroupRolesAssigned("player")
+		end
 	end
 
 	icon:ClearAllPoints()
@@ -1013,6 +1032,17 @@ function XPerl_Party_Events:UNIT_PORTRAIT_UPDATE()
 	XPerl_Unit_UpdatePortrait(self)
 end
 
+-- WoW 4.0 UNIT_POWER change. (Added by PlayerLin)
+-- New UNIT_Power shit for 4.0 and later.
+
+-- UNIT_POWER / UNIT_MAXPOWER (4.0 and later only)
+function XPerl_Party_Events:UNIT_POWER()
+        XPerl_Party_UpdateMana(self)
+end
+
+XPerl_Party_Events.UNIT_MAXPOWER = XPerl_Party_Events.UNIT_POWER
+
+-- WoW 3.3.5 or older.
 -- UNIT_MANA
 function XPerl_Party_Events:UNIT_MANA()
 	XPerl_Party_UpdateMana(self)
