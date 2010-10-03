@@ -180,43 +180,70 @@ local function GetNamesWithoutBuff(spellName, with, filter)
 
 	local class = select(2, UnitClass("player"))
 
-	if (not checkExpiring) then
-		local cet = {}
+	if select(4, _G.GetBuildInfo()) >= 40000 then
+		if (not checkExpiring) then
+			local cet = {}
 
-		if (class == "PRIEST" or IsRaidOfficer()) then
-			cet[GetSpellInfo(48161)] = 2			-- Sta
-			cet[GetSpellInfo(48162)] = 2			-- Sta
-			cet[GetSpellInfo(48073)] = 2			-- Spirit
-			cet[GetSpellInfo(48074)] = 2			-- Spirit
-			cet[GetSpellInfo(48169)] = 2			-- Shadow Prot
-			cet[GetSpellInfo(48170)] = 2			-- Shadow Prot
-		end
+			if (class == "PRIEST" or IsRaidOfficer()) then
+				cet[GetSpellInfo(21562)] = 2			-- Sta
+				cet[GetSpellInfo(27683)] = 2			-- Shadow Prot
+			end
 		
-		if (class == "DRUID" or IsRaidOfficer()) then
-			cet[GetSpellInfo(26990)] = 2			-- Mark
-			cet[GetSpellInfo(26991)] = 2			-- Gift
-			cet[GetSpellInfo(53307)] = 1			-- Thorns
-		end
+			if (class == "DRUID" or IsRaidOfficer()) then
+				cet[GetSpellInfo(1126)] = 2			-- Mark
+				cet[GetSpellInfo(467)] = 1			-- Thorns
+			end
 		
-		if (class == "MAGE" or IsRaidOfficer()) then
-			cet[GetSpellInfo(42995)] = 2			-- Int
-			cet[GetSpellInfo(43002)] = 2			-- Int
-			cet[GetSpellInfo(43015)] = 1			-- Dampen
-			cet[GetSpellInfo(43017)] = 1			-- Amplify
-		end
+			if (class == "MAGE" or IsRaidOfficer()) then
+				cet[GetSpellInfo(1459)] = 2			-- Int
+			end
 
-		if (class == "PALADIN" or IsRaidOfficer()) then
-			cet[GetSpellInfo(27140)] = 2
-			cet[GetSpellInfo(27141)] = 2			-- Blessing of Might
-			cet[GetSpellInfo(27142)] = 2
-			cet[GetSpellInfo(27143)] = 2			-- Blessing of Wisdom
-			cet[GetSpellInfo(20217)] = 2
-			cet[GetSpellInfo(25898)] = 2			-- Blessing of Kings
-			cet[GetSpellInfo(20911)] = 2
-			cet[GetSpellInfo(25899)] = 2			-- Blessing of Sanctuary
-		end
+			if (class == "PALADIN" or IsRaidOfficer()) then
+				cet[GetSpellInfo(19740)] = 2			-- Blessing of Might
+				cet[GetSpellInfo(20217)] = 2			-- Blessing of Kings
+			end
 
-		checkExpiring = cet
+			checkExpiring = cet
+		end
+	else
+		if (not checkExpiring) then
+			local cet = {}
+
+			if (class == "PRIEST" or IsRaidOfficer()) then
+				cet[GetSpellInfo(21562)] = 2			-- Sta
+				cet[GetSpellInfo(48162)] = 2			-- Sta
+				cet[GetSpellInfo(48073)] = 2			-- Spirit
+				cet[GetSpellInfo(48074)] = 2			-- Spirit
+				cet[GetSpellInfo(48169)] = 2			-- Shadow Prot
+				cet[GetSpellInfo(48170)] = 2			-- Shadow Prot
+			end
+		
+			if (class == "DRUID" or IsRaidOfficer()) then
+				cet[GetSpellInfo(26990)] = 2			-- Mark
+				cet[GetSpellInfo(26991)] = 2			-- Gift
+				cet[GetSpellInfo(53307)] = 1			-- Thorns
+			end
+		
+			if (class == "MAGE" or IsRaidOfficer()) then
+				cet[GetSpellInfo(42995)] = 2			-- Int
+				cet[GetSpellInfo(43002)] = 2			-- Int
+				cet[GetSpellInfo(43015)] = 1			-- Dampen
+				cet[GetSpellInfo(43017)] = 1			-- Amplify
+			end
+
+			if (class == "PALADIN" or IsRaidOfficer()) then
+				cet[GetSpellInfo(27140)] = 2
+				cet[GetSpellInfo(27141)] = 2			-- Blessing of Might
+				cet[GetSpellInfo(27142)] = 2
+				cet[GetSpellInfo(27143)] = 2			-- Blessing of Wisdom
+				cet[GetSpellInfo(20217)] = 2
+				cet[GetSpellInfo(25898)] = 2			-- Blessing of Kings
+				cet[GetSpellInfo(20911)] = 2
+				cet[GetSpellInfo(25899)] = 2			-- Blessing of Sanctuary
+			end
+
+			checkExpiring = cet
+		end
 	end
 
 	local withList = XPerl_GetReusableTable()
