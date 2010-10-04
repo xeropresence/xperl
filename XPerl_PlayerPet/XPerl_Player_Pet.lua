@@ -330,8 +330,11 @@ end
 -- VARIABLES_LOADED
 function XPerl_Player_Pet_Events:VARIABLES_LOADED()
 	if (select(2, UnitClass("player")) == "HUNTER") then
-		XPerl_UnitEvents(self, XPerl_Player_Pet_Events, {"UNIT_FOCUS", "UNIT_MAXFOCUS", "UNIT_PET_EXPERIENCE", "UNIT_HAPPINESS"})
+		-- added UNIT_POWER event check for 4.0 by PlayerLin, thanks Brounks.
+		XPerl_UnitEvents(self, XPerl_Player_Pet_Events, {"UNIT_FOCUS", "UNIT_MAXFOCUS", "UNIT_PET_EXPERIENCE", "UNIT_HAPPINESS", "UNIT_POWER"})
 	else
+		-- the UNIT_POWER shit must 'nil'ed when Player Pet isn't exist.
+		XPerl_Player_Pet_Events.UNIT_POWER = nil
 		XPerl_Player_Pet_Events.UNIT_HAPPINESS = nil
 		XPerl_Player_Pet_SetHappiness = nil
 	end
@@ -367,6 +370,7 @@ end
 function XPerl_Player_Pet_Events:UNIT_HEALTH()
 	XPerl_Player_Pet_UpdateHealth(self)
 end
+
 XPerl_Player_Pet_Events.UNIT_MAXHEALTH = XPerl_Player_Pet_Events.UNIT_HEALTH
 
 -- Ticket 727 Player Pet frame's happiness not update fix.
@@ -375,9 +379,11 @@ XPerl_Player_Pet_Events.UNIT_MAXHEALTH = XPerl_Player_Pet_Events.UNIT_HEALTH
 
 -- UNIT_POWER/UNIT_MAXPOWER shit for 4.0 and later.
 -- All power bars and Pet Happiness will firing UNIT_POWER/UNIT_MAXPOWER shit.
-
+-- And SetHappiness shit too for Pet Happiness updating!
 function XPerl_Player_Pet_Events:UNIT_POWER()
 	XPerl_Player_Pet_UpdateMana(self)
+	XPerl_Player_Pet_SetHappiness(self)
+	XPerl_Player_Pet_UpdateCombat(self)
 end
 
 XPerl_Player_Pet_Events.UNIT_MAXPOWER = XPerl_Player_Pet_Events.UNIT_POWER
