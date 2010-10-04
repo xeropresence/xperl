@@ -236,7 +236,7 @@ end
 ---------------------
 --Debuffs          --
 ---------------------
-local XPERL_SPELL_SUNDER	= GetSpellInfo(30901)		-- Sunder Armor
+local XPERL_SPELL_SUNDER	= GetSpellInfo(58567)		-- Sunder Armor
 local XPERL_SPELL_SHADOWV	= GetSpellInfo(15258)		-- Shadow Vulnerability
 local XPERL_SPELL_FIREV		= GetSpellInfo(22959)		-- Fire Vulnerability
 local XPERL_SPELL_WINTERCH	= GetSpellInfo(12579)		-- Winter's Chill
@@ -248,7 +248,9 @@ local function XPerl_Target_DebuffUpdate(self)
 		if (playerClass == "WARRIOR") then
 			numDebuffs = TargetDebuffInformation(XPERL_SPELL_SUNDER)
 		elseif (playerClass == "PRIEST") then
-			numDebuffs = TargetDebuffInformation(XPERL_SPELL_SHADOWV)
+			if select(4, _G.GetBuildInfo()) < 40000 then
+				numDebuffs = TargetDebuffInformation(XPERL_SPELL_SHADOWV)
+			end
 		elseif (playerClass == "MAGE") then
 			if (select(3,GetTalentTabInfo(3)) > select(3,GetTalentTabInfo(2))) then
 				numDebuffs = TargetDebuffInformation(XPERL_SPELL_WINTERCH)

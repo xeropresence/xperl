@@ -382,7 +382,9 @@ XPerl_Player_Pet_Events.UNIT_MAXHEALTH = XPerl_Player_Pet_Events.UNIT_HEALTH
 -- And SetHappiness shit too for Pet Happiness updating!
 function XPerl_Player_Pet_Events:UNIT_POWER()
 	XPerl_Player_Pet_UpdateMana(self)
-	XPerl_Player_Pet_SetHappiness(self)
+	if (XPerl_Player_Pet_SetHappiness) then
+		XPerl_Player_Pet_SetHappiness(self)
+	end
 	XPerl_Player_Pet_UpdateCombat(self)
 end
 
