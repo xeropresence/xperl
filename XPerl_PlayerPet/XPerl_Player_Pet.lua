@@ -334,7 +334,6 @@ function XPerl_Player_Pet_Events:VARIABLES_LOADED()
 		XPerl_UnitEvents(self, XPerl_Player_Pet_Events, {"UNIT_FOCUS", "UNIT_MAXFOCUS", "UNIT_PET_EXPERIENCE", "UNIT_HAPPINESS", "UNIT_POWER"})
 	else
 		-- the UNIT_POWER shit must 'nil'ed when Player Pet isn't exist.
-		XPerl_Player_Pet_Events.UNIT_POWER = nil
 		XPerl_Player_Pet_Events.UNIT_HAPPINESS = nil
 		XPerl_Player_Pet_SetHappiness = nil
 	end
