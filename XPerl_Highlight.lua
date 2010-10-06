@@ -64,7 +64,49 @@ local function getRankAmount(self, spellId)
 	end
 end
 
-local absorbSpells = {
+if select(4, _G.GetBuildInfo()) >= 40000 then
+	local absorbSpells = {
+	[GetSpellInfo(11426)] = {			-- Ice Barrier
+		ranks = {
+			[11426]	= 3686--level 85 (3686 + $SPFR * 0.807)
+		},
+		school = "FROST",
+		class = "MAGE",
+		GetModifier = getTalentModifier,
+		GetRankAmount = getRankAmount,
+	},
+	[GetSpellInfo(1463)] = {			-- Mana Shield
+		ranks = {
+			[1463]	= 1485--level 85 (1485 + 0.807 * $SPA)
+		},
+		class = "MAGE",
+		school = "ARCANE",
+		improved = {
+			name = GetSpellInfo(12605),
+			ranks = 2,
+			percentPerRank = 10,
+		},
+		GetModifier = getTalentModifier,
+		GetRankAmount = getRankAmount,
+	},
+	[GetSpellInfo(17)] = {				-- Power Word: Shield
+		ranks = {
+			[17]	= 3906--level 85 (3906 + ($SP * 0.418))
+		},
+		class = "PRIEST",
+		targetable = true,
+		school = "HOLY",
+		improved = {
+			name = GetSpellInfo(14748),
+			ranks = 2,
+			percentPerRank = 5,
+		},
+		GetModifier = getTalentModifier,
+		GetRankAmount = getRankAmount,
+	},
+}
+else
+	local absorbSpells = {
 	[GetSpellInfo(11426)] = {			-- Ice Barrier
 		ranks = {
 			[11426]	= 438,				-- Spell IDs and amounts per rank
@@ -142,6 +184,7 @@ local absorbSpells = {
 		GetRankAmount = getRankAmount,
 	},
 }
+end
 
 local colours = {HOT = {r = 0.2, g = 0.4, b = 0.8, canFlash = true},
 		 POM = {r = 0.8, g = 0.6, b = 0.4},

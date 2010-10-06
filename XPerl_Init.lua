@@ -156,17 +156,28 @@ function XPerl_pcall(...)
 end
 
 -- GetNamesWithoutBuff
-local matches = {
-	{GetSpellInfo(48161), GetSpellInfo(48162)},				-- Fortitude
-	{GetSpellInfo(42995), GetSpellInfo(43002)},				-- Intellect
-	{GetSpellInfo(26990), GetSpellInfo(26991)},				-- Mark of the Wild
-	{GetSpellInfo(48169), GetSpellInfo(48170)},				-- Shadow Protection
-	{GetSpellInfo(48073), GetSpellInfo(48074)},				-- Spirit
-	{GetSpellInfo(27140), GetSpellInfo(27141)},				-- Blessing of Might
-	{GetSpellInfo(27142), GetSpellInfo(27143)},				-- Blessing of Wisdom
-	{GetSpellInfo(20217), GetSpellInfo(25898)},				-- Blessing of Kings
-	{GetSpellInfo(20911), GetSpellInfo(25899)},				-- Blessing of Sanctuary
-}
+if select(4, _G.GetBuildInfo()) >= 40000 then
+	local matches = {
+		{GetSpellInfo(21562)},				-- Fortitude
+		{GetSpellInfo(1459)},				-- Intellect
+		{GetSpellInfo(1126)},				-- Mark of the Wild
+		{GetSpellInfo(27683)},				-- Shadow Protection
+		{GetSpellInfo(19740)},				-- Blessing of Might
+		{GetSpellInfo(20217)},				-- Blessing of Kings
+	}
+else
+	local matches = {
+		{GetSpellInfo(48161), GetSpellInfo(48162)},				-- Fortitude
+		{GetSpellInfo(42995), GetSpellInfo(43002)},				-- Intellect
+		{GetSpellInfo(26990), GetSpellInfo(26991)},				-- Mark of the Wild
+		{GetSpellInfo(48169), GetSpellInfo(48170)},				-- Shadow Protection
+		{GetSpellInfo(48073), GetSpellInfo(48074)},				-- Spirit
+		{GetSpellInfo(27140), GetSpellInfo(27141)},				-- Blessing of Might
+		{GetSpellInfo(27142), GetSpellInfo(27143)},				-- Blessing of Wisdom
+		{GetSpellInfo(20217), GetSpellInfo(25898)},				-- Blessing of Kings
+		{GetSpellInfo(20911), GetSpellInfo(25899)},				-- Blessing of Sanctuary
+	}
+end
 
 local checkExpiring
 local function GetNamesWithoutBuff(spellName, with, filter)
