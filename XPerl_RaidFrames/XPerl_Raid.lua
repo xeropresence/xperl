@@ -986,7 +986,7 @@ function XPerl_Raid_OnUpdate(self, elapsed)
 									XPerl_Raid_UpdateHealth(frame)
 								end
 							else
-								if (not myRoster.offline and not UnitIsConnected(unit)) then
+								if (not myRoster.offline and not (UnitIsConnected(unit) or UnitInVehicle(unit))) then
 									XPerl_Raid_UpdateHealth(frame)
 								end
 							end
