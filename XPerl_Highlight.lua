@@ -64,8 +64,9 @@ local function getRankAmount(self, spellId)
 	end
 end
 
+local absorbSpells
 if select(4, _G.GetBuildInfo()) >= 40000 then
-	local absorbSpells = {
+	absorbSpells = {
 	[GetSpellInfo(11426)] = {			-- Ice Barrier
 		ranks = {
 			[11426]	= 3686--level 85 (3686 + $SPFR * 0.807)
@@ -106,7 +107,7 @@ if select(4, _G.GetBuildInfo()) >= 40000 then
 	},
 }
 else
-	local absorbSpells = {
+	absorbSpells = {
 	[GetSpellInfo(11426)] = {			-- Ice Barrier
 		ranks = {
 			[11426]	= 438,				-- Spell IDs and amounts per rank

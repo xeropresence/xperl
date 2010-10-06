@@ -237,9 +237,7 @@ end
 --Debuffs          --
 ---------------------
 local XPERL_SPELL_SUNDER	= GetSpellInfo(58567)		-- Sunder Armor
-if select(4, _G.GetBuildInfo()) <= 40000 then
-	local XPERL_SPELL_SHADOWV	= GetSpellInfo(15258)		-- Shadow Vulnerability
-end
+local XPERL_SPELL_SHADOWV	= GetSpellInfo(15258)		-- Shadow Vulnerability
 local XPERL_SPELL_FIREV		= GetSpellInfo(22959)		-- Fire Vulnerability
 local XPERL_SPELL_WINTERCH	= GetSpellInfo(12579)		-- Winter's Chill
 

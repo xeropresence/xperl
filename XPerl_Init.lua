@@ -156,8 +156,9 @@ function XPerl_pcall(...)
 end
 
 -- GetNamesWithoutBuff
+local matches
 if select(4, _G.GetBuildInfo()) >= 40000 then
-	local matches = {
+	matches = {
 		{GetSpellInfo(21562)},				-- Fortitude
 		{GetSpellInfo(1459)},				-- Intellect
 		{GetSpellInfo(1126)},				-- Mark of the Wild
@@ -166,7 +167,7 @@ if select(4, _G.GetBuildInfo()) >= 40000 then
 		{GetSpellInfo(20217)},				-- Blessing of Kings
 	}
 else
-	local matches = {
+	matches = {
 		{GetSpellInfo(48161), GetSpellInfo(48162)},				-- Fortitude
 		{GetSpellInfo(42995), GetSpellInfo(43002)},				-- Intellect
 		{GetSpellInfo(26990), GetSpellInfo(26991)},				-- Mark of the Wild
