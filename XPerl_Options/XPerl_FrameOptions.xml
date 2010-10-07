@@ -3956,6 +3956,7 @@
                                                             else
                                                                 spellName, subSpellName = GetSpellName(detail, subdetail)
                                                             end
+															if (spellName and SpellHasRange(spellName) and not IsAttackSpell(spellName) and not IsPassiveSpell(spellName)) then
 																XPerlDB.rangeFinder[XPerl_Options.optRange].spell = spellName
 																XPerlDB.rangeFinder[XPerl_Options.optRange].item = nil
 																ret = true
