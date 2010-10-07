@@ -1995,7 +1995,7 @@ function XPerl_Check_ActiveScan()
 				ActiveScanTotals.offline = ActiveScanTotals.offline + 1
 				update = true
 
-			elseif (zone ~= myZone) or UnitInVehicle(unit) then
+			elseif (zone ~= myZone) then
 				if (not XPerl_ActiveScan[name]) then
 					XPerl_ActiveScan[name] = {}
 				end

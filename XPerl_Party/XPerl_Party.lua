@@ -651,7 +651,7 @@ end
 local function XPerl_Party_UpdateRange(self, overrideUnit)
 	local partyid = overrideUnit or self.partyid
 	if (partyid) then
-		if (not pconf.range30yard or CheckInteractDistance(self.partyid, 1) or not UnitIsConnected(self.partyid) or UnitInVehicle(self.partyid)) then
+		if (not pconf.range30yard or CheckInteractDistance(self.partyid, 1) or not UnitIsConnected(self.partyid)) then
 			self.nameFrame.rangeIcon:Hide()
 		else
 			self.nameFrame.rangeIcon:Show()

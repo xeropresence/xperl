@@ -903,7 +903,7 @@ end
 
 -- XPerl_Target_Update_Range
 function XPerl_Target_Update_Range(self)
-	if (not self.conf.range30yard or CheckInteractDistance(self.partyid, 1) or not UnitIsConnected(self.partyid) or UnitInVehicle(self.partyid)) then
+	if (not self.conf.range30yard or CheckInteractDistance(self.partyid, 1) or not UnitIsConnected(self.partyid)) then
 		self.nameFrame.rangeIcon:Hide()
 	else
 		self.nameFrame.rangeIcon:Show()
