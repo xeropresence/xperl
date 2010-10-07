@@ -657,6 +657,10 @@ local function XPerl_Party_UpdateRange(self, overrideUnit)
 			self.nameFrame.rangeIcon:Show()
 			self.nameFrame.rangeIcon:SetAlpha(1)
 		end
+		if UnitInVehicle(self.partyid) then--Not sure if this is proper way to do it, so this pretty much forces anyone in a vehicle to show out of range.
+			self.nameFrame.rangeIcon:Show()
+			self.nameFrame.rangeIcon:SetAlpha(1)
+		end
 	end
 end
 

@@ -285,7 +285,7 @@ function XPerl_UpdateSpellRange2(self, overrideUnit, isRaidFrame)
 		local mainA, nameA, statsA		-- Receives main, name and stats alpha levels
 
 		if (rf.enabled and (isRaidFrame or not conf.rangeFinder.raidOnly)) then
-			if (not UnitIsVisible(unit)) then
+			if (not UnitIsVisible(unit)) or UnitInVehicle(unit) then
 				if (rf.Main.enabled) then
 					mainA = conf.transparency.frame * rf.Main.FadeAmount
 				else
