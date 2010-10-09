@@ -25,6 +25,7 @@ local XPerl_SetHealthBar = XPerl_SetHealthBar
 
 local XPerl_Player_InitDK
 local XPerl_Player_InitWarlock
+local XPerl_Player_InitPaladin
 
 local XPerl_PlayerStatus_OnUpdate
 local XPerl_Player_HighlightCallback
@@ -70,8 +71,9 @@ function XPerl_Player_OnLoad(self)
 	XPerl_Player_SetupDK(self)
 
 	--Only initalize this function if it's cataclym client.
-	if is_cata then
+	if select(4, _G.GetBuildInfo()) >= 40000 then
 		XPerl_Player_InitWarlock(self)
+		XPerl_Player_InitPaladin(self)
 	end
 
 	XPerl_RegisterHighlight(self.highlight, 3)
@@ -1142,7 +1144,7 @@ function XPerl_Player_Set_Bits(self)
 	self:SetHeight(max(h1, h2))
 
 	self.highlight:ClearAllPoints()
-	if (pconf.extendPortrait or (self.runes and pconf.showRunes and pconf.dockRunes)) then
+	if (pconf.extendPortrait or (self.runes and pconf.showRunes and pconf.dockRunes or self.holyp)) then
 		self.portraitFrame:SetHeight(62 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 		--self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 		--self.highlight:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, 0)
@@ -1235,6 +1237,45 @@ function XPerl_Player_InitWarlock(self)
 	end
 	
 	XPerl_Player_InitWarlock = nil
+end
+
+--XPerl_Player_InitPaladin
+function XPerl_Player_InitPaladin(self)
+	local myClass = select(2,UnitClass("player"))
+
+	if myClass == "PALADIN" then
+		self.holyp= CreateFrame("Frame", "XPerl_Runes", self)
+
+		self.holyp:SetMovable(true)
+		self.holyp:RegisterForDrag("LeftButton")
+		self.holyp:SetScript("OnDragStart",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StartMoving()
+				end
+			end)
+		self.holyp:SetScript("OnDragStop",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StopMovingOrSizing()
+					XPerl_SavePosition(self)
+				end
+			end)
+
+		self.holyp.unit = PaladinPowerBar:GetParent().unit
+		PaladinPowerBar:SetParent(self.holyp)
+		PaladinPowerBar:ClearAllPoints()
+		PaladinPowerBar:SetPoint("TOPLEFT", 3, 0)
+		PaladinPowerBar:SetPoint("BOTTOMLEFT", 15, 5)
+		PaladinPowerBar:Show()
+
+		self.holyp:Show()
+
+		self.holyp:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+		self.holyp:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20) 
+	end
+
+	XPerl_Player_InitPaladin = nil
 end
 
 -- XPerl_Player_InitDK
