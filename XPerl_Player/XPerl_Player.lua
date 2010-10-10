@@ -75,7 +75,7 @@ function XPerl_Player_OnLoad(self)
 	if select(4, _G.GetBuildInfo()) >= 40000 then
 		XPerl_Player_InitWarlock(self)
 		XPerl_Player_InitPaladin(self)
-		XPerl_Player_InitMoonkin(self)
+--		XPerl_Player_InitMoonkin(self)
 	end
 
 	XPerl_RegisterHighlight(self.highlight, 3)
@@ -429,6 +429,9 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 	self.statsFrame:SetHeight(h)
 	XPerl_StatsFrameSetup(self, {druidBar, self.statsFrame.xpBar, self.statsFrame.repBar})
+	if select(4, _G.GetBuildInfo()) >= 40000 then
+		XPerl_Player_InitMoonkin(self)
+	end
 	if (XPerl_Player_Buffs_Position) then
 		XPerl_Player_Buffs_Position(self)
 	end
