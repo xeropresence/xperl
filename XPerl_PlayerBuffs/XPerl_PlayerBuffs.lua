@@ -149,6 +149,8 @@ function XPerl_Player_Buffs_Position(self)
 				self.buffFrame:SetPoint("TOPLEFT", self.holyp, "BOTTOMLEFT", 3, -15)
 			elseif (pconf.buffs.wrap and ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait)) then
 				self.buffFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
+			elseif (self.eclipse and self.eclipse:IsShown()) then
+				self.buffFrame:SetPoint("TOPLEFT", self.eclipse, "BOTTOMLEFT", 3, 3)
 			else
 				self.buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, 0)
 			end

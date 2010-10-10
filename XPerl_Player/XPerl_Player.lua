@@ -26,6 +26,7 @@ local XPerl_SetHealthBar = XPerl_SetHealthBar
 local XPerl_Player_InitDK
 local XPerl_Player_InitWarlock
 local XPerl_Player_InitPaladin
+local XPerl_Player_InitMoonkin
 
 local XPerl_PlayerStatus_OnUpdate
 local XPerl_Player_HighlightCallback
@@ -74,6 +75,7 @@ function XPerl_Player_OnLoad(self)
 	if select(4, _G.GetBuildInfo()) >= 40000 then
 		XPerl_Player_InitWarlock(self)
 		XPerl_Player_InitPaladin(self)
+		XPerl_Player_InitMoonkin(self)
 	end
 
 	XPerl_RegisterHighlight(self.highlight, 3)
@@ -1276,6 +1278,45 @@ function XPerl_Player_InitPaladin(self)
 	end
 
 	XPerl_Player_InitPaladin = nil
+end
+
+--XPerl_Player_InitMoonkin
+function XPerl_Player_InitMoonkin(self)
+	local myClass = select(2,UnitClass("player"))
+
+	if (myClass == "DRUID" and select(5, GetTalentTabInfo(1)) >= 31) then
+		self.eclipse = CreateFrame("Frame", "XPerl_Runes", self)
+
+		self.eclipse:SetMovable(true)
+		self.eclipse:RegisterForDrag("LeftButton")
+		self.eclipse:SetScript("OnDragStart",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StartMoving()
+				end
+			end)
+		self.eclipse:SetScript("OnDragStop",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StopMovingOrSizing()
+					XPerl_SavePosition(self)
+				end
+			end)
+
+		self.eclipse.unit = EclipseBarFrame:GetParent().unit
+		EclipseBarFrame:SetParent(self.eclipse)
+		EclipseBarFrame:ClearAllPoints()
+		EclipseBarFrame:SetPoint("TOPLEFT", 3, 0)
+		EclipseBarFrame:SetPoint("BOTTOMLEFT", 15, 5)
+		EclipseBarFrame:Show()
+
+		self.eclipse:Show()
+
+		self.eclipse:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+		self.eclipse:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
+	end
+
+	XPerl_Player_InitMoonkin = nil
 end
 
 -- XPerl_Player_InitDK
