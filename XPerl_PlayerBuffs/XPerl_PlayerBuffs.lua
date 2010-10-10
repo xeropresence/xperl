@@ -407,6 +407,7 @@ function XPerl_Player_SetDeBuffTooltip(self)
 	end
 end
 
+--Canceling buffs forbidden by unit frame addons in 4.0. no workaround available yet. setfocus all over again.
 -- PlayerBuffsInit
 local function PlayerBuffsInit(self)
 	local BuffOnUpdate, DebuffOnUpdate, BuffUpdateTooltip, DebuffUpdateTooltip
@@ -419,7 +420,7 @@ local function PlayerBuffsInit(self)
 			OnUpdate = BuffOnUpdate,
 			OnLeave = XPerl_PlayerTipHide,
 			OnClick = function(self, button)
-				if (button == "RightButton") then
+				if (button == "RightButton") and select(4, _G.GetBuildInfo()) < 40000 then
 					local name, rank, buff, count, _, duration, endTime, myCast = UnitBuff("player", self:GetID())
 					if (name) then
 						CancelUnitBuff("player", name)
@@ -433,7 +434,7 @@ local function PlayerBuffsInit(self)
 			OnLeave = XPerl_PlayerTipHide,
 			OnClick = function(self, button)
 				-- Can cancel a few debuffs (Mind Vision for example)
-				if (button == "RightButton") then
+				if (button == "RightButton") and select(4, _G.GetBuildInfo()) < 40000 then
 					local name, rank, buff, count, _, duration, endTime, myCast = UnitDebuff("player", self:GetID())
 					if (name) then
 						CancelUnitBuff("player", name)
