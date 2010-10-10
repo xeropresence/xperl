@@ -75,7 +75,7 @@ function XPerl_Player_OnLoad(self)
 	if select(4, _G.GetBuildInfo()) >= 40000 then
 		XPerl_Player_InitWarlock(self)
 		XPerl_Player_InitPaladin(self)
---		XPerl_Player_InitMoonkin(self)
+		XPerl_Player_InitMoonkin(self)
 	end
 
 	XPerl_RegisterHighlight(self.highlight, 3)
@@ -423,15 +423,20 @@ local function XPerl_Player_DruidBarUpdate(self)
 		druidBarExtra = 0
 	end
 
+	if select(4, _G.GetBuildInfo()) >= 40000 then
+		if select(5, GetTalentTabInfo(1)) >= 31 then
+			self.eclipse:Show()
+		else
+			self.eclipse:Hide()
+		end
+	end
+
 	local h = 40 + ((druidBarExtra + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
 	if (pconf.extendPortrait and not InCombatLockdown()) then
 		self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 	end
 	self.statsFrame:SetHeight(h)
 	XPerl_StatsFrameSetup(self, {druidBar, self.statsFrame.xpBar, self.statsFrame.repBar})
-	if select(4, _G.GetBuildInfo()) >= 40000 then
-		XPerl_Player_InitMoonkin(self)
-	end
 	if (XPerl_Player_Buffs_Position) then
 		XPerl_Player_Buffs_Position(self)
 	end
@@ -1287,7 +1292,7 @@ end
 function XPerl_Player_InitMoonkin(self)
 	local myClass = select(2,UnitClass("player"))
 
-	if (myClass == "DRUID" and select(5, GetTalentTabInfo(1)) >= 31) then
+	if (myClass == "DRUID" then
 		self.eclipse = CreateFrame("Frame", "XPerl_Runes", self)
 
 		self.eclipse:SetMovable(true)
@@ -1313,7 +1318,11 @@ function XPerl_Player_InitMoonkin(self)
 		EclipseBarFrame:SetPoint("BOTTOMLEFT", 15, 5)
 		EclipseBarFrame:Show()
 
-		self.eclipse:Show()
+		if select(5, GetTalentTabInfo(1)) >= 31 then
+			self.eclipse:Show()
+		else
+			self.eclipse:Hide()
+		end
 
 		self.eclipse:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
 		self.eclipse:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
