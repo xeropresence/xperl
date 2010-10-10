@@ -424,7 +424,7 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 
 	if select(4, _G.GetBuildInfo()) >= 40000 then
-		if select(5, GetTalentTabInfo(1)) >= 31 then
+		if GetActiveTalentGroup() == 1 then
 			self.eclipse:Show()
 		else
 			self.eclipse:Hide()
@@ -1318,7 +1318,7 @@ function XPerl_Player_InitMoonkin(self)
 		EclipseBarFrame:SetPoint("BOTTOMLEFT", 15, 5)
 		EclipseBarFrame:Show()
 
-		if select(5, GetTalentTabInfo(1)) >= 31 then
+		if GetActiveTalentGroup() == 1 then
 			self.eclipse:Show()
 		else
 			self.eclipse:Hide()
