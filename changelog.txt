@@ -2,6 +2,12 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+3.1.0
+*Changed: TOC 40000
+*Many 4.x bugfixes & code changes for Basic 4.0 support.
+*Range checker now marks players in vehicles (such as gunship cannons) out of range.
+*Misc bug fixes.
+
 3.0.9 (Community Updates)
 mysticalos: Added missing zones to all locals, including Ruby Sanctum
 mysticalos: Added Ruby sanctum custom highlights

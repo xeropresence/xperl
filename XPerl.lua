@@ -2394,8 +2394,6 @@ local function d(...)
 end
 
 local function HideSetFocus()
-	-- Always hide/remove it.
-	 XPerl_ShouldHideSetFocus = true
 	if (XPerl_ShouldHideSetFocus) then
 		local count = 0
 		for index, value in ipairs(UnitPopupMenus[XPerl_DropDown.which]) do
@@ -2438,12 +2436,10 @@ function XPerl_ShowGenericMenu(self, unit, button, actionType)
 		if (self:GetParent() and self:GetParent().nameFrame == self) then
 			parent = self:GetParent()
 		end
-		
-		--Don't care them now, for hiding/removing "Set Focus" once for all.
 
-		--XPerl_ShouldHideSetFocus = true
-		--ToggleDropDownMenu(1, nil, XPerl_DropDown, parent, 0, 0)
-		--XPerl_ShouldHideSetFocus = nil
+		XPerl_ShouldHideSetFocus = true
+		ToggleDropDownMenu(1, nil, XPerl_DropDown, parent, 0, 0)
+		XPerl_ShouldHideSetFocus = nil
 	end
 end
 
