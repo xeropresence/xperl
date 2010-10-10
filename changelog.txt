@@ -2,8 +2,13 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-3.1.0
-*Changed: TOC 40000
+3.1.0 beta 2
+*Paladin and Moonkin how have holypower/eclipse bars.
+*Warlock shard bar should now actually be working.
+*Canceling buffs in 4.0 is now blocked to prevent taints. To cancel buffs you will need to use /cancelaura macros. a limitation of 4.0 blocking addons from doing it. (or disable xperls playerbuffs handling and use blizzards which do support right click).
+*Misc bug fixes.
+
+3.1.0 beta 1
 *Many 4.x bugfixes & code changes for Basic 4.0 support.
 *Range checker now marks players in vehicles (such as gunship cannons) out of range.
 *Misc bug fixes.
