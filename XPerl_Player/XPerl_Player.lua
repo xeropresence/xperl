@@ -1292,7 +1292,7 @@ end
 function XPerl_Player_InitMoonkin(self)
 	local myClass = select(2,UnitClass("player"))
 
-	if (myClass == "DRUID" then
+	if (myClass == "DRUID") then
 		self.eclipse = CreateFrame("Frame", "XPerl_Runes", self)
 
 		self.eclipse:SetMovable(true)
