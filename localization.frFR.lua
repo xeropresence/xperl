@@ -75,4 +75,178 @@ if (GetLocale() == "frFR") then
 	XPERL_RAID_TOOLTIP_WITHBUFF	      = "Avec buffs: (%s)"
 	XPERL_RAID_TOOLTIP_WITHOUTBUFF	      = "Sans buffs: (%s)"
 	XPERL_RAID_TOOLTIP_BUFFEXPIRING	      = "%s's %s expires dans %s"	-- Name, buff name, time to expire
+
+-- Status highlight spells
+-- Cata client check
+if select(4, _G.GetBuildInfo()) >= 40000 then
+XPERL_HIGHLIGHT_SPELLS = {
+	hotSpells  = {
+		[GetSpellInfo(774)] = 12,			-- Rejuvenation (old id 26982)
+		[GetSpellInfo(8936)] = 21,			-- Regrowth (old id 26980)
+		[GetSpellInfo(139)] = 15,			-- Renew (old id 25222)
+	    [GetSpellInfo(48438)] = 7,			-- Wild Growth 
+		[GetSpellInfo(33763)] = 8,			-- Lifebloom
+		[GetSpellInfo(28880)] = 15,			-- Gift of the Naaru (Racial)
+		[GetSpellInfo(61295)] = 15,			-- Riptide
+		-- [GetSpellInfo(66922)] = 10,			-- Flash of Light hot
+	},
+	pomSpells = {
+		[GetSpellInfo(33076)] = 30			-- Prayer of Mending
+	},
+	shieldSpells = {
+		--[GetSpellInfo(25218)] = 30,			-- Power Word: Shield
+		[GetSpellInfo(974)] = 600			-- Earth Shield	(old id32594)		-- TODO change me
+	},
+	healSpells = {
+		[GetSpellInfo(2061)] = 1,			-- Flash Heal (old id 25235)
+		[GetSpellInfo(2060)] = 3,			-- Greater Heal (old id 25213)
+		[GetSpellInfo(2050)] = 3,			-- Heal (old id 6064)
+		[GetSpellInfo(5185)] = 2,			-- Healing Touch (old id 26979)
+		[GetSpellInfo(8936)] = 2,			-- Regrowth (old id 26980)
+		[GetSpellInfo(331)] = 3,			-- Healing Wave (old id 25396)
+		[GetSpellInfo(8004)] = 2,			-- Lesser Healing Wave (old id 25420)
+		[GetSpellInfo(19750)] = 1.5,		-- Flash of Light (old id 27137)
+		[GetSpellInfo(635)] = 2.5,			-- Holy Light (old id 27136))
+		[GetSpellInfo(34861)] = 0.5,		-- Circle of Healing (old id 34866)
+		[GetSpellInfo(50464)] = 1.5			-- Nourish
+	},
+	buffSpells = {
+		PRIEST = {
+			[GetSpellInfo(21532)] = true,	-- Power Word: Fortitude (old id 25389)
+			[GetSpellInfo(39231)] = true	-- Prayer of Fortitude (old id 25392)
+		},
+	    DRUID = {
+			[GetSpellInfo(1126)] = true		-- Mark of the Wild (old id 26990)
+			-- TODO Find Gift Of the Wild
+		},
+	    MAGE = {
+			[GetSpellInfo(1459)] = true		-- Arcane Intellect (old id 27126)
+			-- TODO Find Arcane Brilliance
+		},
+	},
+	groupHealSpells = {
+		[GetSpellInfo(596)] = 3,			-- Prayer of Healing (old id 25308)
+	},
+}
+
+
+-- Default spells for range checking in the healer visual out-of-range cues.
+XPerl_DefaultRangeSpells = {
+	DRUID	= {spell = GetSpellInfo(5185)},				-- Healing Touch
+	PALADIN = {spell = GetSpellInfo(635)},				-- Holy Light
+	PRIEST	= {spell = GetSpellInfo(2061)},				-- Flash Heal
+	SHAMAN	= {spell = GetSpellInfo(331)},				-- Healing Wave
+	MAGE	= {spell = GetSpellInfo(475)},				-- Remove Lesser Curse
+	WARLOCK	= {spell = GetSpellInfo(5227)},				-- Underwater Breathing
+	ANY		= {item = GetItemInfo(21991)}				-- Heavy Netherweave Bandage
+}
+
+-- Don't highlight these magical debuffs
+XPerl_ArcaneExclusions = {
+	[GetSpellInfo(63559)] = true,						-- Bind Life
+	[GetSpellInfo(30451)] = true,						-- Arcane Blast (again) (old 42897)
+	[GetSpellInfo(30108)] = true,						-- Unstable Affliction (old 30405)
+	[GetSpellInfo(15822)] = true,						-- Dreamless Sleep
+	[GetSpellInfo(24360)] = true,						-- Greater Dreamless Sleep
+	[GetSpellInfo(28504)] = true,						-- Major Dreamless Sleep
+	[GetSpellInfo(31257)] = true,						-- Chilled
+	[GetSpellInfo(710)] = true,							-- Banish
+	[GetSpellInfo(44836)] = true,						-- Also Banish !?
+	[GetSpellInfo(24306)] = true,						-- Delusions of Jin'do
+	[GetSpellInfo(46543)] = {ROGUE = true, WARRIOR = true},	-- Ignite Mana
+	[GetSpellInfo(16567)] = {ROGUE = true, WARRIOR = true},	-- Tainted Mind
+	[GetSpellInfo(39052)] = {ROGUE = true},				-- Sonic Burst
+	[GetSpellInfo(41190)] = {ROGUE = true, WARRIOR = true}, -- Mind-numbing Poison
+	[GetSpellInfo(25195)] = {ROGUE = true},				-- Curse of Tongues
+	[GetSpellInfo(30129)] = true,						-- Charred Earth - Nightbane debuff, can't be cleansed, but shows as magic
+	[GetSpellInfo(31651)] = {MAGE = true, WARLOCK = true, PRIEST = true},	-- Banshee Curse, Melee hit rating debuff
+	[GetSpellInfo(38913)] = {ROGUE = true},				-- Silence
+	[GetSpellInfo(31555)] = {ROGUE = true, WARRIOR = true}, -- Decayed Intellect
+}
+else
+XPERL_HIGHLIGHT_SPELLS = {
+	hotSpells  = {
+		[GetSpellInfo(26982)] = 12,			-- Rejuvenation
+		[GetSpellInfo(26980)] = 21,			-- Regrowth
+		[GetSpellInfo(25222)] = 15,			-- Renew
+		[GetSpellInfo(48438)] = 7,			-- Wild Growth
+		[GetSpellInfo(33763)] = 8,			-- Lifebloom
+		[GetSpellInfo(28880)] = 15,			-- Gift of the Naaru (Racial)
+		[GetSpellInfo(61295)] = 15,			-- Riptide
+		[GetSpellInfo(66922)] = 10,			-- Flash of Light hot
+	},
+	pomSpells = {
+		[GetSpellInfo(33076)] = 30			-- Prayer of Mending
+	},
+	shieldSpells = {
+		--[GetSpellInfo(25218)] = 30,			-- Power Word: Shield
+		[GetSpellInfo(32594)] = 600			-- Earth Shield			-- TODO change me
+	},
+	healSpells = {
+		[GetSpellInfo(25235)] = 1,			-- Flash Heal
+		[GetSpellInfo(25213)] = 3,			-- Greater Heal
+		[GetSpellInfo(2053)] = 2,			-- Lesser Heal
+		[GetSpellInfo(6064)] = 2,			-- Heal
+		[GetSpellInfo(26979)] = 2,			-- Healing Touch
+		[GetSpellInfo(26980)] = 2,			-- Regrowth
+		[GetSpellInfo(25396)] = 3,			-- Healing Wave
+		[GetSpellInfo(25420)] = 2,			-- Lesser Healing Wave
+		[GetSpellInfo(27137)] = 1.5,		-- Flash of Light
+		[GetSpellInfo(27136)] = 2.5,		-- Holy Light
+		[GetSpellInfo(34866)] = 0.5,		-- Circle of Healing
+		[GetSpellInfo(50464)] = 1.5,		-- Nourish
+	},
+	buffSpells = {
+		PRIEST = {
+			[GetSpellInfo(25389)] = true,	-- Power Word: Fortitude
+			[GetSpellInfo(25392)] = true	-- Prayer of Fortitude
+		},
+	    DRUID = {
+			[GetSpellInfo(26990)] = true,	-- Mark of the Wild
+			[GetSpellInfo(26991)] = true	-- Gift of the Wild
+		},
+	    MAGE = {
+			[GetSpellInfo(27126)] = true,	-- Arcane Intellect
+			[GetSpellInfo(27127)] = true	-- "Arcane Brilliance"
+		},
+	},
+	groupHealSpells = {
+		[GetSpellInfo(25308)] = 3,			-- Prayer of Healing
+	},
+}
+
+-- Default spells for range checking in the healer visual out-of-range cues.
+XPerl_DefaultRangeSpells = {
+	DRUID	= {spell = GetSpellInfo(26979)},			-- Healing Touch
+	PALADIN = {spell = GetSpellInfo(27136)},			-- Holy Light
+	PRIEST	= {spell = GetSpellInfo(2053)},				-- Lesser Heal
+	SHAMAN	= {spell = GetSpellInfo(25396)},			-- Healing Wave
+	MAGE	= {spell = GetSpellInfo(475)},				-- Remove Lesser Curse
+	WARLOCK	= {spell = GetSpellInfo(132)},				-- Detect Invisibility
+	ANY		= {item = GetItemInfo(21991)}				-- Heavy Netherweave Bandage
+}
+
+-- Don't highlight these magical debuffs
+XPerl_ArcaneExclusions = {
+	[GetSpellInfo(63559)] = true,						-- Bind Life
+	[GetSpellInfo(42897)] = true,						-- Arcane Blast (again)
+	[GetSpellInfo(30405)] = true,						-- Unstable Affliction
+	[GetSpellInfo(15822)] = true,						-- Dreamless Sleep
+	[GetSpellInfo(24360)] = true,						-- Greater Dreamless Sleep
+	[GetSpellInfo(28504)] = true,						-- Major Dreamless Sleep
+	[GetSpellInfo(31257)] = true,						-- Chilled
+	[GetSpellInfo(44836)] = true,						-- Banish
+	[GetSpellInfo(24306)] = true,						-- Delusions of Jin'do
+	[GetSpellInfo(46543)] = {ROGUE = true, WARRIOR = true},	-- Ignite Mana
+	[GetSpellInfo(16567)] = {ROGUE = true, WARRIOR = true},	-- Tainted Mind
+	[GetSpellInfo(39052)] = {ROGUE = true},				-- Sonic Burst
+	[GetSpellInfo(41190)] = {ROGUE = true, WARRIOR = true}, -- Mind-numbing Poison
+	[GetSpellInfo(25195)] = {ROGUE = true},				-- Curse of Tongues
+	[GetSpellInfo(30129)] = true,						-- Charred Earth - Nightbane debuff, can't be cleansed, but shows as magic
+	[GetSpellInfo(31651)] = {MAGE = true, WARLOCK = true, PRIEST = true},	-- Banshee Curse, Melee hit rating debuff
+	[GetSpellInfo(38913)] = {ROGUE = true},				-- Silence
+	[GetSpellInfo(31555)] = {ROGUE = true, WARRIOR = true}, -- Decayed Intellect
+}
+end
+
 end

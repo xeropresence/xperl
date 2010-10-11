@@ -189,7 +189,7 @@ XPerl_DefaultRangeSpells = {
 	SHAMAN	= {spell = GetSpellInfo(331)},				-- Healing Wave
 	MAGE	= {spell = GetSpellInfo(475)},				-- Remove Lesser Curse
 	WARLOCK	= {spell = GetSpellInfo(5227)},				-- Underwater Breathing
-	ANY		= {item = "Heavy Netherweave Bandage"}		-- TODO - Use Item ID
+	ANY		= {item = GetItemInfo(21991)}				-- Heavy Netherweave Bandage
 }
 
 -- Don't highlight these magical debuffs
@@ -274,7 +274,7 @@ XPerl_DefaultRangeSpells = {
 	SHAMAN	= {spell = GetSpellInfo(25396)},			-- Healing Wave
 	MAGE	= {spell = GetSpellInfo(475)},				-- Remove Lesser Curse
 	WARLOCK	= {spell = GetSpellInfo(132)},				-- Detect Invisibility
-	ANY		= {item = "Heavy Netherweave Bandage"}		-- TODO - Use Item ID
+	ANY		= {item = GetItemInfo(21991)}				-- Heavy Netherweave Bandage
 }
 
 -- Don't highlight these magical debuffs
