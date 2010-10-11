@@ -31,6 +31,8 @@ local XPerl_Player_InitMoonkin
 local XPerl_PlayerStatus_OnUpdate
 local XPerl_Player_HighlightCallback
 
+local is_cata = select(4, _G.GetBuildInfo()) >= 40000
+
 ----------------------
 -- Loading Function --
 ----------------------
@@ -72,7 +74,7 @@ function XPerl_Player_OnLoad(self)
 	XPerl_Player_SetupDK(self)
 
 	--Only initalize this function if it's cataclym client.
-	if select(4, _G.GetBuildInfo()) >= 40000 then
+	if is_cata then
 		XPerl_Player_InitWarlock(self)
 		XPerl_Player_InitPaladin(self)
 		XPerl_Player_InitMoonkin(self)
@@ -114,7 +116,7 @@ local function UpdateAssignedRoles(self)
 		
 		-- According to http://forums.worldofwarcraft.com/thread.html?topicId=26560499864
 		-- this is the new way to check for roles
-		if select(4, _G.GetBuildInfo()) >= 40000 then
+		if is_cata then
 			role = UnitGroupRolesAssigned(unit)
 			isTank = false;
 			isHealer = false;
@@ -423,11 +425,12 @@ local function XPerl_Player_DruidBarUpdate(self)
 		druidBarExtra = 0
 	end
 
-	if select(4, _G.GetBuildInfo()) >= 40000 then
-		if GetActiveTalentGroup() == 1 then
-			self.eclipse:Show()
-		else
+	if is_cata then
+		local form = GetShapeshiftFormID()
+		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 then 
 			self.eclipse:Hide()
+		else
+			self.eclipse:Show()
 		end
 	end
 
@@ -665,7 +668,7 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
 			"UNIT_SPELLCAST_SUCCEEDED", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE",
-			"UNIT_SPELLCAST_SENT", "PLAYER_TALENT_UPDATE"}
+			"UNIT_SPELLCAST_SENT", "PLAYER_TALENT_UPDATE", "MASTERY_UPDATE", "UPDATE_SHAPESHIFT_FORM"}
 
 	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
 	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED"})
@@ -846,9 +849,24 @@ function XPerl_Player_Events:PLAYER_FLAGS_CHANGED(unit)
 	XPerl_Player_UpdateHealth(self)
 end
 
+-- MASTERY_UPDATE
+function XPerl_Player_Events:MASTERY_UPDATE()
+	XPerl_Player_UpdateMana(self)
+	if (playerClass == "DRUID") then
+		XPerl_Player_DruidBarUpdate(self)
+	end
+end
+
 -- PLAYER_TALENT_UPDATE
 function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	XPerl_Player_UpdateMana(self)
+	if (playerClass == "DRUID") then
+		XPerl_Player_DruidBarUpdate(self)
+	end
+end
+
+-- UPDATE_SHAPESHIFT_FORM
+function XPerl_Player_Events:UPDATE_SHAPESHIFT_FORM()
 	if (playerClass == "DRUID") then
 		XPerl_Player_DruidBarUpdate(self)
 	end
@@ -1318,10 +1336,11 @@ function XPerl_Player_InitMoonkin(self)
 		EclipseBarFrame:SetPoint("BOTTOMLEFT", 15, 5)
 		EclipseBarFrame:Show()
 
-		if GetActiveTalentGroup() == 1 then
-			self.eclipse:Show()
-		else
+		local form = GetShapeshiftFormID()
+		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 then 
 			self.eclipse:Hide()
+		else
+			self.eclipse:Show()
 		end
 
 		self.eclipse:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
@@ -1381,7 +1400,7 @@ function XPerl_Player_InitDK(self)
 		RuneFrame:SetPoint("BOTTOMRIGHT", -5, 5)
 
 		-- If client is Cata 4.0 or later, use new code.
-		if select(4, _G.GetBuildInfo()) >= 40000 then
+		if is_cata then
 				RuneButtonIndividual1:Hide()
 				RuneButtonIndividual2:Hide()
 				RuneButtonIndividual3:Hide()
