@@ -1,9 +1,8 @@
--- X-Perl UnitFrames
+﻿-- X-Perl UnitFrames
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-if ( GetLocale() == "deDE" ) then
-
+if (GetLocale() == "deDE") then
 	XPERL_RAID_GROUP                 = "Gruppe %d"
 	XPERL_RAID_TOOLTIP_NOCTRA        = "Kein CTRA gefunden"
 	XPERL_RAID_TOOLTIP_OFFLINE       = "Offline seit %s"
@@ -16,10 +15,16 @@ if ( GetLocale() == "deDE" ) then
 
 	XPERL_RAID_TOOLTIP_REMAINING     = " verbleibend"
 
-	XPERL_RAID_DROPDOWN_SHOWPET	= "Zeige die Begleiter"
-	XPERL_RAID_DROPDOWN_SHOWOWNER	= "Zeige das Inhaber"
+	XPERL_RAID_DROPDOWN_SHOWPET	= "Begleiter anzeigen"
+	XPERL_RAID_DROPDOWN_SHOWOWNER	= "Besitzer anzeigen"
 
-	XPERL_RAID_DROPDOWN_MAINTANKS	= "Main Tanks"
-	XPERL_RAID_DROPDOWN_SETMT	= "MT Festlegen #%d"
-	XPERL_RAID_DROPDOWN_REMOVEMT	= "MT Entfernen #%d"
+	XPERL_RAID_DROPDOWN_MAINTANKS	= "Haupttanks"
+	XPERL_RAID_DROPDOWN_SETMT	= "HT festlegen #%d"
+	XPERL_RAID_DROPDOWN_REMOVEMT	= "HT entfernen #%d"
+
+	XPERL_RAID_RESSING		= " wiederbelebt"
+	XPERL_RAID_AFK			= "AFK"
+	XPERL_RAID_DND			= "DND"
+	XPERL_RAID_AUTOPROMOTE		= "Auto-Bef\195\182rdern"
+	XPERL_RAID_RESSER_AVAIL		= "Rezzer verf\195\188gbar: "
 end
