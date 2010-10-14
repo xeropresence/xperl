@@ -678,6 +678,7 @@ local function Registration()
 			"UNIT_FACTION"}
 
 	for i,a in pairs(list) do
+		if not conf then return end
 		if (GetNumRaidMembers() > 0 and conf.RaidHelper == 1) then
 			XPerl_Frame:RegisterEvent(a)
 		else
