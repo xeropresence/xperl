@@ -697,7 +697,7 @@ function XPerl_SetHealthBar(self, hp, Max)
 
 	bar:SetMinMaxValues(0, Max)
     local percent = max(0, hp / Max) -- Fix for SetFormatted text displaying -21474... for 0 / 0			
-            
+    if percent > 100 then percent = 100 end -- percent only goes to 100        
     if (conf.bar.inverse) then
 
 		bar:SetValue(Max - hp)

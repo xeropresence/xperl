@@ -73,7 +73,7 @@ function XPerl_Player_OnLoad(self)
 	XPerl_Player_InitDK(self)
 	XPerl_Player_SetupDK(self)
 
-	--Only initalize this function if it's cataclym client.
+	--if it's 4.0 or more, show fancy warlockpallymoonkinUI
 	if is_cata then
 		XPerl_Player_InitWarlock(self)
 		XPerl_Player_InitPaladin(self)
@@ -1453,7 +1453,7 @@ function XPerl_Player_InitDK(self)
 		local prev
 		local idSwitch = {1, 2, 5, 6, 3, 4}		-- Non sequential rune IDs.. gg
 		for i = 1,6 do
-			local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, RuneFrame, "XPerl_RuneButtonIndividualTemplate")
+			local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, self.runes, "XPerl_RuneButtonIndividualTemplate")
 			self.runes.list[ idSwitch[i] ] = rune
 			rune:EnableMouse(false)
 

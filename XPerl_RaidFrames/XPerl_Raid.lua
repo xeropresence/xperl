@@ -623,8 +623,8 @@ function XPerl_Raid_Single_OnLoad(self)
 
 	self:SetScript("OnAttributeChanged", onAttrChanged)
 	
-	-- XPerl_RegisterClickCastFrame(self)
-	-- XPerl_RegisterClickCastFrame(self.nameFrame)
+	 XPerl_RegisterClickCastFrame(self)
+	 XPerl_RegisterClickCastFrame(self.nameFrame)
 end
 
 -- XPerl_Raid_CombatFlash
@@ -2217,6 +2217,7 @@ end
 
 --hide those pesky default raidframe and friend
 function XPerl_Raid_HideBlizzRaid()
-	_G["RaidFrame"]:Hide();
-	_G["CompactRaidFrameManager"]:Hide()
+	_G["CompactRaidFrameContainer"]:Hide() --be paranoid and hide this one as well
+	_G["RaidFrame"]:Hide(); --is this even in use anymore?
+	_G["CompactRaidFrameManager"]:Hide() --this is the sliding panel to the left
 end
