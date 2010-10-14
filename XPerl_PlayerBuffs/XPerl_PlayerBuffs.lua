@@ -143,18 +143,21 @@ function XPerl_Player_Buffs_Position(self)
 		else
 			if (self.runes and self.runes:IsShown() and not pconf.hideRunes) then
 				self.buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
+			elseif (self.runed and self.runed:IsShown()) then
+				self.buffFrame:SetPoint("TOPLEFT", self.runed, "BOTTOMLEFT", 3, 0)
 			elseif (self.shards) then
 				self.buffFrame:SetPoint("TOPLEFT", self.shards, "BOTTOMLEFT", 3, 0)
 			elseif (self.holyp and self.holyp:IsShown()) then
 				self.buffFrame:SetPoint("TOPLEFT", self.holyp, "BOTTOMLEFT", 3, -15)
+                        elseif (self.eclipse and self.eclipse:IsShown()) then
+				self.buffFrame:SetPoint("TOPLEFT", self.eclipse, "BOTTOMLEFT", 3, 3)
 			elseif (pconf.buffs.wrap and ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait)) then
 				self.buffFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
-			elseif (self.eclipse and self.eclipse:IsShown()) then
-				self.buffFrame:SetPoint("TOPLEFT", self.eclipse, "BOTTOMLEFT", 3, 3)
 			else
 				self.buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, 0)
 			end
 		end
+
 
 		--if (not self.conf.buffs.wrap and self.buffFrame.buff and self.buffFrame.buff[1] and self.buffFrame.debuff and self.buffFrame.debuff[1]) then
 		--	self.buffFrame.buff[1]:ClearAllPoints()

@@ -668,7 +668,9 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
 			"UNIT_SPELLCAST_SUCCEEDED", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE",
-			"UNIT_SPELLCAST_SENT", "PLAYER_TALENT_UPDATE", "MASTERY_UPDATE", "UPDATE_SHAPESHIFT_FORM"}
+			"UNIT_SPELLCAST_SENT", "PLAYER_TALENT_UPDATE", "MASTERY_UPDATE", "UPDATE_SHAPESHIFT_FORM",
+			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE"}
+
 
 	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
 	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED"})
@@ -945,6 +947,35 @@ function XPerl_Player_Events:UNIT_EXITED_VEHICLE()
 	end
 end
 
+function XPerl_Player_Events:RUNE_POWER_UPDATE(event, runeIndex, isEnergize)
+	if runeIndex and runeIndex >= 1 and runeIndex <= 6 then
+		local runeButton = _G['XPerl_RuneButtonIndividual' .. runeIndex];
+		local cooldown = _G['XPerl_RuneButtonIndividual' .. runeIndex .. 'Cooldown'];
+		local start, duration, isReady = GetRuneCooldown(runeIndex);
+		if not isReady then
+			if start then
+				CooldownFrame_SetTimer(cooldown, start, duration, 1);
+			end
+			runeButton.energize:Stop();
+		else
+			cooldown:Hide();
+			runeButton.shine:SetVertexColor(1, 1, 1);
+			RuneButton_ShineFadeIn(runeButton.shine);
+		end
+		if isEnergize then
+			runeButton.energize:Play();
+		end
+	else
+		assert(false, 'Bad rune index');
+	end
+end
+function XPerl_Player_Events:RUNE_TYPE_UPDATE(self, event, runeIndex)
+	if runeIndex and runeIndex >= 1 and runeIndex <= 6 then
+		RuneButton_Update(_G["XPerl_RuneButtonIndividual"..runeIndex], runeIndex);
+	end
+end
+
+
 -- XPerl_Player_Energy_TickWatch
 function XPerl_Player_Energy_OnUpdate(self, elapsed)
 	local sparkPosition
@@ -1172,7 +1203,7 @@ function XPerl_Player_Set_Bits(self)
 	self:SetHeight(max(h1, h2))
 
 	self.highlight:ClearAllPoints()
-	if (pconf.extendPortrait or (self.runes and pconf.showRunes and pconf.dockRunes or self.holyp)) then
+	if (pconf.extendPortrait or (self.runes and pconf.showRunes and pconf.dockRunes)) then
 		self.portraitFrame:SetHeight(62 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 		--self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 		--self.highlight:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, 0)
@@ -1423,17 +1454,18 @@ function XPerl_Player_InitDK(self)
 		local idSwitch = {1, 2, 5, 6, 3, 4}		-- Non sequential rune IDs.. gg
 		for i = 1,6 do
 			local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, RuneFrame, "XPerl_RuneButtonIndividualTemplate")
-			self.runes.list[i] = rune
+			self.runes.list[ idSwitch[i] ] = rune
 			rune:EnableMouse(false)
 
 			-- god only knows why blizzard did this...
-			rune:SetID(idSwitch[i])
+			rune:SetID(i)
 
 			if (i > 1) then
 				rune:SetPoint("LEFT", prev, "RIGHT", 4 + ((i % 2) * 16), 0)
 			else
 				rune:SetPoint("LEFT", 10, 0)
 			end
+			RuneButton_Update(rune, i, true);
 			prev = rune
 		end
 
@@ -1461,8 +1493,7 @@ function XPerl_Player_SetupDK(self)
 			end
 
 			for i = 1,6 do
-				local rune = _G["XPerl_RuneButtonIndividual"..i]
-				self.runes.list[i] = rune
+				local rune = self.runes.list[i];
 				rune:ClearAllPoints()
 				rune:SetWidth(22)
 				rune:SetHeight(22)
