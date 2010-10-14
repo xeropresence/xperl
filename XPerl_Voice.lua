@@ -109,8 +109,10 @@ function voice:UpdateVoice(frame, onoff)
 		frame.voiceButton.Flash:Hide()
 		XPerl_FrameFlash(frame.voiceButton.Flash)
 	else
-		frame.voiceButton.On:Hide()
-		XPerl_FrameFlashStop(frame.voiceButton.Flash)
+		if frame.voiceButton then
+			frame.voiceButton.On:Hide()
+			XPerl_FrameFlashStop(frame.voiceButton.Flash)
+		end
 	end
 
 	--local muted = frame.partyid and GetMuteStatus(frame.partyid)

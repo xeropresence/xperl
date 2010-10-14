@@ -616,9 +616,15 @@ function XPerl_Raid_Single_OnLoad(self)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame})
 	self.FlashFrames = {self.nameFrame, self.statsFrame}
 
-	--self:SetScript("OnAttributeChanged", onAttrChanged)
-	--XPerl_RegisterClickCastFrame(self)
-	--XPerl_RegisterClickCastFrame(self.nameFrame)
+	--FIX FOR 4.0.1 raids
+	self:SetAttribute("*type1", "target")
+	self:SetAttribute("type2", "menu")
+	self.menu = XPerl_ShowGenericMenu
+
+	self:SetScript("OnAttributeChanged", onAttrChanged)
+	
+	-- XPerl_RegisterClickCastFrame(self)
+	-- XPerl_RegisterClickCastFrame(self.nameFrame)
 end
 
 -- XPerl_Raid_CombatFlash
@@ -669,7 +675,9 @@ end
 
 -- XPerl_Raid_HighlightCallback(updateName)
 local function XPerl_Raid_HighlightCallback(self, updateGUID)
-	local f = XPerl_Raid_GetUnitFrameByGUID(updateGUID)
+	if not updateGUID then return end
+	
+	local f = XPerl_Raid_GetUnitFrameByUnit(updateGUID)
 	if (f) then
 		XPerl_Highlight:SetHighlight(f, updateGUID)
 	end
@@ -2061,7 +2069,7 @@ end
 local function SetMainHeaderAttributes(self)
 
 	self:Hide()
-
+	
 	self.initialConfigFunction = initialConfigFunction
 
 	if (rconf.sortAlpha) then

@@ -421,8 +421,9 @@ end
 function XPerl_Options_SetIndex(self, new)
 	if (type(self.configBase) == "string") then
 		local val = GetTable(self)
-		val[self.configIndex] = new
-
+		if val then
+			val[self.configIndex] = new
+		end
 	elseif (type(self.configBase) == "table") then
 		if (self.configIndex == nil) then
 			error("No index for configBase in "..self:GetName())
