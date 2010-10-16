@@ -264,8 +264,8 @@ local function DoRangeCheck(unit, opt)
 			range = 1
 		end
 	end
-
-	if (range ~= 1) then
+	
+	if (range ~= 1 and range ~= true) then
 		return opt.FadeAmount
 	end
 end
@@ -2395,15 +2395,13 @@ local function d(...)
 end
 
 local function HideSetFocus()
-	if (XPerl_ShouldHideSetFocus) then
-		local count = 0
-		for index, value in ipairs(UnitPopupMenus[XPerl_DropDown.which]) do
-			if (UnitPopupShown[1][index] == 1) then
-				count = count + 1
-				if (value == "SET_FOCUS") then
-					UnitPopupShown[1][index] = 0
-					break
-				end
+	local count = 0
+	for index, value in ipairs(UnitPopupMenus[XPerl_DropDown.which]) do
+		if (UnitPopupShown[1][index] == 1) then
+			count = count + 1
+			if (value == "SET_FOCUS") then
+				UnitPopupShown[1][index] = 0
+				break
 			end
 		end
 	end
@@ -2438,9 +2436,7 @@ function XPerl_ShowGenericMenu(self, unit, button, actionType)
 			parent = self:GetParent()
 		end
 
-		XPerl_ShouldHideSetFocus = true
 		ToggleDropDownMenu(1, nil, XPerl_DropDown, parent, 0, 0)
-		XPerl_ShouldHideSetFocus = nil
 	end
 end
 
