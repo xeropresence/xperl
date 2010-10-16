@@ -1239,10 +1239,12 @@ function XPerl_Raid_Events:UNIT_FACTION()
 end
 
 -- UNIT_COMBAT
-function XPerl_Raid_Events:UNIT_COMBAT()
-	if (arg2 == "HEAL") then
+function XPerl_Raid_Events:UNIT_COMBAT(...)
+	local unitID, action, descriptor, damage, damageType = select(1, ...)
+	
+	if (action == "HEAL") then
 		XPerl_Raid_CombatFlash(self, 0, true, true)
-	elseif (arg4 and arg4 > 0) then
+	elseif (damage and damage > 0) then
 		XPerl_Raid_CombatFlash(self, 0, true)
 	end
 end

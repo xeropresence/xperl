@@ -1211,28 +1211,30 @@ function XPerl_Target_Events:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, srcGU
 end
 
 -- UNIT_COMBAT
-function XPerl_Target_Events:UNIT_COMBAT()
-	if (arg1 == self.partyid) then
+function XPerl_Target_Events:UNIT_COMBAT(...)
+	local unitID, action, descriptor, damage, damageType = select(1, ...)
+	
+	if (unitID == self.partyid) then
 		XPerl_Target_Update_Combat(self)
-
+	
 		if (not self.conf.ownDamageOnly) then
 			if (self.conf.hitIndicator and self.conf.portrait) then
-				CombatFeedback_OnCombatEvent(self, arg2, arg3, arg4, arg5)
+			CombatFeedback_OnCombatEvent(self, action, descriptor, damage, damageType)
 			end
 		end
-
-		if (arg2 == "HEAL") then
+	
+		if (action == "HEAL") then
 			XPerl_Target_CombatFlash(self, 0, true, true)
-		elseif (arg4 and arg4 > 0) then
+		elseif (damage and damage > 0) then
 			XPerl_Target_CombatFlash(self, 0, true)
 		end
 	end
 end
 
 -- UNIT_SPELLMISS
-function XPerl_Target_Events:UNIT_SPELLMISS()
+function XPerl_Target_Events:UNIT_SPELLMISS(...)
 	if (self.conf.hitIndicator and self.conf.portrait) then
-		CombatFeedback_OnSpellMissEvent(self, arg2)
+		CombatFeedback_OnSpellMissEvent(self, ...)
 	end
 end
 

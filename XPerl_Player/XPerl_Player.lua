@@ -637,13 +637,13 @@ end
 -------------------
 -- Event Handler --
 -------------------
-function XPerl_Player_OnEvent(self, event, arg1, ...)
+function XPerl_Player_OnEvent(self, event, unitID, ...)
 	if (strsub(event, 1, 5) == "UNIT_") then
-	 	if (arg1 == "player" or arg1 == "vehicle") then
+	 	if (unitID == "player" or unitID == "vehicle") then
 			XPerl_Player_Events[event](self, ...)
 		end
 	else
-		XPerl_Player_Events[event](self, event, arg1, ...)
+		XPerl_Player_Events[event](self, event, unitID, ...)
 	end
 end
 
@@ -685,27 +685,25 @@ end
 
 -- UNIT_COMBAT
 function XPerl_Player_Events:UNIT_COMBAT(...)
-	if (arg1 == self.partyid) then
-		if (pconf.hitIndicator and pconf.portrait) then
-			if (arg2 ~= "HEAL" or UnitHealth(self.partyid) < UnitHealthMax(self.partyid)) then
-				CombatFeedback_OnCombatEvent(self, ...)
-			end
+	local action, descriptor, damage, damageType = select(1, ...)
+	
+	if (pconf.hitIndicator and pconf.portrait) then
+		if (action ~= "HEAL" or UnitHealth(self.partyid) < UnitHealthMax(self.partyid)) then
+			CombatFeedback_OnCombatEvent(self, ...)
 		end
+	end
 
-		if (arg2 == "HEAL") then
-			XPerl_Player_CombatFlash(self, elapsed, true, true)
-		elseif (arg4 and arg4 > 0) then
-			XPerl_Player_CombatFlash(self, elapsed, true)
-		end
+	if (action == "HEAL") then
+		XPerl_Player_CombatFlash(self, elapsed, true, true)
+	elseif (damage and damage > 0) then
+		XPerl_Player_CombatFlash(self, elapsed, true)
 	end
 end
 
 -- UNIT_SPELLMISS
 function XPerl_Player_Events:UNIT_SPELLMISS(...)
 	if (pconf.hitIndicator and pconf.portrait) then
-		if (arg1 == self.partyid) then
-			CombatFeedback_OnSpellMissEvent(self, ...)
-		end
+		CombatFeedback_OnSpellMissEvent(self, ...)
 	end
 end
 

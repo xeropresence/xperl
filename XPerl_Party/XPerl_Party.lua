@@ -760,7 +760,7 @@ local function XPerl_Party_UpdateTarget(self)
 end
 
 -- XPerl_Party_OnUpdate
-function XPerl_Party_OnUpdate(self, elapsed)
+function XPerl_Party_OnUpdate(self, elapsed, arg1)
 	if (not self.partyid) then
 		return
 	end
@@ -909,23 +909,25 @@ XPerl_Party_Events.READY_CHECK_CONFIRM = XPerl_Party_Events.READY_CHECK
 XPerl_Party_Events.READY_CHECK_FINISHED = XPerl_Party_Events.READY_CHECK
 
 -- UNIT_COMBAT
-function XPerl_Party_Events:UNIT_COMBAT()
+function XPerl_Party_Events:UNIT_COMBAT(...)
+	local action, descriptor, damage, damageType = select(1, ...)
+	
 	if (pconf.hitIndicator and pconf.portrait) then
-		CombatFeedback_OnCombatEvent(self, arg2, arg3, arg4, arg5)
+		CombatFeedback_OnCombatEvent(self, action, descriptor, damage, damageType)
 	end
 
 	XPerl_Party_UpdateCombat(self)
-	if (arg2 == "HEAL") then
+	if (action == "HEAL") then
 		XPerl_Party_CombatFlash(self, 0, true, true)
-	elseif (arg4 and arg4 > 0) then
+	elseif (damage and damage > 0) then
 		XPerl_Party_CombatFlash(self, 0, true)
 	end
 end
 
 -- UNIT_SPELLMISS
-function XPerl_Party_Events:UNIT_SPELLMISS()
+function XPerl_Party_Events:UNIT_SPELLMISS(...)
 	if (pconf.hitIndicator and pconf.portrait) then
-		CombatFeedback_OnSpellMissEvent(self, arg2)
+		CombatFeedback_OnSpellMissEvent(self, ...)
 	end
 end
 

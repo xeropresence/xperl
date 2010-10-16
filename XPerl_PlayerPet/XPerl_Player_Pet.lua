@@ -223,7 +223,7 @@ local function XPerl_Player_Pet_CombatFlash(self, elapsed, argNew, argGreen)
 end
 
 -- XPerl_Player_Pet_OnUpdate
-function XPerl_Player_Pet_OnUpdate(self, elapsed)
+function XPerl_Player_Pet_OnUpdate(self, elapsed, arg1)
 	CombatFeedback_OnUpdate(self, elapsed)
 	if (self.PlayerFlash) then
 		XPerl_Player_Pet_CombatFlash(self, arg1, false)
@@ -310,18 +310,10 @@ end
 -------------------
 -- Event Handler --
 -------------------
-function XPerl_Player_Pet_OnEvent(self, event, unit, ...)
+function XPerl_Player_Pet_OnEvent(self, event, unitID, ...)
 	local func = XPerl_Player_Pet_Events[event]
 	if (func) then
-		if (strfind(event, "^UNIT_")) then
-			if (unit == self.partyid and not strfind(event, "VEHICLE") and event ~= "UNIT_THREAT_LIST_UPDATE") then
-				func(self, ...)
-			else
-				func(self, unit, ...)
-			end
-		else
-			func(self, unit, ...)
-		end
+		func(self, unitID, ...)
 	else
 XPerl_ShowMessage("EXTRA EVENT")
 	end
@@ -432,25 +424,25 @@ end
 
 -- UNIT_COMBAT
 function XPerl_Player_Pet_Events:UNIT_COMBAT(...)
-	if (arg1 == self.partyid) then
+	local unitID, action, descriptor, damage, damageType = select(1, ...)
+	
+	if (unitID == self.partyid) then
 		if (pconf.hitIndicator and pconf.portrait) then
 			CombatFeedback_OnCombatEvent(self, ...)
 		end
-
-		if (arg2 == "HEAL") then
+	
+		if (action == "HEAL") then
 			XPerl_Player_Pet_CombatFlash(XPerl_Player_Pet, 0, true, true)
-		elseif (arg4 and arg4 > 0) then
+		elseif (damage and damage > 0) then
 			XPerl_Player_Pet_CombatFlash(XPerl_Player_Pet, 0, true)
 		end
 	end
 end
 
 -- UNIT_SPELLMISS
-function XPerl_Player_Pet_Events:UNIT_SPELLMISS()
-	if (arg1 == self.partyid) then
-		if (pconf.hitIndicator and pconf.portrait) then
-			CombatFeedback_OnSpellMissEvent(self, arg2)
-		end
+function XPerl_Player_Pet_Events:UNIT_SPELLMISS(...)
+	if (pconf.hitIndicator and pconf.portrait) then
+		CombatFeedback_OnSpellMissEvent(self, ...)
 	end
 end
 

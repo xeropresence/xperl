@@ -316,7 +316,7 @@ end
 -------------------
 -- Event Handler --
 -------------------
-function XPerl_TargetTarget_OnEvent(self, event, arg1, ...)
+function XPerl_TargetTarget_OnEvent(self, event, unitID, ...)
 
 	if (event == "RAID_TARGET_UPDATE") then
 		XPerl_TargetTarget_RaidIconUpdate(self)
@@ -325,15 +325,15 @@ function XPerl_TargetTarget_OnEvent(self, event, arg1, ...)
 		XPerl_TargetTarget_UpdateDisplay(self, true)
 
 	elseif (event == "UNIT_TARGET") then
-		if (arg1 == "target" and self == XPerl_TargetTarget) then
+		if (unitID == "target" and self == XPerl_TargetTarget) then
 			XPerl_NoFadeBars(true)
 			XPerl_TargetTarget_UpdateDisplay(self, true)
 			XPerl_NoFadeBars()
-		elseif (arg1 == "focus" and self == XPerl_FocusTarget) then
+		elseif (unitID == "focus" and self == XPerl_FocusTarget) then
 			XPerl_NoFadeBars(true)
 			XPerl_TargetTarget_UpdateDisplay(self, true)
 			XPerl_NoFadeBars()
-		elseif (arg1 == "pet" and self == XPerl_PetTarget) then
+		elseif (unitID == "pet" and self == XPerl_PetTarget) then
 			XPerl_NoFadeBars(true)
 			XPerl_TargetTarget_UpdateDisplay(self, true)
 			XPerl_NoFadeBars()
