@@ -623,8 +623,8 @@ function XPerl_Raid_Single_OnLoad(self)
 
 	self:SetScript("OnAttributeChanged", onAttrChanged)
 	
-	 XPerl_RegisterClickCastFrame(self)
-	 XPerl_RegisterClickCastFrame(self.nameFrame)
+	XPerl_RegisterClickCastFrame(self)
+	XPerl_RegisterClickCastFrame(self.nameFrame)
 end
 
 -- XPerl_Raid_CombatFlash
@@ -979,7 +979,7 @@ function XPerl_Raid_OnUpdate(self, elapsed)
 	for i,frame in pairs(FrameArray) do
 		if (frame:IsShown()) then
 			if (frame.PlayerFlash) then
-				XPerl_Raid_CombatFlash(frame, arg1, false)
+				XPerl_Raid_CombatFlash(frame, elapsed, false)
 			end
 
 			if (someUpdate) then
