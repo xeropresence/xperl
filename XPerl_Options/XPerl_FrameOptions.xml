@@ -4298,7 +4298,7 @@
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_Fullscreen" relativePoint="BOTTOMLEFT">
 								<Offset>
-									<AbsDimension x="30" y="-2"/>
+									<AbsDimension x="20" y="-2"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -4439,11 +4439,11 @@
 						</Scripts>
 					</CheckButton>
 					
-                                        -- added by playerlin 20100820
-                                        <CheckButton name="$parent_XPerlOldRoleIcons" inherits="XPerlCheckButtonTemplate">
+					-- added by playerlin 20100820
+					<CheckButton name="$parent_XPerlOldRoleIcons" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_ShowReadyCheck" relativePoint="BOTTOMLEFT">
-								<Offset><AbsDimension x="-84" y="-6"/></Offset>
+								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
@@ -4455,7 +4455,7 @@
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
-                                        
+
 					<CheckButton name="$parent_SettingsMethod" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMRIGHT">
