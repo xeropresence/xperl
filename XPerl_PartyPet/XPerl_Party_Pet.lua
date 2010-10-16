@@ -406,10 +406,12 @@ XPerl_ShowMessage("EXTRA EVENT")
 end
 
 -- UNIT_COMBAT
-function XPerl_Party_Pet_Events:UNIT_COMBAT()
-	if (arg2 == "HEAL") then
+function XPerl_Party_Pet_Events:UNIT_COMBAT(...)
+	local action, descriptor, damage, damageType = select(1, ...)
+	
+	if (action == "HEAL") then
 		XPerl_Party_Pet_CombatFlash(self, 0, true, true)
-	elseif (arg4 and arg4 > 0) then
+	elseif (damage and damage > 0) then
 		XPerl_Party_Pet_CombatFlash(self, 0, true)
 	end
 end
