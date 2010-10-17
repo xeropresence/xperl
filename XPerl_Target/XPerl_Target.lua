@@ -1138,6 +1138,7 @@ local amountIndex = {
 	SWING_DAMAGE = 1,
 	RANGE_DAMAGE = 4,
 	SPELL_DAMAGE = 4,
+	SPELL_PERIODIC_DAMAGE = 4,
 	DAMAGE_SHIELD = 4,
 	ENVIRONMENTAL_DAMAGE = 2,
 }
@@ -1157,8 +1158,8 @@ local function DoEvent(self, timestamp, event, srcGUID, srcName, srcFlags, dstGU
 	local g = 1
 	local b = 1
 
-	if (event == "SWING_DAMAGE" or event == "RANGE_DAMAGE" or event == "SPELL_DAMAGE" or event == "DAMAGE_SHIELD" or event == "ENVIRONMENTAL_DAMAGE") then
-		local amount, school, resisted, blocked, absorbed, critical, glancing, crushing = select(amountIndex[event], ...)
+	if (event == "SWING_DAMAGE" or event == "RANGE_DAMAGE" or event == "SPELL_DAMAGE" or event == "DAMAGE_SHIELD" or event == "ENVIRONMENTAL_DAMAGE" or event == "SPELL_PERIODIC_DAMAGE") then
+		local amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = select(amountIndex[event], ...)
 		if (amount and amount ~= 0) then
 			if (critical or crushing) then
 				fontHeight = fontHeight * 1.5
@@ -1178,7 +1179,7 @@ local function DoEvent(self, timestamp, event, srcGUID, srcName, srcFlags, dstGU
 		end
 
 	elseif (event == "SPELL_HEAL" or event == "SPELL_PERIODIC_HEAL") then
-		local amount, critical = select(4, ...)
+		local amount, overhealing, absorbed, critical = select(4, ...)
 		if (amount and amount ~= 0) then
 			if (critical) then
 				fontHeight = fontHeight * 1.5
