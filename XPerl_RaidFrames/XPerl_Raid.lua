@@ -617,14 +617,28 @@ function XPerl_Raid_Single_OnLoad(self)
 	self.FlashFrames = {self.nameFrame, self.statsFrame}
 
 	--FIX FOR 4.0.1 raids
-	self:SetAttribute("*type1", "target")
-	self:SetAttribute("type2", "menu")
-	self.menu = XPerl_ShowGenericMenu
-
 	self:SetScript("OnAttributeChanged", onAttrChanged)
-	
 	XPerl_RegisterClickCastFrame(self)
 	XPerl_RegisterClickCastFrame(self.nameFrame)
+
+	Setup1RaidFrame(self)
+
+	self:SetAttribute("*type1", "target")
+	self:SetAttribute("type2", "menu")
+	self.menu = XPerl_Raid_ShowPopup
+
+	-- Does AllowAttributeChange work for children?
+	self.nameFrame:SetAttribute("useparent-unit", true)
+	self.nameFrame:SetAttribute("*type1", "target")
+	self.nameFrame:SetAttribute("type2", "menu")
+	self.nameFrame.menu = XPerl_Raid_ShowPopup
+
+	if (rconf.mana) then
+		self:SetAttribute("initial-height", 43)
+	else
+		self:SetAttribute("initial-height", 38)
+	end	
+	
 end
 
 -- XPerl_Raid_CombatFlash
@@ -2052,6 +2066,7 @@ function XPerl_RaidTipExtra(unitid)
 	end
 end
 
+-- This code appears to be never run, so why is it here and when did it use to get run?
 -- initialConfigFunction
 local function initialConfigFunction(self)
 	-- This is the only place we're allowed to set attributes whilst in combat
