@@ -31,7 +31,6 @@ local XPerl_Player_InitMoonkin
 local XPerl_PlayerStatus_OnUpdate
 local XPerl_Player_HighlightCallback
 
-local is_cata = select(4, _G.GetBuildInfo()) >= 40000
 
 ----------------------
 -- Loading Function --
@@ -72,13 +71,9 @@ function XPerl_Player_OnLoad(self)
 
 	XPerl_Player_InitDK(self)
 	XPerl_Player_SetupDK(self)
-
-	--if it's 4.0 or more, show fancy warlockpallymoonkinUI
-	if is_cata then
-		XPerl_Player_InitWarlock(self)
-		XPerl_Player_InitPaladin(self)
-		XPerl_Player_InitMoonkin(self)
-	end
+	XPerl_Player_InitWarlock(self)
+	XPerl_Player_InitPaladin(self)
+	XPerl_Player_InitMoonkin(self)
 
 	XPerl_RegisterHighlight(self.highlight, 3)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
@@ -116,20 +111,16 @@ local function UpdateAssignedRoles(self)
 		
 		-- According to http://forums.worldofwarcraft.com/thread.html?topicId=26560499864
 		-- this is the new way to check for roles
-		if is_cata then
-			role = UnitGroupRolesAssigned(unit)
-			isTank = false;
-			isHealer = false;
-			isDamage = false;
-			if role == "TANK" then
-				isTank = true
-			elseif role == "HEALER" then
-				isHealer = true
-			elseif role == "DAMAGER" then
-				isDamage = true
-			end
-		else
-			isTank, isHealer, isDamage = UnitGroupRolesAssigned("player")
+		role = UnitGroupRolesAssigned(unit)
+		isTank = false;
+		isHealer = false;
+		isDamage = false;
+		if role == "TANK" then
+			isTank = true
+		elseif role == "HEALER" then
+			isHealer = true
+		elseif role == "DAMAGER" then
+			isDamage = true
 		end
 		
 	end
@@ -425,13 +416,11 @@ local function XPerl_Player_DruidBarUpdate(self)
 		druidBarExtra = 0
 	end
 
-	if is_cata then
-		local form = GetShapeshiftFormID()
-		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 then 
-			self.eclipse:Hide()
-		else
-			self.eclipse:Show()
-		end
+	local form = GetShapeshiftFormID()
+	if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 then 
+		self.eclipse:Hide()
+	else
+		self.eclipse:Show()
 	end
 
 	local h = 40 + ((druidBarExtra + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
@@ -1428,25 +1417,12 @@ function XPerl_Player_InitDK(self)
 		RuneFrame:SetPoint("TOPLEFT", 5, -5)
 		RuneFrame:SetPoint("BOTTOMRIGHT", -5, 5)
 
-		-- If client is Cata 4.0 or later, use new code.
-		if is_cata then
-				RuneButtonIndividual1:Hide()
-				RuneButtonIndividual2:Hide()
-				RuneButtonIndividual3:Hide()
-				RuneButtonIndividual4:Hide()
-				RuneButtonIndividual5:Hide()
-				RuneButtonIndividual6:Hide()
-		
-		else
-		-- Else use 3.x code instead, make sure it didn't display nothing on 3.x.
-			for i = 1,6 do
-				local rune = RuneFrame.runes[i]
-				if (rune) then
-					rune:Hide()
-				end
-			end
-			RuneFrame.runes = {}
-		end
+		RuneButtonIndividual1:Hide()
+		RuneButtonIndividual2:Hide()
+		RuneButtonIndividual3:Hide()
+		RuneButtonIndividual4:Hide()
+		RuneButtonIndividual5:Hide()
+		RuneButtonIndividual6:Hide()
 
 		local prev
 		local idSwitch = {1, 2, 5, 6, 3, 4}		-- Non sequential rune IDs.. gg

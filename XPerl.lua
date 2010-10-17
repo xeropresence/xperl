@@ -43,7 +43,6 @@ local hugeNumDiv10 = hugeNumDiv * 10
 local largeNumDiv100 = largeNumDiv * 100
 local ArcaneExclusions = XPerl_ArcaneExclusions
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
-local is_cata = select(4, _G.GetBuildInfo()) >= 40000
 
 ------------------------------------------------------------------------------
 -- Re-usable tables
@@ -1750,9 +1749,7 @@ function XPerl_RestoreAllPositions()
 	end
 end
 
-local BuffExceptions
-if is_cata then--If client is cataclysm client, use these buff exceptions
-	BuffExceptions = {
+local BuffExceptions = {
 	PRIEST = {
 		[GetSpellInfo(774)] = true,					-- Rejuvenation
 		[GetSpellInfo(8936)] = true,				-- Regrowth
@@ -1804,59 +1801,6 @@ if is_cata then--If client is cataclysm client, use these buff exceptions
 		[GetSpellInfo(54428)] = true,				-- Divine Plea
 	},
 }
-else--It's not cataclysm client, use old buff exceptions
-	BuffExceptions = {
-	PRIEST = {
-		[GetSpellInfo(26982)] = true,				-- Rejuvenation
-		[GetSpellInfo(26980)] = true,				-- Regrowth
-		[GetSpellInfo(33076)] = true,				-- Prayer of Mending
-	},
-	DRUID = {
-		[GetSpellInfo(25222)] = true,				-- Renew
-	},
-	WARLOCK = {
-		[GetSpellInfo(20707)] = true,				-- Soulstone Resurrection
-	},
-	HUNTER = {
-		[GetSpellInfo(34074)] = "HUNTER",			-- Aspect of the Viper
-		[GetSpellInfo(27044)] = "HUNTER",			-- Aspect of the Hawk
-		[GetSpellInfo(5118)] = "HUNTER",			-- Aspect of the Cheetah
-		[GetSpellInfo(13159)] = true,				-- Aspect of the Pack
-		[GetSpellInfo(61846)] = "HUNTER",			-- Aspect of the Dragonhawk
-		[GetSpellInfo(27045)] = true,				-- Aspect of the Wild
-		[GetSpellInfo(13161)] = "HUNTER",			-- Aspect of the Beast
-		[GetSpellInfo(13163)] = "HUNTER",			-- Aspect of the Monkey
-		[GetSpellInfo(19506)] = true,				-- Trueshot Aura
-		[GetSpellInfo(5384)] = "HUNTER",			-- Feign Death
-	},
-	ROGUE = {
-		[GetSpellInfo(1787)] = "ROGUE",				-- Stealth
-		[GetSpellInfo(26889)] = "ROGUE",			-- Vanish
-		[GetSpellInfo(11305)] = "ROGUE",			-- Sprint
-		[GetSpellInfo(13750)] = "ROGUE",			-- Adrenaline Rush
-		[GetSpellInfo(13877)] = "ROGUE",			-- Blade Flurry
-	},
-	PALADIN = {
-		[GetSpellInfo(21084)] = true,				-- Seal of Righteousness
-		[GetSpellInfo(20375)] = true,				-- Seal of Command
-		[GetSpellInfo(20166)] = true,				-- Seal of Wisdom
-		[GetSpellInfo(20165)] = true,				-- Seal of Light
-		[GetSpellInfo(53736)] = true,				-- Seal of Corruption
-		[GetSpellInfo(31892)] = true,				-- Seal of Blood
-		[GetSpellInfo(31801)] = true,				-- Seal of Vengeance
-		[GetSpellInfo(27149)] = true,				-- Devotion Aura
-		[GetSpellInfo(27150)] = true,				-- Retribution Aura
-		[GetSpellInfo(19746)] = true,				-- Concentration Aura
-		[GetSpellInfo(27151)] = true,				-- Shadow Resistance Aura
-		[GetSpellInfo(27152)] = true,				-- Frost Resistance Aura
-		[GetSpellInfo(27153)] = true,				-- Fire Resistance Aura
-		[GetSpellInfo(32223)] = true,				-- Crusader Aura
-		[GetSpellInfo(25780)] = true,				-- Righteous Fury
-		[GetSpellInfo(27179)] = true,				-- Holy Shield
-		[GetSpellInfo(54428)] = true,				-- Divine Plea
-	},
-}
-end
 
 local DebuffExceptions = {
 	ALL = {
@@ -2106,11 +2050,7 @@ function XPerl_GuildStatusUpdate()
 end
 
 --cataclysm hooksecurefunc removed, check it.
-if is_cata then
-	--hooksecurefunc("GuildStatus_Update", XPerl_GuildStatusUpdate)
-else
-	hooksecurefunc("GuildStatus_Update", XPerl_GuildStatusUpdate)
-end
+--hooksecurefunc("GuildStatus_Update", XPerl_GuildStatusUpdate)
 
 -- XPerl_WhoList_Update
 function XPerl_WhoList_Update()

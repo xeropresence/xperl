@@ -479,20 +479,16 @@ local function UpdateAssignedRoles(self)
 		-- According to http://forums.worldofwarcraft.com/thread.html?topicId=26560499864
 		-- this is the new way to check for roles
 		-- Port this from XPerl_Player.lua by PlayerLin
-		if select(4, _G.GetBuildInfo()) >= 40000 then
-			role = UnitGroupRolesAssigned(unit)
-			isTank = false;
-			isHealer = false;
-			isDamage = false;
-			if role == "TANK" then
-				isTank = true
-			elseif role == "HEALER" then
-				isHealer = true
-			elseif role == "DAMAGER" then
-				isDamage = true
-			end
-		else
-			isTank, isHealer, isDamage = UnitGroupRolesAssigned(unit)
+		role = UnitGroupRolesAssigned(unit)
+		isTank = false;
+		isHealer = false;
+		isDamage = false;
+		if role == "TANK" then
+			isTank = true
+		elseif role == "HEALER" then
+			isHealer = true
+		elseif role == "DAMAGER" then
+			isDamage = true
 		end
 	end
 

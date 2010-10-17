@@ -64,9 +64,7 @@ local function getRankAmount(self, spellId)
 	end
 end
 
-local absorbSpells
-if select(4, _G.GetBuildInfo()) >= 40000 then
-	absorbSpells = {
+local absorbSpells = {
 	[GetSpellInfo(11426)] = {			-- Ice Barrier
 		ranks = {
 			[11426]	= 3686--level 85 (3686 + $SPFR * 0.807)
@@ -106,86 +104,6 @@ if select(4, _G.GetBuildInfo()) >= 40000 then
 		GetRankAmount = getRankAmount,
 	},
 }
-else
-	absorbSpells = {
-	[GetSpellInfo(11426)] = {			-- Ice Barrier
-		ranks = {
-			[11426]	= 438,				-- Spell IDs and amounts per rank
-			[13031]	= 549,
-			[13032]	= 678,
-			[13033]	= 818,
-			[27134]	= 925,
-			[33405]	= 1075,
-			[43038]	= 2800,
-			[43039]	= 3300
-		},
-		school = "FROST",
-		class = "MAGE",
-		GetModifier = getTalentModifier,
-		GetRankAmount = getRankAmount,
-	},
-	[GetSpellInfo(1463)] = {			-- Mana Shield
-		ranks = {
-			[1463]	= 120,
-			[8494]	= 210,
-			[8495]	= 300,
-			[10191]	= 390,
-			[10192]	= 480,
-			[10193]	= 570,
-			[27131]	= 715,
-			[43019]	= 1080,
-			[43020]	= 1330
-		},
-		class = "MAGE",
-		school = "ARCANE",
-		improved = {
-			name = GetSpellInfo(12605),
-			ranks = 2,
-			percentPerRank = 10,
-		},
-		GetModifier = getTalentModifier,
-		GetRankAmount = getRankAmount,
-	},
-	[GetSpellInfo(17)] = {				-- Power Word: Shield
-		ranks = {
-			[17]	= 48,
-			[592]	= 94,
-			[600]	= 166,
-			[3747]	= 244,
-			[6065]	= 312,
-			[6066]	= 394,
-			[10898]	= 499,
-			[10899]	= 622,
-			[10900]	= 782,
-			[10901]	= 963,
-			[25217]	= 1143,
-			[25218]	= 1280,
-			[48065]	= 1920,
-			[48066]	= 2230
-		},
-		class = "PRIEST",
-		targetable = true,
-		school = "HOLY",
-		improved = {
-			name = GetSpellInfo(14748),
-			ranks = 3,
-			percentPerRank = 5,
-		},
-		GetModifier = getTalentModifier,
-		GetRankAmount = getRankAmount,
-	},
-	[58597] = {				-- Sacred Shield
-		ranks = {
-			[58597] = 500,
-		},
-		class = "PALADIN",
-		targetable = true,
-		school = "HOLY",
-		GetModifier = getTalentModifier,
-		GetRankAmount = getRankAmount,
-	},
-}
-end
 
 local colours = {HOT = {r = 0.2, g = 0.4, b = 0.8, canFlash = true},
 		 POM = {r = 0.8, g = 0.6, b = 0.4},

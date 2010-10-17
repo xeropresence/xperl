@@ -247,12 +247,8 @@ local function XPerl_Target_DebuffUpdate(self)
 		local numDebuffs = 0
 		if (playerClass == "WARRIOR") then
 			numDebuffs = TargetDebuffInformation(XPERL_SPELL_SUNDER)
-		elseif (playerClass == "PRIEST") then
-			if select(4, _G.GetBuildInfo()) < 40000 then
-				numDebuffs = TargetDebuffInformation(XPERL_SPELL_SHADOWV)
-			end
 		elseif (playerClass == "MAGE") then
-			if (select(3,GetTalentTabInfo(3)) > select(3,GetTalentTabInfo(2))) then
+			if (select(5,GetTalentTabInfo(3)) > select(5,GetTalentTabInfo(2))) then
 				numDebuffs = TargetDebuffInformation(XPERL_SPELL_WINTERCH)
 			else
 				numDebuffs = TargetDebuffInformation(XPERL_SPELL_FIREV)
@@ -566,9 +562,9 @@ do
 					elseif (inspectReady) then
 						local group = GetActiveTalentGroup(remoteInspectNeeded)
 						local remoteInspectNeeded = not UnitIsUnit("player", partyid) or nil
-						name1, iconTexture, num1, background  = GetTalentTabInfo(1, remoteInspectNeeded, nil, group)
-						name2, iconTexture, num2, background  = GetTalentTabInfo(2, remoteInspectNeeded, nil, group)
-						name3, iconTexture, num3, background  = GetTalentTabInfo(3, remoteInspectNeeded, nil, group)
+						_, name1, _, iconTexture, num1, background = GetTalentTabInfo(1, remoteInspectNeeded, nil, group)
+						_, name2, _, iconTexture, num2, background = GetTalentTabInfo(2, remoteInspectNeeded, nil, group)
+						_, name3, _, iconTexture, num3, background = GetTalentTabInfo(3, remoteInspectNeeded, nil, group)
 						inspectReady = nil
 					end
 

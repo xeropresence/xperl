@@ -3950,12 +3950,7 @@
 													if (type) then
 														local ret
 														if (type == "spell") then
-                                                            local spellName, subSpellName
-                                                            if select(4, _G.GetBuildInfo()) >= 40000 then
-                                                                spellName, subSpellName = GetSpellBookItemName(detail, subdetail)
-                                                            else
-                                                                spellName, subSpellName = GetSpellName(detail, subdetail)
-                                                            end
+                                                            local spellName, subSpellName = GetSpellBookItemName(detail, subdetail)
 															if (spellName and SpellHasRange(spellName) and not IsAttackSpell(spellName) and not IsPassiveSpell(spellName)) then
 																XPerlDB.rangeFinder[XPerl_Options.optRange].spell = spellName
 																XPerlDB.rangeFinder[XPerl_Options.optRange].item = nil
