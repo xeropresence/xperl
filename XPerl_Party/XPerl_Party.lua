@@ -756,7 +756,7 @@ local function XPerl_Party_UpdateTarget(self)
 end
 
 -- XPerl_Party_OnUpdate
-function XPerl_Party_OnUpdate(self, elapsed, arg1)
+function XPerl_Party_OnUpdate(self, elapsed, ...)
 	if (not self.partyid) then
 		return
 	end
@@ -764,7 +764,7 @@ function XPerl_Party_OnUpdate(self, elapsed, arg1)
 	CombatFeedback_OnUpdate(self, elapsed)
 
 	if (self.PlayerFlash) then
-		XPerl_Party_CombatFlash(self, arg1, false)
+		XPerl_Party_CombatFlash(self, elapsed, false)
 	end
 
 	self.time = self.time + elapsed

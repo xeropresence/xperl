@@ -373,7 +373,7 @@ function XPerl_Party_Pet_OnUpdate(self, elapsed)
 	for i,f in pairs(PartyPetFrames) do
 		if (f:IsShown()) then
 			if (f.PlayerFlash) then
-				XPerl_Party_Pet_CombatFlash(f, arg1, false)
+				XPerl_Party_Pet_CombatFlash(f, elapsed, false)
 			end
 			f.time = f.time + elapsed
 			if (f.time > 0.2) then
