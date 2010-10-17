@@ -1105,7 +1105,9 @@ function XPerl_Raid_HideShowRaid()
 			end
 		end
 	end
-	XPerl_Raid_HideBlizzRaid()
+	if not InCombatLockdown() then
+		XPerl_Raid_HideBlizzRaid()
+	end
 end
 
 -------------------
@@ -1170,7 +1172,9 @@ function XPerl_Raid_Events:PLAYER_ENTERING_WORLD()
 	rosterUpdated = nil
 
 	if (GetNumRaidMembers() > 0) then
-		XPerl_Raid_HideBlizzRaid()
+		if not InCombatLockdown() then
+			XPerl_Raid_HideBlizzRaid()
+		end
 		XPerl_Raid_Frame:Show()
 	end
 
@@ -1211,7 +1215,9 @@ do
 		rosterUpdated = true		-- Many roster updates can occur during 1 video frame, so we'll check everything at end of last one
 		BuildGuidMap()
 		if (GetNumRaidMembers() > 0) then
-			XPerl_Raid_HideBlizzRaid()
+			if not InCombatLockdown() then
+				XPerl_Raid_HideBlizzRaid()
+			end
 			XPerl_Raid_Frame:Show()
 		end
 	end
@@ -1629,7 +1635,9 @@ local function SetRaidRoster()
 	end
 
 	if (GetNumRaidMembers() > 0) then
-		XPerl_Raid_HideBlizzRaid()
+		if not InCombatLockdown() then
+			XPerl_Raid_HideBlizzRaid()
+		end
 		XPerl_Raid_Frame:Show()
 	else
 		XPerl_Raid_Frame:Hide()
@@ -2212,7 +2220,9 @@ function XPerl_Raid_Set_Bits(self)
 	SkipHighlightUpdate = nil
 
 	if (GetNumRaidMembers() > 0) then
-		XPerl_Raid_HideBlizzRaid()
+		if not InCombatLockdown() then
+			XPerl_Raid_HideBlizzRaid()
+		end
 		XPerl_Raid_Frame:Show()
 	end
 end
