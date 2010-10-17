@@ -2023,6 +2023,9 @@ function XPerl_Options_ImportOldConfig(old)
 			},
 			spacing			= old.RaidVerticalSpacing	or 0,
 			anchor			= old.RaidAnchor		or "TOP",
+			hideframemanager = {
+				enable = 1,
+			},
 		},
 		raidpet = {
 			enable			= Convert(old.ShowRaidPets),				-- 2.1.3
@@ -2466,6 +2469,9 @@ local function XPerl_Raid_ConfigDefault(default)
 			type		= 1,
 		},
 		anchor			= "TOP",
+		hideframemanager = { 
+			enable = 1, 
+		},
 	}
 end
 

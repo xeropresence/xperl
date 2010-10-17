@@ -2197,6 +2197,23 @@ function XPerl_Raid_Set_Bits(self)
 	if (raidLoaded) then
 		XPerl_ProtectedCall(XPerl_Raid_HideShowRaid)
 	end
+	
+	if rconf then
+		if rconf.hideframemanager then
+			if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
+				_G["CompactRaidFrameManager"]:Hide()
+			else
+				if GetNumRaidMembers() > 0 then --let's not show stuff when not in raid  
+					_G["CompactRaidFrameManager"]:Show() --show the frame again so that the option can be changed withouth /reloadui
+				end 
+			end
+		else 
+			rconf.hideframemanager = { --messy fix for missing config
+				enable = nil, 
+				}
+		end
+	end
+	
 	SkipHighlightUpdate = nil
 
 	XPerl_ScaleRaid()
@@ -2231,5 +2248,7 @@ end
 function XPerl_Raid_HideBlizzRaid()
 	_G["CompactRaidFrameContainer"]:Hide() --be paranoid and hide this one as well
 	_G["RaidFrame"]:Hide(); --is this even in use anymore?
-	_G["CompactRaidFrameManager"]:Hide() --this is the sliding panel to the left
+	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
+		_G["CompactRaidFrameManager"]:Hide() --this is the sliding panel to the left
+	end
 end
