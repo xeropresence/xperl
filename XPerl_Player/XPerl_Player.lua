@@ -1412,7 +1412,8 @@ function XPerl_Player_InitDK(self)
 		self.runes:SetBackdropBorderColor(1, 1, 1, 1)
 		self.runes.list = {}
 
-		RuneFrame:SetParent(self.runes)
+		--Let's not do anything drastic to the original runeframe, let's just hide it
+		--RuneFrame:SetParent(self.runes)
 		RuneFrame:ClearAllPoints()
 		RuneFrame:SetPoint("TOPLEFT", 5, -5)
 		RuneFrame:SetPoint("BOTTOMRIGHT", -5, 5)
