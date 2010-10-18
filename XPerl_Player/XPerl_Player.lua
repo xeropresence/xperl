@@ -670,6 +670,15 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 	end
 
 	XPerl_Player_UpdateDisplay(self)
+	
+	--fix runes on player load
+	if self.runes then
+		for i = 1,6 do
+			if self.runes.list[rune] then 
+				RuneButton_Update(self.runes.list[rune], rune, true);
+			end
+		end
+	end
 end
 
 -- UNIT_COMBAT
@@ -956,8 +965,10 @@ function XPerl_Player_Events:RUNE_POWER_UPDATE(event, runeIndex, isEnergize)
 		assert(false, 'Bad rune index');
 	end
 end
-function XPerl_Player_Events:RUNE_TYPE_UPDATE(self, event, runeIndex)
+function XPerl_Player_Events:RUNE_TYPE_UPDATE(self, runeIndex )
+	
 	if runeIndex and runeIndex >= 1 and runeIndex <= 6 then
+		
 		RuneButton_Update(_G["XPerl_RuneButtonIndividual"..runeIndex], runeIndex);
 	end
 end
@@ -1440,7 +1451,7 @@ function XPerl_Player_InitDK(self)
 			else
 				rune:SetPoint("LEFT", 10, 0)
 			end
-			RuneButton_Update(rune, i, true);
+		
 			prev = rune
 		end
 
@@ -1486,6 +1497,7 @@ function XPerl_Player_SetupDK(self)
 						rune:SetPoint("LEFT", 1, 0)
 					end
 				end
+				RuneButton_Update(rune, i, true);
 				prev = rune
 			end
 
