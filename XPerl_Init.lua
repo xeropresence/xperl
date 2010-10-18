@@ -696,7 +696,8 @@ function XPerl_OptionActions(which)
 	XPerl_pcall(XPerl_SetTextTransparency)
 	doneOptions = true
 
-	if (conf.buffs.blizzardCooldowns and BuffFrame and BuffFrame:IsShown()) then
-		BuffFrame_Update()
-	end
+	-- Avoid tainting default blizzard buffs using cooldown options. Cooldowns won't show immediately atm.
+	--if (conf.buffs.blizzardCooldowns and BuffFrame and BuffFrame:IsShown()) then
+	--	securecall("BuffFrame_Update")
+	--end
 end
