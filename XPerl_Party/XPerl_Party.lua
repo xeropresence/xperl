@@ -227,7 +227,7 @@ function XPerl_Party_UpdateHealth(self)
 		return
 	end
 	local partyid = self.partyid
-	local Partyhealth, Partyhealthmax = XPerl_UnitHealth(partyid), UnitHealthMax(partyid)
+	local Partyhealth, Partyhealthmax = UnitHealth(partyid), UnitHealthMax(partyid)
 	local reason
 
 	if (self.feigning and not UnitIsFeignDeath(partyid)) then
@@ -1105,6 +1105,12 @@ function XPerl_Party_Events:UNIT_TARGET()
 	updatePartyThreat(true)
 end
 
+function XPerl_Party_Events:UNIT_HEAL_PREDICTION(unit)
+	if (unit == self.partyid) then
+		XPerl_SetExpectedHealth(self)
+	end
+end
+
 ---- Moving stuff ----
 -- XPerl_Party_GetGap
 function XPerl_Party_GetGap()
@@ -1364,6 +1370,12 @@ function XPerl_Party_Set_Bits1(self)
 	self.buffOptMix = nil
 	self.debuffFrame:SetScale(1)
 	XPerl_Party_BuffPositions(self)
+
+	if (conf.highlight.enable and conf.highlight.HEAL) then
+		self:RegisterEvent("UNIT_HEAL_PREDICTION")
+	else
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
+	end
 
 	XPerl_Party_SetWidth(self)
 

@@ -400,7 +400,6 @@ function XPerl_Globals_OnEvent(self, event, ...)
 		self:UnregisterEvent(event)
 		startupCheckSettings(self,event)
 		XPerl_MinimapButton_Init(XPerl_MinimapButton_Frame)
-		XPerl_Load_LQHLHC()			-- Load LibHealComm / LibQuickHealth
 
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		self:UnregisterEvent(event)

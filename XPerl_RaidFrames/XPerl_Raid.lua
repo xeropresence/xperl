@@ -443,7 +443,7 @@ function XPerl_Raid_UpdateHealth(self)
 		return
 	end
 
-	local health = XPerl_UnitHealth(partyid)
+	local health = UnitHealth(partyid)
 	local healthmax = UnitHealthMax(partyid)
 
 	if (health > healthmax) then
@@ -1293,18 +1293,15 @@ XPerl_Raid_Events.UNIT_MAXPOWER   = XPerl_Raid_Events.UNIT_POWER
 
 -- WoW 3.3.5 and older.
 -- UNIT_MANA
-function XPerl_Raid_Events:UNIT_MANA()
-	if (rconf.mana) then
-		XPerl_Raid_UpdateMana(self)
-	end
-end
-XPerl_Raid_Events.UNIT_MAXMANA   = XPerl_Raid_Events.UNIT_MANA
-XPerl_Raid_Events.UNIT_RAGE      = XPerl_Raid_Events.UNIT_MANA
-XPerl_Raid_Events.UNIT_MAXRAGE   = XPerl_Raid_Events.UNIT_MANA
-XPerl_Raid_Events.UNIT_ENERGY    = XPerl_Raid_Events.UNIT_MANA
-XPerl_Raid_Events.UNIT_MAXENERGY = XPerl_Raid_Events.UNIT_MANA
-XPerl_Raid_Events.UNIT_RUNIC_POWER = XPerl_Raid_Events.UNIT_MANA
-XPerl_Raid_Events.UNIT_MAXRUNIC_POWER = XPerl_Raid_Events.UNIT_MANA
+XPerl_Raid_Events.UNIT_MANA		= XPerl_Raid_Events.UNIT_POWER
+XPerl_Raid_Events.UNIT_MAXMANA   = XPerl_Raid_Events.UNIT_POWER
+XPerl_Raid_Events.UNIT_RAGE      = XPerl_Raid_Events.UNIT_POWER
+XPerl_Raid_Events.UNIT_MAXRAGE   = XPerl_Raid_Events.UNIT_POWER
+XPerl_Raid_Events.UNIT_ENERGY    = XPerl_Raid_Events.UNIT_POWER
+XPerl_Raid_Events.UNIT_MAXENERGY = XPerl_Raid_Events.UNIT_POWER
+XPerl_Raid_Events.UNIT_RUNIC_POWER = XPerl_Raid_Events.UNIT_POWER
+XPerl_Raid_Events.UNIT_MAXRUNIC_POWER = XPerl_Raid_Events.UNIT_POWER
+
 
 -- UNIT_NAME_UPDATE
 function XPerl_Raid_Events:UNIT_NAME_UPDATE()
@@ -1403,6 +1400,13 @@ function XPerl_Raid_Events:UNIT_SPELLCAST_FAILED(unit)
 end
 
 XPerl_Raid_Events.UNIT_SPELLCAST_INTERRUPTED = XPerl_Raid_Events.UNIT_SPELLCAST_FAILED
+
+
+function XPerl_Raid_Events:UNIT_HEAL_PREDICTION(unit)
+	if (unit == self.partyid) then
+		XPerl_SetExpectedHealth(self)
+	end
+end
 
 -- Direct string matches can be done via table lookup
 local QuickFuncs = {
@@ -2241,7 +2245,7 @@ function XPerl_Raid_Set_Bits(self)
 		Setup1RaidFrame(frame)
 	end
 
-	local manaEvents = {"UNIT_DISPLAYPOWER", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA", "UNIT_RUNIC_POWER", "UNIT_MAXRUNIC_POWER"}
+	local manaEvents = {"UNIT_DISPLAYPOWER", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA", "UNIT_RUNIC_POWER", "UNIT_MAXRUNIC_POWER", "UNIT_POWER", "UNIT_MAXPOWER"}
 	for i,event in pairs(manaEvents) do
 		if (rconf.mana) then
 			self:RegisterEvent(event)
@@ -2250,6 +2254,12 @@ function XPerl_Raid_Set_Bits(self)
 		end
 	end
 	SkipHighlightUpdate = nil
+
+	if (conf.highlight.enable and conf.highlight.HEAL) then
+		self:RegisterEvent("UNIT_HEAL_PREDICTION")
+	else
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
+	end
 
 	if (GetNumRaidMembers() > 0) then
 		if not InCombatLockdown() then

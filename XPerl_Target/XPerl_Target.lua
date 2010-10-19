@@ -1413,6 +1413,12 @@ function XPerl_Target_Events:UNIT_THREAT_LIST_UPDATE(unit)
 	end
 end
 
+function XPerl_Target_Events:UNIT_HEAL_PREDICTION(unit)
+	if (unit == self.partyid) then
+		XPerl_SetExpectedHealth(self)
+	end
+end
+
 -- XPerl_Target_SetWidth
 function XPerl_Target_SetWidth(self)
 
@@ -1488,6 +1494,12 @@ function XPerl_Target_Set_Bits(self)
 
 	self.conf.buffs.size = tonumber(self.conf.buffs.size) or 20
 	XPerl_SetBuffSize(self)
+
+	if (conf.highlight.enable and conf.highlight.HEAL) then
+		self:RegisterEvent("UNIT_HEAL_PREDICTION")
+	else
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
+	end
 
 	XPerl_Target_SetWidth(self)
 

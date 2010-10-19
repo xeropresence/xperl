@@ -472,7 +472,7 @@ function XPerl_Player_UpdateHealth(self)
 	local partyid = self.partyid
 	local sf = self.statsFrame
 	local hb = sf.healthBar
-	local playerhealth, playerhealthmax = XPerl_UnitHealth(partyid), UnitHealthMax(partyid)
+	local playerhealth, playerhealthmax = UnitHealth(partyid), UnitHealthMax(partyid)
 
 	XPerl_SetHealthBar(self, playerhealth, playerhealthmax)
 
@@ -943,6 +943,12 @@ function XPerl_Player_Events:UNIT_EXITED_VEHICLE()
 	end
 end
 
+function XPerl_Player_Events:UNIT_HEAL_PREDICTION(unit)
+	if (unit == self.partyid) then
+		XPerl_SetExpectedHealth(self)
+	end
+end
+
 function XPerl_Player_Events:RUNE_POWER_UPDATE(event, runeIndex, isEnergize)
 	if runeIndex and runeIndex >= 1 and runeIndex <= 6 then
 		local runeButton = _G['XPerl_RuneButtonIndividual' .. runeIndex];
@@ -1191,6 +1197,12 @@ function XPerl_Player_Set_Bits(self)
 		if (self.statsFrame.repBar) then
 			self.statsFrame.repBar.text:Hide()
 		end
+	end
+
+	if (conf.highlight.enable and conf.highlight.HEAL) then
+		self:RegisterEvent("UNIT_HEAL_PREDICTION")
+	else
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
 	end
 
 	XPerl_Player_SetWidth(self)

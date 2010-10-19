@@ -223,7 +223,7 @@ function XPerl_Party_Pet_UpdateHealth(self)
 		return
 	end
 
-	local Partypethealth, Partypethealthmax = XPerl_UnitHealth(self.partyid), UnitHealthMax(self.partyid)
+	local Partypethealth, Partypethealthmax = UnitHealth(self.partyid), UnitHealthMax(self.partyid)
 	local healthPct = Partypethealth / Partypethealthmax
 	local phealthPct = format("%3.0f", healthPct * 100)
 
@@ -481,6 +481,12 @@ XPerl_Party_Pet_Events.UNIT_MAXFOCUS	= XPerl_Party_Pet_Events.UNIT_MANA
 XPerl_Party_Pet_Events.UNIT_ENERGY	= XPerl_Party_Pet_Events.UNIT_MANA
 XPerl_Party_Pet_Events.UNIT_MAXENERGY	= XPerl_Party_Pet_Events.UNIT_MANA
 
+function XPerl_Party_Pet_Events:UNIT_HEAL_PREDICTION(unit)
+	if (unit == self.partyid) then
+		XPerl_SetExpectedHealth(self)
+	end
+end
+
 -- EnableDisable()
 local function EnableDisable(self)
 	if (petconf.enable) then
@@ -558,6 +564,12 @@ function XPerl_Party_Pet_Set_Bits1(self)
 				end
 			end
 		end
+	end
+
+	if (conf.highlight.enable and conf.highlight.HEAL) then
+		self:RegisterEvent("UNIT_HEAL_PREDICTION")
+	else
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
 	end
 
 	SetAllBuffs(self.buffFrame, self.buffFrame.debuff)

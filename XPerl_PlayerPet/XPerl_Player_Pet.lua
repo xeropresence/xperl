@@ -189,7 +189,7 @@ end
 
 -- XPerl_Player_Pet_UpdateHealth
 function XPerl_Player_Pet_UpdateHealth(self)
-	local pethealth = XPerl_UnitHealth(self.partyid)
+	local pethealth = UnitHealth(self.partyid)
 	local pethealthmax = UnitHealthMax(self.partyid)
 
 	XPerl_SetHealthBar(self, pethealth, pethealthmax)
@@ -541,6 +541,12 @@ function XPerl_Player_Pet_Events:PLAYER_REGEN_DISABLED()
 	end
 end
 
+function XPerl_Player_Pet_Events:UNIT_HEAL_PREDICTION(unit)
+	if (unit == self.partyid) then
+		XPerl_SetExpectedHealth(self)
+	end
+end
+
 -- XPerl_Player_Pet_SetWidth
 function XPerl_Player_Pet_SetWidth(self)
 	pconf.size.width = max(0, pconf.size.width or 0)
@@ -676,6 +682,12 @@ function XPerl_Player_Pet_Set_Bits(self)
 
 	pconf.buffs.size = tonumber(pconf.buffs.size) or 20
 	XPerl_SetBuffSize(self)
+
+	if (conf.highlight.enable and conf.highlight.HEAL) then
+		self:RegisterEvent("UNIT_HEAL_PREDICTION")
+	else
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
+	end
 
 	XPerl_Player_Pet_SetWidth(self)
 

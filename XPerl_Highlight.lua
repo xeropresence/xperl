@@ -20,7 +20,7 @@ local UnitName = UnitName
 local cos = math.cos
 local sin = math.sin
 local band = bit.band
-local HealComm4, HealComm3
+--local HealComm4, HealComm3
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
@@ -1502,48 +1502,59 @@ function xpHigh:Damage(guid, absorbed)
 	end
 end
 
--- LibHealComm-3.0 - Heal Started
-function xpHigh:HealComm_DirectHealStart(e, healerFullName, CastInfoHealingSize, endTime, ...)
-	for i = 1,select("#", ...) do
-		local who = select(i, ...)
-		local guid = who and UnitGUID(who)
-		if (guid) then
-			self:Add(guid, "HEAL", max(1, endTime - GetTime()), healerFullName)
-		end
+-- UNIT_HEAL_PREDICTION
+function xpHigh:UNIT_HEAL_PREDICTION(unit)
+	local guid = UnitGUID(unit)
+	local amount = UnitGetIncomingHeals(unit)
+	if (amount > 0) then
+		self:Add(guid, "HEAL", amount)
+	else
+		self:Remove(guid, "HEAL")
 	end
 end
+
+-- LibHealComm-3.0 - Heal Started
+--function xpHigh:HealComm_DirectHealStart(e, healerFullName, CastInfoHealingSize, endTime, ...)
+--	for i = 1,select("#", ...) do
+--		local who = select(i, ...)
+--		local guid = who and UnitGUID(who)
+--		if (guid) then
+--			self:Add(guid, "HEAL", max(1, endTime - GetTime()), healerFullName)
+--		end
+--	end
+--end
 
 -- LibHealComm-3.0 - Heal Stopped
-function xpHigh:HealComm_DirectHealStop(e, healerFullName, healSize, succeeded, ...)
-	for i = 1,select("#", ...) do
-		local who = select(i, ...)
-		local guid = who and UnitGUID(who)
-		if (guid) then
-			self:Remove(guid, "HEAL")
-		end
-	end
-end
+--function xpHigh:HealComm_DirectHealStop(e, healerFullName, healSize, succeeded, ...)
+--	for i = 1,select("#", ...) do
+--		local who = select(i, ...)
+--		local guid = who and UnitGUID(who)
+--		if (guid) then
+--			self:Remove(guid, "HEAL")
+--		end
+--	end
+--end
 
 -- LibHealComm-4.0 - Heal Started
-function xpHigh:HealComm_HealStarted(e, healerGUID, spellID, bitType, endTime, ...)
-	if (bit.band(bitType, HealComm4.DIRECT_HEALS) ~= 0) then
-		for i = 1,select("#", ...) do
-			local guid = select(i, ...)
-			local unit = HealComm4.guidToUnit[guid]
-			self:Add(guid, "HEAL", max(1, endTime - GetTime()), unit and UnitName(unit))
-		end
-	end
-end
+--function xpHigh:HealComm_HealStarted(e, healerGUID, spellID, bitType, endTime, ...)
+--	if (bit.band(bitType, HealComm4.DIRECT_HEALS) ~= 0) then
+--		for i = 1,select("#", ...) do
+--			local guid = select(i, ...)
+--			local unit = HealComm4.guidToUnit[guid]
+--			self:Add(guid, "HEAL", max(1, endTime - GetTime()), unit and UnitName(unit))
+--		end
+--	end
+--end
 
 -- LibHealComm-4.0 - Heal Stopped
-function xpHigh:HealComm_HealStopped(e, healerGUID, spellID, bitType, interrupted, ...)
-	if (bit.band(bitType, HealComm4.DIRECT_HEALS) ~= 0) then
-		for i = 1,select("#", ...) do
-			local guid = select(i, ...)
-			self:Remove(guid, "HEAL")
-		end
-	end
-end
+--function xpHigh:HealComm_HealStopped(e, healerGUID, spellID, bitType, interrupted, ...)
+--	if (bit.band(bitType, HealComm4.DIRECT_HEALS) ~= 0) then
+--		for i = 1,select("#", ...) do
+--			local guid = select(i, ...)
+--			self:Remove(guid, "HEAL")
+--		end
+--	end
+--end
 
 -- xpHigh:HasMyPomPom(unit)
 function xpHigh:HasMyPomPom(unit)
@@ -1693,8 +1704,6 @@ function xpHigh:RefreshAllAuras()
 	end
 end
 
-local hcTried
-
 -- xpHigh:OptionChange
 function xpHigh:OptionChange()
 	local events
@@ -1720,33 +1729,9 @@ function xpHigh:OptionChange()
 
 	if (conf.highlight.enable and conf.highlight.HEAL) then
 		events = true
-
-		if (not hcTried) then
-			hcTried = true
-			if (playerClass == "SHAMAN" or playerClass == "PRIEST" or playerClass == "DRUID" or playerClass == "PALADIN") then
-				HealComm4 = LibStub("LibHealComm-4.0", true)
-				if (not HealComm4) then
-					HealComm3 = LibStub("LibHealComm-3.0", true)
-				end
-			end
-
-			if (HealComm4) then
-				HealComm4.RegisterCallback(self, "HealComm_HealStarted")
-				HealComm4.RegisterCallback(self, "HealComm_HealStopped")
-			elseif (HealComm3) then
-				HealComm3.RegisterCallback(self, "HealComm_DirectHealStart")
-				HealComm3.RegisterCallback(self, "HealComm_DirectHealStop")
-			end
-		end
+		self:RegisterEvent("UNIT_HEAL_PREDICTION")
 	else
-		if (HealComm4) then
-			HealComm4.UnregisterCallback(self, "HealComm_HealStarted")
-			HealComm4.UnregisterCallback(self, "HealComm_HealStopped")
-		elseif (HealComm3) then
-			HealComm3.UnregisterCallback(self, "HealComm_DirectHealStart")
-			HealComm3.UnregisterCallback(self, "HealComm_DirectHealStop")
-		end
-
+		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
 		self:ClearAll("HEAL")
 	end
 
