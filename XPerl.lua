@@ -1440,6 +1440,38 @@ function XPerl_CombatFlashSetFrames(self)
 	end
 end
 
+local function GetTalentPosition(findName)
+	for i = 1,GetNumTalentTabs() do
+		for j = 1,GetNumTalents(i) do
+			local name = GetTalentInfo(i, j)
+			if (name == findName) then
+				return i, j
+			end
+		end
+	end
+end
+
+local function GetTalentValueByName(name)
+	local group = GetActiveTalentGroup()
+	local tab, index = GetTalentPosition(name)
+	if (index) then
+		local name, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tab, index, nil, nil, group)
+		return currentRank
+	end
+	return 0
+end
+
+local MagicCureTalents = {
+	["DRUID"] = "Nature's Cure",
+	["PALADIN"] = "Sacred Cleansing",
+	["SHAMAN"] = "Improved Cleanse Spirit",
+}
+local function CanClassCureMagic(class)
+	if (MagicCureTalents[class]) then
+		return GetTalentValueByName(MagicCureTalents[class]) > 0
+	end
+end
+
 local getShow
 function XPerl_DebufHighlightInit()
 	-- We also re-set the colours here so that we highlight best colour per class
@@ -1458,7 +1490,11 @@ function XPerl_DebufHighlightInit()
 			if (not conf.highlightDebuffs.class) then
 				show = Curses.Magic or Curses.Curse or Curses.Poison or Curses.Disease
 			end
-			return Curses.Curse or Curses.Poison or show
+			local magic
+			if (CanClassCureMagic(playerClass)) then
+				magic = Curses.Magic
+			end
+			return Curses.Curse or Curses.Poison or magic or show
 		end
 
 	elseif (playerClass == "PRIEST") then
@@ -1485,7 +1521,11 @@ function XPerl_DebufHighlightInit()
 			if (not conf.highlightDebuffs.class) then
 				show = Curses.Magic or Curses.Curse or Curses.Poison or Curses.Disease
 			end
-			return Curses.Magic or Curses.Poison or Curses.Disease or show
+			local magic
+			if (CanClassCureMagic(playerClass)) then
+				magic = Curses.Magic
+			end
+			return Curses.Poison or Curses.Disease or magic or show
 		end
 
 	elseif (playerClass == "SHAMAN") then
@@ -1494,7 +1534,11 @@ function XPerl_DebufHighlightInit()
 			if (not conf.highlightDebuffs.class) then
 				show = Curses.Magic or Curses.Curse or Curses.Poison or Curses.Disease
 			end
-			return Curses.Curse or Curses.Poison or Curses.Disease or show
+			local magic
+			if (CanClassCureMagic(playerClass)) then
+				magic = Curses.Magic
+			end
+			return Curses.Curse or magic or show
 		end
 
 	elseif (playerClass == "ROGUE") then
