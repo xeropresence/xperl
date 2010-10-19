@@ -1449,7 +1449,7 @@ function XPerl_Player_InitDK(self)
 		RuneButtonIndividual6:Hide()
 
 		local prev
-		local idSwitch = {1, 2, 3, 4, 5, 6}
+		local idSwitch = {1, 2, 5, 6, 3, 4}	-- Non sequential rune IDs.. gg
 		for i = 1,6 do
 			local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, self.runes, "XPerl_RuneButtonIndividualTemplate")
 			self.runes.list[ idSwitch[i] ] = rune
@@ -1509,7 +1509,7 @@ function XPerl_Player_SetupDK(self)
 						rune:SetPoint("LEFT", 1, 0)
 					end
 				end
-				RuneButton_Update(rune, i, true);
+				RuneButton_Update(rune, rune:GetID(), true);
 				prev = rune
 			end
 
