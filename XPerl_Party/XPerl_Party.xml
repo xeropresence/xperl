@@ -510,7 +510,7 @@
 		</Anchors>
 	</Button>
 
-	<Frame name="XPerl_Party_Events">
+	<Frame name="XPerl_Party_Events_Frame">
 		<Scripts>
 			<OnLoad function="XPerl_Party_Events_OnLoad"/>
 		</Scripts>

@@ -1371,12 +1371,6 @@ function XPerl_Party_Set_Bits1(self)
 	self.debuffFrame:SetScale(1)
 	XPerl_Party_BuffPositions(self)
 
-	if (conf.highlight.enable and conf.highlight.HEAL) then
-		self:RegisterEvent("UNIT_HEAL_PREDICTION")
-	else
-		self:UnregisterEvent("UNIT_HEAL_PREDICTION")
-	end
-
 	XPerl_Party_SetWidth(self)
 
 	if (pconf.target.enable) then
@@ -1521,6 +1515,12 @@ function XPerl_Party_Set_Bits()
 			v.conf = pconf
 			XPerl_Party_Set_Bits1(v)
 		end
+	end
+
+	if (conf.highlight.enable and conf.highlight.HEAL) then
+		XPerl_Party_Events_Frame:RegisterEvent("UNIT_HEAL_PREDICTION")
+	else
+		XPerl_Party_Events_Frame:UnregisterEvent("UNIT_HEAL_PREDICTION")
 	end
 
 	if (startupDone) then

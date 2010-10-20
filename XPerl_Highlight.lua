@@ -1504,13 +1504,19 @@ end
 
 -- UNIT_HEAL_PREDICTION
 function xpHigh:UNIT_HEAL_PREDICTION(unit)
-	local guid = UnitGUID(unit)
-	local amount = UnitGetIncomingHeals(unit)
-	if (amount > 0) then
-		self:Add(guid, "HEAL", amount)
-	else
-		self:Remove(guid, "HEAL")
+	if (conf.highlight.HEAL) then
+		local guid = UnitGUID(unit)
+		local amount = UnitGetIncomingHeals(unit)
+		if (amount > 0) then
+			local health, healthmax = UnitHealth(unit), UnitHealthMax(unit)
+			local missing = healthmax - health
+			if (missing > healthmax / 20) then			-- More than 5% to heal
+				self:Add(guid, "HEAL", amount)
+				return
+			end
+		end
 	end
+	self:Remove(guid, "HEAL")
 end
 
 -- LibHealComm-3.0 - Heal Started
