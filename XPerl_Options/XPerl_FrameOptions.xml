@@ -3477,7 +3477,7 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_BUFFBLIZZARDTOO")
 								self.configBase = "XPerlDB.buffs"
 								self.configIndex = "blizzardCooldowns"
-								self.configClick = BuffFrame_Update
+								--self.configClick = BuffFrame_Update
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -5124,7 +5124,7 @@
 											if (XPerl_Player_BuffSetup) then
 												XPerl_Player_BuffSetup(XPerl_Player)
 											end
-											BuffFrame_Update()
+											--BuffFrame_Update()
 										end
 										self.Validate = function()
 											XPerl_Options_EnableSibling(self,"PlayerDebuffs")
@@ -5198,7 +5198,7 @@
 												if (XPerl_Player_BuffSetup) then
 													XPerl_Player_BuffSetup(XPerl_Player)
 												end
-												BuffFrame_Update()
+												--BuffFrame_Update()
 											end
 									</OnLoad>
 								</Scripts>
