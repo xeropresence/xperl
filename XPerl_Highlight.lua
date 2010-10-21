@@ -1515,8 +1515,8 @@ function xpHigh:UNIT_HEAL_PREDICTION(unit)
 				return
 			end
 		end
+		self:Remove(guid, "HEAL")
 	end
-	self:Remove(guid, "HEAL")
 end
 
 -- LibHealComm-3.0 - Heal Started
