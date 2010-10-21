@@ -64,8 +64,8 @@ function XPerl_Target_OnLoad(self, partyid)
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
 		self:RegisterEvent("VARIABLES_LOADED")
-		if (XPerl_Target_Events.INSPECT_TALENT_READY) then
-			self:RegisterEvent("INSPECT_TALENT_READY")
+		if (XPerl_Target_Events.INSPECT_READY) then
+			self:RegisterEvent("INSPECT_READY")
 		end
 		self.combatMask = 0x00010000
 	else
@@ -528,22 +528,16 @@ do
 			end
 		)
 
-		-- INSPECT_TALENT_READY
-		function XPerl_Target_Events:INSPECT_TALENT_READY()
-			lastInspectPending = lastInspectPending - 1
-			if (lastInspectPending == 0) then
-				if (not lastInspectInvalid) then
-					if (UnitGUID(lastInspectUnit) == lastInspectGUID) then
-						inspectReady = true
-						XPerl_Target_UpdateTalents(self)
-					end
-				end
-				lastInspectInvalid = nil
+		-- INSPECT_READY
+		function XPerl_Target_Events:INSPECT_READY(guid)
+			if (UnitGUID(self.partyid) == guid) then
+				inspectReady = true
+				XPerl_Target_UpdateTalents(self, guid)
 			end
 		end
 	end
 
-	function XPerl_Target_UpdateTalents(self)
+	function XPerl_Target_UpdateTalents(self, guid)
 		if (self.conf.showTalents and self == XPerl_Target and not self.creatureTypeFrame:IsShown()) then
 			if (UpdateTalentsLGT and UpdateTalentsLGT(self)) then
 				return
@@ -559,7 +553,7 @@ do
 					local name1, name2, name3, num1, num2, num3, iconTexture, background
 					if (cached) then
 						num1, name1, num2, name2, num3, name3 = unpack(cached)
-					elseif (inspectReady) then
+					elseif (inspectReady and guid == UnitGUID(partyid)) then
 						local group = GetActiveTalentGroup(remoteInspectNeeded)
 						local remoteInspectNeeded = not UnitIsUnit("player", partyid) or nil
 						_, name1, _, iconTexture, num1, background = GetTalentTabInfo(1, remoteInspectNeeded, nil, group)
