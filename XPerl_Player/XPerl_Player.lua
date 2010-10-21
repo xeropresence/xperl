@@ -417,7 +417,7 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 
 	local form = GetShapeshiftFormID()
-	if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 then 
+	if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
 		self.eclipse:Hide()
 	else
 		self.eclipse:Show()
@@ -1297,8 +1297,12 @@ function XPerl_Player_InitWarlock(self)
 		ShardBarFrame:SetPoint("TOPLEFT", 3, 0)
 		ShardBarFrame:SetPoint("BOTTOMRIGHT", 15, 5)
 		ShardBarFrame:Show()
-				
-		self.shards:Show()
+
+		if (not pconf or pconf.showRunes) then
+			self.shards:Show()
+		else
+			self.shards:Hide()
+		end
 		
 		self.shards:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
 		self.shards:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20)
@@ -1311,9 +1315,8 @@ end
 --XPerl_Player_InitPaladin
 function XPerl_Player_InitPaladin(self)
 	local myClass = select(2,UnitClass("player"))
-
-	if myClass == "PALADIN" then
-		self.holyp= CreateFrame("Frame", "XPerl_Runes", self)
+	if (myClass == "PALADIN") then
+		self.holyp = CreateFrame("Frame", "XPerl_Runes", self)
 
 		self.holyp:SetMovable(true)
 		self.holyp:RegisterForDrag("LeftButton")
@@ -1338,7 +1341,11 @@ function XPerl_Player_InitPaladin(self)
 		PaladinPowerBar:SetPoint("BOTTOMLEFT", 15, 5)
 		PaladinPowerBar:Show()
 
-		self.holyp:Show()
+		if (not pconf or pconf.showRunes) then
+			self.holyp:Show()
+		else
+			self.holyp:Hide()--this should work but it doesn't. for whatever reason the frame is simply unhidable. which doesn't make sense cause druid one is hidable?
+		end
 
 		self.holyp:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
 		self.holyp:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20) 
@@ -1350,7 +1357,6 @@ end
 --XPerl_Player_InitMoonkin
 function XPerl_Player_InitMoonkin(self)
 	local myClass = select(2,UnitClass("player"))
-
 	if (myClass == "DRUID") then
 		self.eclipse = CreateFrame("Frame", "XPerl_Runes", self)
 
@@ -1378,7 +1384,7 @@ function XPerl_Player_InitMoonkin(self)
 		EclipseBarFrame:Show()
 
 		local form = GetShapeshiftFormID()
-		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 then 
+		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
 			self.eclipse:Hide()
 		else
 			self.eclipse:Show()
