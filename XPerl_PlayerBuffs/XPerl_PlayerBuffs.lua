@@ -136,11 +136,11 @@ local function XPerl_Player_Buffs_Set_Bits(self)
 		
 	local debuffs = self.debuffFrame
 	if debuffs then
-		if pconf.debuffs.enable then
+		if pconf.buffs.enable and pconf.debuffs.enable then
 			setCommon(debuffs, "HARMFUL", "XPerl_Secure_BuffTemplate")
 			debuffs:Show()
 		else
-			debuff:Hide()
+			debuffs:Hide()
 		end
 	end
 end
