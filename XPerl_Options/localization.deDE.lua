@@ -1,4 +1,4 @@
-if (GetLocale() == "deDE") then
+﻿if (GetLocale() == "deDE") then
 
 -- Tabs
 XPERL_CONF_TITLE1			= "Allgemein"
@@ -247,10 +247,10 @@ XPERL_CONF_PLAYER_EXTENDPORTRAIT		= "Erweitertes Portrait"
 XPERL_CONF_PLAYER_EXTENDPORTRAIT_DESC		= "Allow portrait to extend to bottom of stats frame when extra bars are shown"
 XPERL_CONF_HIT_INDICATOR			= "Treffer-Indikator"
 XPERL_CONF_HIT_INDICATOR_DESC			= "Aktiviere die Anzeige der Treffer-Indikatoren \195\188ber dem Spielerportrait"
-XPERL_CONF_PLAYER_SHOW_RUNES			= "Zeige Runen"
-XPERL_CONF_PLAYER_SHOW_RUNES_DESC		= "Zeige die Runen des Todesritters"
+XPERL_CONF_PLAYER_SHOW_RUNES			= "Zeige Extra-Leiste"
+XPERL_CONF_PLAYER_SHOW_RUNES_DESC		= "Aktiviere die Anzeige der Leiste f\195\188r Runen/Seelensplitter/Finsternis/Heilige Macht"
 XPERL_CONF_PLAYER_DOCKRUNES			= "An Spieler andocken"
-XPERL_CONF_PLAYER_DOCKRUNES_DESC		= "Runen/Heilige Macht/Seelensplitter am Spielerfenster andocken" -- Translation eclypse
+XPERL_CONF_PLAYER_DOCKRUNES_DESC		= "Runen-Leiste am Spielerfenster andocken"
 XPERL_CONF_PLAYER_LEVEL                	 	= "Spielerlevel"
 XPERL_CONF_PLAYER_LEVEL_DESC			= "Aktiviere die Anzeige des Spielerlevels"
 XPERL_CONF_PLAYER_VALUES			= "Werte"
