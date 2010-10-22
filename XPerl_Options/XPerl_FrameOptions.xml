@@ -4687,7 +4687,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") or (select(2, UnitClass("player")) ~= "DRUID") or (select(2, UnitClass("player")) ~= "WARLOCK") or (select(2, UnitClass("player")) ~= "PALADIN") then
+								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") and (select(2, UnitClass("player")) ~= "DRUID") and (select(2, UnitClass("player")) ~= "WARLOCK") and (select(2, UnitClass("player")) ~= "PALADIN") then
 									self:Hide()
 								end
 
