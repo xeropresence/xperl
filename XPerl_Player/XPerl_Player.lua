@@ -1344,7 +1344,10 @@ function XPerl_Player_InitPaladin(self)
 		if (not pconf or pconf.showRunes) then
 			self.holyp:Show()
 		else
-			self.holyp:Hide()--this should work but it doesn't. for whatever reason the frame is simply unhidable. which doesn't make sense cause druid one is hidable?
+			--Looks like something is not right...
+			--not works on my end but still put on... -PlayerLin
+			PaladinPowerBar:Hide()
+			self.holyp:Hide()
 		end
 
 		self.holyp:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)

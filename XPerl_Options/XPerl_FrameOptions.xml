@@ -4687,8 +4687,14 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") and (select(2, UnitClass("player")) ~= "DRUID") and (select(2, UnitClass("player")) ~= "WARLOCK") and (select(2, UnitClass("player")) ~= "PALADIN") then
-									self:Hide()
+								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") then
+									if (select(2, UnitClass("player")) ~= "DRUID") then 
+										if (select(2, UnitClass("player")) ~= "WARLOCK") then
+											if (select(2, UnitClass("player")) ~= "PALADIN") then
+												self:Hide()
+											end
+										end
+									end
 								end
 
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_SHOW_RUNES")
@@ -4732,8 +4738,14 @@
 						<Scripts>
 							<OnLoad>
 								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") then
-									self:ClearAllPoints()
-									self:SetPoint("TOPLEFT", XPerl_Options_Player_Options_ShowRunes, "TOPLEFT")
+									if (select(2, UnitClass("player")) ~= "DRUID") then 
+										if (select(2, UnitClass("player")) ~= "WARLOCK") then
+											if (select(2, UnitClass("player")) ~= "PALADIN") then
+												self:ClearAllPoints()
+												self:SetPoint("TOPLEFT", XPerl_Options_Player_Options_ShowRunes, "TOPLEFT")
+											end
+										end
+									end
 								end
 
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ARCANE_BAR")
