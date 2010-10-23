@@ -71,9 +71,15 @@ function XPerl_Player_OnLoad(self)
 
 	XPerl_Player_InitDK(self)
 	XPerl_Player_SetupDK(self)
-	XPerl_Player_InitWarlock(self)
-	XPerl_Player_InitPaladin(self)
+
 	XPerl_Player_InitMoonkin(self)
+	XPerl_Player_SetupMoonkin(self)
+
+	XPerl_Player_InitPaladin(self)
+	XPerl_Player_SetupPaladin(self)
+
+	XPerl_Player_InitWarlock(self)
+	XPerl_Player_SetupWarlock(self)
 
 	XPerl_RegisterHighlight(self.highlight, 3)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
@@ -1213,7 +1219,7 @@ function XPerl_Player_Set_Bits(self)
 	self:SetHeight(max(h1, h2))
 
 	self.highlight:ClearAllPoints()
-	if (pconf.extendPortrait or (self.runes and pconf.showRunes and pconf.dockRunes)) then
+	if (pconf.extendPortrait or ((self.runes or self.holyp or self.eclipse or self.shards) and pconf.showRunes and pconf.dockRunes)) then
 		self.portraitFrame:SetHeight(62 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 		--self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 		--self.highlight:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, 0)
@@ -1224,6 +1230,9 @@ function XPerl_Player_Set_Bits(self)
 	end
 
 	XPerl_Player_SetupDK(self)
+	XPerl_Player_SetupMoonkin(self)
+	XPerl_Player_SetupPaladin(self)
+	XPerl_Player_SetupWarlock(self)
 
 	self.highlight:ClearAllPoints()
 	if (not pconf.level and not pconf.classIcon and (not XPerlConfigHelper or XPerlConfigHelper.ShowTargetCounters == 0)) then
@@ -1269,10 +1278,8 @@ end
 
 -- XPerl_Player_InitWarlock
 function XPerl_Player_InitWarlock(self)
-	local myClass = select(2,UnitClass("player"))
-	
-	if myClass == "WARLOCK"  then
-		self.shards= CreateFrame("Frame", "XPerl_Runes", self)
+	if ( select(2,UnitClass("player")) == "WARLOCK" )  then
+		self.shards = CreateFrame("Frame", "XPerl_Runes", self)
 		
 		self.shards:SetMovable(true)
 		self.shards:RegisterForDrag("LeftButton")
@@ -1296,26 +1303,37 @@ function XPerl_Player_InitWarlock(self)
 		ShardBarFrame:ClearAllPoints()
 		ShardBarFrame:SetPoint("TOPLEFT", 3, 0)
 		ShardBarFrame:SetPoint("BOTTOMRIGHT", 15, 5)
-		ShardBarFrame:Show()
-
-		if (not pconf or pconf.showRunes) then
-			self.shards:Show()
-		else
-			self.shards:Hide()
-		end
-		
-		self.shards:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
-		self.shards:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20)
-
 	end
 	
 	XPerl_Player_InitWarlock = nil
 end
 
+-- XPerl_Player_SetupWarlock
+function XPerl_Player_SetupWarlock(self)
+	if (self.shards) then
+		if (pconf and not pconf.showRunes) then 
+			self.shards:Hide()
+		else
+			self.shards:Show()
+
+			self.shards:ClearAllPoints()
+
+			if (not pconf or pconf.dockRunes) then
+				self.shards:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+				self.shards:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20) 
+			else
+				self.shards:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+				XPerl_RestorePosition(self.shards)
+			end
+		end
+	end
+end
+
+
+
 --XPerl_Player_InitPaladin
 function XPerl_Player_InitPaladin(self)
-	local myClass = select(2,UnitClass("player"))
-	if (myClass == "PALADIN") then
+	if ( select(2,UnitClass("player")) == "PALADIN") then
 		self.holyp = CreateFrame("Frame", "XPerl_Runes", self)
 
 		self.holyp:SetMovable(true)
@@ -1339,28 +1357,37 @@ function XPerl_Player_InitPaladin(self)
 		PaladinPowerBar:ClearAllPoints()
 		PaladinPowerBar:SetPoint("TOPLEFT", 3, 0)
 		PaladinPowerBar:SetPoint("BOTTOMLEFT", 15, 5)
-		PaladinPowerBar:Show()
 
-		if (not pconf or pconf.showRunes) then
-			self.holyp:Show()
-		else
-			--Looks like something is not right...
-			--not works on my end but still put on... -PlayerLin
-			PaladinPowerBar:Hide()
-			self.holyp:Hide()
-		end
-
-		self.holyp:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
-		self.holyp:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20) 
 	end
 
 	XPerl_Player_InitPaladin = nil
 end
 
+-- XPerl_Player_SetupPaladin
+function XPerl_Player_SetupPaladin(self)
+	if (self.holyp) then
+		if (pconf and not pconf.showRunes) then 
+			self.holyp:Hide()
+		else
+			self.holyp:Show()
+
+			self.holyp:ClearAllPoints()
+
+			if (not pconf or pconf.dockRunes) then
+				self.holyp:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+				self.holyp:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20) 
+			else
+				self.holyp:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+				XPerl_RestorePosition(self.holyp)
+			end
+		end
+	end
+end
+
+
 --XPerl_Player_InitMoonkin
 function XPerl_Player_InitMoonkin(self)
-	local myClass = select(2,UnitClass("player"))
-	if (myClass == "DRUID") then
+	if ( select(2,UnitClass("player")) == "DRUID") then
 		self.eclipse = CreateFrame("Frame", "XPerl_Runes", self)
 
 		self.eclipse:SetMovable(true)
@@ -1384,21 +1411,34 @@ function XPerl_Player_InitMoonkin(self)
 		EclipseBarFrame:ClearAllPoints()
 		EclipseBarFrame:SetPoint("TOPLEFT", 3, 0)
 		EclipseBarFrame:SetPoint("BOTTOMLEFT", 15, 5)
-		EclipseBarFrame:Show()
 
+	end
+
+	XPerl_Player_InitMoonkin = nil
+end
+
+-- XPerl_Player_SetupMoonkin
+function XPerl_Player_SetupMoonkin(self)
+	if (self.eclipse) then
 		local form = GetShapeshiftFormID()
 		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
 			self.eclipse:Hide()
 		else
 			self.eclipse:Show()
+
+			self.eclipse:ClearAllPoints()
+
+			if (not pconf or pconf.dockRunes) then
+				self.eclipse:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+				self.eclipse:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
+			else
+				self.eclipse:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+				XPerl_RestorePosition(self.eclipse)
+			end
 		end
-
-		self.eclipse:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
-		self.eclipse:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
 	end
-
-	XPerl_Player_InitMoonkin = nil
 end
+
 
 -- XPerl_Player_InitDK
 function XPerl_Player_InitDK(self)
@@ -1527,3 +1567,4 @@ function XPerl_Player_SetupDK(self)
 		end
 	end
 end
+
