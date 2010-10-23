@@ -122,33 +122,32 @@ XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s 的 %s 將要在 %s 後消失。"	-- Name,
 XPERL_HIGHLIGHT_SPELLS = {
 	hotSpells  = {
 		[GetSpellInfo(774)] = 12,			-- Rejuvenation (old id 26982)
-		[GetSpellInfo(8936)] = 21,			-- Regrowth (old id 26980)
-		[GetSpellInfo(139)] = 15,			-- Renew (old id 25222)
+		[GetSpellInfo(8936)] = 6,			-- Regrowth (old id 26980)
+		[GetSpellInfo(139)] = 12,			-- Renew (old id 25222)
 	    [GetSpellInfo(48438)] = 7,			-- Wild Growth 
 		[GetSpellInfo(33763)] = 8,			-- Lifebloom
 		[GetSpellInfo(28880)] = 15,			-- Gift of the Naaru (Racial)
 		[GetSpellInfo(61295)] = 15,			-- Riptide
-		-- [GetSpellInfo(66922)] = 10,			-- Flash of Light hot
 	},
 	pomSpells = {
 		[GetSpellInfo(33076)] = 30			-- Prayer of Mending
 	},
 	shieldSpells = {
-		--[GetSpellInfo(25218)] = 30,			-- Power Word: Shield
-		[GetSpellInfo(974)] = 600			-- Earth Shield	(old id32594)		-- TODO change me
+		[GetSpellInfo(17)] = 30,			-- Power Word: Shield
+		[GetSpellInfo(76669)] = 6,			-- Illuminated Healing
+		[GetSpellInfo(974)] = 600			-- Earth Shield	(old id32594)
 	},
 	healSpells = {
-		[GetSpellInfo(2061)] = 1,			-- Flash Heal (old id 25235)
+		[GetSpellInfo(2061)] = 1.5,			-- Flash of Light (old id 25235)
 		[GetSpellInfo(2060)] = 3,			-- Greater Heal (old id 25213)
 		[GetSpellInfo(2050)] = 3,			-- Heal (old id 6064)
-		[GetSpellInfo(5185)] = 2,			-- Healing Touch (old id 26979)
-		[GetSpellInfo(8936)] = 2,			-- Regrowth (old id 26980)
+		[GetSpellInfo(5185)] = 3,			-- Healing Touch (old id 26979)
+		[GetSpellInfo(8936)] = 1.5,			-- Regrowth (old id 26980)
 		[GetSpellInfo(331)] = 3,			-- Healing Wave (old id 25396)
-		[GetSpellInfo(8004)] = 2,			-- Lesser Healing Wave (old id 25420)
-		[GetSpellInfo(19750)] = 1.5,		-- Flash of Light (old id 27137)
+		[GetSpellInfo(8004)] = 1.5,			-- Lesser Healing Wave (old id 25420)
+		[GetSpellInfo(19750)] = 1.5,		-- Flash Heal (old id 27137)
 		[GetSpellInfo(635)] = 2.5,			-- Holy Light (old id 27136))
-		[GetSpellInfo(34861)] = 0.5,		-- Circle of Healing (old id 34866)
-		[GetSpellInfo(50464)] = 1.5			-- Nourish
+		[GetSpellInfo(50464)] = 3.0			-- Nourish
 	},
 	buffSpells = {
 		PRIEST = {
@@ -157,15 +156,18 @@ XPERL_HIGHLIGHT_SPELLS = {
 		},
 	    DRUID = {
 			[GetSpellInfo(1126)] = true		-- Mark of the Wild (old id 26990)
-			-- TODO Find Gift Of the Wild
 		},
 	    MAGE = {
 			[GetSpellInfo(1459)] = true		-- Arcane Intellect (old id 27126)
-			-- TODO Find Arcane Brilliance
+		},
+	    PALADIN = {
+			[GetSpellInfo(19740)] = true,	-- Blessing of Might
+			[GetSpellInfo(20217)] = true	-- Blessing of Kings
 		},
 	},
 	groupHealSpells = {
-		[GetSpellInfo(596)] = 3,			-- Prayer of Healing (old id 25308)
+		[GetSpellInfo(596)] = 2.5,			-- Prayer of Healing (old id 25308)
+		[GetSpellInfo(1064)] = 2.5,			-- Chain Heal
 	},
 }
 

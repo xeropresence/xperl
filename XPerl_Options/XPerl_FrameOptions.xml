@@ -3879,7 +3879,7 @@
 								<Size><AbsDimension x="75" y="16"/></Size>
 								<Anchors>
 									<Anchor point="TOP">
-										<Offset><AbsDimension x="-20" y="-15"/></Offset>
+										<Offset><AbsDimension x="7" y="-22"/></Offset>
 									</Anchor>
 								</Anchors>
 								<Scripts>
@@ -4195,7 +4195,7 @@
 					<CheckButton name="$parent_BuffTooltips" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOP">
-								<Offset><AbsDimension x="-20" y="-6"/></Offset>
+								<Offset><AbsDimension x="-30" y="-6"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
@@ -4351,7 +4351,7 @@
 					<CheckButton name="$parent_XPerlTooltips" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="TOPRIGHT">
-								<Offset><AbsDimension x="-150" y="-6"/></Offset>
+								<Offset><AbsDimension x="-160" y="-6"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
@@ -6530,7 +6530,7 @@
 					<CheckButton name="$parent_Defer" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_Portrait" relativePoint="TOPRIGHT">
-								<Offset><AbsDimension x="120" y="0"/></Offset>
+								<Offset><AbsDimension x="95" y="0"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
@@ -6575,7 +6575,7 @@
 					<CheckButton name="$parent_ThreatName" inherits="XPerlRadioButtonTemplate">
 						<Anchors>
 							<Anchor point="LEFT" relativeTo="$parent_Threat" relativePoint="RIGHT">
-								<Offset><AbsDimension x="45" y="0"/></Offset>
+								<Offset><AbsDimension x="50" y="0"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
@@ -6596,7 +6596,7 @@
 					<CheckButton name="$parent_ThreatPortrait" inherits="XPerlRadioButtonTemplate">
 						<Anchors>
 							<Anchor point="LEFT" relativeTo="$parent_ThreatName" relativePoint="RIGHT">
-								<Offset><AbsDimension x="45" y="0"/></Offset>
+								<Offset><AbsDimension x="50" y="0"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
@@ -10208,16 +10208,12 @@
 							<OnShow>
 								if (IsAddOnLoaded("XPerl_RaidPets")) then
 									XPerl_Options_GetSibling("RaidPets",self):Show()
-									--XPerl_Options_GetSibling("Huntards",self):Show()
-									--XPerl_Options_GetSibling("Moredots",self):Show()
 									XPerl_Options_GetSibling("AlignToRaid",self):Show()
 									self:SetPoint("TOP", XPerl_Options_GetSibling("AlignToRaid",self), "BOTTOMLEFT", 0, 6)
 								else
 									XPerl_Options_GetSibling("RaidPets",self):Hide()
-									--XPerl_Options_GetSibling("Huntards",self):Hide()
-									--XPerl_Options_GetSibling("Moredots",self):Hide()
 									XPerl_Options_GetSibling("AlignToRaid",self):Hide()
-									self:SetPoint("TOPLEFT", XPerl_Options_GetSibling("Enable",self), "BOTTOMLEFT", 0, 6)
+									self:SetPoint("TOP", XPerl_Options_GetSibling("NotInBG",self), "BOTTOMLEFT", 0, 6)
 								end
 							</OnShow>
 							<OnLoad>
@@ -11029,7 +11025,7 @@
 								<Size><AbsDimension x="150" y="20"/></Size>
 								<Anchors>
 									<Anchor point="LEFT" relativeTo="$parent_Enable" relativePoint="RIGHT">
-										<Offset><AbsDimension x="80" y="0"/></Offset>
+										<Offset><AbsDimension x="70" y="0"/></Offset>
 									</Anchor>
 								</Anchors>
 								<Scripts>
