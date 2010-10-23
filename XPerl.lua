@@ -1461,9 +1461,9 @@ local function GetTalentValueByName(name)
 end
 
 local MagicCureTalents = {
-	["DRUID"] = "Nature's Cure",
-	["PALADIN"] = "Sacred Cleansing",
-	["SHAMAN"] = "Improved Cleanse Spirit",
+	["DRUID"] = XPERL_CLEAN_NC,
+	["PALADIN"] = XPERL_CLEAN_SC,
+	["SHAMAN"] = XPERL_CLEAN_ICS
 }
 local function CanClassCureMagic(class)
 	if (MagicCureTalents[class]) then
