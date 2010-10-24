@@ -49,7 +49,7 @@ if (GetLocale() == "deDE") then
 	XPERL_LOC_ZONE_RUBY_SANCTUM 			= "Das Rubinsanktum"
 
 -- Status
-	XPERL_LOC_DEAD			 DEAD			-- "Tot"
+	XPERL_LOC_DEAD			= DEAD			-- "Tot"
 	XPERL_LOC_GHOST 		= "Geist"
 	XPERL_LOC_FEIGNDEATH	= "Totstellen"
 	XPERL_LOC_OFFLINE		= PLAYER_OFFLINE	-- "Offline"
