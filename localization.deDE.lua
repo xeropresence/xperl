@@ -12,7 +12,7 @@ if (GetLocale() == "deDE") then
 	XPERL_MINIMAP_HELP5		= "|c00FFFFFFAlt|r, f\195\188r die X-Perl Speicherausnutzung"
 	XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Umschalt|r, f\195\188r die X-Perl Speicherausnutzung seit dem Start"
 
-	XPERL_MINIMENU_OPTIONS			= "Optionen"
+	XPERL_MINIMENU_OPTIONS			= MAIN_MENU
 	XPERL_MINIMENU_ASSIST			= "Zeige Assistiert-Frame"
 	XPERL_MINIMENU_CASTMON			= "Zeige Casting-Monitor"
 	XPERL_MINIMENU_RAIDAD			= "Zeige Schlachtzugs-Admin"
@@ -23,12 +23,12 @@ if (GetLocale() == "deDE") then
 	XPERL_MINIMENU_RAIDSORT_GROUP 	= "Nach Gruppe sortieren"
 	XPERL_MINIMENU_RAIDSORT_CLASS 	= "Nach Klasse sortieren"
 	
-	XPERL_TYPE_NOT_SPECIFIED	= "Nicht spezifiziert"
-	XPERL_TYPE_PET			= PET			-- "Begleiter"
-	XPERL_TYPE_BOSS 			= "Boss"
-	XPERL_TYPE_RAREPLUS 		= "Rar+"
-	XPERL_TYPE_ELITE			= "Elite"
-	XPERL_TYPE_RARE 			= "Rar"
+	XPERL_TYPE_NOT_SPECIFIED		= "Nicht spezifiziert"
+	XPERL_TYPE_PET					= PET			-- "Begleiter"
+	XPERL_TYPE_BOSS 				= BOSS
+	XPERL_TYPE_RAREPLUS 			= "Rar+"
+	XPERL_TYPE_ELITE				= ELITE
+	XPERL_TYPE_RARE 				= "Rar"
 
 	XPERL_CLEAN_NC		= "Heilung der Natur"
 	XPERL_CLEAN_SC		= "Heilige L\195\164uterung"
@@ -49,7 +49,7 @@ if (GetLocale() == "deDE") then
 	XPERL_LOC_ZONE_RUBY_SANCTUM 			= "Das Rubinsanktum"
 
 -- Status
-	XPERL_LOC_DEAD		= DEAD			-- "Tot"
+	XPERL_LOC_DEAD			 DEAD			-- "Tot"
 	XPERL_LOC_GHOST 		= "Geist"
 	XPERL_LOC_FEIGNDEATH	= "Totstellen"
 	XPERL_LOC_OFFLINE		= PLAYER_OFFLINE	-- "Offline"
@@ -68,7 +68,7 @@ if (GetLocale() == "deDE") then
 		AGGRO = "Aggro",
 		MISSING = "Dein Klassenbuff fehlt",
 		HEAL = "Wird geheilt",
-		SHIELD = "Schild"
+		SHIELD = SHIELDSLOT
 	}
 
 	XPERL_OK							= "OK"

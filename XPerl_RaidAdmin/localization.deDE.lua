@@ -24,7 +24,7 @@
 	XPERL_CHECK_TITLE				= XPerl_ShortProductName.." Gegenstands-Check"
 
 	XPERL_RAID_TOOLTIP_NOCTRA		= "Kein CTRA gefunden"
-	XPERL_CHECK_NAME				= "Name"
+	XPERL_CHECK_NAME				= NAME
 
 	XPERL_CHECK_DROPITEMTIP1			= "Gegenst\195\164nde einf\195\188gen"
 	XPERL_CHECK_DROPITEMTIP2			= "Gegenst\195\164nde k\195\182nnen in dieses Fenster gezogen werden und zur Liste der abfragbaren Gegenst\195\164nde hinzugef\195\188gt werden.\rDu kannst auch ganz normal den /raitem Befehl verwenden um Gegenst\195\164nde hinzuzuf\195\188gen und diese zuk\195\188nftig zu verwenden."
@@ -87,8 +87,7 @@
 	XPERL_CHECK_SCAN_MISSING			= "Scanne betrachtbare Spieler nach Gegenstand. (%d ungescannt)"
 
 	XPERL_REAGENTS						= {PRIEST = "Hochheilige Kerze", MAGE = "Arkanes Pulver", DRUID = "Wilder Dornwurz",
-										   SHAMAN = "Ankh", WARLOCK = "Seelensplitter", PALADIN = "Symbol der Offenbarung",
-										   ROGUE = "Blitzstrahlpulver"}
+										   SHAMAN = "Ankh", WARLOCK = "Seelensplitter", ROGUE = "Blitzstrahlpulver"}
 	XPERL_CHECK_REAGENTS				= "Reagenzien"
 
 	-- Roster Text

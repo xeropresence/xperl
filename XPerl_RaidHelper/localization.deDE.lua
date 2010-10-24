@@ -7,7 +7,7 @@
 	XPERL_TOOLTIP_HELP			= "Klicken, um die Echtzeitanzeige zu aktivieren"
 	XPERL_TOOLTIP_PET			= "%s's Begleiter"
 
-	XPERL_LOC_DEAD 				= "Tot"
+	XPERL_LOC_DEAD 				= DEAD
 
 	XPERL_BUTTON_TOGGLE_LABELS		= "Schalter zum Anzeigen der Zielbeschriftung"
 	XPERL_BUTTON_TOGGLE_MTTARGETS	= "Schalter zum Anzheigen der Ziele des Main Tanks"
@@ -17,8 +17,8 @@
 	XPERL_XS_TARGET				= "%s's Ziel"
 	XPERL_NO_TARGET				= "Kein Ziel"
 
-	XPERL_TITLE_MT_LONG			= "MT Ziele"
-	XPERL_TITLE_MT_SHORT		= "MT"
+	XPERL_TITLE_MT_LONG			= "HT Ziele"
+	XPERL_TITLE_MT_SHORT		= "HT"
 	XPERL_TITLE_WARRIOR_LONG	= "Krieger Ziele"
 	XPERL_TITLE_WARRIOR_SHORT	= "Tanks"
 
