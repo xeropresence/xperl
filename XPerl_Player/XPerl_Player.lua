@@ -132,7 +132,7 @@ local function UpdateAssignedRoles(self)
 	end
 	
 	-- role icons option check by playerlin
-        if (pconf and pconf.xperlOldroleicons) then
+        if (conf and conf.xperlOldroleicons) then
                 if isTank then
                         icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainTankIcon")
                         icon:Show()
