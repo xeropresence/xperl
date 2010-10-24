@@ -33,17 +33,24 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_TYPE_RAREPLUS			= "Редкий+"
 	XPERL_TYPE_ELITE			= "Элита"
 	XPERL_TYPE_RARE				= "Редкий"
+	
+XPERL_CLEAN_NC		= "Природный целитель"
+XPERL_CLEAN_SC		= "Священное очищение"
+XPERL_CLEAN_ICS 	= "Улучшенное очищение духа"
 
 -- Zones
-	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Змеиное святилище"
-	XPERL_LOC_ZONE_BLACK_TEMPLE = "Черный храм"
-	XPERL_LOC_ZONE_HYJAL_SUMMIT = "Вершина Хиджала"
-	XPERL_LOC_ZONE_KARAZHAN = "Каражан"
-	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Плато Солнечного Колодца"
-	XPERL_LOC_ZONE_ULDUAR = "Ульдуар"
-	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Испытание крестоносца"
-	XPERL_LOC_ZONE_ICECROWN_CITADEL = "Цитадель Ледяной Короны"
-	XPERL_LOC_ZONE_RUBY_SANCTUM = "Рубиновое святилище"
+XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Змеиное святилище"
+XPERL_LOC_ZONE_BLACK_TEMPLE = "Черный храм"
+XPERL_LOC_ZONE_HYJAL_SUMMIT = "Вершина Хиджала"
+XPERL_LOC_ZONE_KARAZHAN = "Каражан"
+XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Плато Солнечного Колодца"
+XPERL_LOC_ZONE_NAXXRAMAS = "Наксрамас"
+XPERL_LOC_ZONE_OBSIDIAN_SANCTUM = "Обсидиановое святилище"
+XPERL_LOC_ZONE_EYE_OF_ETERNITY = "Око Вечности"
+XPERL_LOC_ZONE_ULDUAR = "Ульдуар"
+XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Испытание крестоносца"
+XPERL_LOC_ZONE_ICECROWN_CITADEL = "Цитадель Ледяной Короны"
+XPERL_LOC_ZONE_RUBY_SANCTUM = "Рубиновое святилище"
 
 -- Status
 	XPERL_LOC_DEAD			= DEAD		-- "Dead"

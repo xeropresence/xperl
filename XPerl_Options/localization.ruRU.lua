@@ -1036,5 +1036,6 @@ XPERL_CONF_RAID_CUSTOM_NEW				= "Новый"
 XPERL_CONF_RAID_CUSTOM_NEW_DESC			= "Создать новый наблюдатель дебафов"
 XPERL_CONF_RAID_CUSTOM_ZONE				= "Зона"
 XPERL_CONF_RAID_CUSTOM_SEARCH			= "Поиск"
+XPERL_CONF_RAID_BLIZZ_RAIDPULLOUT       = "Скрыть стандартные вывод рейда"
 
 end
