@@ -30,10 +30,6 @@ if (GetLocale() == "deDE") then
 	XPERL_TYPE_ELITE				= ELITE
 	XPERL_TYPE_RARE 				= "Rar"
 
-	XPERL_CLEAN_NC		= "Heilung der Natur"
-	XPERL_CLEAN_SC		= "Heilige L\195\164uterung"
-	XPERL_CLEAN_ICS 	= "Verbesserte Geistl\195\164uterung"
-
 -- Zones
 	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN 	= "H\195\182hle des Schlangenschreins"
 	XPERL_LOC_ZONE_BLACK_TEMPLE 			= "Der Schwarze Tempel"

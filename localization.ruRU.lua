@@ -34,10 +34,6 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_TYPE_ELITE			= "Элита"
 	XPERL_TYPE_RARE				= "Редкий"
 	
-XPERL_CLEAN_NC		= "Природный целитель"
-XPERL_CLEAN_SC		= "Священное очищение"
-XPERL_CLEAN_ICS 	= "Улучшенное очищение духа"
-
 -- Zones
 XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Змеиное святилище"
 XPERL_LOC_ZONE_BLACK_TEMPLE = "Черный храм"

@@ -37,10 +37,6 @@ XPERL_TYPE_RAREPLUS = "Rare+"
 XPERL_TYPE_ELITE	= "Elite"
 XPERL_TYPE_RARE 	= "Rare"
 
-XPERL_CLEAN_NC		= "Nature's Cure"
-XPERL_CLEAN_SC		= "Sacred Cleansing"
-XPERL_CLEAN_ICS 	= "Improved Cleanse Spirit"
-
 -- Zones
 XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Serpentshrine Cavern"
 XPERL_LOC_ZONE_BLACK_TEMPLE = "Black Temple"
