@@ -166,6 +166,7 @@ end
 -- AuraButton_OnUpdate
 local function AuraButton_OnUpdate(self, elapsed)
 	if (not self.endTime) then
+		self:SetAlpha(1)
 		self:SetScript("OnUpdate", nil)
 		return
 	end
@@ -330,7 +331,7 @@ function XPerl_PlayerBuffs_Update(self)
 			end
 	
 			-- Handle cooldowns
-			if (self.cooldown and duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
+			if (self.cooldown and (duration or 0) ~= 0 and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
 				local start = endTime - duration
 				XPerl_CooldownFrame_SetTimer(self.cooldown, start, duration, 1, isMine)
 				if (pconf.buffs.flash) then
