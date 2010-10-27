@@ -2374,7 +2374,7 @@ function XPerl_GenericDropDown_Initialize()
 end
 
 local function HideSetFocus()
-	--if (XPerl_ShouldHideSetFocus) then
+	if (XPerl_ShouldHideSetFocus) then
 		local count = 0
 		for index, value in ipairs(UnitPopupMenus[XPerl_DropDown.which]) do
 			if (UnitPopupShown[1][index] == 1) then
@@ -2385,7 +2385,7 @@ local function HideSetFocus()
 				end
 			end
 		end
-	--end
+	end
 end
 hooksecurefunc("UnitPopup_HideButtons", HideSetFocus)
 
