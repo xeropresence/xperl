@@ -507,7 +507,7 @@ do
 		local function TalentQuery_Ready(e, name, realm, unit)
 			if (UnitIsUnit(unit, XPerl_Target.partyid)) then
 				inspectReady = true
-				XPerl_Target_UpdateTalents(XPerl_Target)
+				XPerl_Target_UpdateTalents(XPerl_Target, UnitGUID(unit))
 			end
 		end
 		LTQ:RegisterCallback("TalentQuery_Ready", TalentQuery_Ready)
