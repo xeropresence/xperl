@@ -5176,6 +5176,7 @@
 										self.configBase = "XPerlDB.player.buffs"
 										self.configIndex = "above"
 										self.configClick = function() if (XPerl_Player_BuffSetup) then XPerl_Player_BuffSetup(XPerl_Player) end end
+										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
@@ -5200,6 +5201,7 @@
 												end
 												--BuffFrame_Update()
 											end
+										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
@@ -5255,6 +5257,7 @@
 										self:SetValueStep(1)
 										XPerl_SliderSetup(self)
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_MAXBUFFS")
+										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 									<OnShow>
 										self:SetValue(XPerlDB.player.buffs.count)
@@ -5284,6 +5287,7 @@
 										self:SetValueStep(1)
 										XPerl_SliderSetup(self)
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_BUFFSIZE")
+										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 									<OnShow>
 										self:SetValue(XPerlDB.player.buffs.size)
@@ -5313,6 +5317,7 @@
 										self:SetValueStep(1)
 										XPerl_SliderSetup(self)
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_DEBUFFSIZE")
+										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 									<OnShow>
 										self:SetValue(XPerlDB.player.debuffs.size or XPerlDB.player.buffs.size)
@@ -5345,6 +5350,7 @@
 										self.Validate = function()
 											XPerl_Options_EnableSibling(self,"MaxRows")
 										end
+										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
@@ -5370,6 +5376,7 @@
 
 										XPerl_SliderSetup(self)
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_BUFF_ROWS")
+										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 									<OnShow>
 										self:SetValue(XPerlDB.player.buffs.rows or 2)
