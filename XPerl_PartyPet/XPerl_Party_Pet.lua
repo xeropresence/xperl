@@ -163,8 +163,8 @@ function XPerl_Party_Pet_OnLoad(self)
 		}
 	end
 
-	XPerl_SecureUnitButton_OnLoad(self)
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame)
+	XPerl_SecureUnitButton_OnLoad(self, nil, nil, nil, XPerl_ShowGenericMenu)
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, nil, nil, nil, XPerl_ShowGenericMenu)
 
 	self:SetAttribute("useparent-unit", true)
 	self:SetAttribute("unitsuffix", "pet")

@@ -43,8 +43,8 @@ function XPerl_Player_OnLoad(self)
 
 	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
 
-	XPerl_SecureUnitButton_OnLoad(self, "player", nil, PlayerFrameDropDown, PlayerFrame.menu)
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", nil, PlayerFrameDropDown, PlayerFrame.menu)
+	XPerl_SecureUnitButton_OnLoad(self, "player", nil, PlayerFrameDropDown, XPerl_ShowGenericMenu)					--PlayerFrame.menu)
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", nil, PlayerFrameDropDown, XPerl_ShowGenericMenu)		--PlayerFrame.menu)
 
 	self:RegisterEvent("VARIABLES_LOADED")
 
