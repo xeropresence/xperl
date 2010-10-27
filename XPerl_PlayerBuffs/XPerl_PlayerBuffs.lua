@@ -5,11 +5,13 @@
 local conf, pconf
 XPerl_RequestConfig(function(new) conf = new pconf = new.player end, "$Revision$")
 
---[===[@debug@
+local playerClass
+
+--@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
 end
---@end-debug@]===]
+--@end-debug@
 
 -- setCommon
 local function setCommon(self, filter, buffTemplate)
@@ -105,6 +107,12 @@ function XPerl_Player_BuffSetup(self)
 		self.buffFrame = CreateFrame("Frame", self:GetName().."buffFrame", self, "SecureAuraHeaderTemplate")
 		self.debuffFrame = CreateFrame("Frame", self:GetName().."debuffFrame", self, "SecureAuraHeaderTemplate")
 
+		self.buffFrame.BuffFrameUpdateTime = 0
+		self.buffFrame.BuffFrameFlashTime = 0
+		self.buffFrame.BuffFrameFlashState = 1
+		self.buffFrame.BuffAlphaValue = 1
+		self.buffFrame:SetScript("OnUpdate", BuffFrame_OnUpdate)
+
 		-- Not implemented.. yet.. maybe later
 		--self.buffFrame.initialConfigFunction = function(self)
 		--	d("initialConfigFunction(%s)", tostring(self))
@@ -130,7 +138,8 @@ end
 
 
 local function XPerl_Player_Buffs_Set_Bits(self)
---d("XPerl_Player_Buffs_Set_Bits(%s)", tostring(self))
+	playerClass = select(2, UnitClass("player"))
+
 	XPerl_Player_BuffSetup(self)
 
 	local buffs = self.buffFrame
@@ -154,10 +163,25 @@ local function XPerl_Player_Buffs_Set_Bits(self)
 	end
 end
 
+-- AuraButton_OnUpdate
+local function AuraButton_OnUpdate(self, elapsed)
+	if (not self.endTime) then
+		self:SetScript("OnUpdate", nil)
+		return
+	end
+	local index = self:GetID()
+	local timeLeft = self.endTime - GetTime()
+	if (timeLeft < _G.BUFF_WARNING_TIME) then
+		self:SetAlpha(XPerl_Player.buffFrame.BuffAlphaValue)
+	else
+		self:SetAlpha(1)
+	end
+end
+
 local function DoEnchant(self, slotID, hasEnchant, expire, charges)
 	if (hasEnchant) then
 		-- Fix to check to see if the player is a shaman and sets the fullDuration to 30 minutes. Shaman weapon enchants are only 30 minutes.
-		if (playerClass1 == "SHAMAN") then
+		if (playerClass == "SHAMAN") then
 			if ((expire / 1000) > 30 * 60) then
 				self.fullDuration = 60 * 60
 			else         
@@ -179,15 +203,20 @@ local function DoEnchant(self, slotID, hasEnchant, expire, charges)
 		self.border:SetVertexColor(0.7, 0, 0.7)
 
 		-- Handle cooldowns
-		if (self.cooldown) then
-			if (expire and conf.buffs.cooldown and pconf.buffs.cooldown) then
-				local timeEnd = GetTime() + (expire / 1000)
-				local timeStart = timeEnd - self.fullDuration		--          (30 * 60)
-			
-				XPerl_CooldownFrame_SetTimer(self.cooldown, timeStart, self.fullDuration, 1)
+		if (self.cooldown and expire and conf.buffs.cooldown and pconf.buffs.cooldown) then
+			local timeEnd = GetTime() + (expire / 1000)
+			local timeStart = timeEnd - self.fullDuration		--          (30 * 60)
+			XPerl_CooldownFrame_SetTimer(self.cooldown, timeStart, self.fullDuration, 1)
+
+			if (pconf.buffs.flash) then
+				self.endTime = timeEnd
+				self:SetScript("OnUpdate", AuraButton_OnUpdate)
 			else
-				self.cooldown:Hide()
+				self.endTime = nil
 			end
+		else
+			self.cooldown:Hide()
+			self.endTime = nil
 		end
 	else
 		self.fullDuration = nil
@@ -199,15 +228,27 @@ end
 --end
 
 function XPerl_PlayerBuffs_Show(self)
+	self:RegisterEvent("UNIT_AURA")
 	XPerl_PlayerBuffs_Update(self)
 end
 
 function XPerl_PlayerBuffs_Hide(self)
+	self:UnregisterEvent("UNIT_AURA")
 	XPerl_PlayerBuffs_Update(self)
 end
 
-function XPerl_PlayerBuffs_OnAttrChanged(self, attr)
-	XPerl_PlayerBuffs_Update(self)
+function XPerl_PlayerBuffs_OnEvent(self, event, unit)
+	if (event == "UNIT_AURA") then
+		if (unit == "player" or unit == "pet" or unit == "vehicle") then
+			XPerl_PlayerBuffs_Update(self)
+		end
+	end
+end
+
+function XPerl_PlayerBuffs_OnAttrChanged(self, attr, value)
+	if (attr == "index" or attr == "filter" or attr == "target-slot") then
+		XPerl_PlayerBuffs_Update(self)
+	end
 end
 
 function XPerl_PlayerBuffs_OnEnter(self)
@@ -225,6 +266,7 @@ function XPerl_PlayerBuffs_OnEnter(self)
 				else
 					XPerl_TooltipSetUnitDebuff(GameTooltip, partyid, self:GetID(), "HARMFUL")
 				end
+				self.UpdateTooltip = XPerl_PlayerBuffs_OnEnter
 			end
 		end
 	end
@@ -268,7 +310,6 @@ function XPerl_PlayerBuffs_Update(self)
 
 		if (filter and unit) then
 			local name, rank, buff, count, debuffType, duration, endTime, isMine, isStealable = UnitAura(unit, index, filter)
-
 			self.filter = filter
 			self:SetAlpha(1)
 
@@ -289,13 +330,18 @@ function XPerl_PlayerBuffs_Update(self)
 			end
 	
 			-- Handle cooldowns
-			if (self.cooldown) then
-				if (duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
-					local start = endTime - duration
-					XPerl_CooldownFrame_SetTimer(self.cooldown, start, duration, 1, isMine)
+			if (self.cooldown and duration and conf.buffs.cooldown and (isMine or conf.buffs.cooldownAny)) then
+				local start = endTime - duration
+				XPerl_CooldownFrame_SetTimer(self.cooldown, start, duration, 1, isMine)
+				if (pconf.buffs.flash) then
+					self.endTime = endTime
+					self:SetScript("OnUpdate", AuraButton_OnUpdate)
 				else
-					self.cooldown:Hide()
+					self.endTime = nil
 				end
+			else
+				self.cooldown:Hide()
+				self.endTime = nil
 			end
 		end
 	end

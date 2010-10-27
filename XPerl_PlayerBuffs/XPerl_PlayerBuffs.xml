@@ -60,6 +60,7 @@
 			<OnHide function="XPerl_PlayerBuffs_Hide"/>
 			<OnEnter function="XPerl_PlayerBuffs_OnEnter"/>
 			<OnLeave function="XPerl_PlayerBuffs_OnLeave"/>
+			<OnEvent function="XPerl_PlayerBuffs_OnEvent"/>
 			<OnAttributeChanged function="XPerl_PlayerBuffs_OnAttrChanged"/>
 		</Scripts>
 		<Attributes>
