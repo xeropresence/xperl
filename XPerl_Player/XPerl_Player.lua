@@ -961,12 +961,14 @@ function XPerl_Player_Events:RUNE_POWER_UPDATE(event, runeIndex, isEnergize)
 		local cooldown = _G['XPerl_RuneButtonIndividual' .. runeIndex .. 'Cooldown'];
 		local start, duration, isReady = GetRuneCooldown(runeIndex);
 		if not isReady then
-			if start then
+			if start and cooldown then
 				CooldownFrame_SetTimer(cooldown, start, duration, 1);
 			end
 			runeButton.energize:Stop();
 		else
-			cooldown:Hide();
+			if cooldown then
+				cooldown:Hide();
+			end
 			runeButton.shine:SetVertexColor(1, 1, 1);
 			RuneButton_ShineFadeIn(runeButton.shine);
 		end
