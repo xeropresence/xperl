@@ -2373,12 +2373,8 @@ function XPerl_GenericDropDown_Initialize()
 	end
 end
 
-local function d(...)
-	ChatFrame1:AddMessage(format(...))
-end
-
 local function HideSetFocus()
-	if (XPerl_ShouldHideSetFocus) then
+	--if (XPerl_ShouldHideSetFocus) then
 		local count = 0
 		for index, value in ipairs(UnitPopupMenus[XPerl_DropDown.which]) do
 			if (UnitPopupShown[1][index] == 1) then
@@ -2389,7 +2385,7 @@ local function HideSetFocus()
 				end
 			end
 		end
-	end
+	--end
 end
 hooksecurefunc("UnitPopup_HideButtons", HideSetFocus)
 
@@ -2421,9 +2417,9 @@ function XPerl_ShowGenericMenu(self, unit, button, actionType)
 			parent = self:GetParent()
 		end
 
-		XPerl_ShouldHideSetFocus = true
+		--XPerl_ShouldHideSetFocus = true
 		ToggleDropDownMenu(1, nil, XPerl_DropDown, parent, 0, 0)
-		XPerl_ShouldHideSetFocus = nil
+		--XPerl_ShouldHideSetFocus = nil
 	end
 end
 
