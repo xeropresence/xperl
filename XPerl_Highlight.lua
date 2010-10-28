@@ -1506,7 +1506,7 @@ end
 function xpHigh:UNIT_HEAL_PREDICTION(unit)
 	if (conf.highlight.HEAL) then
 		local guid = UnitGUID(unit)
-		local amount = UnitGetIncomingHeals(unit)
+		local amount = UnitGetIncomingHeals(unit) or 0
 		if (amount > 0) then
 			local health, healthmax = UnitHealth(unit), UnitHealthMax(unit)
 			local missing = healthmax - health
