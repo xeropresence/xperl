@@ -16,4 +16,3 @@ move-folders:
    XPerl/XPerl_RaidPets: XPerl_RaidPets
    XPerl/XPerl_Target: XPerl_Target
    XPerl/XPerl_TargetTarget: XPerl_TargetTarget
-   XPerl/XPerl_Tutorial: XPerl_Tutorial
