@@ -15,6 +15,12 @@ local percD = "%d"..PERCENT_SYMBOL
 local lastNamesList, lastName, lastWith, lastNamesCount		-- Stores with/without buff list (OnUpdate optimization)
 local fullyInitiallized
 
+--@debug@
+local function d(...)
+	ChatFrame1:AddMessage(format(...))
+end
+--@end-debug@
+
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
 local format = format
@@ -690,8 +696,8 @@ end
 -- XPerl_Raid_HighlightCallback(updateName)
 local function XPerl_Raid_HighlightCallback(self, updateGUID)
 	if not updateGUID then return end
-	
-	local f = XPerl_Raid_GetUnitFrameByUnit(updateGUID)
+
+	local f = XPerl_Raid_GetUnitFrameByGUID(updateGUID)
 	if (f) then
 		XPerl_Highlight:SetHighlight(f, updateGUID)
 	end
