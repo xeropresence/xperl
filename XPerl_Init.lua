@@ -673,13 +673,6 @@ function XPerl_OptionActions(which)
 		return
 	end
 
-	if (conf.showTutorials) then
-		if (not IsAddOnLoaded("XPerl_Tutorial")) then
-			EnableAddOn("XPerl_Tutorial")
-			LoadAddOn("XPerl_Tutorial")
-		end
-	end
-
 	conf.transparency.frame	= min(max(tonumber(conf.transparency.frame or 1), 0), 1)
 	conf.transparency.text	= min(max(tonumber(conf.transparency.text or 1), 0), 1)
 

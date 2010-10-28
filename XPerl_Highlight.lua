@@ -20,7 +20,6 @@ local UnitName = UnitName
 local cos = math.cos
 local sin = math.sin
 local band = bit.band
---local HealComm4, HealComm3
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
@@ -119,7 +118,6 @@ xpHigh.list = {}
 xpHigh.callbacks = {}
 xpHigh.lastExpireCheck = 0
 xpHigh.flashers = {}
---xpHigh.gettingGUIDsFrom = {}
 xpHigh.mendingIcons = {}
 xpHigh.shields = {}
 
@@ -1504,8 +1502,8 @@ end
 
 -- UNIT_HEAL_PREDICTION
 function xpHigh:UNIT_HEAL_PREDICTION(unit)
-	if (conf.highlight.HEAL) then
-		local guid = UnitGUID(unit)
+	local guid = UnitGUID(unit)
+	if (conf.highlight and conf.highlight.HEAL) then
 		local amount = UnitGetIncomingHeals(unit) or 0
 		if (amount > 0) then
 			local health, healthmax = UnitHealth(unit), UnitHealthMax(unit)
@@ -1515,52 +1513,9 @@ function xpHigh:UNIT_HEAL_PREDICTION(unit)
 				return
 			end
 		end
-		self:Remove(guid, "HEAL")
 	end
+	self:Remove(guid, "HEAL")
 end
-
--- LibHealComm-3.0 - Heal Started
---function xpHigh:HealComm_DirectHealStart(e, healerFullName, CastInfoHealingSize, endTime, ...)
---	for i = 1,select("#", ...) do
---		local who = select(i, ...)
---		local guid = who and UnitGUID(who)
---		if (guid) then
---			self:Add(guid, "HEAL", max(1, endTime - GetTime()), healerFullName)
---		end
---	end
---end
-
--- LibHealComm-3.0 - Heal Stopped
---function xpHigh:HealComm_DirectHealStop(e, healerFullName, healSize, succeeded, ...)
---	for i = 1,select("#", ...) do
---		local who = select(i, ...)
---		local guid = who and UnitGUID(who)
---		if (guid) then
---			self:Remove(guid, "HEAL")
---		end
---	end
---end
-
--- LibHealComm-4.0 - Heal Started
---function xpHigh:HealComm_HealStarted(e, healerGUID, spellID, bitType, endTime, ...)
---	if (bit.band(bitType, HealComm4.DIRECT_HEALS) ~= 0) then
---		for i = 1,select("#", ...) do
---			local guid = select(i, ...)
---			local unit = HealComm4.guidToUnit[guid]
---			self:Add(guid, "HEAL", max(1, endTime - GetTime()), unit and UnitName(unit))
---		end
---	end
---end
-
--- LibHealComm-4.0 - Heal Stopped
---function xpHigh:HealComm_HealStopped(e, healerGUID, spellID, bitType, interrupted, ...)
---	if (bit.band(bitType, HealComm4.DIRECT_HEALS) ~= 0) then
---		for i = 1,select("#", ...) do
---			local guid = select(i, ...)
---			self:Remove(guid, "HEAL")
---		end
---	end
---end
 
 -- xpHigh:HasMyPomPom(unit)
 function xpHigh:HasMyPomPom(unit)

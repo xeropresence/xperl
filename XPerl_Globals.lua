@@ -359,10 +359,6 @@ local function startupCheckSettings(self,event)
 
 	XPerl_pcall(XPerl_ValidateSettings)
 
-	if (newUser) then
-		conf.ShowTutorials = true
-	end
-
 	XPerl_Init()
 	XPerl_BlizzFrameDisable = nil
 	XPerl_RegisterLDB()

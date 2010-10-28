@@ -26,11 +26,6 @@
 			<OnEnter>
 				self.highlight:Select()
 				XPerl_PlayerTip(self)
-				if (self == XPerl_TargetTarget) then
-					XPerl_Tutorial(8)
-				else
-					XPerl_Tutorial(9)
-				end
 			</OnEnter>
 			<OnLeave>
 				self.highlight:Deselect()

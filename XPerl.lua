@@ -43,6 +43,12 @@ local largeNumDiv100 = largeNumDiv * 100
 local ArcaneExclusions = XPerl_ArcaneExclusions
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
+--@debug@
+local function d(...)
+	ChatFrame1:AddMessage(format(...))
+end
+--@end-debug@
+
 ------------------------------------------------------------------------------
 -- Re-usable tables
 local FreeTables = setmetatable({}, {__mode = "k"})
@@ -109,12 +115,6 @@ XPerlColourTable = setmetatable({},{
 		return c
 	end
 })
-
--- Dummy Tutorial function if it's not enabled
-if (not XPerl_Tutorial) then
-	function XPerl_Tutorial()
-	end
-end
 
 --XPerl_Percent = setmetatable({},
 --	{__mode = "kv",
@@ -534,7 +534,7 @@ end
 
 -- XPerl_GetBarTexture
 function XPerl_GetBarTexture()
-	return (conf.bar and conf.bar.texture and conf.bar.texture[2]) or "Interface\\TargetingFrame\\UI-StatusBar"
+	return (conf and conf.bar and conf.bar.texture and conf.bar.texture[2]) or "Interface\\TargetingFrame\\UI-StatusBar"
 end
 
 -- XPerl_StatsFrame_Setup
@@ -806,7 +806,6 @@ function XPerl_UnlockFrames()
 	end
 
 	if (XPerl_Options) then
-		XPerl_Tutorial(7)
 		XPerl_Options:Show()
 		XPerl_Options:SetAlpha(0)
 		XPerl_Options.Fading = "in"
@@ -1101,8 +1100,6 @@ function XPerl_MinimapButton_OnEnter(self)
 	if (self.dragging) then
 		return
 	end
-
-	XPerl_Tutorial(1)			-- Minimap Icon/Options
 
 	GameTooltip:SetOwner(self or UIParent, "ANCHOR_LEFT")
 	XPerl_MinimapButton_Details(GameTooltip)
@@ -3357,7 +3354,6 @@ function XPerl_Unit_OnEnter(self)
 	if (self.highlight) then
 		self.highlight:Select()
 	end
-	XPerl_Tutorial(self.tutorialPage)
 
 	if (self.statsFrame and self.statsFrame.healthBar and self.statsFrame.healthBar.text and not self.statsFrame.healthBar.text:IsShown()) then
 		self.hideValues = true
@@ -3668,17 +3664,19 @@ end
 function XPerl_SetExpectedHealth(self)
 	local bar = self.statsFrame.expectedHealth
 	if (bar) then
-		local amount = UnitGetIncomingHeals(self.partyid)
-		if (amount and amount > 0) then
-			local healthMax = UnitHealthMax(self.partyid)
-			local health = UnitHealth(self.partyid)
-			
-			bar:Show()
-			bar:SetMinMaxValues(0, healthMax)
-			bar:SetValue(min(healthMax, health + amount))
-		else
-			bar:Hide()
+		if (conf.highlight and conf.highlight.HEAL) then
+			local amount = UnitGetIncomingHeals(self.partyid)
+			if (amount and amount > 0) then
+				local healthMax = UnitHealthMax(self.partyid)
+				local health = UnitHealth(self.partyid)
+				
+				bar:Show()
+				bar:SetMinMaxValues(0, healthMax)
+				bar:SetValue(min(healthMax, health + amount))
+				return
+			end
 		end
+		bar:Hide()
 	end
 end
 

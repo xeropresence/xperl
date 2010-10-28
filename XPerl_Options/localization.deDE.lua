@@ -223,10 +223,6 @@ XPERL_CONF_LOAD_SETTINGS				= "Kopiere die Einstellungen von..."
 XPERL_CONF_LOAD_SETTINGS_DESC			= "Kopiere die Einstellungen von einem anderen Charakter"
 XPERL_CONF_ANCHORMENU					= "Anker"
 XPERL_CONF_ANCHORMENU_DESC				= "Anker-Richtung ausw\195\164hlen"
-XPERL_CONF_RESET_TUTORIAL				= RESET_TUTORIALS
-XPERL_CONF_RESET_TUTORIAL_DESC			= "Zeige die "..XPerl_ShortProductName.." Tutorial-Hinweise"
-XPERL_CONF_SHOW_TUTORIAL				= SHOW_TUTORIALS
-XPERL_CONF_SHOW_TUTORIAL_DESC			= "Zeige die "..XPerl_ShortProductName.." Tutorial-Hinweise"
 
 XPERL_CONF_HEALER_MODE						= "Heiler-Modus"
 XPERL_CONF_HEALER_MODE_DESC					= "Zeige Gesundheitsdefizite anstatt den Werte"

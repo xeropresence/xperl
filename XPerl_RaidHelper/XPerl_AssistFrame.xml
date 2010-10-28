@@ -141,9 +141,6 @@
 					<OnMouseUp>
 						XPerl_Assists_MouseUp(XPerl_Assists_Frame, button, "targetFrame")
 					</OnMouseUp>
-					<OnEnter>
-						XPerl_Tutorial(11)
-					</OnEnter>
 					<OnSizeChanged>
 						XPerl_Target_Assists_ScrollChild_Targetting:SetWidth(XPerl_Target_Targetting_ScrollFrame:GetWidth() / XPerl_Target_Targetting_ScrollFrame:GetEffectiveScale())
 					</OnSizeChanged>
@@ -181,9 +178,6 @@
 					<OnMouseUp>
 						XPerl_Assists_MouseUp(XPerl_Assists_Frame, button)
 					</OnMouseUp>
-					<OnEnter>
-						XPerl_Tutorial(11)
-					</OnEnter>
 				</Scripts>
 			</ScrollFrame>
 

@@ -2224,18 +2224,17 @@ function XPerl_Raid_Set_Bits(self)
 	end
 	
 	if rconf then
-		if rconf.hideframemanager then
-			if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
-				_G["CompactRaidFrameManager"]:Hide()
-			else
-				if GetNumRaidMembers() > 0 then --let's not show stuff when not in raid  
-					_G["CompactRaidFrameManager"]:Show() --show the frame again so that the option can be changed withouth /reloadui
-				end 
-			end
-		else 
+		if (not rconf.hideframemanager) then
 			rconf.hideframemanager = { --messy fix for missing config
-				enable = nil, 
-				}
+				enable = 1, 
+			}
+		end
+		if rconf and rconf.hideframemanager.enable then 
+			_G["CompactRaidFrameManager"]:Hide()
+		else
+			if GetNumRaidMembers() > 0 then --let's not show stuff when not in raid  
+				_G["CompactRaidFrameManager"]:Show() --show the frame again so that the option can be changed withouth /reloadui
+			end 
 		end
 	end
 	

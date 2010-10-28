@@ -1542,8 +1542,6 @@ function XPerl_Options_ImportOldConfig(old)
 	end
 
 	local new = {
-		showTutorials		= old.ShowTutorials,
-		tutorialFlags		= old.TutorialFlags,
 		bar = {
 			texture		= old.BarTexture,
 			background	= Convert(old.BackgroundTextures),
@@ -3127,6 +3125,12 @@ if (XPerl_UpgradeSettings) then
 
 			if (oldVersion < "2.3.4a") then
 				old.tooltip.enableBuffs = 1
+			end
+
+			if (oldVersion < "3.1.0") then
+				old.raid.hideframemanager = {enable = 1}
+				old.ShowTutorials = nil
+				old.TutorialFlags = nil
 			end
 		end
 	end

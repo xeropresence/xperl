@@ -4539,46 +4539,6 @@
 							</OnLeave>
 						</Scripts>
 					</Frame>
-
-					<Button name="$parent_ResetTutorial" inherits="XPerlButtonTemplate">
-						<Size>
-							<AbsDimension x="110" y="24"/>
-						</Size>
-						<Anchors>
-							<Anchor point="BOTTOMLEFT" relativeTo="$parent_SettingsMethod" relativePoint="TOPLEFT">
-								<Offset>
-									<AbsDimension x="0" y="0" />
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RESET_TUTORIAL")
-							</OnLoad>
-							<OnClick>
-								XPerlDB.tutorialFlags = nil
-							</OnClick>
-						</Scripts>
-					</Button>
-
-					<CheckButton name="$parent_EnableTutorial" inherits="XPerlCheckButtonTemplate">
-						<Anchors>
-							<Anchor point="BOTTOMLEFT" relativeTo="$parent_ResetTutorial" relativePoint="TOPLEFT">
-								<Offset><AbsDimension x="0" y="0"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_SHOW_TUTORIAL")
-							</OnLoad>
-							<OnShow>
-								self:SetChecked(XPerlDB.showTutorials)
-							</OnShow>
-							<OnClick>
-								XPerlDB.showTutorials = self:GetChecked() ~= nil
-							</OnClick>
-						</Scripts>
-					</CheckButton>
 				</Frames>
 			</Frame>
 
@@ -5135,6 +5095,8 @@
 											XPerl_Options_EnableSibling(self,"MaxBuffs")
 											XPerl_Options_EnableSibling(self,"BuffSize")
 											XPerl_Options_EnableSibling(self,"DebuffSize")
+											XPerl_Options_EnableSibling(self,"BuffWrap")
+											XPerl_Options_EnableSibling(self,"MaxRows")
 										end
 									</OnLoad>
 								</Scripts>

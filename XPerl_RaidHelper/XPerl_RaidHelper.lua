@@ -1065,7 +1065,6 @@ function XPerl_MakeTankList()
 		XPerl_Frame:Hide()
 	else
 		XPerl_Frame:Show()
-		XPerl_Tutorial(12)
 	end
 
 	XPerl_MTTargets:SetAttribute("nameList", table.concat(tanks, ","))
