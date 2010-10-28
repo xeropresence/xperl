@@ -2,6 +2,9 @@ X-Perl UnitFrames
 Author: Zek <Boodhoof-EU>
 License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+4.0 onwards
+This file will no longer be maintained. Please see changelogs on wowace.com
+
 3.1.0 beta 2
 *Paladin and Moonkin how have holypower/eclipse bars.
 *Warlock shard bar should now actually be working.
