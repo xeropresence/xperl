@@ -95,6 +95,7 @@ function XPerl_Player_BuffSetup(self)
 	if (not pconf.buffs.enable) then
 		if (self.buffFrame) then
 			self.buffFrame:Hide()
+			self.debuffFrame:Hide()
 
 			BuffFrame:Show()
 			BuffFrame:RegisterEvent("UNIT_AURA")
@@ -121,8 +122,6 @@ function XPerl_Player_BuffSetup(self)
 		--self.debuffFrame.initialConfigFunction = self.buffFrame.initialConfigFunction
 	end
 		
-	XPerl_SetBuffSize(self)
-
 	if (pconf.buffs.hideBlizzard) then
 		BuffFrame:UnregisterEvent("UNIT_AURA")
 		BuffFrame:Hide()
@@ -132,8 +131,6 @@ function XPerl_Player_BuffSetup(self)
 		BuffFrame:RegisterEvent("UNIT_AURA")
 		TemporaryEnchantFrame:Show()
 	end
-
-	XPerl_Player_Buffs_Position(self)
 end
 
 
@@ -161,6 +158,8 @@ local function XPerl_Player_Buffs_Set_Bits(self)
 			debuffs:Hide()
 		end
 	end
+
+	XPerl_Player_Buffs_Position(self)
 end
 
 -- AuraButton_OnUpdate
