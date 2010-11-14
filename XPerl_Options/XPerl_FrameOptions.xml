@@ -2777,8 +2777,7 @@
 								self:SetScale(0.9)
 							</OnLoad>
 							<OnMouseWheel>
-								local arg1 = delta
-								if (arg1 > 0) then
+								if (delta > 0) then
 									self:GetParent().scrollBar.bar:SetValue(self:GetParent().scrollBar.bar:GetValue() - 2)
 								else
 									self:GetParent().scrollBar.bar:SetValue(self:GetParent().scrollBar.bar:GetValue() + 2)
@@ -2859,9 +2858,8 @@
 										FauxScrollFrame_OnVerticalScroll(self, offset, 1, function() XPerl_Options_LayoutFill(XPerl_Options_Layout) end)
 									</OnVerticalScroll>
 									<OnMouseWheel>
-										local arg1 = delta
 										local f = _G[self:GetName().."ScrollBar"]
-										if (arg1 > 0) then
+										if (delta > 0) then
 											f:SetValue(f:GetValue() + 3)
 										else
 											f:SetValue(f:GetValue() - 3)
@@ -13936,8 +13934,7 @@
 				XPerl_Options_Custom_Buttons(XPerl_Custom_Config)
 			</OnClick>
 			<OnMouseWheel>
-				local arg1 = delta
-				if (arg1 > 0) then
+				if (delta > 0) then
 					self.master.scrollBar.bar:SetValue(self.master.scrollBar.bar:GetValue() - 2)
 				else
 					self.master.scrollBar.bar:SetValue(self.master.scrollBar.bar:GetValue() + 2)
@@ -13958,8 +13955,7 @@
 		</Size>
 		<Scripts>
 			<OnMouseWheel>
-				local arg1 = delta
-				if (arg1 > 0) then
+				if (delta > 0) then
 					self.scrollBar.bar:SetValue(self.scrollBar.bar:GetValue() - 2)
 				else
 					self.scrollBar.bar:SetValue(self.scrollBar.bar:GetValue() + 2)
@@ -14042,9 +14038,8 @@
 						FauxScrollFrame_OnVerticalScroll(self, offset, 1, function() self:GetParent():FillList() end)
 					</OnVerticalScroll>
 					<OnMouseWheel>
-						local arg1 = delta
 						local f = _G[self:GetName().."ScrollBar"]
-						if (arg1 > 0) then
+						if (delta > 0) then
 							f:SetValue(f:GetValue() + 3)
 						else
 							f:SetValue(f:GetValue() - 3)

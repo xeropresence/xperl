@@ -511,7 +511,7 @@
 											</OnVerticalScroll>
 											<OnMouseWheel>
 												local f = _G[self:GetName().."ScrollBar"]
-												if (arg1 > 0) then
+												if (delta > 0) then
 													f:SetValue(f:GetValue() + 3)
 												else
 													f:SetValue(f:GetValue() - 3)
