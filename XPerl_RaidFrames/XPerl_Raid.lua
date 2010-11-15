@@ -1447,7 +1447,7 @@ do
 			tip = CreateFrame("GameTooltip", "XPerlDurCheckTooltip")
 		end
 
-		tip:SetOwner(XPerl_Raid_Events, "ANCHOR_RIGHT")
+		tip:SetOwner(XPerl_Raid_Frame, "ANCHOR_RIGHT")
 		tip:ClearAllPoints()
 		tip:SetPoint("TOP", UIParent, "BOTTOM", -200, 0)
 		for i = 1, 18 do
