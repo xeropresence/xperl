@@ -8,8 +8,9 @@ XPerl_RequestConfig(function(new) conf = new pconf = new.player end, "$Revision$
 local playerClass
 
 --@debug@
-local function d(...)
-	ChatFrame1:AddMessage(format(...))
+local function d(fmt, ...)
+	fmt = fmt:gsub("(%%[sdqxf])", "|cFF60FF60%1|r")
+	ChatFrame1:AddMessage("|cFFFF8080PlayerBuffs:|r "..format(fmt, ...), 0.8, 0.8, 0.8)
 end
 --@end-debug@
 
@@ -25,12 +26,15 @@ local function setCommon(self, filter, buffTemplate)
 		self:SetAttribute("includeWeapons", 1)
 	end
 	self:SetAttribute("point", "TOPLEFT")
-	self:SetAttribute("wrapAfter", max(1, floor(self:GetParent():GetWidth() / self:GetEffectiveScale() / 32))) --pconf.buffs.size)))
+	self:SetAttribute("wrapAfter", max(1, floor(XPerl_Player:GetWidth() / pconf.buffs.size)))	-- / XPerl_Player:GetEffectiveScale() 
 	self:SetAttribute("maxWraps", pconf.buffs.rows)
 	self:SetAttribute("xOffset", 32)	-- pconf.buffs.size)
 	self:SetAttribute("yOffset", 0)
 	self:SetAttribute("wrapXOffset", 0)
 	self:SetAttribute("wrapYOffset", pconf.buffs.above and 32 or -32)
+
+	self:SetAttribute("minWidth", 32)
+	self:SetAttribute("minHeight", 32)
 
 	self:SetAttribute("initial-width", pconf.buffs.size)
 	self:SetAttribute("initial-height", pconf.buffs.size)
@@ -47,12 +51,14 @@ end
 -- XPerl_Player_Buffs_Position
 function XPerl_Player_Buffs_Position(self)
 	if (self.buffFrame and not InCombatLockdown()) then
-		self.buffFrame:SetWidth(self:GetWidth())
+		self.buffFrame:ClearAllPoints()
+		self.buffFrame:SetWidth(32)
 		self.buffFrame:SetHeight(32)
-		self.debuffFrame:SetWidth(self:GetWidth())
+
+		self.debuffFrame:ClearAllPoints()
+		self.debuffFrame:SetWidth(32)
 		self.debuffFrame:SetHeight(32)
 
-		self.buffFrame:ClearAllPoints()
 		if (pconf.buffs.above) then
 			self.buffFrame:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 3, 0)
 		else
@@ -285,6 +291,7 @@ function XPerl_PlayerBuffs_Update(self)
 		if (XPerl_PlayerbuffFrameTempEnchant1 and XPerl_PlayerbuffFrameTempEnchant2) then
 			-- TODO Remove when fixed after WoW 13164 sometime
 			-- Build 13164: SecureGroupHeaders.lua(777) uses main hand slot instead of offhand
+			-- (ie: all weapon icons have 16 as their ID and their target-slot)
 			if (XPerl_PlayerbuffFrameTempEnchant1:GetAttribute("target-slot") == XPerl_PlayerbuffFrameTempEnchant2:GetAttribute("target-slot")) then
 				if (self:GetName() == "XPerl_PlayerbuffFrameTempEnchant2") then
 					slot = 17
