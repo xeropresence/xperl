@@ -473,42 +473,10 @@
 	</Frame>
 
 	<!-- The Real Frames -->
-	<Button name="XPerl_party1" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="1">
-		<Anchors>
-			<Anchor point="TOPLEFT">
-				<Offset>
-					<AbsDimension x="0" y="-150"/>
-				</Offset>
-			</Anchor>
-		</Anchors>
-	</Button>
-	<Button name="XPerl_party2" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="2">
-		<Anchors>
-			<Anchor point="TOPLEFT">
-				<Offset>
-					<AbsDimension x="0" y="-230"/>
-				</Offset>
-			</Anchor>
-		</Anchors>
-	</Button>
-	<Button name="XPerl_party3" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="3">
-		<Anchors>
-			<Anchor point="TOPLEFT">
-				<Offset>
-					<AbsDimension x="0" y="-310"/>
-				</Offset>
-			</Anchor>
-		</Anchors>
-	</Button>
-	<Button name="XPerl_party4" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="4">
-		<Anchors>
-			<Anchor point="TOPLEFT">
-				<Offset>
-					<AbsDimension x="0" y="-390"/>
-				</Offset>
-			</Anchor>
-		</Anchors>
-	</Button>
+	<Button name="XPerl_party1" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="1"/>
+	<Button name="XPerl_party2" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="2"/>
+	<Button name="XPerl_party3" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="3"/>
+	<Button name="XPerl_party4" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="4"/>
 
 	<Frame name="XPerl_Party_Events_Frame">
 		<Scripts>
