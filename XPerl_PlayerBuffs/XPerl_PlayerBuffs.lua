@@ -68,19 +68,6 @@ function XPerl_Player_Buffs_Position(self)
 				self.buffFrame:SetPoint("TOPLEFT", self.runed, "BOTTOMLEFT", 3, 0)
 			elseif (self.shards) then
 				self.buffFrame:SetPoint("TOPLEFT", self.shards, "BOTTOMLEFT", 3, 0)
-			elseif (self.holyp and self.holyp:IsShown()) then
-				-- Temp. code until someone really find a way fix it. :p -PlayerLin
-				-- set the position more like original position
-				-- when extend Portrait enable and other bar shit...
-				-- If Portrait option isn't on, then do nothing...
-				if (not pconf.portrait) then
-					self.buffFrame:SetPoint("TOPLEFT", self.holyp, "BOTTOMLEFT", 3, -15)
-				--else put it on near about Portraitframe position.
-				else
-					self.buffFrame:SetPoint("TOPLEFT", self.holyp, "BOTTOMLEFT", -86, -15)
-				end
-				elseif (self.eclipse and self.eclipse:IsShown()) then
-				self.buffFrame:SetPoint("TOPLEFT", self.eclipse, "BOTTOMLEFT", 3, 3)
 			elseif (pconf.buffs.wrap and ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait)) then
 				self.buffFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
 			else
@@ -98,6 +85,9 @@ end
 
 -- XPerl_Player_BuffSetup
 function XPerl_Player_BuffSetup(self)
+	if (not self) then
+		return
+	end
 	if (not pconf.buffs.enable) then
 		if (self.buffFrame) then
 			self.buffFrame:Hide()

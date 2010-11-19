@@ -1518,7 +1518,7 @@ function XPerl_DebufHighlightInit()
 				show = Curses.Magic or Curses.Curse or Curses.Poison or Curses.Disease
 			end
 			local magic
-			if (CanClassCureMagic(playerClass)) then
+			if (GetPrimaryTalentTree() == 1 and CanClassCureMagic(playerClass)) then
 				magic = Curses.Magic
 			end
 			return Curses.Poison or Curses.Disease or magic or show
@@ -3304,6 +3304,7 @@ end
 function XPerl_Unit_UpdatePortrait(self)
 	if (self.conf and self.conf.portrait) then
 		local pf = self.portraitFrame
+		SetPortraitTexture(pf.portrait, self.partyid)			-- If a player moves out of range for a 3D portrait, it will show their proper 2D one
 		if (self.conf.portrait3D and UnitIsVisible(self.partyid)) then
 			pf.portrait:Hide()
 			pf.portrait3D:Show()
@@ -3311,7 +3312,6 @@ function XPerl_Unit_UpdatePortrait(self)
 		else
 			pf.portrait:Show()
 			pf.portrait3D:Hide()
-			SetPortraitTexture(pf.portrait, self.partyid)
 		end
 	end
 end

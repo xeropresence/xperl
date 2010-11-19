@@ -4645,7 +4645,8 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") and (select(2, UnitClass("player")) ~= "DRUID") and (select(2, UnitClass("player")) ~= "WARLOCK") and (select(2, UnitClass("player")) ~= "PALADIN") then
+								local _, class = UnitClass("player")
+								if (class ~= "DEATHKNIGHT" and class ~= "DRUID" and class ~= "WARLOCK" and class ~= "PALADIN") then
                                     self:Hide()
 								end
 
@@ -4669,7 +4670,8 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>  
-								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") and (select(2, UnitClass("player")) ~= "DRUID") and (select(2, UnitClass("player")) ~= "WARLOCK") and (select(2, UnitClass("player")) ~= "PALADIN") then
+								local _, class = UnitClass("player")
+								if (class ~= "DEATHKNIGHT" and class ~= "DRUID" and class ~= "WARLOCK") then
 									self:Hide()
 								end
 
@@ -4689,7 +4691,8 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if (select(2, UnitClass("player")) ~= "DEATHKNIGHT") and (select(2, UnitClass("player")) ~= "DRUID") and (select(2, UnitClass("player")) ~= "WARLOCK") and (select(2, UnitClass("player")) ~= "PALADIN") then
+								local _, class = UnitClass("player")
+								if (class ~= "DEATHKNIGHT" and class ~= "DRUID" and class ~= "WARLOCK" and class ~= "PALADIN") then
                                     self:ClearAllPoints()
                                     self:SetPoint("TOPLEFT", XPerl_Options_Player_Options_ShowRunes, "TOPLEFT")
 								end

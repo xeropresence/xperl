@@ -75,9 +75,6 @@ function XPerl_Player_OnLoad(self)
 	XPerl_Player_InitMoonkin(self)
 	XPerl_Player_SetupMoonkin(self)
 
-	XPerl_Player_InitPaladin(self)
-	XPerl_Player_SetupPaladin(self)
-
 	XPerl_Player_InitWarlock(self)
 	XPerl_Player_SetupWarlock(self)
 
@@ -955,30 +952,35 @@ function XPerl_Player_Events:UNIT_HEAL_PREDICTION(unit)
 	end
 end
 
+-- RUNE_POWER_UPDATE
 function XPerl_Player_Events:RUNE_POWER_UPDATE(event, runeIndex, isEnergize)
 	if runeIndex and runeIndex >= 1 and runeIndex <= 6 then
 		local runeButton = _G['XPerl_RuneButtonIndividual' .. runeIndex];
-		local cooldown = _G['XPerl_RuneButtonIndividual' .. runeIndex .. 'Cooldown'];
-		local start, duration, isReady = GetRuneCooldown(runeIndex);
-		if not isReady then
-			if start and cooldown then
-				CooldownFrame_SetTimer(cooldown, start, duration, 1);
+		if (runeButton) then
+			local cooldown = _G['XPerl_RuneButtonIndividual' .. runeIndex .. 'Cooldown'];
+			local start, duration, isReady = GetRuneCooldown(runeIndex);
+			if not isReady then
+				if start and cooldown then
+					CooldownFrame_SetTimer(cooldown, start, duration, 1);
+				end
+				runeButton.energize:Stop();
+			else
+				if cooldown then
+					cooldown:Hide();
+				end
+				runeButton.shine:SetVertexColor(1, 1, 1);
+				RuneButton_ShineFadeIn(runeButton.shine);
 			end
-			runeButton.energize:Stop();
-		else
-			if cooldown then
-				cooldown:Hide();
+			if isEnergize then
+				runeButton.energize:Play();
 			end
-			runeButton.shine:SetVertexColor(1, 1, 1);
-			RuneButton_ShineFadeIn(runeButton.shine);
-		end
-		if isEnergize then
-			runeButton.energize:Play();
 		end
 	else
 		assert(false, 'Bad rune index');
 	end
 end
+
+-- RUNE_TYPE_UPDATE
 function XPerl_Player_Events:RUNE_TYPE_UPDATE(self, runeIndex )
 	
 	if runeIndex and runeIndex >= 1 and runeIndex <= 6 then
@@ -1221,7 +1223,7 @@ function XPerl_Player_Set_Bits(self)
 	self:SetHeight(max(h1, h2))
 
 	self.highlight:ClearAllPoints()
-	if (pconf.extendPortrait or ((self.runes or self.holyp or self.eclipse or self.shards) and pconf.showRunes and pconf.dockRunes)) then
+	if (pconf.extendPortrait or ((self.runes or self.eclipse or self.shards) and pconf.showRunes and pconf.dockRunes)) then
 		self.portraitFrame:SetHeight(62 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 		--self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 		--self.highlight:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, 0)
@@ -1233,7 +1235,7 @@ function XPerl_Player_Set_Bits(self)
 
 	XPerl_Player_SetupDK(self)
 	XPerl_Player_SetupMoonkin(self)
-	XPerl_Player_SetupPaladin(self)
+	XPerl_Player_InitPaladin(self)
 	XPerl_Player_SetupWarlock(self)
 
 	self.highlight:ClearAllPoints()
@@ -1331,61 +1333,101 @@ function XPerl_Player_SetupWarlock(self)
 	end
 end
 
+-- PALADIN
 
+local MAX_HOLY_POWER = _G.MAX_HOLY_POWER
+local PALADINPOWERBAR_SHOW_LEVEL = _G.PALADINPOWERBAR_SHOW_LEVEL
+local SPELL_POWER_HOLY_POWER = _G.SPELL_POWER_HOLY_POWER
 
---XPerl_Player_InitPaladin
-function XPerl_Player_InitPaladin(self)
-	if ( select(2,UnitClass("player")) == "PALADIN") then
-		self.holyp = CreateFrame("Frame", "XPerl_Runes", self)
-
-		self.holyp:SetMovable(true)
-		self.holyp:RegisterForDrag("LeftButton")
-		self.holyp:SetScript("OnDragStart",
-			function(self)
-				if (not pconf.dockRunes) then
-					self:StartMoving()
-				end
-			end)
-		self.holyp:SetScript("OnDragStop",
-			function(self)
-				if (not pconf.dockRunes) then
-					self:StopMovingOrSizing()
-					XPerl_SavePosition(self)
-				end
-			end)
-
-		self.holyp.unit = PaladinPowerBar:GetParent().unit
-		PaladinPowerBar:SetParent(self.holyp)
-		PaladinPowerBar:ClearAllPoints()
-		PaladinPowerBar:SetPoint("TOPLEFT", 3, 0)
-		PaladinPowerBar:SetPoint("BOTTOMLEFT", 15, 5)
-
+-- XPerl_PaladinPowerBar_ToggleHolyRune
+local function XPerl_PaladinPowerBar_ToggleHolyRune(self, visible)
+	if visible then
+		self.deactivate:Play()
+	else
+		self.activate:Play()
 	end
-
-	XPerl_Player_InitPaladin = nil
 end
 
--- XPerl_Player_SetupPaladin
-function XPerl_Player_SetupPaladin(self)
-	if (self.holyp) then
-		if (pconf and not pconf.showRunes) then 
-			self.holyp:Hide()
-		else
-			self.holyp:Show()
+-- XPerl_PaladinPowerBar_Update
+local function XPerl_PaladinPowerBar_Update(self)
+	local numHolyPower = UnitPower( self:GetParent():GetAttribute("unit"), SPELL_POWER_HOLY_POWER )
 
-			self.holyp:ClearAllPoints()
+	for i=1,MAX_HOLY_POWER do
+		local holyRune = self.runes[i]
+		local isShown = holyRune:GetAlpha()> 0 or holyRune.activate:IsPlaying()
+		local shouldShow = i <= numHolyPower
+		if isShown ~= shouldShow then 
+			XPerl_PaladinPowerBar_ToggleHolyRune(holyRune, isShown)
+		end
+	end
+	
+	if numHolyPower == MAX_HOLY_POWER then
+		self.rune1.glow.activate:Play()
+		self.rune2.glow.activate:Play()
+		self.rune3.glow.activate:Play()
+	else
+		self.rune1.glow.deactivate:Play()
+		self.rune2.glow.deactivate:Play()
+		self.rune3.glow.deactivate:Play()
+	end
+end
 
-			if (not pconf or pconf.dockRunes) then
-				self.holyp:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
-				self.holyp:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20) 
+-- XPerl_PaladinPowerBar_OnLoad
+function XPerl_PaladinPowerBar_OnLoad(self)
+	if UnitLevel("player") < PALADINPOWERBAR_SHOW_LEVEL then
+		self:RegisterEvent("PLAYER_LEVEL_UP")
+		self:SetAlpha(0)
+	end
+
+	self:RegisterEvent("UNIT_POWER")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("UNIT_DISPLAYPOWER")
+
+	self.rune1.glow:SetAlpha(0)
+	self.rune2.glow:SetAlpha(0)
+	self.rune3.glow:SetAlpha(0)
+
+	self.runes = {self.rune1, self.rune2, self.rune3}
+end
+
+-- XPerl_PaladinPowerBar_OnEvent
+function XPerl_PaladinPowerBar_OnEvent(self, event, arg1, arg2)
+	if ( (event == "UNIT_POWER") and (arg1 == self:GetParent():GetAttribute("unit")) ) then
+		if ( arg2 == "HOLY_POWER" ) then
+			XPerl_PaladinPowerBar_Update(self)
+		end
+	elseif( event ==  "PLAYER_LEVEL_UP" ) then
+		local level = arg1
+		if level >= PALADINPOWERBAR_SHOW_LEVEL then
+			self:UnregisterEvent("PLAYER_LEVEL_UP")
+			self.showAnim:Play()
+			XPerl_PaladinPowerBar_Update(self)
+		end
+	else
+		XPerl_PaladinPowerBar_Update(self)
+	end
+end
+
+-- XPerl_Player_InitPaladin
+function XPerl_Player_InitPaladin(self)
+	if ( select(2,UnitClass("player")) == "PALADIN") then
+		if (pconf and pconf.showRunes) then
+			if (not self.holyp) then
+				self.holyp = CreateFrame("Frame", "XPerl_Runes", self, "XPerl_PaladinPowerBarTemplate")
+				self.holyp:SetFrameLevel(self.portraitFrame:GetFrameLevel() + 5)
+				self.holyp:SetPoint("LEFT", self, "BOTTOMLEFT", 0, 5)
+		
+				PaladinPowerBar:UnregisterAllEvents()
+				PaladinPowerBar:ClearAllPoints()
+				PaladinPowerBar:Hide()
 			else
-				self.holyp:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
-				XPerl_RestorePosition(self.holyp)
+				self.holyp:Show()
 			end
+		elseif (self.holyp) then
+			self.holyp:Hide()
 		end
 	end
 end
-
 
 --XPerl_Player_InitMoonkin
 function XPerl_Player_InitMoonkin(self)
