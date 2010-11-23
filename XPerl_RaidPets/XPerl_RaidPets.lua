@@ -302,15 +302,7 @@ end
 local function SetMainHeaderAttributes(self)
 	self:Hide()
 
-	--local classes = {}
-	--if (rconf.hunter) then
-	--	tinsert(classes, "HUNTER")
-	--end
-	--if (rconf.warlock) then
-	--	tinsert(classes, "WARLOCK")
-	--end
-	--self:SetAttribute("groupFilter", "PET")	--table.concat(classes, ","))
-
+	self:SetAttribute("filterOnPet", true)
 	self:SetAttribute("unitsPerColumn", 6)			-- Don't grow taller than a standard raid group
 	self:SetAttribute("maxColumns", 7)
 	self:SetAttribute("columnAnchorPoint", "LEFT")
