@@ -5,7 +5,6 @@
 if ( GetLocale() == "frFR" ) then
 
 	XPERL_RAID_GROUP				= "Groupe %d"
-	XPERL_RAID_TOOLTIP_NOCTRA		= "Pas de CTRA trouv\195\169"
 	XPERL_RAID_TOOLTIP_OFFLINE		= "Hors ligne depuis %s"
 	XPERL_RAID_TOOLTIP_AFK			= "ABS depuis %s"
 	XPERL_RAID_TOOLTIP_DND			= "NPD depuis %s"

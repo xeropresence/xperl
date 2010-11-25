@@ -1400,7 +1400,7 @@ XPerl_Target_Events.PARTY_MEMBERS_CHANGED = XPerl_Target_Events.PARTY_LOOT_METHO
 XPerl_Target_Events.PARTY_LEADER_CHANGED  = XPerl_Target_Events.PARTY_LOOT_METHOD_CHANGED
 
 function XPerl_Target_Events:UNIT_THREAT_LIST_UPDATE(unit)
-	if (UnitCanAttack("player", self.partyid)) then
+	if (UnitCanAttack("player", self.partyid or "target")) then
 		XPerl_Unit_ThreatStatus(self, self.partyid == "target" and "player" or nil)
 	else
 		XPerl_Unit_ThreatStatus(self)

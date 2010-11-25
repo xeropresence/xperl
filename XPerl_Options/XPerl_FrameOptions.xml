@@ -4831,6 +4831,27 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_PlayerDruidBar" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_PlayerXP" relativePoint="TOPRIGHT">
+								<Offset><AbsDimension x="85" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if (select(2, UnitClass("player")) ~= "DRUID") then
+									self:Hide()
+								end
+
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_DRUIDBAR")
+								self.configBase = "XPerlDB.player"
+								self.configIndex = "noDruidBar"
+								self.configClick = XPerl_Player_Reset
+								XPerl_Options_RegisterProtected(self)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_XPDeficit" inherits="XPerlCheckButtonTemplate">
 						<Size><AbsDimension x="26" y="26"/></Size>
 						<Anchors>

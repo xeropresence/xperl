@@ -3666,7 +3666,7 @@ function XPerl_SetExpectedHealth(self)
 	if (bar) then
 		if (conf.highlight and conf.highlight.HEAL) then
 			local amount = UnitGetIncomingHeals(self.partyid)
-			if (amount and amount > 0) then
+			if (amount and amount > 0 and not UnitIsDeadOrGhost(self.partyid)) then
 				local healthMax = UnitHealthMax(self.partyid)
 				local health = UnitHealth(self.partyid)
 				

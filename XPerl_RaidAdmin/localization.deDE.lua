@@ -23,7 +23,6 @@
 	-- Item Checker
 	XPERL_CHECK_TITLE				= XPerl_ShortProductName.." Gegenstands-Check"
 
-	XPERL_RAID_TOOLTIP_NOCTRA		= "Kein CTRA gefunden"
 	XPERL_CHECK_NAME				= NAME
 
 	XPERL_CHECK_DROPITEMTIP1			= "Gegenst\195\164nde einf\195\188gen"

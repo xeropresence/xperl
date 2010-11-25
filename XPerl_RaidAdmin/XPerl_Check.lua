@@ -1149,8 +1149,6 @@ function XPerl_Check_UpdatePlayerList()
 			if (not v.connected or v.noCTRA) then
 				if (not v.connected) then
 					countFrame:SetText(XPERL_LOC_OFFLINE)
-				else
-					countFrame:SetText(XPERL_RAID_TOOLTIP_NOCTRA)
 				end
 				countFrame:SetTextColor(0.5, 0.5, 0.5)
 				countFrame:Show()

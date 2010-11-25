@@ -7,7 +7,6 @@
 if (GetLocale() == "zhTW") then
 
 XPERL_RAID_GROUP		= "隊伍 %d"
-XPERL_RAID_TOOLTIP_NOCTRA	= "沒有發現 CTRA"
 XPERL_RAID_TOOLTIP_OFFLINE	= "%s 已離線"
 XPERL_RAID_TOOLTIP_AFK		= "%s 已暫離"
 XPERL_RAID_TOOLTIP_DND		= "%s 已勿擾"

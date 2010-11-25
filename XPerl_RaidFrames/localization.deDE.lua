@@ -4,7 +4,6 @@
 
 if (GetLocale() == "deDE") then
 	XPERL_RAID_GROUP				= "Gruppe %d"
-	XPERL_RAID_TOOLTIP_NOCTRA		= "Kein CTRA gefunden"
 	XPERL_RAID_TOOLTIP_OFFLINE		= "Offline seit %s"
 	XPERL_RAID_TOOLTIP_AFK			= "AFK seit %s"
 	XPERL_RAID_TOOLTIP_DND			= "DND seit %s"

@@ -6,7 +6,6 @@ if ( GetLocale() == "koKR" ) then
 -- Localizations
 
 	XPERL_RAID_GROUP		= "파티 %d"
-	XPERL_RAID_TOOLTIP_NOCTRA	= "CTRA 없음"
 	XPERL_RAID_TOOLTIP_OFFLINE	= "%s 오프라인"
 	XPERL_RAID_TOOLTIP_AFK		= "%s 자리비움"
 	XPERL_RAID_TOOLTIP_DND		= "%s 다른용무중"

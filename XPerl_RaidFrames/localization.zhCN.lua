@@ -5,7 +5,6 @@
 if (GetLocale() == "zhCN") then
 
 	XPERL_RAID_GROUP		= "小队 %d"
-	XPERL_RAID_TOOLTIP_NOCTRA	= "没有发现CTRA"
 	XPERL_RAID_TOOLTIP_OFFLINE	= "离线计时： %s"
 	XPERL_RAID_TOOLTIP_AFK		= "暂离计时： %s"
 	XPERL_RAID_TOOLTIP_DND		= "勿扰计时： %s"

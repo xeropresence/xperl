@@ -5,7 +5,6 @@
 if ( GetLocale() == "esES" ) then
 
 XPERL_RAID_GROUP		= "Grupo %d"
-XPERL_RAID_TOOLTIP_NOCTRA	= "No se ha encontrado CTRA"
 XPERL_RAID_TOOLTIP_OFFLINE	= "Desconectado durante %s"
 XPERL_RAID_TOOLTIP_AFK		= "AUS durante %s"
 XPERL_RAID_TOOLTIP_DND		= "NoMolestar durante %s"

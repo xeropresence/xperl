@@ -28,7 +28,6 @@ XPERL_NO_ROSTER_CALLED		= "Нет списка с названием '%s'"
 -- Item Checker
 XPERL_CHECK_TITLE			= XPerl_ShortProductName.." Предмет контроль"
 
-XPERL_RAID_TOOLTIP_NOCTRA	= "CTRA не найдено"
 XPERL_CHECK_NAME			= "Имя"
 
 XPERL_CHECK_DROPITEMTIP1	= "Добытые вещи"

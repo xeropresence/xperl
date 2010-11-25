@@ -16,7 +16,6 @@
 ## X-Donate: PayPal:zeksie@gmail.com
 ## X-Category: Interface Enhancements
 ## X-License: GNU GPL v3, 29 June 2007
-## OptionalDeps: LibHealComm-4.0, LibHealComm-3.0
 ## SavedVariables: XPerlConfig, XPerlConfig_Global, XPerlConfigNew, XPerlConfigSavePerCharacter
 XPerl_Globals.xml
 XPerl.xml

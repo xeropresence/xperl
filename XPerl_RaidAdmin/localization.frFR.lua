@@ -27,7 +27,6 @@
         -- Item Checker
         XPERL_CHECK_TITLE			= "X-Perl V\195\169rificateur d'articles"
 
-	XPERL_RAID_TOOLTIP_NOCTRA		= "Pas de CTRA trouv\195\169"
         XPERL_CHECK_NAME			= "Noms"
 
         XPERL_CHECK_DROPITEMTIP1		= "Articles rammass\195\169s"

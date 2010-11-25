@@ -31,7 +31,6 @@ XPERL_NO_ROSTER_CALLED		= "No hay ninguna plantilla guardad con el nombre '%s'"
 -- Item Checker
 XPERL_CHECK_TITLE		= "X-Perl Comprobador de objetos"
 
-XPERL_RAID_TOOLTIP_NOCTRA	= "No se ha encontrado CTRA"
 XPERL_CHECK_NAME		= "Nombre"
 
 XPERL_CHECK_DROPITEMTIP1	= "Arrastrar objetos"

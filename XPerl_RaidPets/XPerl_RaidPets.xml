@@ -16,6 +16,11 @@
 
 		<Size><AbsDimension x="80" y="30"/></Size>
 
+		<Attributes>
+			<Attribute name="*type1" type="string" value="target"/>
+			<Attribute name="initial-height" type="number" value="30"/>
+		</Attributes>
+
 		<Backdrop bgFile="Interface\AddOns\XPerl\images\XPerl_FrameBack" edgeFile="Interface\Addons\XPerl\Images\XPerl_ThinEdge" tile="true">
 			<EdgeSize>
 				<AbsValue val="10"/>

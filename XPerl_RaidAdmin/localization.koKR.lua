@@ -28,7 +28,6 @@ if (GetLocale() == "koKR") then
 	-- Item Checker
 	XPERL_CHECK_TITLE		= XPerl_ShortProductName.." 아이템 확인"
 
-	XPERL_RAID_TOOLTIP_NOCTRA	= "CTRA 찾지 못함"
 	XPERL_CHECK_NAME		= "이름"
 
 	XPERL_CHECK_DROPITEMTIP1	= "아이템 정보"

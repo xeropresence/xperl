@@ -27,7 +27,6 @@ XPERL_NO_ROSTER_CALLED		= "No roster saved called '%s'"
 -- Item Checker
 XPERL_CHECK_TITLE		= XPerl_ShortProductName.." Item Check"
 
-XPERL_RAID_TOOLTIP_NOCTRA	= "No CTRA Found"
 XPERL_CHECK_NAME		= "Name"
 
 XPERL_CHECK_DROPITEMTIP1	= "Drop Items"

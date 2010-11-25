@@ -388,10 +388,45 @@ local function XPerl_Player_UpdatePVP(self)
 	end
 end
 
+-- CreateBar(self, name)
+local function CreateBar(self, name)
+	local f = CreateFrame("StatusBar", self.statsFrame:GetName()..name, self.statsFrame, "XPerlStatusBar")
+	f:SetPoint("TOPLEFT", self.statsFrame.manaBar, "BOTTOMLEFT", 0, 0)
+	f:SetHeight(10)
+	self.statsFrame[name] = f
+	f:SetWidth(112)
+	return f
+end
+
+-- MakeDruidBar()
+local function MakeDruidBar(self)
+	local f = CreateBar(self, "druidBar")
+	local c = conf.colour.bar.mana
+	f:SetStatusBarColor(c.r, c.g, c.b)
+	f.bg:SetVertexColor(c.r, c.g, c.b, 0.25)
+	MakeDruidBar = nil
+end
+
 -- XPerl_Player_DruidBarUpdate
 local function XPerl_Player_DruidBarUpdate(self)
-	local manaPct
 	local druidBar = self.statsFrame.druidBar
+	if (pconf.noDruidBar) then
+		if (druidBar) then
+			druidBar:Hide()
+			XPerl_StatsFrameSetup(self, {self.statsFrame.xpBar, self.statsFrame.repBar})
+			if (XPerl_Player_Buffs_Position) then
+				XPerl_Player_Buffs_Position(self)
+			end
+		end
+		return
+	elseif (not druidBar) then
+		if (MakeDruidBar) then
+			MakeDruidBar(self)
+			druidBar = self.statsFrame.druidBar
+		end
+	end
+
+	local manaPct
 
 	local maxMana = UnitPowerMax("player", 0)
 	local currMana = UnitPower("player", 0)
@@ -399,7 +434,6 @@ local function XPerl_Player_DruidBarUpdate(self)
 	druidBar:SetMinMaxValues(0, maxMana or 1)
 	druidBar:SetValue(currMana or 0)
 	druidBar.text:SetFormattedText("%d/%d", ceil(currMana or 0), maxMana or 1)
-
 	druidBar.percent:SetFormattedText(percD, currMana * 100 / maxMana)
 
 	local druidBarExtra
@@ -430,7 +464,9 @@ local function XPerl_Player_DruidBarUpdate(self)
 	if (pconf.extendPortrait and not InCombatLockdown()) then
 		self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 	end
-	self.statsFrame:SetHeight(h)
+	if (not InCombatLockdown()) then
+		self.statsFrame:SetHeight(h)
+	end
 	XPerl_StatsFrameSetup(self, {druidBar, self.statsFrame.xpBar, self.statsFrame.repBar})
 	if (XPerl_Player_Buffs_Position) then
 		XPerl_Player_Buffs_Position(self)
@@ -1053,16 +1089,6 @@ function XPerl_Player_SetWidth(self)
 	XPerl_RestorePosition(self)
 end
 
--- CreateBar(self, name)
-local function CreateBar(self, name)
-	local f = CreateFrame("StatusBar", self.statsFrame:GetName()..name, self.statsFrame, "XPerlStatusBar")
-	f:SetPoint("TOPLEFT", self.statsFrame.manaBar, "BOTTOMLEFT", 0, 0)
-	f:SetHeight(10)
-	self.statsFrame[name] = f
-	f:SetWidth(112)
-	return f
-end
-
 -- MakeEnergyTicker
 local function MakeEnergyTicker(self)
 	local f = CreateFrame("StatusBar", self.statsFrame:GetName().."energyTicker", self.statsFrame.manaBar)
@@ -1089,15 +1115,6 @@ local function MakeEnergyTicker(self)
 	f:SetScript("OnUpdate", XPerl_Player_Energy_OnUpdate)
 
 	MakeEnergyTicker = nil
-end
-
--- MakeDruidBar()
-local function MakeDruidBar(self)
-	local f = CreateBar(self, "druidBar")
-	local c = conf.colour.bar.mana
-	f:SetStatusBarColor(c.r, c.g, c.b)
-	f.bg:SetVertexColor(c.r, c.g, c.b, 0.25)
-	MakeDruidBar = nil
 end
 
 -- MakeXPBars
@@ -1163,12 +1180,6 @@ function XPerl_Player_Set_Bits(self)
 		if (not self.statsFrame.energyTicker) then
 			MakeEnergyTicker(self)
 		end
-	end
-
-	if (playerClass == "DRUID" and not self.statsFrame.druidBar) then
-		MakeDruidBar(self)
-	else
-		MakeDruidBar = nil
 	end
 
 	if (pconf.xpBar) then
@@ -1377,6 +1388,8 @@ function XPerl_PaladinPowerBar_OnLoad(self)
 	if UnitLevel("player") < PALADINPOWERBAR_SHOW_LEVEL then
 		self:RegisterEvent("PLAYER_LEVEL_UP")
 		self:SetAlpha(0)
+		PaladinPowerBar:Hide()
+		PaladinPowerBar:SetAlpha(0)
 	end
 
 	self:RegisterEvent("UNIT_POWER")
@@ -1399,6 +1412,8 @@ function XPerl_PaladinPowerBar_OnEvent(self, event, arg1, arg2)
 	elseif( event ==  "PLAYER_LEVEL_UP" ) then
 		local level = arg1
 		if level >= PALADINPOWERBAR_SHOW_LEVEL then
+			PaladinPowerBar:Show()
+			PaladinPowerBar:SetAlpha(1)
 			self:UnregisterEvent("PLAYER_LEVEL_UP")
 			self.showAnim:Play()
 			XPerl_PaladinPowerBar_Update(self)
@@ -1417,9 +1432,13 @@ function XPerl_Player_InitPaladin(self)
 				self.holyp:SetFrameLevel(self.portraitFrame:GetFrameLevel() + 5)
 				self.holyp:SetPoint("LEFT", self, "BOTTOMLEFT", 0, 5)
 		
+				-- DO NOT HIDE PaladinPowerBar. Blizzard_CombatText.lua check's it's visible before giving a message... really? guys...
+				-- How are people supposed to write mods if you go put in ties accross the place:
+				-- Blizzard_CombatText.lua(259): elseif ( arg3 == "HOLY_POWER" and PaladinPowerBar:IsShown() and PaladinPowerBar:GetAlpha() > 0.5 ) then
+				-- Surely there would be no HOLY_POWER event if it was not applicable. Why are you even checking if the bar is shown?
 				PaladinPowerBar:UnregisterAllEvents()
 				PaladinPowerBar:ClearAllPoints()
-				PaladinPowerBar:Hide()
+				PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", -200, 200)		-- So, we'll put it far off the screen
 			else
 				self.holyp:Show()
 			end

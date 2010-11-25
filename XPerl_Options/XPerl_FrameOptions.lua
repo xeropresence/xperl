@@ -2084,6 +2084,7 @@ local function XPerl_Global_ConfigDefault(default)
 	default.maximumScale	= 1.5
 	default.optionsColour	= {r = 0.7, g = 0.2, b = 0.2}	-- 1.8.3
 	default.showAFK		= 1				-- 2.2.4
+	default.xperlOldroleicons = 1
 
 	default.minimap = {
 		pos		= 186,
@@ -3131,6 +3132,10 @@ if (XPerl_UpgradeSettings) then
 				old.raid.hideframemanager = {enable = 1}
 				old.ShowTutorials = nil
 				old.TutorialFlags = nil
+			end
+
+			if (oldVersion < "3.1.2") then
+				old.xperlOldroleicons = 1
 			end
 		end
 	end

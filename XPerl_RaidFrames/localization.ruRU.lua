@@ -7,7 +7,6 @@
 if (GetLocale() == "ruRU") then
 
 XPERL_RAID_GROUP				= "Группа %d"
-XPERL_RAID_TOOLTIP_NOCTRA		= "CTRA не найден"
 XPERL_RAID_TOOLTIP_OFFLINE		= "В не сети: %s"
 XPERL_RAID_TOOLTIP_AFK			= "Отсутствует: %s"
 XPERL_RAID_TOOLTIP_DND			= "Не беспокоить: %s"

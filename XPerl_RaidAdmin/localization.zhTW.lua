@@ -27,7 +27,6 @@ XPERL_NO_ROSTER_CALLED		= "儲存的名單中沒有 '%s'"
 -- 物品確認
 XPERL_CHECK_TITLE		= "X-Perl 物品確認"
 
-XPERL_RAID_TOOLTIP_NOCTRA	= "沒有發現 CTRA"
 XPERL_CHECK_NAME		= "名稱"
 
 XPERL_CHECK_DROPITEMTIP1	= "拖放物品"

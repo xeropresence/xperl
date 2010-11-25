@@ -2004,8 +2004,6 @@ function XPerl_RaidTipExtra(unitid)
 				else
 					GameTooltip:AddLine("CTRA "..stats.version, 1, 1, 1)
 				end
-			else
-				GameTooltip:AddLine(XPERL_RAID_TOOLTIP_NOCTRA, 0.7, 0.7, 0.7)
 			end
 
 			if (stats.offline and UnitIsConnected(unitid)) then

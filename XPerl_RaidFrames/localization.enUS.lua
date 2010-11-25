@@ -3,7 +3,6 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 XPERL_RAID_GROUP		= "Group %d"
-XPERL_RAID_TOOLTIP_NOCTRA	= "No CTRA Found"
 XPERL_RAID_TOOLTIP_OFFLINE	= "Offline for %s"
 XPERL_RAID_TOOLTIP_AFK		= "AFK for %s"
 XPERL_RAID_TOOLTIP_DND		= "DND for %s"
