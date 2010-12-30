@@ -514,7 +514,7 @@ do
 	else
 		hooksecurefunc("NotifyInspect",
 			function(unit)
-				if (UnitIsUnit("player", unit) or not (UnitExists(unit) and CanInspect(unit) and UnitIsVisible(unit) and UnitIsConnected(unit) and CheckInteractDistance(unit, 4))) then
+				if (UnitIsUnit("player", unit) or UnitInVehicle(unit) or not (UnitExists(unit) and CanInspect(unit) and UnitIsVisible(unit) and UnitIsConnected(unit) and CheckInteractDistance(unit, 4))) then
 					return
 				end
 				lastInspectUnit = unit

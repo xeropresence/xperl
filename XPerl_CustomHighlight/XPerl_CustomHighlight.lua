@@ -224,6 +224,49 @@ function ch:DefaultZoneData()
 				[74792] = true,								-- Shadow Consumption (Halion)
 				[74562] = true,								-- Fiery Combustion (Halion)
 			},
+		[XPERL_LOC_ZONE_BARADIN_HOLD] =
+			{
+				[88954] = true,								-- Consuming Darkness (Argaloth)
+			},
+		[XPERL_LOC_ZONE_BLACKWING_DECENT] =
+			{
+				[80094] = true,								-- Fixate (Toxitron)
+				[92035] = true,								-- Aquiring Target (Magmatron)
+				[91431] = true,								-- Lightning Conductor (Electron)
+				[92048] = true,								-- Shadow Infusion (Omnitron Heroic)
+
+				[89773] = true,								-- Mangle (Magmaw)
+				[91913] = true,								-- Paracite Infection (Magmaw)
+
+				[77699] = true,								-- Flash Freeze (Maloriak)
+				[77760] = true,								-- Biting Chill (Maloriak)
+				[77786] = true,								-- Consuming Flames (Maloriak)
+
+				[78092] = true,								-- Tracking (Atramedes)
+			},
+		[XPERL_LOC_ZONE_BASTION_OF_TWILIGHT] =
+			{
+				[86788] = true,								-- Blackout (Valiona & Theralion)
+				[86622] = true,								-- Engulfing Magic (Valiona & Theralion)
+				
+				[82665] = true,								-- Heart of Ice (Ascendant Council)
+				[82772] = true,								-- Frozen (Ascendant Council)
+				[92307] = true,								-- Frost Beacon (Ascendant Council)
+				[82660] = true,								-- Burning Blood (Ascendant Council)
+				[92075] = true,								-- Gravity Core (Ascendant Council)
+				[83099] = true,								-- Lightning Rod (Ascendant Council)
+				[92067] = true,								-- Static Overload (Ascendant Council)
+				[84948] = true,								-- Gravity Crush (Ascendant Council)
+
+				[91317] = true,								-- Worshipping (Cho'gall)
+			},
+		[XPERL_LOC_ZONE_THRONE_OF_FOUR_WINDS] =
+			{
+				[93058] = true,								-- Slicing Gale (Conclave of Wind)
+				[93123] = true,								-- Wind Chill (Conclave of Wind)
+
+				[89668] = true,								-- Lightning Rod (Al'Akir)
+			},
 		}
 end
 
