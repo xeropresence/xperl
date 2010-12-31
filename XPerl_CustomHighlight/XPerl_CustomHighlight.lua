@@ -36,7 +36,7 @@ end
 -- DefaultZoneData
 function ch:DefaultZoneData()
 	return {
-		[XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN] =
+--[[		[XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN] =
 			{
 				[38132] = true								-- Paralyze - Picked up Tainted Core
 			},
@@ -69,18 +69,13 @@ function ch:DefaultZoneData()
 				[45855] = true,								-- Gas Nova (Felmyst)
 				[45342] = true,								-- Conflagration (Grand Warlock Alythess)
 				[45641] = true,								-- Fire Bloom (Kil'Jaeden)
-			},
+			},--]]
 		[XPERL_LOC_ZONE_NAXXRAMAS] =
 			{
-				[55314] = true,								-- Strangulate (Trash)
-
-				[28786] = true,								-- Locust Swarm (Anub'Rekhan)
-
 				[28796] = true,								-- Poison Bolt Volley (Grand Widow Faerlina)
 				[28794] = true,								-- Rain of Fire (Grand Widow Faerlina)
 
 				[29213] = true,								-- Curse of the Plaguebringer (Noth the Plaguebringer)
-				[29214] = true,								-- Wrath of the Plaguebringer (Noth the Plaguebringer)
 				[29212] = true,								-- Cripple (Noth the Plaguebringer)
 
 				[29998] = true,								-- Decrepit Fever (Heigan the Unclean)
@@ -90,8 +85,6 @@ function ch:DefaultZoneData()
 
 				[54378] = true,								-- Mortal Wound (Gluth)
 				[29306] = true,								-- Infected Wound (Gluth)
-
-				[55550] = true,								-- Jagged Knife (Instructor Razuvious)
 
 				[28522] = true,								-- Icebolt (Sapphiron)
 				[28542] = true,								-- Life Drain (Sapphiron)
@@ -106,7 +99,6 @@ function ch:DefaultZoneData()
 		[XPERL_LOC_ZONE_OBSIDIAN_SANCTUM] =
 			{
 				[39647] = true,								-- Curse of Mending (Trash)
-				[58936] = true,								-- Rain of Fire (Trash)
 
 				[60708] = true,								-- Fade Armor (Sartharion)
 				[57491] = true,								-- Flame Tsunami (Sartharion)
@@ -118,21 +110,16 @@ function ch:DefaultZoneData()
 			},
 		[XPERL_LOC_ZONE_ULDUAR] =
 			{
-				[62928] = true,								-- Impale (Trash)
-				[63612] = true,								-- Lightning Brand (Trash)
-				[63615] = true,								-- Ravage Armor (Trash)
-				[64705] = true,								-- Unquenchable Flames (Trash)
+				[62928] = true,								-- Impale (Elder IronBranch)
 
 				[62589] = true,								-- Nature's Fury (Freya)
 				[62532] = true,								-- Conservator's Grip (Freya)
 				[62861] = true,								-- Iron Roots (Freya)
 
-				[64544] = true,								-- Frozen Blows (Hodir)
 				[62469] = true,								-- Freeze (Hodir)
 				[61969] = true,								-- Flash Freeze (Hodir)
 				[62188] = true,								-- Biting Cold (Hodir)
 
-				[62548] = true,								-- Scorch (Ignis the Furnace Master)
 				[62680] = true,								-- Flame Jet (Ignis the Furnace Master)
 				[62717] = true,								-- Slag Pot (Ignis the Furnace Master)
 
@@ -150,7 +137,6 @@ function ch:DefaultZoneData()
 				[63024] = true,								-- Gravity Bomb (XT-002 Deconstructor)
 
 				[61888] = true,								-- Overwhelming Power(The Assembly of Iron)
-				[62269] = true,								-- Rune of Death (The Assembly of Iron)
 				[61903] = true,								-- Fusion Punch (The Assembly of Iron)
 
 				[63666] = true,								-- Napalm Shell (Mimiron)
@@ -178,11 +164,9 @@ function ch:DefaultZoneData()
 			},
 		[XPERL_LOC_ZONE_ICECROWN_CITADEL] =
 			{
-				[72865] = true,								-- Death Plague (Trash)
 				[70451] = true,								-- Blood Mirror (Trash)
 				[70432] = true,								-- Blood Sap (Trash)
 				[71154] = true,								-- Rend Flesh (Trash)
-				[70645] = true,								-- Chains of Shadow (Trash)
 
 				[69065] = true,								-- Impaled (Lord Marrowgars)
 
