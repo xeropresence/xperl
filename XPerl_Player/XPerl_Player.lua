@@ -461,12 +461,12 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 
 	local h = 40 + ((druidBarExtra + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
-	if (pconf.extendPortrait and not InCombatLockdown()) then
+	if (pconf.extendPortrait) then
 		self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 	end
-	if (not InCombatLockdown()) then
-		self.statsFrame:SetHeight(h)
-	end
+	
+	self.statsFrame:SetHeight(h)
+	
 	XPerl_StatsFrameSetup(self, {druidBar, self.statsFrame.xpBar, self.statsFrame.repBar})
 	if (XPerl_Player_Buffs_Position) then
 		XPerl_Player_Buffs_Position(self)
@@ -1481,26 +1481,26 @@ function XPerl_Player_InitMoonkin(self)
 end
 
 -- XPerl_Player_SetupMoonkin
+-- Fix for Eclipse bar not show out problem when respec from Balance or relog in any form other 
+-- than human/moonkin, thanks sontix.
 function XPerl_Player_SetupMoonkin(self)
 	if (self.eclipse) then
-		local form = GetShapeshiftFormID()
-		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
+		self.eclipse:ClearAllPoints()
+		if (not pconf or pconf.dockRunes) then
+			self.eclipse:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+			self.eclipse:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
+		else
+			self.eclipse:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+			XPerl_RestorePosition(self.eclipse)
+		end
+		if GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
 			self.eclipse:Hide()
 		else
 			self.eclipse:Show()
-
-			self.eclipse:ClearAllPoints()
-
-			if (not pconf or pconf.dockRunes) then
-				self.eclipse:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
-				self.eclipse:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
-			else
-				self.eclipse:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
-				XPerl_RestorePosition(self.eclipse)
-			end
 		end
 	end
 end
+
 
 
 -- XPerl_Player_InitDK

@@ -5,8 +5,8 @@
 local conf
 local percD	= "%d"..PERCENT_SYMBOL
 local perc1F = "%.1f"..PERCENT_SYMBOL
-XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
 XPerl_SetModuleRevision("$Revision$")
+XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
 
 -- Some local copies for speed
 local strsub = strsub
@@ -3290,10 +3290,14 @@ local dragonmawIllusion = GetSpellInfo(42016)
 local function XPerlSetPortrait3D(self, argUnit)
 	self:ClearModel()
 	self:SetUnit(argUnit)
-
 	local guid = UnitGUID(argUnit)
+	--Male Worgen 3D Portrait fix, thanks sontix.
+	local fullbody = false
+	if string.find(tostring(self:GetModel()), "worgenmale", 1, true) ~= nil then
+		fullbody = true 
+	end
 	local id = guid and tonumber(strsub(guid, -12, -7), 16)
-	if (alternateCamera[id] or UnitBuff(argUnit, dragonmawIllusion)) then
+	if (alternateCamera[id] or UnitBuff(argUnit, dragonmawIllusion) or fullbody ) then
 		self:SetCamera(1)
 	else
 		self:SetCamera(0)

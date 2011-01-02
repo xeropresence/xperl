@@ -874,11 +874,13 @@ end
 
 -- PARTY_LEADER_CHANGED
 function XPerl_Party_Events:PARTY_LEADER_CHANGED()
-	for i,frame in pairs(PartyFrames) do
-		if (frame.partyid) then
-			XPerl_Party_UpdateLeader(frame)
-		end
-	end
+-- fix from sontix for party frame screwed up when party member leaves/leader change. 
+	XPerl_Party_UpdateDisplayAll()
+	--for i,frame in pairs(PartyFrames) do
+	--	if (frame.partyid) then
+	--		XPerl_Party_UpdateLeader(frame)
+	--	end
+	--end
 end
 
 XPerl_Party_Events.PARTY_LOOT_METHOD_CHANGED	= XPerl_Party_Events.PARTY_LEADER_CHANGED
@@ -1020,9 +1022,11 @@ do
 	end
 
 	function XPerl_Party_Events:PARTY_MEMBERS_CHANGED()
+	-- fix from sontix for party frame screwed up when party member leaves/leader change. 
 		BuildGuidMap()
 		checkRaidNextUpdate = 3
 		CheckRaid()
+		XPerl_Party_UpdateDisplayAll()
 		UpdateAllAssignedRoles()
 	end
 end
