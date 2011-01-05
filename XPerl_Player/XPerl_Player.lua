@@ -460,13 +460,16 @@ local function XPerl_Player_DruidBarUpdate(self)
 		self.eclipse:Show()
 	end
 
-	local h = 40 + ((druidBarExtra + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
-	if (pconf.extendPortrait) then
-		self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
+	if (InCombatLockdown()) then
+		XPerl_ProtectedCall(XPerl_Player_DruidBarUpdate, self)
+	else
+		local h = 40 + ((druidBarExtra + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
+		if (pconf.extendPortrait) then
+			self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
+		end
+		self.statsFrame:SetHeight(h)
 	end
-	
-	self.statsFrame:SetHeight(h)
-	
+
 	XPerl_StatsFrameSetup(self, {druidBar, self.statsFrame.xpBar, self.statsFrame.repBar})
 	if (XPerl_Player_Buffs_Position) then
 		XPerl_Player_Buffs_Position(self)
@@ -482,7 +485,8 @@ local function XPerl_Player_UpdateMana(self)
 	mb:SetValue(playermana)
 
 	mb.text:SetFormattedText("%d/%d", playermana, playermanamax)
-	if (UnitPowerType(self.partyid) >= 1) then
+	local pType = UnitPowerType(self.partyid)
+	if (pType >= 1 or UnitPowerMax(self.partyid, pType) < 1) then
 		mb.percent:SetText(playermana)
 	else
 		mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
