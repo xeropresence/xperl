@@ -294,6 +294,23 @@ end
 
 -- XPerl_Player_Pet_UpdateDisplay
 function XPerl_Player_Pet_UpdateDisplay(self)
+	local unit = self:GetAttribute("unit")
+	if (unit ~= self.partyid) then
+		self.portraitFrame:SetAlpha(0)
+		self.nameFrame:SetAlpha(0)
+		self.statsFrame:SetAlpha(0)
+		self.levelFrame:SetAlpha(0)
+		self.buffFrame:SetAlpha(0)
+		self.debuffFrame:SetAlpha(0)
+	else
+		self.portraitFrame:SetAlpha(1)
+		self.nameFrame:SetAlpha(1)
+		self.statsFrame:SetAlpha(1)
+		self.levelFrame:SetAlpha(1)
+		self.buffFrame:SetAlpha(1)
+		self.debuffFrame:SetAlpha(1)
+	end
+
 	XPerl_Unit_UpdatePortrait(self)
 	XPerl_Player_Pet_UpdateName(self)
 	XPerl_Player_Pet_UpdateHealth(self)

@@ -638,13 +638,6 @@ function XPerl_Raid_Single_OnLoad(self)
 	self.nameFrame:SetAttribute("*type1", "target")
 	self.nameFrame:SetAttribute("type2", "menu")
 	self.nameFrame.menu = XPerl_Raid_ShowPopup
-
-	if (rconf.mana) then
-		self:SetAttribute("initial-height", 43)
-	else
-		self:SetAttribute("initial-height", 38)
-	end	
-	
 end
 
 -- XPerl_Raid_CombatFlash
@@ -2145,9 +2138,8 @@ end
 
 -- XPerl_Raid_SetAttributes
 function XPerl_Raid_ChangeAttributes()
-
 	if (InCombatLockdown()) then
-		tinsert(XPerl_OutOfCombatQueue, XPerl_Raid_ChangeAttributes)
+		XPerl_OutOfCombatQueue[XPerl_Raid_ChangeAttributes] = false
 		return
 	end
 

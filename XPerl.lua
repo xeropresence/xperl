@@ -2012,6 +2012,7 @@ function XPerl_TooltipSetUnitDebuff(self, unit, ind, filter, raidFrames)
 	end
 end
 
+--[[
 local colourList = {}
 for class,localClass in pairs(LOCALIZED_CLASS_NAMES_MALE) do
 	colourList[localClass] = class
@@ -2019,78 +2020,6 @@ end
 for class,localClass in pairs(LOCALIZED_CLASS_NAMES_FEMALE) do
 	colourList[localClass] = class
 end
-
--- XPerl_GuildStatusUpdate()
-function XPerl_GuildStatusUpdate()
-	if (conf.colour.class or conf.tooltip.xperlInfo) then
-		local myZone = GetRealZoneText()
-
-		local guildOffset = FauxScrollFrame_GetOffset(GuildListScrollFrame)
-		for i=1, GUILDMEMBERS_TO_DISPLAY, 1 do
-			local guildIndex = guildOffset + i
-
-			local button = _G["GuildFrameButton"..i];
-			button.guildIndex = guildIndex;
-			local name, rank, rankIndex, level, class, zone, note, officernote, online = GetGuildRosterInfo(guildIndex)
-			if (not name) then
-				break
-			end
-
-			if (conf.tooltip.xperlInfo and XPerl_GetUsage) then
-				local u = XPerl_GetUsage(name)
-
-				if (u) then
-					if (online) then
-						if (u.old) then
-							_G["GuildFrameButton"..i.."Name"]:SetTextColor(1, 0.4, 0.1)
-						else
-							_G["GuildFrameButton"..i.."Name"]:SetTextColor(1, 0.4, 0.4)
-						end
-					else
-						if (u.old) then
-							_G["GuildFrameButton"..i.."Name"]:SetTextColor(0.5, 0.2, 0.05)
-						else
-							_G["GuildFrameButton"..i.."Name"]:SetTextColor(0.5, 0.2, 0.2)
-						end
-					end
-				end
-			end
-
-			if (conf.colour.class and conf.colour.guildList) then
-				class = colourList[class]
-
-				if (class) then
-					local color = XPerl_GetClassColour(class)
-					if (color) then
-						if (online) then
-							_G["GuildFrameButton"..i.."Class"]:SetTextColor(color.r, color.g, color.b)
-						else
-							_G["GuildFrameButton"..i.."Class"]:SetTextColor(color.r / 2, color.g / 2, color.b / 2)
-						end
-					end
-				end
-
-				if (zone == myZone) then
-					if (online) then
-						_G["GuildFrameButton"..i.."Zone"]:SetTextColor(0, 1, 0)
-					else
-						_G["GuildFrameButton"..i.."Zone"]:SetTextColor(0, 0.5, 0)
-					end
-				end
-
-				local color = GetDifficultyColor(level)
-				if (online) then
-					_G["GuildFrameButton"..i.."Level"]:SetTextColor(color.r, color.g, color.b)
-				else
-					_G["GuildFrameButton"..i.."Level"]:SetTextColor(color.r / 2, color.g / 2, color.b / 2)
-				end
-			end
-		end
-	end
-end
-
---cataclysm hooksecurefunc removed, check it.
---hooksecurefunc("GuildStatus_Update", XPerl_GuildStatusUpdate)
 
 -- XPerl_WhoList_Update
 function XPerl_WhoList_Update()
@@ -2161,6 +2090,7 @@ function XPerl_WhoList_Update()
 end
 
 hooksecurefunc("WhoList_Update", XPerl_WhoList_Update)
+]]
 
 ----------------------
 -- Fading Bar Stuff --
@@ -3217,11 +3147,12 @@ end
 function XPerl_ProtectedCall(func, self)
 	if (func) then
 		if (InCombatLockdown()) then
-			if (self) then
-				tinsert(XPerl_OutOfCombatQueue, {func, self})
-			else
-				tinsert(XPerl_OutOfCombatQueue, func)
-			end
+			XPerl_OutOfCombatQueue[func] = self == nil and false or self
+			--if (self) then
+			--	tinsert(XPerl_OutOfCombatQueue, {func, self})
+			--else
+			--	tinsert(XPerl_OutOfCombatQueue, func)
+			--end
 		else
 			func(self)
 		end
@@ -3283,6 +3214,7 @@ local alternateCamera = {
 	[33845] = true,			-- Quel'dorei Steed
 	[37230] = true,			-- Spire Frostwyrm (ICC)
 	[37955] = true,			-- Blood Queen Lana'thel
+	[40561] = true,			-- Deep Corruptor
 }
 local dragonmawIllusion = GetSpellInfo(42016)
 
@@ -3291,13 +3223,17 @@ local function XPerlSetPortrait3D(self, argUnit)
 	self:ClearModel()
 	self:SetUnit(argUnit)
 	local guid = UnitGUID(argUnit)
-	--Male Worgen 3D Portrait fix, thanks sontix.
-	local fullbody = false
-	if string.find(tostring(self:GetModel()), "worgenmale", 1, true) ~= nil then
-		fullbody = true 
+	local fullbody
+	if UnitIsPlayer(argUnit) then
+		--Male Worgen 3D Portrait fix, thanks sontix.
+		if string.find(tostring(self:GetModel()), "worgenmale", 1, true) ~= nil then
+			fullbody = true 
+		else
+			fullbody = UnitBuff(argUnit, dragonmawIllusion)
+		end
 	end
-	local id = guid and tonumber(strsub(guid, -12, -7), 16)
-	if (alternateCamera[id] or UnitBuff(argUnit, dragonmawIllusion) or fullbody ) then
+	local id = guid and tonumber(strsub(guid, -13, -9), 16)
+	if (alternateCamera[id] or fullbody ) then
 		self:SetCamera(1)
 	else
 		self:SetCamera(0)

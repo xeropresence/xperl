@@ -69,7 +69,9 @@ function XPerl_Player_Buffs_Position(self)
 			elseif (self.shards) then
 				self.buffFrame:SetPoint("TOPLEFT", self.shards, "BOTTOMLEFT", 3, 0)
 			elseif ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait) then
-				self.buffFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
+				--self.buffFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
+				local diff = self.statsFrame:GetBottom() - self.portraitFrame:GetBottom()
+				self.buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, diff - 3)
 			else
 				self.buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, 0)
 			end
@@ -310,7 +312,7 @@ function XPerl_PlayerBuffs_Update(self)
 			self.filter = filter
 			self:SetAlpha(1)
 
-			if (filter == "HARMFUL") then
+			if (name and filter == "HARMFUL") then
 				self.border:Show()
 				local borderColor = DebuffTypeColor[(debuffType or "none")]
 				self.border:SetVertexColor(borderColor.r, borderColor.g, borderColor.b)

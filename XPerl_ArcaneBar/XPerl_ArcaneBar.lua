@@ -329,7 +329,7 @@ function XPerl_ArcaneBar_OnUpdate(self, elapsed)
 			return
 		end
 		local barValue = self.startTime + (self.endTime - time)		
-		self.tex:SetTexCoord(0, (barValue - self.startTime) / (self.endTime - self.startTime), 0, 1)
+		self.tex:SetTexCoord(0, min(1, max(0, (barValue - self.startTime) / (self.endTime - self.startTime))), 0, 1)
 		self:SetValue( barValue )
 		self.barFlash:Hide()
 

@@ -265,6 +265,53 @@ function XPerl_RegisterBasics(self, eventArray)
 	XPerl_UnitEvents(self, eventArray, events)
 end
 
+--[[
+-- XPerl_GuildStatusUpdate()
+function XPerl_GuildRoster_Update()
+	if (conf.colour.class and conf.colour.guildList) then
+		local col = _G.GuildRosterColumnButton4
+		if (_G.GuildFrame.selectedTab ~= 2 or not col or col.sortType ~= "zone") then
+			return
+		end
+
+		local myZone = GetRealZoneText()
+
+		local scrollFrame = GuildRosterContainer
+		local offset = HybridScrollFrame_GetOffset(scrollFrame)
+		local buttons = scrollFrame.buttons
+		local numButtons = #buttons
+		local button, index, class
+		local totalMembers, onlineMembers = GetNumGuildMembers()
+		local selectedGuildMember = GetGuildRosterSelection()
+
+		for i = 1, numButtons do
+			button = buttons[i]
+			index = offset + i
+			local name, rank, rankIndex, level, class, zone, note, officernote, online, status, classFileName, achievementPoints, achievementRank, isMobile = GetGuildRosterInfo(index)
+
+			local color = GetQuestDifficultyColor(level)
+			if (online) then
+				_G["GuildRosterContainerButton"..i.."String1"]:SetTextColor(color.r, color.g, color.b)
+			else
+				_G["GuildRosterContainerButton"..i.."String1"]:SetTextColor(color.r / 2, color.g / 2, color.b / 2)
+			end
+
+			if (zone == myZone) then
+				if (online) then
+					_G["GuildRosterContainerButton"..i.."String3"]:SetTextColor(0, 1, 0)
+				else
+					_G["GuildRosterContainerButton"..i.."String3"]:SetTextColor(0, 0.5, 0)
+				end
+			end
+
+		end
+	end
+end
+
+if (_G.GuildRoster_Update) then
+	hooksecurefunc("GuildRoster_Update", XPerl_GuildRoster_Update)
+end ]]
+
 -- onEventPostSetup
 local function onEventPostSetup(self, event, unit, ...)
 	if (unit and XPerl_UnitEvent(unit, event, unit, ...)) then
@@ -279,16 +326,24 @@ local function onEventPostSetup(self, event, unit, ...)
 			XPerl_OutOfCombatOptionSet = nil
 			XPerl_OptionActions()
 		end
-		for k,v in pairs(XPerl_OutOfCombatQueue) do
-			if (type(v) == "function") then
-				v()
-			elseif (type(v) == "table") then
-				v[1](v[2])
-			elseif (type(v) == "string") then
-				RunScript(v)
-			end
-			XPerl_OutOfCombatQueue[k] = nil
+		for func,arg in pairs(XPerl_OutOfCombatQueue) do
+			assert(type(func) == "function")
+			func(arg)
+
+			--if (type(v) == "function") then
+			--	v()
+			--elseif (type(v) == "table") then
+			--	v[1](v[2])
+			--elseif (type(v) == "string") then
+			--	RunScript(v)
+			--end
+			XPerl_OutOfCombatQueue[func] = nil
 		end
+
+--	elseif (event == "ADDON_LOADED") then
+--		if (arg1 == "Blizzard_GuildUI") then
+--			hooksecurefunc("GuildRoster_Update", XPerl_GuildRoster_Update)
+--		end
 
 	--elseif (event == "ADDON_ACTION_BLOCKED") then
 		--totalBlocked = totalBlocked + 1
@@ -368,13 +423,7 @@ local function startupCheckSettings(self,event)
 end
 
 -- XPerl_Globals_OnEvent
-function XPerl_Globals_OnEvent(self, event, ...)
-
-	--if (event == "ADDON_LOADED") then
-	--	if (... == "XPerl") then
-    --
-	--	end
-
+function XPerl_Globals_OnEvent(self, event, arg1, ...)
 	if (event == "VARIABLES_LOADED") then
 		self:UnregisterEvent(event)
 
@@ -388,9 +437,10 @@ function XPerl_Globals_OnEvent(self, event, ...)
 			end
 		end
 
-		--XPerl_Init()
-		--XPerl_BlizzFrameDisable = nil
-		--XPerl_RegisterLDB()
+--	elseif (event == "ADDON_LOADED") then
+--		if (arg1 == "Blizzard_GuildUI") then
+--			hooksecurefunc("GuildRoster_Update", XPerl_GuildRoster_Update)
+--		end
 
 	elseif (event == "PLAYER_LOGIN") then
 		self:UnregisterEvent(event)
@@ -404,12 +454,6 @@ function XPerl_Globals_OnEvent(self, event, ...)
 		XPerl_Globals_OnEvent = nil
 	end
 end
-
--- XPerl_GetBlocked()
--- debug
---function XPerl_GetBlocked()
---	return xperlBlocked, totalBlocked
---end
 
 -- XPerl_SetMyGlobal
 function XPerl_SetMyGlobal()

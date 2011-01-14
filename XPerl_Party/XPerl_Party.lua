@@ -678,7 +678,7 @@ end
 -- CheckRaid
 local function CheckRaid()
 	if (InCombatLockdown()) then
-		tinsert(XPerl_OutOfCombatQueue, CheckRaid)
+		XPerl_OutOfCombatQueue[CheckRaid] = false
 	else
 		partyAnchor:StopMovingOrSizing()
 
@@ -1185,7 +1185,7 @@ end
 -- XPerl_Party_Set_Bits
 function XPerl_Party_Set_Bits1(self)
 	if (InCombatLockdown()) then
-		tinsert(XPerl_OutOfCombatQueue, {XPerl_Party_Set_Bits1, self})
+		XPerl_OutOfCombatQueue[XPerl_Party_Set_Bits1] = self
 		return
 	end
 
@@ -1505,7 +1505,7 @@ end
 -- XPerl_Party_Set_Bits
 function XPerl_Party_Set_Bits()
 	if (InCombatLockdown()) then
-		tinsert(XPerl_OutOfCombatQueue, XPerl_Party_Set_Bits)
+		XPerl_OutOfCombatQueue[XPerl_Party_Set_Bits] = false
 		return
 	end
 

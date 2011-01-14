@@ -690,7 +690,7 @@ end
 -- cast:Init
 function cast:Init()
 	if (InCombatLockdown()) then
-		tinsert(XPerl_OutOfCombatQueue, {cast.Init, self})
+		XPerl_OutOfCombatQueue[cast.Init] = self
 		return
 	end
 
@@ -717,7 +717,7 @@ function cast:Init()
 		self:SetAttribute("initial-width", config.UnitWidth)
 
 		if (InCombatLockdown()) then
-			tinsert(XPerl_OutOfCombatQueue, {SetTargetConfig, self})
+			XPerl_OutOfCombatQueue[SetTargetConfig] = self
 		else
 			SetTargetConfig(self)
 		end
@@ -754,7 +754,7 @@ end
 -- cast:SetUnitSizes
 function cast:SetUnitSizes()
 	if (InCombatLockdown()) then
-		tinsert(XPerl_OutOfCombatQueue, {cast.SetUnitSizes, self})
+		XPerl_OutOfCombatQueue[cast.SetUnitSizes] = self
 		return
 	end
 
@@ -801,7 +801,7 @@ end
 -- cast:SetFrameSizes
 function cast:SetFrameSizes()
 	if (InCombatLockdown()) then
-		tinsert(XPerl_OutOfCombatQueue, {cast.SetFrameSizes, self})
+		XPerl_OutOfCombatQueue[cast.SetFrameSizes] = self
 		return
 	end
 

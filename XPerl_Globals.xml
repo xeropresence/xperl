@@ -51,7 +51,7 @@
 	<Frame name="XPerl_Globals">
 		<Scripts>
 			<OnLoad>
-				--self:RegisterEvent("ADDON_LOADED")
+				self:RegisterEvent("ADDON_LOADED")
 				self:RegisterEvent("PLAYER_LOGIN")
 				self:RegisterEvent("VARIABLES_LOADED")
 				self:RegisterEvent("PLAYER_REGEN_ENABLED")
