@@ -1873,6 +1873,7 @@ local SeasonalDebuffs = {
 	[GetSpellInfo(36899)] = true,					-- Transporter Malfunction
 	[GetSpellInfo(24755)] = true,					-- Tricked or Treated
 	[GetSpellInfo(69127)] = true,					-- Chill of the Throne
+	[GetSpellInfo(69438)] = true,					-- Sample Satisfaction
 }
 
 local RaidFrameIgnores = {
