@@ -1261,7 +1261,7 @@ function XPerl_Player_Set_Bits(self)
 	end
 	self.highlight:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
 
-	if (playerClass == "SHAMAN") then
+	if (playerClass == "SHAMAN" or playerClass == "DRUID") then
 		if (not pconf.totems) then
 			pconf.totems = {
 				enable = true,
