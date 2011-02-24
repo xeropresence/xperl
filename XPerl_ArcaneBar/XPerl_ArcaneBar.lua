@@ -4,6 +4,12 @@
 
 local ArcaneBars = {}
 
+--@debug@
+local function d(...)
+	ChatFrame1:AddMessage("XPerl: "..format(...))
+end
+--@end-debug@
+
 local conf
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
@@ -72,12 +78,10 @@ end
 
 -- ActiveCasting
 -- See if we're probably still casting a spell, even though some other spell END event occured
-local function ActiveCasting(self)			
+local function ActiveCasting(self)
 	local t = GetTime() * 1000
-	local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill
-	if (event == "UNIT_SPELLCAST_STOP") then
-		name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitCastingInfo(self.unit)
-	else
+	local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitCastingInfo(self.unit)
+	if (not name) then
 		name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo(self.unit)
 	end
 	if (name and endTime > t + 500) then
@@ -92,7 +96,7 @@ end
 --------------------------------------------------
 
 -- XPerl_ArcaneBar_OnEvent
-function XPerl_ArcaneBar_OnEvent(self, event, newarg1)
+function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 	if (event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED" or event == "PARTY_MEMBER_ENABLE" or event == "PARTY_MEMBER_DISABLE") then
 		local nameChannel = UnitChannelInfo(self.unit)
 		local nameSpell = UnitCastingInfo(self.unit)
