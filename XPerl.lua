@@ -2504,9 +2504,10 @@ local function AuraButtonOnShow(self)
 	end
 
 	local name, rank, buff, count, _, duration, endTime, caster, isStealable = UnitAura("player", self.xindex, self.xfilter)
-
-	local start = endTime - duration
-	XPerl_CooldownFrame_SetTimer(self.cooldown, start, duration, 1, caster == "player")
+	if endTiem and duration then
+		local start = endTime - duration
+		XPerl_CooldownFrame_SetTimer(self.cooldown, start, duration, 1, caster == "player")
+	end
 end
 
 -- XPerl_AuraButton_Update
@@ -3216,6 +3217,8 @@ local alternateCamera = {
 	[37230] = true,			-- Spire Frostwyrm (ICC)
 	[37955] = true,			-- Blood Queen Lana'thel
 	[40561] = true,			-- Deep Corruptor
+	[41378] = true,			-- Maloriak (Blackwing Depths)
+	[39392] = true,			-- Faceless Corruptor
 }
 local dragonmawIllusion = GetSpellInfo(42016)
 

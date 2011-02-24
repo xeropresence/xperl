@@ -66,8 +66,8 @@ function XPerl_Player_Buffs_Position(self)
 				self.buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
 			elseif (self.runed and self.runed:IsShown()) then
 				self.buffFrame:SetPoint("TOPLEFT", self.runed, "BOTTOMLEFT", 3, 0)
-			elseif (self.shards) then
-				self.buffFrame:SetPoint("TOPLEFT", self.shards, "BOTTOMLEFT", 3, 0)
+			--elseif (self.shards) then
+			--	self.buffFrame:SetPoint("TOPLEFT", self.shards, "BOTTOMLEFT", 3, 0)
 			elseif ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait) then
 				--self.buffFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
 				local diff = self.statsFrame:GetBottom() - self.portraitFrame:GetBottom()

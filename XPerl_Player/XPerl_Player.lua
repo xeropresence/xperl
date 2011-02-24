@@ -10,6 +10,12 @@ XPerl_RequestConfig(function(new) conf = new pconf = conf.player if (XPerl_Playe
 local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%d"..PERCENT_SYMBOL
 
+--@debug@
+local function d(...)
+	ChatFrame1:AddMessage(format(...))
+end
+--@end-debug@
+
 local format = format
 local GetNumRaidMembers = GetNumRaidMembers
 local UnitIsDead = UnitIsDead
@@ -125,38 +131,36 @@ local function UpdateAssignedRoles(self)
 		elseif role == "DAMAGER" then
 			isDamage = true
 		end
-		
 	end
 	
 	-- role icons option check by playerlin
-        if (conf and conf.xperlOldroleicons) then
-                if isTank then
-                        icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainTankIcon")
-                        icon:Show()
-                elseif isHealer then
-                        icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer_old")
-                        icon:Show()
-                elseif isDamage then
-                        icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainAssistIcon")
-                        icon:Show()
-                else
-                        icon:Hide()
-                end
-        else
-                if isTank then
-                        icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleTank")
-                        icon:Show()
-                elseif isHealer then
-                        icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer")
-                        icon:Show()
-                elseif isDamage then
-                        icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleDamage")
-                        icon:Show()
-                else
-                        icon:Hide()
-                end
-        end
-
+	if (conf and conf.xperlOldroleicons) then
+		if isTank then
+			icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainTankIcon")
+			icon:Show()
+		elseif isHealer then
+			icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer_old")
+			icon:Show()
+		elseif isDamage then
+			icon:SetTexture("Interface\\GroupFrame\\UI-Group-MainAssistIcon")
+			icon:Show()
+		else
+			icon:Hide()
+		end
+	else
+		if isTank then
+			icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleTank")
+			icon:Show()
+		elseif isHealer then
+			icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer")
+			icon:Show()
+		elseif isDamage then
+			icon:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleDamage")
+			icon:Show()
+		else
+			icon:Hide()
+		end
+	end
 end
 
 -------------------------
@@ -508,6 +512,51 @@ local function XPerl_Player_UpdateMana(self)
 	end
 end
 
+local origUnitPowerBarAlt_OnUpdate = _G.UnitPowerBarAlt_OnUpdate
+local function XPerl_UnitPowerBarAlt_OnUpdate(self, elapsed)
+	origUnitPowerBarAlt_OnUpdate(self, elapsed)
+	if (self.maxPower and self.minPower and self.value and self.value > self.minPower) then
+		self.text:SetFormattedText("%d/%d (%d%%)", self.value, self.maxPower, ceil(100 / self.maxPower * self.value))
+		self.text:Show()
+	else
+		self.text:Hide()
+	end
+end
+
+function XPerl_CreateAltPower(parent, unit)
+	local p = CreateFrame("Frame", parent:GetName().."AltPowerBar", parent, "UnitPowerBarAltTemplate")
+	p:SetScript("OnUpdate", XPerl_UnitPowerBarAlt_OnUpdate)
+	p:EnableMouse(false)
+	p:ClearAllPoints()
+	p:SetPoint("CENTER", parent, "CENTER", 0, 1)
+	p:SetWidth(parent:GetWidth())
+	p:SetHeight(parent:GetHeight())
+
+	p.text = p:CreateFontString(p:GetName().."text", "OVERLAY", "GameFontNormalSmall")
+	p.text:SetAllPoints()
+	p.text:SetTextColor(1, 1, 1)
+	p.text:Hide()
+
+	parent.altPower = p
+	UnitPowerBarAlt_Initialize(p, unit, 0.5)
+	return p
+end
+
+function XPerl_Player_Events:UNIT_POWER_BAR_SHOW()
+	if not self.altPower then
+		self.altPower = XPerl_CreateAltPower(self.nameFrame, "player")
+		self.altPower.isPlayerBar = true
+	end
+	UnitPowerBarAlt_UpdateAll(self.altPower)
+	self.altPower:Show()
+end
+	
+function XPerl_Player_Events:UNIT_POWER_BAR_HIDE()
+	if self.altPower then
+		self.altPower:Hide()
+	end
+end
+
 local spiritOfRedemption = GetSpellInfo(27827)
 
 -- XPerl_Player_UpdateHealth
@@ -526,8 +575,7 @@ function XPerl_Player_UpdateHealth(self)
 		--else
 			greyMsg = XPERL_LOC_DEAD
 		--end
-
-	elseif (UnitIsGhost(partyid)) then
+       	elseif (UnitIsGhost(partyid)) then
 		greyMsg = XPERL_LOC_GHOST
 
 	elseif (UnitIsAFK("player") and conf.showAFK) then
@@ -762,7 +810,7 @@ function XPerl_Player_Events:VARIABLES_LOADED()
 			"PARTY_LOOT_METHOD_CHANGED", "RAID_ROSTER_UPDATE", "PLAYER_UPDATE_RESTING", "PLAYER_REGEN_ENABLED",
 			"PLAYER_REGEN_DISABLED", "PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_DEAD",
 			"UPDATE_FACTION", "UNIT_AURA", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
-			"UNIT_COMBAT"}
+			"UNIT_COMBAT", "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE"}
 
 	for i,eventE in pairs(events) do
 		self:RegisterEvent(eventE)
@@ -1238,7 +1286,7 @@ function XPerl_Player_Set_Bits(self)
 	self:SetHeight(max(h1, h2))
 
 	self.highlight:ClearAllPoints()
-	if (pconf.extendPortrait or ((self.runes or self.eclipse or self.shards) and pconf.showRunes and pconf.dockRunes)) then
+	if (pconf.extendPortrait or ((self.runes or self.eclipse) and pconf.showRunes and pconf.dockRunes)) then
 		self.portraitFrame:SetHeight(62 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 		--self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 		--self.highlight:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, 0)
@@ -1298,7 +1346,7 @@ end
 -- XPerl_Player_InitWarlock
 function XPerl_Player_InitWarlock(self)
 	if ( select(2,UnitClass("player")) == "WARLOCK" )  then
-		self.shards = CreateFrame("Frame", "XPerl_Runes", self)
+		self.shards = CreateFrame("Frame", "XPerl_Player", self)
 		
 		self.shards:SetMovable(true)
 		self.shards:RegisterForDrag("LeftButton")
@@ -1316,12 +1364,17 @@ function XPerl_Player_InitWarlock(self)
 				end
 			end)
 
-		self.shards.unit = ShardBarFrame:GetParent().unit
+		self.shards.unit = "player"
 			
 		ShardBarFrame:SetParent(self.shards)
 		ShardBarFrame:ClearAllPoints()
-		ShardBarFrame:SetPoint("TOPLEFT", 3, 0)
-		ShardBarFrame:SetPoint("BOTTOMRIGHT", 15, 5)
+		ShardBarFrame:SetPoint("TOPLEFT", XPerl_Player, "TOPLEFT", 5, -5)
+		ShardBarFrame:SetScale(0.7)
+
+		ShardBarFrameShard2:ClearAllPoints()
+		ShardBarFrameShard3:ClearAllPoints()
+		ShardBarFrameShard2:SetPoint("TOPLEFT", ShardBarFrameShard1, "TOPLEFT", 28, 0)
+		ShardBarFrameShard3:SetPoint("TOPLEFT", ShardBarFrameShard2, "TOPLEFT", 28, 0)
 	end
 	
 	XPerl_Player_InitWarlock = nil
@@ -1338,8 +1391,9 @@ function XPerl_Player_SetupWarlock(self)
 			self.shards:ClearAllPoints()
 
 			if (not pconf or pconf.dockRunes) then
-				self.shards:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
-				self.shards:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20) 
+				self.shards:SetPoint("TOPLEFT", XPerl_Player, "TOPLEFT", 9, -5)
+				--self.shards:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+				--self.shards:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -20) 
 			else
 				self.shards:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 				XPerl_RestorePosition(self.shards)

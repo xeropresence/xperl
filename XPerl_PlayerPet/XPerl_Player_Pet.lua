@@ -223,10 +223,10 @@ local function XPerl_Player_Pet_CombatFlash(self, elapsed, argNew, argGreen)
 end
 
 -- XPerl_Player_Pet_OnUpdate
-function XPerl_Player_Pet_OnUpdate(self, elapsed, arg1)
+function XPerl_Player_Pet_OnUpdate(self, elapsed)
 	CombatFeedback_OnUpdate(self, elapsed)
 	if (self.PlayerFlash) then
-		XPerl_Player_Pet_CombatFlash(self, arg1, false)
+		XPerl_Player_Pet_CombatFlash(self, elapsed, false)
 	end
 end
 
