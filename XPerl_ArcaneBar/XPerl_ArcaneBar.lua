@@ -255,7 +255,7 @@ end
 local function ShowPrecast(self, side)
 	if (self.precast) then
 	 	if (conf.player.castBar.precast) then
-			local lag = min(1000, select(3, GetNetStats()))
+			local lag = min(1000, select(4, GetNetStats()))
 			if (lag < 10) then
 				self.precast:Hide()
 			else
