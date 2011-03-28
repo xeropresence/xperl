@@ -4,6 +4,10 @@
 
 XPerl_SetModuleRevision("$Revision$")
 
+if type(RegisterAddonMessagePrefix) == "function" then
+	RegisterAddonMessagePrefix("CTRA")
+end
+
 XPerl_CheckItems = {}
 local XPerl_ItemResults = {["type"] = "item"}
 local XPerl_ResistResults = {["type"] = "res", count = 0}

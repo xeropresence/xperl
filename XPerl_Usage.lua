@@ -17,6 +17,10 @@ mod:RegisterEvent("CHAT_MSG_ADDON")
 mod:RegisterEvent("RAID_ROSTER_UPDATE")
 mod:RegisterEvent("PARTY_MEMBERS_CHANGED")
 
+if type(RegisterAddonMessagePrefix) == "function" then
+	RegisterAddonMessagePrefix(XPERL_COMMS_PREFIX)
+end
+
 local function modOnEvent(self, event, ...)
 	local f = mod[event]
 	if (f) then

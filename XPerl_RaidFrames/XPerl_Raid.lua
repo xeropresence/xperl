@@ -15,6 +15,11 @@ local percD = "%d"..PERCENT_SYMBOL
 local lastNamesList, lastName, lastWith, lastNamesCount		-- Stores with/without buff list (OnUpdate optimization)
 local fullyInitiallized
 
+if type(RegisterAddonMessagePrefix) == "function" then
+	RegisterAddonMessagePrefix("CTRA")
+	RegisterAddonMessagePrefix("oRA")
+end
+
 --@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))

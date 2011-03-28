@@ -16,6 +16,10 @@ local XTitle
 local pendingTankListChange		-- If in combat when tank list changes, then we'll defer it till next time we're out of combat
 local conf
 
+if type(RegisterAddonMessagePrefix) == "function" then
+	RegisterAddonMessagePrefix("CTRA")
+end
+
 local new, del = XPerl_GetReusableTable, XPerl_FreeTable
 
 -- Dup colours used to show which tanks have the same target
