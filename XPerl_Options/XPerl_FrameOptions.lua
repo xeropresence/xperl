@@ -2737,37 +2737,48 @@ end
 
 -- customOnUpdate
 local ICON_STEP_SIZE	= 500
-local ICON_STOP_SCAN	= 80000
+local ICON_STOP_SCAN	= 120000
 local function customOnUpdate(self, elspsed)
 	local db = self.iconDB
 	local ind = self.iconIndex
+	local stop
 	for i = ind,ind + ICON_STEP_SIZE - 1 do
-		if (GetSpellLink(i)) then									-- Filter out talents
+		if GetSpellLink(i) then										-- Filter out talents
 			local name, rank, icon = GetSpellInfo(i)
-			if (name and icon ~= "Interface\\Icons\\Temp") then		-- Filter out silly test ones
-				name = strlower(name)
-				local old = db[name]
-				if (old) then										-- Only keep highest of ranked spells
-					local name2, rank2, icon2 = GetSpellInfo(old)
-					local num1 = strmatch("(%d+)", rank) or 0
-					local num2 = strmatch("(%d+)", rank2) or 0
-					num1 = num1 == "" and 0 or num1+0
-					num2 = num2 == "" and 0 or num2+0
-					if (num2 > num1) then
+			if name then
+				if icon ~= "Interface\\Icons\\Temp" then			-- Filter out silly test ones
+					name = strlower(name)
+					local old = db[name]
+					if old then										-- Only keep highest of ranked spells
+						local name2, rank2, icon2 = GetSpellInfo(old)
+						local num1 = strmatch("(%d+)", rank) or 0
+						local num2 = strmatch("(%d+)", rank2) or 0
+						num1 = num1 == "" and 0 or num1+0
+						num2 = num2 == "" and 0 or num2+0
+						if num2 > num1 then
+							db[name] = i
+						end
+					else
 						db[name] = i
 					end
-				else
-					db[name] = i
 				end
+			end
+			self.missing = 0
+		else
+			self.missing = (self.missing or 0) + 1
+			if self.missing > 1000 then
+				stop = true
+				break
 			end
 		end
 	end
 
 	self.iconIndex = self.iconIndex + ICON_STEP_SIZE
 	self.progress:SetValue(self.iconIndex)
-	if (self.iconIndex > ICON_STOP_SCAN) then
+	if stop then
 		self:SetScript("OnUpdate", nil)
 		self.progress:SetValue(0)
+		self.missing = nil
 		XPerl_Options_Custom_FillList(XPerl_Custom_Configdebuffs)
 	end
 
