@@ -1140,7 +1140,7 @@ local missIndex = {
 }
 
 -- DoEvent
-local function DoEvent(self, timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+local function DoEvent(self, timestamp, event, hideCaster, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 	local feedbackText = self.feedbackText
 	local fontHeight = self.feedbackFontHeight
 	local text
@@ -1193,10 +1193,10 @@ local function DoEvent(self, timestamp, event, srcGUID, srcName, srcFlags, dstGU
 end
 
 -- COMBAT_LOG_EVENT_UNFILTERED
-function XPerl_Target_Events:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+function XPerl_Target_Events:COMBAT_LOG_EVENT_UNFILTERED(timestamp, event, hideCaster, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 	if (self.conf.hitIndicator and self.conf.portrait) then
 		if (bit_band(dstFlags, self.combatMask) ~= 0 and bit_band(srcFlags, 0x00000001) ~= 0) then
-			DoEvent(self, timestamp, event, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
+			DoEvent(self, timestamp, event, hideCaster, srcGUID, srcName, srcFlags, dstGUID, dstName, dstFlags, ...)
 		end
 	end
 end

@@ -217,7 +217,7 @@ function ch:DefaultZoneData()
 				[80094] = true,								-- Fixate (Toxitron)
 				[92035] = true,								-- Aquiring Target (Magmatron)
 				[91431] = true,								-- Lightning Conductor (Electron)
-				[92048] = true,								-- Shadow Infusion (Omnitron Heroic)
+				[92053] = true,								-- Shadow Conductor (Omnitron Heroic)
 
 				[89773] = true,								-- Mangle (Magmaw)
 				[91913] = true,								-- Paracite Infection (Magmaw)
@@ -226,23 +226,33 @@ function ch:DefaultZoneData()
 				[77760] = true,								-- Biting Chill (Maloriak)
 				[77786] = true,								-- Consuming Flames (Maloriak)
 
+				[82935] = true,								-- Caustic Slime (Chimaeron)
+
 				[78092] = true,								-- Tracking (Atramedes)
+				[92685] = true,								-- Pestered! (Atramedes Heroic)
+
+				[79318] = true,								-- Dominion (Nefarian Heroic)
+				
+				[79339] = true,								-- Explosive Cinders (Nefarian Heroic)
 			},
 		[XPERL_LOC_ZONE_BASTION_OF_TWILIGHT] =
 			{
 				[86788] = true,								-- Blackout (Valiona & Theralion)
 				[86622] = true,								-- Engulfing Magic (Valiona & Theralion)
+				[88518] = true,								-- Twilight Meteorite (Valiona & Theralion)
 				
 				[82665] = true,								-- Heart of Ice (Ascendant Council)
 				[82772] = true,								-- Frozen (Ascendant Council)
-				[92307] = true,								-- Frost Beacon (Ascendant Council)
 				[82660] = true,								-- Burning Blood (Ascendant Council)
-				[92075] = true,								-- Gravity Core (Ascendant Council)
 				[83099] = true,								-- Lightning Rod (Ascendant Council)
-				[92067] = true,								-- Static Overload (Ascendant Council)
 				[84948] = true,								-- Gravity Crush (Ascendant Council)
+				[92067] = true,								-- Static Overload (Ascendant Council Heroic)
+				[92075] = true,								-- Gravity Core (Ascendant Council Heroic)
+				[92307] = true,								-- Frost Beacon (Ascendant Council Heroic)
 
 				[91317] = true,								-- Worshipping (Cho'gall)
+				
+				[92955] = true,								-- Wrack (Sinestra)
 			},
 		[XPERL_LOC_ZONE_THRONE_OF_FOUR_WINDS] =
 			{
