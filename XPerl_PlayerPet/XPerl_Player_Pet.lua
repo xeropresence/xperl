@@ -11,7 +11,6 @@ XPerl_RequestConfig(function(new)
 				XPerl_Player_Pet.conf = pconf
 			end
 		end, "$Revision$")
-
 local XPerl_Player_Pet_HighlightCallback
 
 -- XPerl_Player_Pet_OnLoad

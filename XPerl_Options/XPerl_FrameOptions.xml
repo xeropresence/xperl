@@ -5668,7 +5668,7 @@
 
 					<CheckButton name="$parent_Level" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPRIGHT" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOM">
+							<Anchor point="TOPLEFT" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
