@@ -3232,14 +3232,14 @@ local function XPerlSetPortrait3D(self, argUnit)
 	local guid = UnitGUID(argUnit)
 	local fullbody
 	--PlayerLin: Added other checks, UnitIsPlayer check isn't enough and it's weird...
-	if UnitIsPlayer(argUnit) or UnitIsEnemy(argUnit, "target") or UnitIsFriend(argUnit, "target") then
+--	if UnitIsPlayer(argUnit) or UnitIsEnemy(argUnit, "target") or UnitIsFriend(argUnit, "target") then
 		--Male Worgen 3D Portrait fix, thanks sontix.
 		if string.find(tostring(self:GetModel()), "worgenmale", 1, true) ~= nil then
 			fullbody = true 
 		else
 			fullbody = UnitBuff(argUnit, dragonmawIllusion)
 		end
-	end
+--	end
 	local id = guid and tonumber(strsub(guid, -13, -9), 16)
 	if (alternateCamera[id] or fullbody ) then
 		self:SetCamera(1)
