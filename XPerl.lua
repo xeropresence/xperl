@@ -5,8 +5,8 @@
 local conf
 local percD	= "%d"..PERCENT_SYMBOL
 local perc1F = "%.1f"..PERCENT_SYMBOL
-XPerl_SetModuleRevision("$Revision$")
 XPerl_RequestConfig(function(New) conf = New end, "$Revision$")
+XPerl_SetModuleRevision("$Revision$")
 
 -- Some local copies for speed
 local strsub = strsub
@@ -2941,7 +2941,7 @@ function XPerl_Unit_UpdateBuffs(self, maxBuffs, maxDebuffs, castableOnly, curabl
 				end
 
 				for buffnum = 1,maxDebuffs do
-					local filter = (isFriendly and curableOnly == 1 or castableOnly == 1) and "RAID" or nil
+					local filter = (isFriendly and curableOnly == 1) and "RAID" or nil
 					local name, rank, debuff, debuffApplications, debuffType, duration, endTime, isMine, isStealable = XPerl_UnitDebuff(partyid, buffnum, filter)
 					if (not name) then
 						if (mine == 1) then

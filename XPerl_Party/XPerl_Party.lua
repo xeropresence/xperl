@@ -65,6 +65,8 @@ end
 
 -- XPerl_Party_HighlightCallback
 function XPerl_Party_HighlightCallback(self, updateGUID)
+	if not updateGUID then return end
+
 	local f = XPerl_Party_GetUnitFrameByGUID(updateGUID)
 	if (f) then
 		XPerl_Highlight:SetHighlight(f, updateGUID)
@@ -498,7 +500,7 @@ local function UpdateAssignedRoles(self)
 	elseif (self.nameFrame.leaderIcon:IsShown()) then
 		icon:SetPoint("LEFT", self.nameFrame.leaderIcon, "RIGHT")
 	else
-		icon:SetPoint("TOPLEFT", 5, 5)
+		icon:SetPoint("TOPLEFT", 10, 5)
 	end
 
 	-- role icons option check by playerlin
@@ -750,6 +752,7 @@ end
 -- XPerl_Party_TargetRaidIcon
 local function XPerl_Party_TargetRaidIcon(self)
 	XPerl_Update_RaidIcon(self.targetFrame.raidIcon, self.partyid.."target")
+	XPerl_Update_RaidIcon(self.nameFrame.raidIcon, self.partyid)
 end
 
 -- XPerl_Party_UpdateTarget
@@ -844,6 +847,7 @@ function XPerl_Party_UpdateDisplay(self, less)
 	if (self.conf and self.partyid and UnitExists(self.partyid)) then
 		self.afk, self.dnd = nil,nil
 		XPerl_Party_UpdateName(self)
+		XPerl_Party_TargetRaidIcon(self)
 		XPerl_Party_UpdateLeader(self)
 		XPerl_Party_UpdateClass(self)
 		UpdateAssignedRoles(self)
@@ -1040,6 +1044,7 @@ do
 		BuildGuidMap()
 		checkRaidNextUpdate = 3
 		CheckRaid()
+		XPerl_SetHighlights()
 		XPerl_Party_UpdateDisplayAll()
 	end
 end

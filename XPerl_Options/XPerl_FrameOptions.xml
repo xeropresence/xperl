@@ -8707,7 +8707,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_FOCUS_ONLYMYBUFFS")
-								self.configBase = "XPerlDB.target.buffs"
+								self.configBase = "XPerlDB.focus.buffs"
 								self.configIndex = "onlyMine"
 								self.configClick = function()
 										XPerlDB.focustarget.buffs.onlyMine = XPerlDB.focus.buffs.onlyMine
