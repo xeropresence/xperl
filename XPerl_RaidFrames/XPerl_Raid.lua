@@ -1678,9 +1678,6 @@ end
 function XPerl_Raid_Position(self)
 	SetRaidRoster()
 	XPerl_RaidTitles()
-	--Fix by sontix for When you target someone and the leader change,
-	--then the highlight target bugs out.
-	fullyInitiallized = true
 	--Removed the useless InCombatLockdown() shit.
 	--if (conf.party.smallRaid and fullyInitiallized) and not InCombatLockdown()) then
 	if (conf.party.smallRaid and fullyInitiallized) then	
