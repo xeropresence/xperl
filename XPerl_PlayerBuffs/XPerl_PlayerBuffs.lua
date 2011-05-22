@@ -64,8 +64,8 @@ function XPerl_Player_Buffs_Position(self)
 		else
 			if (self.runes and self.runes:IsShown() and not pconf.hideRunes) then
 				self.buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
-			elseif (self.runed and self.runed:IsShown()) then
-				self.buffFrame:SetPoint("TOPLEFT", self.runed, "BOTTOMLEFT", 3, 0)
+			elseif (self.runes and self.runes:IsShown()) then
+				self.buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
 			--elseif (self.shards) then
 			--	self.buffFrame:SetPoint("TOPLEFT", self.shards, "BOTTOMLEFT", 3, 0)
 			elseif ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait) then
