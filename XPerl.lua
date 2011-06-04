@@ -2507,7 +2507,7 @@ local function AuraButtonOnShow(self)
 	end
 
 	local name, rank, buff, count, _, duration, endTime, caster, isStealable = UnitAura("player", self.xindex, self.xfilter)
-	if endTiem and duration then
+	if endTime and duration then
 		local start = endTime - duration
 		XPerl_CooldownFrame_SetTimer(self.cooldown, start, duration, 1, caster == "player")
 	end
