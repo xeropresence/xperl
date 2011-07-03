@@ -2225,10 +2225,10 @@ function XPerl_Raid_Set_Bits(self)
 				enable = 1, 
 			}
 		end
-		if rconf and rconf.hideframemanager.enable then 
+		if rconf and rconf.hideframemanager.enable and not InCombatLockdown() then 
 			_G["CompactRaidFrameManager"]:Hide()
 		else
-			if GetNumRaidMembers() > 0 then --let's not show stuff when not in raid  
+			if GetNumRaidMembers() > 0 and not InCombatLockdown() then --let's not show stuff when not in raid  
 				_G["CompactRaidFrameManager"]:Show() --show the frame again so that the option can be changed withouth /reloadui
 			end 
 		end
