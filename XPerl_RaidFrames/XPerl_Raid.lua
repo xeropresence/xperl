@@ -2272,8 +2272,8 @@ end
 
 --hide those pesky default raidframe and friend
 function XPerl_Raid_HideBlizzRaid()
-	_G["CompactRaidFrameContainer"]:Hide() --be paranoid and hide this one as well
 	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
+		_G["CompactRaidFrameContainer"]:Hide() --be paranoid and hide this one as well
 		_G["CompactRaidFrameManager"]:Hide() --this is the sliding panel to the left
 	end
 end
