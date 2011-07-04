@@ -2255,10 +2255,13 @@ end
 function XPerl_Raid_HideBlizzRaid()
 	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
 		if CompactRaidFrameContainer then
-			CompactRaidFrameContainer:Hide()
-			CompactRaidFrameContainer:UnregisterAllEvents()
-			CompactRaidFrameManager:Hide()
 			CompactRaidFrameManager:UnregisterAllEvents()
+			CompactRaidFrameManager:HookScript("OnShow", function(s) s:Hide() end)
+			CompactRaidFrameManager:Hide()
+    
+			CompactRaidFrameContainer:UnregisterAllEvents()
+			CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
+			CompactRaidFrameContainer:Hide()
 		end
 	end
 end
