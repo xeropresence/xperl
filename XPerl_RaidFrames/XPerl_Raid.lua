@@ -1123,9 +1123,6 @@ function XPerl_Raid_HideShowRaid()
 			end
 		end
 	end
-	if not InCombatLockdown() then
-		XPerl_Raid_HideBlizzRaid()
-	end
 end
 
 -------------------
@@ -1190,9 +1187,9 @@ function XPerl_Raid_Events:PLAYER_ENTERING_WORLD()
 	rosterUpdated = nil
 
 	if (GetNumRaidMembers() > 0) then
-		if not InCombatLockdown() then
+--		if not InCombatLockdown() then
 			XPerl_Raid_HideBlizzRaid()
-		end
+--		end
 		XPerl_Raid_Frame:Show()
 	end
 
@@ -1233,9 +1230,6 @@ do
 		rosterUpdated = true		-- Many roster updates can occur during 1 video frame, so we'll check everything at end of last one
 		BuildGuidMap()
 		if (GetNumRaidMembers() > 0) then
-			if not InCombatLockdown() then
-				XPerl_Raid_HideBlizzRaid()
-			end
 			XPerl_Raid_Frame:Show()
 		end
 	end
@@ -1657,9 +1651,6 @@ local function SetRaidRoster()
 	end
 
 	if (GetNumRaidMembers() > 0) then
-		if not InCombatLockdown() then
-			XPerl_Raid_HideBlizzRaid()
-		end
 		XPerl_Raid_Frame:Show()
 	else
 		XPerl_Raid_Frame:Hide()
@@ -2225,13 +2216,6 @@ function XPerl_Raid_Set_Bits(self)
 				enable = 1, 
 			}
 		end
-		if rconf and rconf.hideframemanager.enable and not InCombatLockdown() then 
-			_G["CompactRaidFrameManager"]:Hide()
-		else
-			if GetNumRaidMembers() > 0 and not InCombatLockdown() then --let's not show stuff when not in raid  
-				_G["CompactRaidFrameManager"]:Show() --show the frame again so that the option can be changed withouth /reloadui
-			end 
-		end
 	end
 	
 	SkipHighlightUpdate = nil
@@ -2263,9 +2247,6 @@ function XPerl_Raid_Set_Bits(self)
 	end
 
 	if (GetNumRaidMembers() > 0) then
-		if not InCombatLockdown() then
-			XPerl_Raid_HideBlizzRaid()
-		end
 		XPerl_Raid_Frame:Show()
 	end
 end
@@ -2273,7 +2254,11 @@ end
 --hide those pesky default raidframe and friend
 function XPerl_Raid_HideBlizzRaid()
 	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
-		_G["CompactRaidFrameContainer"]:Hide() --be paranoid and hide this one as well
-		_G["CompactRaidFrameManager"]:Hide() --this is the sliding panel to the left
+		if CompactRaidFrameContainer then
+			CompactRaidFrameContainer:Hide()
+			CompactRaidFrameContainer:UnregisterAllEvents()
+			CompactRaidFrameManager:Hide()
+			CompactRaidFrameManager:UnregisterAllEvents()
+		end
 	end
 end
