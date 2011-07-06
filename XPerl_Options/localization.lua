@@ -1031,4 +1031,5 @@ XPERL_CONF_RAID_CUSTOM_NEW				= NEW
 XPERL_CONF_RAID_CUSTOM_NEW_DESC			= "Create a new debuff watcher"
 XPERL_CONF_RAID_CUSTOM_ZONE				= ZONE
 XPERL_CONF_RAID_CUSTOM_SEARCH			= SEARCH
-XPERL_CONF_RAID_BLIZZ_RAIDPULLOUT       = "Hide default raid pullout\n(Requires reloadui to see changes)"
+XPERL_CONF_RAID_BLIZZ_RAIDPULLOUT       = "Hide default raid pullout"
+XPERL_CONF_RAID_BLIZZ_RAIDPULLOUT_DESC  = "Hide the Blizzard's default Raid pullout interface, requires reload UI/addons to see changes and prevent some stupid taint problems"
