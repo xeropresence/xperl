@@ -1182,14 +1182,12 @@ function XPerl_Raid_Events:PLAYER_ENTERING_WORLD()
 	
 	XPerl_Raid_ChangeAttributes()
 	XPerl_RaidTitles()
+	XPerl_Raid_HideBlizzRaid()
 
 	raidLoaded = true
 	rosterUpdated = nil
 
 	if (GetNumRaidMembers() > 0) then
---		if not InCombatLockdown() then
-			XPerl_Raid_HideBlizzRaid()
---		end
 		XPerl_Raid_Frame:Show()
 	end
 
@@ -2254,14 +2252,12 @@ end
 --hide those pesky default raidframe and friend
 function XPerl_Raid_HideBlizzRaid()
 	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
-		if CompactRaidFrameContainer then
-			CompactRaidFrameManager:UnregisterAllEvents()
-			CompactRaidFrameManager:HookScript("OnShow", function(s) s:Hide() end)
-			CompactRaidFrameManager:Hide()
+		CompactRaidFrameManager:UnregisterAllEvents()
+		CompactRaidFrameManager:HookScript("OnShow", function(s) s:Hide() end)
+		CompactRaidFrameManager:Hide()
     
-			CompactRaidFrameContainer:UnregisterAllEvents()
-			CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
-			CompactRaidFrameContainer:Hide()
-		end
+		CompactRaidFrameContainer:UnregisterAllEvents()
+		CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
+		CompactRaidFrameContainer:Hide()
 	end
 end
