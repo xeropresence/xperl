@@ -637,8 +637,8 @@ function XPerl_Raid_Single_OnLoad(self)
 	self:SetAttribute("*type1", "target")
 	self:SetAttribute("type2", "menu")
 	self.menu = XPerl_Raid_ShowPopup
-
 	-- Does AllowAttributeChange work for children?
+	-- This taints the UI if done in combat. there a fix?
 	self.nameFrame:SetAttribute("useparent-unit", true)
 	self.nameFrame:SetAttribute("*type1", "target")
 	self.nameFrame:SetAttribute("type2", "menu")
@@ -2253,13 +2253,18 @@ end
 function XPerl_Raid_HideBlizzRaid()
 	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
 		hooksecurefunc("CompactRaidFrameManager_UpdateShown",function()
-		CompactRaidFrameManager:UnregisterAllEvents()
-		CompactRaidFrameManager:HookScript("OnShow", function(s) s:Hide() end)
-		CompactRaidFrameManager:Hide()
-    
-		CompactRaidFrameContainer:UnregisterAllEvents()
-		CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
-		CompactRaidFrameContainer:Hide()
+			CompactRaidFrameManager:UnregisterAllEvents()
+			CompactRaidFrameManager:HookScript("OnShow", function(s) s:Hide() end)
+			CompactRaidFrameManager:Hide()
 		end)
+		--Possibly add an alternate option to control this at a later time?
+		--That way we can kill raid frames without killing manager that's still needed for flares and such
+		--This still taints all to hell so commenting out for now, it seems if you kill manager at login though the raid frames also get killed (or rathor never called?)
+		--CompactRaidFrameContainer_TryUpdate instead or CompactRaidFrameContainer_UpdateBorder or CompactRaidFrameContainer_LayoutFrames or CompactRaidFrameContainer_UpdateDisplayedUnits instead?
+--[[		hooksecurefunc("CompactRaidFrameContainer_OnEvent",function()--This doesn't work still taints, haven't tried above list yet, could not find an onshow event to hook :\
+			CompactRaidFrameContainer:UnregisterAllEvents()
+			CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
+			CompactRaidFrameContainer:Hide()
+		end)--]]
 	end
 end
