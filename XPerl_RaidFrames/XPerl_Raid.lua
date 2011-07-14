@@ -2259,12 +2259,11 @@ function XPerl_Raid_HideBlizzRaid()
 		end)
 		--Possibly add an alternate option to control this at a later time?
 		--That way we can kill raid frames without killing manager that's still needed for flares and such
-		--This still taints all to hell so commenting out for now, it seems if you kill manager at login though the raid frames also get killed (or rathor never called?)
 		--CompactRaidFrameContainer_TryUpdate instead or CompactRaidFrameContainer_UpdateBorder or CompactRaidFrameContainer_LayoutFrames or CompactRaidFrameContainer_UpdateDisplayedUnits instead?
---[[		hooksecurefunc("CompactRaidFrameContainer_OnEvent",function()--This doesn't work still taints, haven't tried above list yet, could not find an onshow event to hook :\
+--		hooksecurefunc("CompactUnitFrame_OnEvent",function()--This actually cures the taints, but leaks like a mother fucker, and that's not an understatement, it makes xperl use 100M of memory and drop fps to 1-2 after about 2 hours of raiding.
 			CompactRaidFrameContainer:UnregisterAllEvents()
 			CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
 			CompactRaidFrameContainer:Hide()
-		end)--]]
+--		end)
 	end
 end
