@@ -2214,6 +2214,11 @@ function XPerl_Raid_Set_Bits(self)
 				enable = 1, 
 			}
 		end
+		if (not rconf.hideframecontainer) then
+			rconf.hideframecontainer = { --messy fix for missing config
+				enable = 1, 
+			}
+		end
 	end
 	
 	SkipHighlightUpdate = nil
