@@ -2018,6 +2018,9 @@ function XPerl_Options_ImportOldConfig(old)
 			hideframemanager = {
 				enable = 1,
 			},
+			hideframecontainer = {
+				enable = 1,
+			},
 		},
 		raidpet = {
 			enable			= Convert(old.ShowRaidPets),				-- 2.1.3
@@ -2457,6 +2460,9 @@ local function XPerl_Raid_ConfigDefault(default)
 		},
 		anchor			= "TOP",
 		hideframemanager = {
+			enable = 1,
+		},
+		hideframecontainer = {
 			enable = 1,
 		},
 	}
@@ -3129,6 +3135,7 @@ if (XPerl_UpgradeSettings) then
 
 			if (oldVersion < "3.1.0") then
 				old.raid.hideframemanager = {enable = 1}
+				old.raid.hideframecontainer = {enable = 1}
 				old.ShowTutorials = nil
 				old.TutorialFlags = nil
 			end

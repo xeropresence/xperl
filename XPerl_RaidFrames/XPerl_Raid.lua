@@ -2252,18 +2252,15 @@ end
 --hide those pesky default raidframe and friend
 function XPerl_Raid_HideBlizzRaid()
 	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
-		hooksecurefunc("CompactRaidFrameManager_UpdateShown",function()
+		hooksecurefunc("CompactRaidFrameManager_UpdateShown",function()--This seems to cure the taints with manager at least.
 			CompactRaidFrameManager:UnregisterAllEvents()
 			CompactRaidFrameManager:HookScript("OnShow", function(s) s:Hide() end)
 			CompactRaidFrameManager:Hide()
 		end)
-		--Possibly add an alternate option to control this at a later time?
-		--That way we can kill raid frames without killing manager that's still needed for flares and such
-		--CompactRaidFrameContainer_TryUpdate instead or CompactRaidFrameContainer_UpdateBorder or CompactRaidFrameContainer_LayoutFrames or CompactRaidFrameContainer_UpdateDisplayedUnits instead?
---		hooksecurefunc("CompactUnitFrame_OnEvent",function()--This actually cures the taints, but leaks like a mother fucker, and that's not an understatement, it makes xperl use 100M of memory and drop fps to 1-2 after about 2 hours of raiding.
-			CompactRaidFrameContainer:UnregisterAllEvents()
-			CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
-			CompactRaidFrameContainer:Hide()
---		end)
+	end
+	if rconf and rconf.hideframecontainer and rconf.hideframecontainer.enable then 
+		CompactRaidFrameContainer:UnregisterAllEvents()--Any event call to this at all, even just hide taints it like a mother fucker. :(
+		CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
+		CompactRaidFrameContainer:Hide()
 	end
 end
