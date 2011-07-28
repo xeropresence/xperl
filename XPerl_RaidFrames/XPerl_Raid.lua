@@ -2211,7 +2211,7 @@ function XPerl_Raid_Set_Bits(self)
 	if rconf then
 		if (not rconf.hideframemanager) then
 			rconf.hideframemanager = { --messy fix for missing config
-				enable = 1, 
+				enable = 0, 
 			}
 		end
 		if (not rconf.hideframecontainer) then

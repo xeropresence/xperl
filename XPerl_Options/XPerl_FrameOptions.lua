@@ -2016,7 +2016,7 @@ function XPerl_Options_ImportOldConfig(old)
 			spacing			= old.RaidVerticalSpacing	or 0,
 			anchor			= old.RaidAnchor		or "TOP",
 			hideframemanager = {
-				enable = 1,
+				enable = 0,
 			},
 			hideframecontainer = {
 				enable = 1,
@@ -2460,7 +2460,7 @@ local function XPerl_Raid_ConfigDefault(default)
 		},
 		anchor			= "TOP",
 		hideframemanager = {
-			enable = 1,
+			enable = 0,
 		},
 		hideframecontainer = {
 			enable = 1,
