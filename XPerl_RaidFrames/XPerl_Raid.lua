@@ -2257,14 +2257,14 @@ end
 --hide those pesky default raidframe and friend
 function XPerl_Raid_HideBlizzRaid()
 	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
-		hooksecurefunc("CompactRaidFrameManager_UpdateShown",function()--This seems to cure the taints with manager at least.
+		hooksecurefunc("CompactRaidFrameManager_UpdateShown",function()--This seems to reduced the taints caused by messing with manager. But this function still breaks shit.
 			CompactRaidFrameManager:UnregisterAllEvents()
 			CompactRaidFrameManager:HookScript("OnShow", function(s) s:Hide() end)
 			CompactRaidFrameManager:Hide()
 		end)
 	end
 	if rconf and rconf.hideframecontainer and rconf.hideframecontainer.enable then 
-		CompactRaidFrameContainer:UnregisterAllEvents()--Any event call to this at all, even just hide taints it like a mother fucker. :(
+		CompactRaidFrameContainer:UnregisterAllEvents()
 		CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
 		CompactRaidFrameContainer:Hide()
 	end
