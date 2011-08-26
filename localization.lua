@@ -54,6 +54,7 @@ XPERL_LOC_ZONE_BARADIN_HOLD			= "Baradin Hold"
 XPERL_LOC_ZONE_BLACKWING_DECENT		= "Blackwing Descent"
 XPERL_LOC_ZONE_BASTION_OF_TWILIGHT	= "The Bastion of Twilight"
 XPERL_LOC_ZONE_THRONE_OF_FOUR_WINDS	= "Throne of the Four Winds"
+XPERL_LOC_ZONE_FIRELANDS			= "Firelands"
 
 -- Status
 XPERL_LOC_DEAD		= DEAD			-- "Dead"
