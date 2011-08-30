@@ -1182,7 +1182,6 @@ function XPerl_Raid_Events:PLAYER_ENTERING_WORLD()
 	
 	XPerl_Raid_ChangeAttributes()
 	XPerl_RaidTitles()
---	XPerl_Raid_HideBlizzRaid()
 
 	raidLoaded = true
 	rosterUpdated = nil
@@ -2251,21 +2250,5 @@ function XPerl_Raid_Set_Bits(self)
 
 	if (GetNumRaidMembers() > 0) then
 		XPerl_Raid_Frame:Show()
-	end
-end
-
---hide those pesky default raidframe and friend
-function XPerl_Raid_HideBlizzRaid()
-	if rconf and rconf.hideframemanager and rconf.hideframemanager.enable then 
-		hooksecurefunc("CompactRaidFrameManager_UpdateShown",function()--This seems to reduced the taints caused by messing with manager. But this function still breaks shit.
-			CompactRaidFrameManager:UnregisterAllEvents()
-			CompactRaidFrameManager:HookScript("OnShow", function(s) s:Hide() end)
-			CompactRaidFrameManager:Hide()
-		end)
-	end
-	if rconf and rconf.hideframecontainer and rconf.hideframecontainer.enable then 
-		CompactRaidFrameContainer:UnregisterAllEvents()
-		CompactRaidFrameContainer:HookScript("OnShow", function(s) s:Hide() end)
-		CompactRaidFrameContainer:Hide()
 	end
 end
