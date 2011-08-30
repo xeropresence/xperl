@@ -10447,38 +10447,6 @@
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
-					<CheckButton name="$parent_Blizz_RaidPullout" inherits="XPerlCheckButtonTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_Healer" relativePoint="BOTTOMLEFT">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_BLIZZ_RAIDPULLOUT")
-								self.configBase = "XPerlDB.raid.hideframecontainer"
-								self.configIndex = "enable"
-								self.configClick = XPerl_Raid_OptionActions
-								XPerl_Options_RegisterProtected(self)
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-					<CheckButton name="$parent_Blizz_RaidManager" inherits="XPerlCheckButtonTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_Blizz_RaidPullout" relativePoint="BOTTOMLEFT">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_BLIZZ_RAIDMANAGER")
-								self.configBase = "XPerlDB.raid.hideframemanager"
-								self.configIndex = "enable"
-								self.configClick = XPerl_Raid_OptionActions
-								XPerl_Options_RegisterProtected(self)
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
 
 					<Frame name="$parent_Groups">
 						<Scripts>

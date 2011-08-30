@@ -1031,8 +1031,4 @@ XPERL_CONF_RAID_CUSTOM_NEW		= "新的"
 XPERL_CONF_RAID_CUSTOM_NEW_DESC		= "建立一個新的 debuff 監看器"
 XPERL_CONF_RAID_CUSTOM_ZONE		= "地區"
 XPERL_CONF_RAID_CUSTOM_SEARCH		= "搜尋"
-XPERL_CONF_RAID_BLIZZ_RAIDPULLOUT	= "隱藏內建團隊框架"
-XPERL_CONF_RAID_BLIZZ_RAIDPULLOUT_DESC  = "將Blizzard內建團隊框架隱藏，需要重新載入所有插件 /reload 後方生效。"
-XPERL_CONF_RAID_BLIZZ_RAIDMANAGER       = "同時隱藏內建團隊管理介面\n(也一併使團隊框架無作用/被封鎖)"
-XPERL_CONF_RAID_BLIZZ_RAIDMANAGER_DESC  = "強制隱藏Blizzard內建團隊框架與管理介面，需要重新載入所有插件 /reload 後方生效。(警告：不建議開啟此選項，可能將導致團隊框架容器的被封鎖現象。)"
 end

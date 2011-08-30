@@ -1182,7 +1182,7 @@ function XPerl_Raid_Events:PLAYER_ENTERING_WORLD()
 	
 	XPerl_Raid_ChangeAttributes()
 	XPerl_RaidTitles()
-	XPerl_Raid_HideBlizzRaid()
+--	XPerl_Raid_HideBlizzRaid()
 
 	raidLoaded = true
 	rosterUpdated = nil
