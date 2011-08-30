@@ -10014,7 +10014,6 @@
 									XPerl_Options_EnableSibling(self, "Groups_ByClass")
 									XPerl_Options_EnableSibling(self, "Groups_Alphabetical")
 									XPerl_Options_EnableSibling(self, "Groups_VSpacing")
-									XPerl_Options_EnableSibling(self, "Blizz_RaidPullout")
 								end
 								self.configBase = "XPerlDB.raid"
 								self.configIndex = "enable"
