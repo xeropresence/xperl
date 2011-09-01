@@ -668,7 +668,7 @@ function XPerl_Player_OnUpdate(self, elapsed)
 	        XPerl_Player_UpdateHealth(self)
 	-- end	
 
-	if (IsResting() and UnitLevel("player") < MAX_PLAYER_LEVEL) then
+	if (IsResting() and UnitLevel("player") < 85) then
 		self.restingDelay = (self.restingDelay or 2) - elapsed
 		if (self.restingDelay <= 0) then
 			self.restingDelay = 2
@@ -1402,7 +1402,6 @@ function XPerl_PaladinPowerBar_OnEvent(self, event, arg1, arg2)
 		if level >= PALADINPOWERBAR_SHOW_LEVEL then
 			PaladinPowerBar:Show()
 			PaladinPowerBar:SetAlpha(1)
-			self:UnregisterEvent("PLAYER_LEVEL_UP")
 			self.showAnim:Play()
 			XPerl_PaladinPowerBar_Update(self)
 		end
