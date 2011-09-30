@@ -697,16 +697,12 @@ local SetValuedText = XPerl_SetValuedText
 function XPerl_SetHealthBar(self, hp, Max)
 	local foo
 	if Max == 0 and hp == 0 then
-		foo = math.log(-1)
-	elseif Max == 0 then
-		foo = math.huge
-	else
-		foo = hp / Max
+		return
 	end
 	local bar = self.statsFrame.healthBar
 
 	bar:SetMinMaxValues(0, Max)
-    local percent = max(0, foo) -- Fix for SetFormatted text displaying -21474... for 0 / 0			
+    local percent = max(0, hp / Max) -- Fix for SetFormatted text displaying -21474... for 0 / 0			
     if percent > 100 then percent = 100 end -- percent only goes to 100        
     if (conf.bar.inverse) then
 
