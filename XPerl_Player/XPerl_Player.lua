@@ -494,7 +494,7 @@ local function XPerl_Player_UpdateMana(self)
 		mb.percent:SetText(playermana)
 	else
 		if playermanamax == 0 then
-			mb.percent:SetFormattedText(percD, (0)		
+			mb.percent:SetFormattedText(percD, 0)		
 		else
 			mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
 		end
