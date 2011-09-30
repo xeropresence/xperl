@@ -493,10 +493,18 @@ local function XPerl_Player_UpdateMana(self)
 	if (pType >= 1 or UnitPowerMax(self.partyid, pType) < 1) then
 		mb.percent:SetText(playermana)
 	else
-		mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
+		if playermanamax == 0 then
+			mb.percent:SetFormattedText(percD, (0)		
+		else
+			mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
+		end
 	end
 	
-	mb.tex:SetTexCoord(0, max(0, (playermana / playermanamax)), 0, 1)
+	if playermanamax == 0 then
+		mb.tex:SetTexCoord(0, max(0, (0)), 0, 1)
+	else
+		mb.tex:SetTexCoord(0, max(0, (playermana / playermanamax)), 0, 1)
+	end
 	
 	if (not self.statsFrame.greyMana) then
 		if (pconf.values) then
