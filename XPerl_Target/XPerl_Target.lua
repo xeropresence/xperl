@@ -814,7 +814,11 @@ function XPerl_Target_SetHealth(self)
 	XPerl_SetHealthBar(self, hp, hpMax)
 
 	if (percent) then
-		hbt:SetFormattedText(percD, 100 * hp / hpMax)
+		if hpMax == 0 then--For some dumb reason max HP is 0, this should never happen, but it does, prevent any division by 0.
+			hbt:SetFormattedText(percD, 100 * 0)
+		else
+			hbt:SetFormattedText(percD, 100 * hp / hpMax)
+		end	
 	end
 
 	local color
@@ -864,7 +868,11 @@ function XPerl_Target_SetHealth(self)
 	end
 
 	if (color) then
-		XPerl_ColourHealthBar(self, hp / hpMax)
+		if hpMax == 0 then--For some dumb reason max HP is 0, this should never happen, but it does, prevent any division by 0.
+			XPerl_ColourHealthBar(self, 0)
+		else
+			XPerl_ColourHealthBar(self, hp / hpMax)
+		end	
 
 		if (self.statsFrame.greyMana) then
 			self.statsFrame.greyMana = nil
