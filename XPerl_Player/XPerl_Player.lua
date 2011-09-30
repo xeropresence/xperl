@@ -493,14 +493,14 @@ local function XPerl_Player_UpdateMana(self)
 	if (pType >= 1 or UnitPowerMax(self.partyid, pType) < 1) then
 		mb.percent:SetText(playermana)
 	else
-		if playermanamax == 0 then
+		if playermanamax == 0 then--4.3 Divide by 0 workaround
 			mb.percent:SetFormattedText(percD, 0)		
 		else
 			mb.percent:SetFormattedText(percD, (playermana * 100.0) / playermanamax)
 		end
 	end
 	
-	if playermanamax == 0 then
+	if playermanamax == 0 then--4.3 Divide by 0 workaround
 		mb.tex:SetTexCoord(0, max(0, (0)), 0, 1)
 	else
 		mb.tex:SetTexCoord(0, max(0, (playermana / playermanamax)), 0, 1)
