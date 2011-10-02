@@ -219,7 +219,18 @@ local function DoRangeCheck(unit, opt)
 	local range
 	if (opt.PlusHealth) then
 		local hp, hpMax = UnitHealth(unit), UnitHealthMax(unit)
-		if (hp / hpMax > opt.HealthLowPoint) then
+		--Begin 4.3 divide by 0 work around.
+		local percent
+		if hp > 0 and hpMax == 0 then--We have current HP but max hp failed.
+			hpMax = hp--Make max hp at least equal to current health
+			percent = 100--And percent 100% cause a number divided by itself is 1, duh.
+		elseif hp == 0 and hpMax == 0 then--Both returned 0, i havent seen curhealth return 0 falsely only max HP, so this is likely a dead target.
+			percent = 0--So just automatically set percent to 0 and avoid division of 0/0 all together in this situation.
+		else
+			percent = hp / hpMax--Everything is dandy, so just do it right way.
+		end
+		--End divide by 0 work around
+		if (percent > opt.HealthLowPoint) then
 			range = 0
 		end
 	end
@@ -699,10 +710,13 @@ function XPerl_SetHealthBar(self, hp, Max)
 
 	bar:SetMinMaxValues(0, Max)
 	local percent
-	if Max == 0 then--For some dumb reason max HP is 0, this should never happen, but it does, prevent any division by 0.
+	if hp >= 1 and Max == 0 then--For some dumb reason max HP is 0, normal HP is not, so lets use normal HP as max
+		Max = hp
+		percent = 100
+	elseif hp == 0 and Max == 0 then--Both are 0, so it's probably dead since usually current HP returns correctly when Max HP fails.
 		percent = 0
 	else
-		percent = max(0, hp / Max) -- Fix for SetFormatted text displaying -21474... for 0 / 0	
+		percent = hp / Max
 	end		
     if percent > 100 then percent = 100 end -- percent only goes to 100        
     if (conf.bar.inverse) then
@@ -3287,6 +3301,7 @@ function XPerl_Unit_UpdateLevel(self)
 end
 
 -- XPerl_Unit_GetHealth
+--This function sucks, it needs reworking so it self corrects /0 problems here. But i haven't quite figured out how to approach it here yet. So i just fix stuff at sethealth functions.
 function XPerl_Unit_GetHealth(self)
 	local partyid = self.partyid
 	local hp, hpMax = UnitHealth(partyid), UnitHealthMax(partyid)
