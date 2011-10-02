@@ -732,11 +732,11 @@ local function XPerl_Party_TargetUpdateHealth(self)
 	tf.healthBar:SetValue(hp)
 	--Begin 4.3 division by 0 work around to ensure we don't divide if max is 0
 	local percent
-	if hp > 0 and hpMax == 0 then--We have current ho but max hp failed.
+	if UnitIsDeadOrGhost(self.targetid) or (hp == 0 and hpMax == 0) then--Probably dead target
+		percent = 0--So just automatically set percent to 0 and avoid division of 0/0 all together in this situation.
+	elseif hp > 0 and hpMax == 0 then--We have current ho but max hp failed.
 		hpMax = hp--Make max hp at least equal to current health
 		percent = 100--And percent 100% cause a number divided by itself is 1, duh.
-	elseif hp == 0 and hpMax == 0 then--Probably dead target
-		percent = 0--So just automatically set percent to 0 and avoid division of 0/0 all together in this situation.
 	else
 		percent = hp / hpMax--Everything is dandy, so just do it right way.
 	end

@@ -757,8 +757,8 @@ function XPerl_Target_SetHealth(self)
 	XPerl_SetHealthBar(self, hp, hpMax)
 
 	if (percent) then
-		if hpMax == 0 then--4.3+ fix so if for some dumb reason max HP is 0, prevent any division by 0.
-			hbt:SetFormattedText(percD, 100 * 0)
+		if UnitIsDeadOrGhost(partyid) or hpMax == 0 then--4.3+ fix so if for some dumb reason max HP is 0, prevent any division by 0.
+			hbt:SetFormattedText(percD, 0)
 		else
 			hbt:SetFormattedText(percD, 100 * hp / hpMax)
 		end	

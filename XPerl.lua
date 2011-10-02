@@ -221,11 +221,11 @@ local function DoRangeCheck(unit, opt)
 		local hp, hpMax = UnitHealth(unit), UnitHealthMax(unit)
 		--Begin 4.3 divide by 0 work around.
 		local percent
-		if hp > 0 and hpMax == 0 then--We have current HP but max hp failed.
-			hpMax = hp--Make max hp at least equal to current health
-			percent = 100--And percent 100% cause a number divided by itself is 1, duh.
-		elseif hp == 0 and hpMax == 0 then--Both returned 0, i havent seen curhealth return 0 falsely only max HP, so this is likely a dead target.
+		if UnitIsDeadOrGhost(unit) or (hp == 0 and hpMax == 0) then--Probably dead target
 			percent = 0--So just automatically set percent to 0 and avoid division of 0/0 all together in this situation.
+		elseif hp > 0 and hpMax == 0 then--We have current HP but max hp failed.
+			hpMax = hp--Make max hp at least equal to current health
+			percent = 100--100% if they are alive with > 0 cur hp, since curhp = maxhp in this hack.
 		else
 			percent = hp / hpMax--Everything is dandy, so just do it right way.
 		end
