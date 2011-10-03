@@ -464,7 +464,7 @@ function cast:HealthTotals()
 
 	self.totals.RaidHealth:SetValue(totalHealth)
 	self.totals.RaidHealth.name:SetFormattedText("%d%%", totalHealth)
-	if totalHealth ~= 0 and then
+	if totalHealth ~= 0 then
 		ScaleBarColour(self.totals.RaidHealth, totalHealth / 100)
 	else--don't divide 0 by 100, if total health is 0 then that's all we need to put in.
 		ScaleBarColour(self.totals.RaidHealth, 0)	
