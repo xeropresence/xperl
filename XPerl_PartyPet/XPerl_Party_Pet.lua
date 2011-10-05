@@ -224,7 +224,15 @@ function XPerl_Party_Pet_UpdateHealth(self)
 	end
 
 	local Partypethealth, Partypethealthmax = UnitHealth(self.partyid), UnitHealthMax(self.partyid)
-	local healthPct = Partypethealth / Partypethealthmax
+	local healthPct
+	if UnitIsDeadOrGhost(self.partyid) or (Partypethealth == 0 and Partypethealthmax == 0) then--Probably dead target
+		healthPct = 0--So just automatically set percent to 0 and avoid division of 0/0 all together in this situation.
+	elseif Partypethealth > 0 and Partypethealthmax == 0 then--We have current ho but max hp failed.
+		Partypethealthmax = Partypethealth--Make max hp at least equal to current health
+		healthPct = 100--And percent 100% cause a number divided by itself is 1, duh.
+	else
+		healthPct = Partypethealth / Partypethealthmax--Everything is dandy, so just do it right way.
+	end
 	local phealthPct = format("%3.0f", healthPct * 100)
 
 	self.statsFrame.healthBar:SetMinMaxValues(0, Partypethealthmax)
