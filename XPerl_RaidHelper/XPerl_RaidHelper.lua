@@ -121,7 +121,7 @@ local function UpdateUnit(self,forcedUpdate)
 		--Begin 4.3 division by 0 work around to ensure we don't divide if max is 0
 		local percBar
 		if UnitIsDeadOrGhost(xunit) or (health == 0 and healthMax == 0) then--Probably dead target
-			percent = 0--So just automatically set percent to 0 and avoid division of 0/0 all together in this situation.
+			percBar = 0--So just automatically set percent to 0 and avoid division of 0/0 all together in this situation.
 		elseif health > 0 and healthMax == 0 then--We have current ho but max hp failed.
 			healthMax = health--Make max hp at least equal to current health
 			percBar = 100--And percent 100% cause a number divided by itself is 1, duh.
