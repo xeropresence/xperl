@@ -1475,7 +1475,7 @@ function xpHigh:Damage(guid, absorbed)
 	local list = self.shields[guid]
 	if (list) then
 		local s = list[1]
-		if (s) then
+		if (s) and absorbed then
 			local update
 			if (absorbed >= s.amount) then
 				absorbed = absorbed - s.amount

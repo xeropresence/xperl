@@ -149,7 +149,7 @@ XPERL_HIGHLIGHT_SPELLS = {
 	shieldSpells = {
 		[GetSpellInfo(17)] = 30,			-- Power Word: Shield
 		[GetSpellInfo(76669)] = 6,			-- Illuminated Healing
-		[GetSpellInfo(974)] = 600			-- Earth Shield	(old id32594)
+		[GetSpellInfo(974)] = 600			-- Earth Shield	(old id 32594)
 	},
 	healSpells = {
 		[GetSpellInfo(2061)] = 1.5,			-- Flash of Light (old id 25235)
@@ -160,7 +160,7 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(331)] = 3,			-- Healing Wave (old id 25396)
 		[GetSpellInfo(8004)] = 1.5,			-- Lesser Healing Wave (old id 25420)
 		[GetSpellInfo(19750)] = 1.5,		-- Flash Heal (old id 27137)
-		[GetSpellInfo(635)] = 2.5,			-- Holy Light (old id 27136))
+		[GetSpellInfo(635)] = 2.5,			-- Holy Light (old id 27136)
 		[GetSpellInfo(50464)] = 3.0			-- Nourish
 	},
 	buffSpells = {
