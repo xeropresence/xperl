@@ -1031,7 +1031,7 @@ function XPerl_MinimapMenu(self)
 	ToggleDropDownMenu(1, nil, XPerl_Minimap_Dropdown, "cursor", 0, 0)
 end
 
-local xpModList = {"XPerl", "XPerl_Player", "XPerl_PlayerBuffs", "XPerl_PlayerPet", "XPerl_Target", "XPerl_TargetTarget", "XPerl_Party", "XPerl_PartyPet", "XPerl_ArcaneBar", "XPerl_HUD", "XPerl_RaidFrames", "XPerl_RaidHelper", "XPerl_RaidAdmin", "XPerl_RaidMonitor", "XPerl_RaidPets", "XPerl_GrimReaper"}
+local xpModList = {"XPerl", "XPerl_Player", "XPerl_PlayerBuffs", "XPerl_PlayerPet", "XPerl_Target", "XPerl_TargetTarget", "XPerl_Party", "XPerl_PartyPet", "XPerl_ArcaneBar", "XPerl_RaidFrames", "XPerl_RaidHelper", "XPerl_RaidAdmin", "XPerl_RaidMonitor", "XPerl_RaidPets" }
 local xpStartupMemory = {}
 
 -- XPerl_MinimapButton_Init

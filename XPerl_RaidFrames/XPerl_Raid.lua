@@ -1309,18 +1309,6 @@ end
 
 XPerl_Raid_Events.UNIT_MAXPOWER   = XPerl_Raid_Events.UNIT_POWER
 
--- WoW 3.3.5 and older.
--- UNIT_MANA
-XPerl_Raid_Events.UNIT_MANA		= XPerl_Raid_Events.UNIT_POWER
-XPerl_Raid_Events.UNIT_MAXMANA   = XPerl_Raid_Events.UNIT_POWER
-XPerl_Raid_Events.UNIT_RAGE      = XPerl_Raid_Events.UNIT_POWER
-XPerl_Raid_Events.UNIT_MAXRAGE   = XPerl_Raid_Events.UNIT_POWER
-XPerl_Raid_Events.UNIT_ENERGY    = XPerl_Raid_Events.UNIT_POWER
-XPerl_Raid_Events.UNIT_MAXENERGY = XPerl_Raid_Events.UNIT_POWER
-XPerl_Raid_Events.UNIT_RUNIC_POWER = XPerl_Raid_Events.UNIT_POWER
-XPerl_Raid_Events.UNIT_MAXRUNIC_POWER = XPerl_Raid_Events.UNIT_POWER
-
-
 -- UNIT_NAME_UPDATE
 function XPerl_Raid_Events:UNIT_NAME_UPDATE()
 	XPerl_Raid_UpdateName(self)
@@ -2255,7 +2243,7 @@ function XPerl_Raid_Set_Bits(self)
 		Setup1RaidFrame(frame)
 	end
 
-	local manaEvents = {"UNIT_DISPLAYPOWER", "UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_ENERGY", "UNIT_MAXENERGY", "UNIT_MANA", "UNIT_MAXMANA", "UNIT_RUNIC_POWER", "UNIT_MAXRUNIC_POWER", "UNIT_POWER", "UNIT_MAXPOWER"}
+	local manaEvents = {"UNIT_DISPLAYPOWER", "UNIT_POWER", "UNIT_MAXPOWER"}
 	for i,event in pairs(manaEvents) do
 		if (rconf.mana) then
 			self:RegisterEvent(event)
