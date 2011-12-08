@@ -3533,6 +3533,7 @@
 									XPerl_Options_EnableSibling(self,"ExtraSparkles")
 
 									local _, class = UnitClass("player")
+                                    --[[
 									if (class ~= "DRUID" and class ~= "PRIEST" and class ~= "SHAMAN") then
 										XPerlDB.highlight.HOT = nil
 										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightHoTs",self), false)
@@ -3545,6 +3546,7 @@
 										XPerlDB.highlight.POM = nil
 										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightMending",self), false)
 									end
+                                    --]]
 								end
 							</OnLoad>
 						</Scripts>
@@ -10064,7 +10066,6 @@
 					</CheckButton>
 
 					<CheckButton name="$parent_AlignToRaid" inherits="XPerlCheckButtonTemplate">
-						<Size><AbsDimension x="26" y="26"/></Size>
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_RaidPets" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
@@ -10081,10 +10082,10 @@
 						</Scripts>
 					</CheckButton>
 
-					<CheckButton name="$parent_Titles" inherits="XPerlCheckButtonTemplate">
+					<CheckButton name="$parent_Roles" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parent_AlignToRaid" relativePoint="BOTTOMLEFT">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
+								<Offset><AbsDimension x="0" y="0"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
@@ -10103,6 +10104,23 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_TITLES")
 								self.configBase = "XPerlDB.raid"
 								self.configIndex = "titles"
+								self.configClick = XPerl_Raid_OptionActions
+								XPerl_Options_RegisterProtected(self)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_Titles" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_Roles" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_ROLE_ICONS")
+								self.configBase = "XPerlDB.raid"
+								self.configIndex = "role_icons"
 								self.configClick = XPerl_Raid_OptionActions
 								XPerl_Options_RegisterProtected(self)
 							</OnLoad>
