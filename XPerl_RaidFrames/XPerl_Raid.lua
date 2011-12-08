@@ -12,7 +12,7 @@ local buffUpdates = {}		-- Queue for buff updates after a roster change
 local raidLoaded
 local rosterUpdated
 local percD = "%d"..PERCENT_SYMBOL
-local lastNamesList, lastName, lastWith, lastNamesCount		-- Stores with/without buff list (OnUpdate optimization)
+local lastNamesList, lastName, lastWith, lastNamesCount -- Stores with/without buff list (OnUpdate optimization)
 local fullyInitiallized
 
 if type(RegisterAddonMessagePrefix) == "function" then
@@ -47,7 +47,7 @@ local XPerl_CheckDebuffs = XPerl_CheckDebuffs
 local XPerl_ColourFriendlyUnit = XPerl_ColourFriendlyUnit
 local XPerl_ColourHealthBar = XPerl_ColourHealthBar
 
--- TODO - Watch for:   ERR_FRIEND_OFFLINE_S = "%s has gone offline."
+-- TODO - Watch for:	 ERR_FRIEND_OFFLINE_S = "%s has gone offline."
 
 local conf, rconf
 XPerl_RequestConfig(function(newConf) conf = newConf rconf = conf.raid end, "$Revision$")
@@ -67,7 +67,7 @@ local localGroups = LOCALIZED_CLASS_NAMES_MALE
 local WoWclassCount = 0
 for k,v in pairs(localGroups) do WoWclassCount = WoWclassCount + 1 end
 
-local resSpells  = {
+local resSpells = {
 	[GetSpellInfo(2006)] = true,			-- Resurrection
 	[GetSpellInfo(2008)] = true,			-- Ancestral Spirit
 	[GetSpellInfo(20484)] = true,			-- Rebirth
@@ -86,7 +86,7 @@ local raidHeaders = {}
 
 -- XPerl_Raid_OnLoad
 function XPerl_Raid_OnLoad(self)
-	local events = {"CHAT_MSG_ADDON",	
+	local events = {"CHAT_MSG_ADDON",
 			"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE", "UNIT_FACTION",
 			"UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_POWER", "UNIT_MAXPOWER",
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
@@ -184,7 +184,7 @@ end
 
 -- XPerl_MainTankSet_OnClick
 function XPerl_MainTankSet_OnClick(self, value)
-	if (self.value[1] == "Main Tanks") then				-- Must be 'this'
+	if (self.value[1] == "Main Tanks") then -- Must be 'this'
 		if (self.value[4]) then
 			SendAddonMessage("CTRA", "R "..self.value[2], "RAID")
 		else
@@ -271,7 +271,7 @@ function XPerl_RaidFrameDropDown_Initialize(self, ct)
 		info = UIDropDownMenu_CreateInfo()
 		info.text = XPERL_RAID_AUTOPROMOTE
 		info.checked = CT_RATab_AutoPromotions[self.name]	-- Must be 'this'
-		info.value = self.id					-- Must be 'this'
+		info.value = self.id -- Must be 'this'
 		info.func = CT_RATab_AutoPromote_OnClick
 		UIDropDownMenu_AddButton(info)
 	end--]]
@@ -592,7 +592,7 @@ local function XPerl_Raid_UpdateMana(self)
 		local manamax = UnitManaMax(partyid)
 
 		if (rconf.manaPercent and UnitPowerType(partyid) == 0 and not self.pet) then
-			if (rconf.values) then			-- TODO rconf.manavalues
+			if (rconf.values) then -- TODO rconf.manavalues
 			 	self.statsFrame.manaBar.text:SetFormattedText("%d/%d", mana, manamax)
 		 	else
 				--Begin 4.3 division by 0 work around to ensure we don't divide if max is 0
@@ -872,7 +872,7 @@ local function UpdateBuffs(self)
 
 			local prevBuff
 			for i = 1,buffCount do
-	  			local buff = bf.buff[i]
+				local buff = bf.buff[i]
 				buff:ClearAllPoints()
 				if (prevBuff) then
 					buff:SetPoint("TOPLEFT", prevBuff, "TOPRIGHT", 0, 0)
@@ -930,7 +930,7 @@ end
 
 -- XPerl_Raid_UpdatePlayerFlags(self)
 local function XPerl_Raid_UpdatePlayerFlags(self, partyid,...)
-	
+
 	if (not partyid) then
 
 		partyid = self:GetAttribute("unit")
@@ -1024,7 +1024,7 @@ function XPerl_Raid_OnUpdate(self, elapsed)
 			end
 
 			if (someUpdate) then
-				local unit = frame.partyid	-- frame:GetAttribute("unit")
+				local unit = frame.partyid -- frame:GetAttribute("unit")
 				if (unit) then
 					local name = UnitName(unit)
 					if (name) then
@@ -1072,7 +1072,7 @@ local function XPerl_Raid_RaidTargetUpdate(self)
 			icon = self.nameFrame:CreateTexture(nil, "OVERLAY")
 			self.nameFrame.raidIcon = icon
 			icon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
-			icon:SetPoint("RIGHT")
+			icon:SetPoint("LEFT")
 			icon:SetWidth(16)
 			icon:SetHeight(16)
 		else
@@ -1114,25 +1114,20 @@ local function XPerl_Raid_RoleUpdate(self, role)
 	local icon = self.nameFrame.roleIcon
 	local isTank, isHealer, isDamage
 
-  if (rconf.role_icons) then
-    if (role) then
-      if (not icon) then
-        icon = self.nameFrame:CreateTexture(nil, "OVERLAY")
-        self.nameFrame.roleIcon = icon
-        icon:SetPoint("LEFT")
-        icon:SetWidth(16)
-        icon:SetHeight(16)
-      end
+	if (role) then
+		if (not icon) then
+			icon = self.nameFrame:CreateTexture(nil, "OVERLAY")
+			self.nameFrame.roleIcon = icon
+			icon:SetPoint("CENTER", 0, -7)
+			icon:SetWidth(16)
+			icon:SetHeight(16)
+		end
 
-      if (SetRoleIconTexture(icon, role)) then
-        icon:Show()
-        return
-      end
-    end
-    if (icon) then
-      icon:Hide()
-    end
-  end
+		if (SetRoleIconTexture(icon, role)) then
+			icon:Show()
+			return
+		end
+	end
 end
 
 -------------------------
@@ -1153,15 +1148,17 @@ function XPerl_Raid_UpdateDisplay(self)
 		XPerl_Raid_UpdateManaType(self)
 		XPerl_Raid_UpdateMana(self)
 	end
+	if (rconf.role_icons) then
+		XPerl_Raid_RoleUpdate(self, UnitGroupRolesAssigned(self.partyid))
+	end
 	XPerl_Raid_UpdatePlayerFlags(self)
 	XPerl_Raid_UpdateHealth(self)		-- <<< -- AFTER MANA -- <<< --
 	XPerl_Raid_UpdateName(self)
 	XPerl_Raid_UpdateCombat(self)
 	XPerl_Unit_UpdateReadyState(self)
 	XPerl_Raid_RaidTargetUpdate(self)
-	XPerl_Raid_RoleUpdate(self, UnitGroupRolesAssigned(self.partyid))
 
-	buffUpdates[self] = true		-- UpdateBuffs(self)
+	buffUpdates[self] = true        -- UpdateBuffs(self)
 
 	if (not SkipHighlightUpdate) then
 		XPerl_Highlight:SetHighlight(self)
@@ -1180,7 +1177,7 @@ function XPerl_Raid_HideShowRaid()
 			singleGroup = XPerl_Party_SingleGroup()
 		end
 	end
-	
+
 	local enable = rconf.enable
 	if (enable) then
 		if (select(2, IsInInstance()) == "pvp") then
@@ -1255,7 +1252,7 @@ end
 -- PLAYER_ENTERING_WORLD
 function XPerl_Raid_Events:PLAYER_ENTERING_WORLD()
 	--self:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	
+
 	XPerl_Raid_ChangeAttributes()
 	XPerl_RaidTitles()
 
@@ -1300,19 +1297,21 @@ do
 
 	-- RAID_ROSTER_UPDATE
 	function XPerl_Raid_Events:RAID_ROSTER_UPDATE()
-		rosterUpdated = true		-- Many roster updates can occur during 1 video frame, so we'll check everything at end of last one
+		rosterUpdated = true -- Many roster updates can occur during 1 video frame, so we'll check everything at end of last one
 		BuildGuidMap()
 		if (GetNumRaidMembers() > 0) then
 			XPerl_Raid_Frame:Show()
 
-			for i,frame in pairs(FrameArray) do
-				if (frame.partyid) then
-					XPerl_Raid_RoleUpdate(frame)
+			if (rconf.raid_role ) then
+				for i,frame in pairs(FrameArray) do
+					if (frame.partyid) then
+						XPerl_Raid_RoleUpdate(self, UnitGroupRolesAssigned(self.partyid))
+					end
 				end
 			end
 		end
 	end
-	
+
 	function XPerl_Raid_Events:PLAYER_LOGIN()
 		BuildGuidMap()
 	end
@@ -1338,7 +1337,7 @@ end
 -- UNIT_COMBAT
 function XPerl_Raid_Events:UNIT_COMBAT(...)
 	local unitID, action, descriptor, damage, damageType = select(1, ...)
-	
+
 	if (action == "HEAL") then
 		XPerl_Raid_CombatFlash(self, 0, true, true)
 	elseif (damage and damage > 0) then
@@ -1358,15 +1357,14 @@ function XPerl_Raid_Events:UNIT_DISPLAYPOWER()
 	XPerl_Raid_UpdateMana(self)
 end
 
--- WoW 4.0 UNIT_POWER shit (Added by PlayerLin)
-
+-- WoW 4.0 UNIT_POWER
 function XPerl_Raid_Events:UNIT_POWER()
 	if (rconf.mana) then
 		XPerl_Raid_UpdateMana(self)
 	end
 end
 
-XPerl_Raid_Events.UNIT_MAXPOWER   = XPerl_Raid_Events.UNIT_POWER
+XPerl_Raid_Events.UNIT_MAXPOWER = XPerl_Raid_Events.UNIT_POWER
 
 -- UNIT_NAME_UPDATE
 function XPerl_Raid_Events:UNIT_NAME_UPDATE()
@@ -1409,12 +1407,12 @@ end
 -- UnitGroupRolesAssigned function will return the oldRole if used in this event
 function XPerl_Raid_Events:ROLE_CHANGED_INFORM(targetUnit, sourceUnit, oldRole, newRole)
 	local id = RaidPositions[targetUnit]
-	if (id) then
-		XPerl_Raid_RoleUpdate(FrameArray[id], newRole)
+	if ( rconf.raid_role ) then
+		if (id) then
+			XPerl_Raid_RoleUpdate(FrameArray[id], newRole)
+		end
 	end
-
 end
-
 
 -- SetRes
 local function SetResStatus(resserName, resTargetName, ignoreCounter)
@@ -1753,7 +1751,7 @@ function XPerl_Raid_Position(self)
 	XPerl_RaidTitles()
 	--Removed the useless InCombatLockdown() shit.
 	--if (conf.party.smallRaid and fullyInitiallized) and not InCombatLockdown()) then
-	if (conf.party.smallRaid and fullyInitiallized) then	
+	if (conf.party.smallRaid and fullyInitiallized) then
 		XPerl_Raid_HideShowRaid()
 	end
 end
@@ -2003,7 +2001,7 @@ local function GetCombatRezzerList()
 
 						if (myRoster) then
 							if (myRoster.Rebirth and myRoster.Rebirth - t <= 0) then
-								myRoster.Rebirth = nil		-- Check for expired cooldown
+								myRoster.Rebirth = nil   -- Check for expired cooldown
 							end
 							if (myRoster.Rebirth) then
 								if (myRoster.Rebirth - t < 120) then
@@ -2150,7 +2148,7 @@ end
 -- initialConfigFunction
 local function initialConfigFunction(self)
 	-- This is the only place we're allowed to set attributes whilst in combat
-	
+
 	self:SetScript("OnAttributeChanged", onAttrChanged)
 	XPerl_RegisterClickCastFrame(self)
 	XPerl_RegisterClickCastFrame(self.nameFrame)
@@ -2178,7 +2176,7 @@ end
 local function SetMainHeaderAttributes(self)
 
 	self:Hide()
-	
+
 	self.initialConfigFunction = initialConfigFunction
 
 	if (rconf.sortAlpha) then
@@ -2291,20 +2289,20 @@ function XPerl_Raid_Set_Bits(self)
 	if (raidLoaded) then
 		XPerl_ProtectedCall(XPerl_Raid_HideShowRaid)
 	end
-	
+
 	if rconf then
 		if (not rconf.hideframemanager) then
 			rconf.hideframemanager = { --messy fix for missing config
-				enable = 0, 
+				enable = 0,
 			}
 		end
 		if (not rconf.hideframecontainer) then
 			rconf.hideframecontainer = { --messy fix for missing config
-				enable = 1, 
+				enable = 1,
 			}
 		end
 	end
-	
+
 	SkipHighlightUpdate = nil
 
 	XPerl_ScaleRaid()
