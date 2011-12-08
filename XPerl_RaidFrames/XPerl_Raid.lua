@@ -73,6 +73,7 @@ local resSpells  = {
 	[GetSpellInfo(20484)] = true,			-- Rebirth
 	[GetSpellInfo(7328)] = true,			-- Redemption
 	[GetSpellInfo(50769)] = true,			-- Revive
+	[GetSpellInfo(83968)] = true,			-- Mass Resurrection
 }
 
 local hotSpells = XPERL_HIGHLIGHT_SPELLS.hotSpells
@@ -85,20 +86,19 @@ local raidHeaders = {}
 
 -- XPerl_Raid_OnLoad
 function XPerl_Raid_OnLoad(self)
-	-- Added UNIT_POWER/UNIT_MAXPOWER to events list for 4.0 (By PlayerLin)
-	local events = {"CHAT_MSG_ADDON",	-- "CHAT_MSG_RAID", "CHAT_MSG_RAID_LEADER", "CHAT_MSG_PARTY",
+	local events = {"CHAT_MSG_ADDON",	
 			"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE", "UNIT_FACTION",
 			"UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_POWER", "UNIT_MAXPOWER",
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
 			"UNIT_COMBAT", "UNIT_SPELLCAST_START", "UNIT_SPELLCAST_STOP", "UNIT_SPELLCAST_FAILED",
 			"UNIT_SPELLCAST_INTERRUPTED", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED",
-			"RAID_TARGET_UPDATE", "PLAYER_LOGIN"
+			"RAID_TARGET_UPDATE", "PLAYER_LOGIN", "ROLE_CHANGED_INFORM"
 			}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
 
-	for i = 1,WoWclassCount do			-- Fix for WoW 2.1 UNIT_NAME_UPDATE issue
+	for i = 1,WoWclassCount do
 		_G["XPerl_Raid_Grp"..i]:UnregisterEvent("UNIT_NAME_UPDATE")
 		tinsert(raidHeaders, _G[XPERL_RAIDGRP_PREFIX..i])
 	end
@@ -1066,12 +1066,13 @@ local function XPerl_Raid_RaidTargetUpdate(self)
 	local icon = self.nameFrame.raidIcon
 	local raidIcon = GetRaidTargetIndex(self.partyid)
 
+
 	if (raidIcon) then
 		if (not icon) then
 			icon = self.nameFrame:CreateTexture(nil, "OVERLAY")
 			self.nameFrame.raidIcon = icon
 			icon:SetTexture("Interface\\TargetingFrame\\UI-RaidTargetingIcons")
-			icon:SetPoint("LEFT")
+			icon:SetPoint("RIGHT")
 			icon:SetWidth(16)
 			icon:SetHeight(16)
 		else
@@ -1081,6 +1082,57 @@ local function XPerl_Raid_RaidTargetUpdate(self)
 	elseif (icon) then
 		icon:Hide()
 	end
+end
+
+local function SetRoleIconTexture(texture, role)
+	if (conf.xperlOldroleicons) then
+		if role == "TANK" then
+			texture:SetTexture("Interface\\GroupFrame\\UI-Group-MainTankIcon")
+		elseif role == "HEALER" then
+			texture:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer_old")
+		elseif role == "DAMAGER" then
+			texture:SetTexture("Interface\\GroupFrame\\UI-Group-MainAssistIcon")
+		else
+			return false
+		end
+	else
+		if role == "TANK" then
+			texture:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleTank")
+		elseif role == "HEALER" then
+			texture:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleHealer")
+		elseif role == "DAMAGER" then
+			texture:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_RoleDamage")
+		else
+			return false
+		end
+	end
+	return true
+end
+
+-- XPerl_Raid_RoleUpdate
+local function XPerl_Raid_RoleUpdate(self, role)
+	local icon = self.nameFrame.roleIcon
+	local isTank, isHealer, isDamage
+
+  if (rconf.role_icons) then
+    if (role) then
+      if (not icon) then
+        icon = self.nameFrame:CreateTexture(nil, "OVERLAY")
+        self.nameFrame.roleIcon = icon
+        icon:SetPoint("LEFT")
+        icon:SetWidth(16)
+        icon:SetHeight(16)
+      end
+
+      if (SetRoleIconTexture(icon, role)) then
+        icon:Show()
+        return
+      end
+    end
+    if (icon) then
+      icon:Hide()
+    end
+  end
 end
 
 -------------------------
@@ -1107,6 +1159,7 @@ function XPerl_Raid_UpdateDisplay(self)
 	XPerl_Raid_UpdateCombat(self)
 	XPerl_Unit_UpdateReadyState(self)
 	XPerl_Raid_RaidTargetUpdate(self)
+	XPerl_Raid_RoleUpdate(self, UnitGroupRolesAssigned(self.partyid))
 
 	buffUpdates[self] = true		-- UpdateBuffs(self)
 
@@ -1251,6 +1304,12 @@ do
 		BuildGuidMap()
 		if (GetNumRaidMembers() > 0) then
 			XPerl_Raid_Frame:Show()
+
+			for i,frame in pairs(FrameArray) do
+				if (frame.partyid) then
+					XPerl_Raid_RoleUpdate(frame)
+				end
+			end
 		end
 	end
 	
@@ -1341,6 +1400,21 @@ function XPerl_Raid_Events:RAID_TARGET_UPDATE()
 		end
 	end
 end
+
+-- ROLE_CHANGED_INFORM
+-- targetUnit is the player whose role is being changed
+-- sourceUnit is the player who initiated the change
+-- oldRole is a role currently assigned to the player - NONE, TANK, HEALER, DAMAGER
+-- newRole is a role being assigned to the player
+-- UnitGroupRolesAssigned function will return the oldRole if used in this event
+function XPerl_Raid_Events:ROLE_CHANGED_INFORM(targetUnit, sourceUnit, oldRole, newRole)
+	local id = RaidPositions[targetUnit]
+	if (id) then
+		XPerl_Raid_RoleUpdate(FrameArray[id], newRole)
+	end
+
+end
+
 
 -- SetRes
 local function SetResStatus(resserName, resTargetName, ignoreCounter)
