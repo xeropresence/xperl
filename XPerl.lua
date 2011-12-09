@@ -277,7 +277,7 @@ local function DoRangeCheck(unit, opt)
 			range = 1
 		end
 	end
-	
+
 	if (range ~= 1 and range ~= true) then
 		return opt.FadeAmount
 	end
