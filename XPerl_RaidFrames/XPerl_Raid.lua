@@ -1118,7 +1118,7 @@ local function XPerl_Raid_RoleUpdate(self, role)
 		if (not icon) then
 			icon = self.nameFrame:CreateTexture(nil, "OVERLAY")
 			self.nameFrame.roleIcon = icon
-			icon:SetPoint("CENTER", 0, -7)
+			icon:SetPoint("RIGHT", 7, 7)
 			icon:SetWidth(16)
 			icon:SetHeight(16)
 		end
@@ -1407,7 +1407,7 @@ end
 -- UnitGroupRolesAssigned function will return the oldRole if used in this event
 function XPerl_Raid_Events:ROLE_CHANGED_INFORM(targetUnit, sourceUnit, oldRole, newRole)
 	local id = RaidPositions[targetUnit]
-	if ( rconf.raid_role ) then
+	if ( rconf.role_icons ) then
 		if (id) then
 			XPerl_Raid_RoleUpdate(FrameArray[id], newRole)
 		end
