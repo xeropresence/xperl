@@ -3,6 +3,7 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 local ArcaneBars = {}
+local shield_icon = "|TInterface\\GroupFrame\\UI-Group-MainTankIcon:0:0:0:0|t"
 
 --@debug@
 local function d(...)
@@ -80,9 +81,9 @@ end
 -- See if we're probably still casting a spell, even though some other spell END event occured
 local function ActiveCasting(self)
 	local t = GetTime() * 1000
-	local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitCastingInfo(self.unit)
+	local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo(self.unit)
 	if (not name) then
-		name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo(self.unit)
+		name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitChannelInfo(self.unit)
 	end
 	if (name and endTime > t + 500) then
 		return true
@@ -120,14 +121,18 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 	end
 
 	if (event == "UNIT_SPELLCAST_START") then
-		local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitCastingInfo(self.unit)
+		local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo(self.unit)
 		if ( not name or (not self.showTradeSkills and isTradeSkill)) then
 			self:Hide()
 			return
 		end
 
 		self:SetStatusBarColor(barColours.main.r, barColours.main.g, barColours.main.b, conf.transparency.frame)
-		self.spellText:SetText(name:gsub(" %- No Text", ""))
+    if (notInterruptible) then
+      self.spellText:SetText(shield_icon .. shield_icon .. name:gsub(" %- No Text", "") .. shield_icon .. shield_icon)
+    else
+      self.spellText:SetText(name:gsub(" %- No Text", ""))
+    end
 		self.barParentName:Hide()
 		self.barSpark:Show()
 		self.startTime = startTime / 1000
@@ -164,6 +169,7 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 				if (not self.fadeOut or event == "UNIT_SPELLCAST_CHANNEL_STOP") then
 					self.flash = 1
 				end
+        self.barShielded:Hide()
 				self.fadeOut = 1
 				self.holdTime = 0
 			end
@@ -185,13 +191,14 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 			if (not self.fadeOut) then
 				self.flash = 1
 			end
+      self.barShielded:Hide()
 			self.fadeOut = 1
 			self.holdTime = GetTime() + CASTING_BAR_HOLD_TIME
 		end
 
 	elseif (event == "UNIT_SPELLCAST_DELAYED") then
 		if (self:IsShown()) then
-			local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitCastingInfo(self.unit)
+			local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo(self.unit)
 			if (not name or (not self.showTradeSkills and isTradeSkill)) then
 				-- if there is no name, there is no bar
 				self:Hide()
@@ -203,7 +210,7 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 		end
 
 	elseif (event == "UNIT_SPELLCAST_CHANNEL_START") then
-		local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo(self.unit)
+		local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo(self.unit)
 		if (not name or (not self.showTradeSkills and isTradeSkill)) then
 			-- if there is no name, there is no bar
 			self:Hide()
@@ -213,7 +220,11 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 		self:SetStatusBarColor(barColours.channel.r, barColours.channel.g, barColours.channel.b, conf.transparency.frame)
 		self.barSpark:Show()
 		self.barParentName:Hide()
-		self.spellText:SetText(name:gsub(" %- No Text", ""))
+    if (notInterruptible) then
+      self.spellText:SetText(shield_icon .. shield_icon .. name:gsub(" %- No Text", "") .. shield_icon .. shield_icon)
+    else
+      self.spellText:SetText(name:gsub(" %- No Text", ""))
+    end
 		self.maxValue = 1
 		self.startTime = startTime / 1000
 		self.endTime = endTime / 1000
@@ -229,10 +240,13 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 		else
 			self.castTimeText:Hide()
 		end
+    if ( notInterruptible ) then
+      self.barShielded:Show()
+    end
 
 	elseif (event == "UNIT_SPELLCAST_CHANNEL_UPDATE") then
 		if (self:IsShown()) then
-			local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill = UnitChannelInfo(self.unit)
+			local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo(self.unit)
 			if (not name or (not self.showTradeSkills and isTradeSkill)) then
 				-- if there is no name, there is no bar
 				self:Hide()
@@ -429,7 +443,8 @@ local function XPerl_MakePreCast(self)
 	self.precast:SetWidth(1)
 	self.precast:Hide()
 	self.precast:SetBlendMode("ADD")
-	self.precast:SetVertexColor(1, 0, 0)	--SetGradient("HORIZONTAL", 0, 0, 1, 1, 0, 0)
+	--self.precast:SetVertexColor(1, 0, 0)	--SetGradient("HORIZONTAL", 0, 0, 1, 1, 0, 0)
+	self.precast:SetGradient("HORIZONTAL", 0, 0, 1, 1, 0, 0)
 	XPerl_MakePreCast = nil
 end
 
