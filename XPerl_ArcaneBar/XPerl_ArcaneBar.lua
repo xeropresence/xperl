@@ -128,11 +128,11 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 		end
 
 		self:SetStatusBarColor(barColours.main.r, barColours.main.g, barColours.main.b, conf.transparency.frame)
-    if (notInterruptible) then
-      self.spellText:SetText(shield_icon .. shield_icon .. name:gsub(" %- No Text", "") .. shield_icon .. shield_icon)
-    else
-      self.spellText:SetText(name:gsub(" %- No Text", ""))
-    end
+		if (notInterruptible) then
+			self.spellText:SetText(shield_icon .. shield_icon .. name:gsub(" %- No Text", "") .. shield_icon .. shield_icon)
+		else
+			self.spellText:SetText(name:gsub(" %- No Text", ""))
+		end
 		self.barParentName:Hide()
 		self.barSpark:Show()
 		self.startTime = startTime / 1000
@@ -169,7 +169,6 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 				if (not self.fadeOut or event == "UNIT_SPELLCAST_CHANNEL_STOP") then
 					self.flash = 1
 				end
-        self.barShielded:Hide()
 				self.fadeOut = 1
 				self.holdTime = 0
 			end
@@ -191,7 +190,6 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 			if (not self.fadeOut) then
 				self.flash = 1
 			end
-      self.barShielded:Hide()
 			self.fadeOut = 1
 			self.holdTime = GetTime() + CASTING_BAR_HOLD_TIME
 		end
@@ -220,11 +218,11 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 		self:SetStatusBarColor(barColours.channel.r, barColours.channel.g, barColours.channel.b, conf.transparency.frame)
 		self.barSpark:Show()
 		self.barParentName:Hide()
-    if (notInterruptible) then
-      self.spellText:SetText(shield_icon .. shield_icon .. name:gsub(" %- No Text", "") .. shield_icon .. shield_icon)
-    else
-      self.spellText:SetText(name:gsub(" %- No Text", ""))
-    end
+		if (notInterruptible) then
+			self.spellText:SetText(shield_icon .. shield_icon .. name:gsub(" %- No Text", "") .. shield_icon .. shield_icon)
+		else
+			self.spellText:SetText(name:gsub(" %- No Text", ""))
+		end
 		self.maxValue = 1
 		self.startTime = startTime / 1000
 		self.endTime = endTime / 1000
@@ -240,10 +238,6 @@ function XPerl_ArcaneBar_OnEvent(self, event, newarg1, newarg2)
 		else
 			self.castTimeText:Hide()
 		end
-    if ( notInterruptible ) then
-      self.barShielded:Show()
-    end
-
 	elseif (event == "UNIT_SPELLCAST_CHANNEL_UPDATE") then
 		if (self:IsShown()) then
 			local name, nameSubtext, text, texture, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo(self.unit)
@@ -301,7 +295,7 @@ function XPerl_ArcaneBar_OnUpdate(self, elapsed)
 	local text = format("%.1f", current_time)
 
 	self.castTimeText:SetText(text)
-        
+
 	if (self.casting) then
 		local status = getTime
 		if (status > self.maxValue) then
@@ -317,7 +311,7 @@ function XPerl_ArcaneBar_OnUpdate(self, elapsed)
 			self.fadeOut = 1
 			return
 		end
-		
+
 		self.tex:SetTexCoord(0, (status - self.startTime) / (self.maxValue - self.startTime), 0, 1)
 		self:SetValue(status)
 		self.barFlash:Hide()
@@ -346,7 +340,7 @@ function XPerl_ArcaneBar_OnUpdate(self, elapsed)
 			self.fadeOut = 1
 			return
 		end
-		local barValue = self.startTime + (self.endTime - time)		
+		local barValue = self.startTime + (self.endTime - time)
 		self.tex:SetTexCoord(0, min(1, max(0, (barValue - self.startTime) / (self.endTime - self.startTime))), 0, 1)
 		self:SetValue( barValue )
 		self.barFlash:Hide()
@@ -394,7 +388,7 @@ function XPerl_ArcaneBar_OnLoad(self)
 	self.tex:SetTexture("Interface\\AddOns\\XPerl\\Images\\XPerl_StatusBar")
 	self.tex:SetHorizTile(false)
 	self.tex:SetVertTile(false)
-	
+
 	self.casting = nil
 	self.holdTime = 0
 
