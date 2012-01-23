@@ -942,6 +942,7 @@ end
 function XPerl_Player_Events:UPDATE_SHAPESHIFT_FORM()
 	if (playerClass == "DRUID") then
 		XPerl_Player_DruidBarUpdate(self)
+		XPerl_Unit_UpdatePortrait(self)--Maybe fix portraits not updating when shifting forms?
 	end
 end
 
