@@ -277,7 +277,7 @@ function ch:DefaultZoneData()
 				[99849] = true,								-- Fixate (Ragnaros)
 				[100292] = true,							-- Lava Wave (Ragnaros)
 			},
-		[XPERL_LOC_ZONE_FIRELANDS] =
+		[XPERL_LOC_ZONE_DRAGONSOUL] =
 			{
 				[103434] = true,							-- Disrupting Shadows (Zon'Ozz)
 
@@ -291,8 +291,6 @@ function ch:DefaultZoneData()
 
 				[109364] = true,							-- Searing Plasma (Spine of Deathwing)
 				[109459] = true,							-- Grip (Spine of Deathwing)
-
-				[98450] = true,								-- Searing Seed (Staghelm)
 
 				[110141] = true,							-- Shrapnal(Madness of Deathwing)
 				[99849] = true,								-- Fixate (Ragnaros)
