@@ -287,13 +287,14 @@ function ch:DefaultZoneData()
 	
 				[110080] = true,							-- Fading Light (Ultraxion)
 
-				[110598] = true,							-- Consuming Shroud(Blackhorn Heroic)
+				[109204] = true,							-- Twilight Barrage (Blackhorn Heroic)
+				[110598] = true,							-- Consuming Shroud (Blackhorn Heroic)
 
 				[109364] = true,							-- Searing Plasma (Spine of Deathwing)
 				[109459] = true,							-- Grip (Spine of Deathwing)
+				[106199] = true,							-- Blood Corruption: Death (Heroic Spine of Deathwing)
 
 				[110141] = true,							-- Shrapnal(Madness of Deathwing)
-				[99849] = true,								-- Fixate (Ragnaros)
 				[108649] = true,							-- Paracite (Madness of Deathwing Heroic)
 			},
 		}
