@@ -1111,8 +1111,7 @@ end
 
 -- XPerl_Raid_RoleUpdate
 local function XPerl_Raid_RoleUpdate(self, role)
-	local icon = self.nameFrame.roleIcon
-	local isTank, isHealer, isDamage
+	local icon = self.nameFrame.roleIcon or nil
 
 	if (role) then
 		if (not icon) then
