@@ -184,7 +184,7 @@ end
 
 -- XPerl_MainTankSet_OnClick
 function XPerl_MainTankSet_OnClick(self, value)
-	if (self.value[1] == "Main Tanks") then -- Must be 'this'
+	if (self.value[1] == "Main Tanks") and UnitInRaid("player") then -- Must be 'this'
 		if (self.value[4]) then
 			SendAddonMessage("CTRA", "R "..self.value[2], "RAID")
 		else
