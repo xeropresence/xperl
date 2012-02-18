@@ -777,7 +777,15 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 	end
 
 	XPerl_Player_UpdateDisplay(self)
-	
+
+	--Fix Player Portrait not updating after login
+	local frame = CreateFrame("Frame")
+		local t = 0 frame:SetScript("OnUpdate", function(self, e) t = t + e if t > 3 then--Schedule 3 second delay
+			XPerl_Unit_UpdatePortrait(self)--Update portrait
+			frame:SetScript("OnUpdate", nil)--Unschedule so it doesn't loop.
+		end
+	end)
+
 	--fix runes on player load
 	if self.runes then
 		for i = 1,6 do
@@ -824,7 +832,7 @@ function XPerl_Player_Events:VARIABLES_LOADED()
 
 	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBERS_CHANGED", "PARTY_LEADER_CHANGED",
 			"PARTY_LOOT_METHOD_CHANGED", "RAID_ROSTER_UPDATE", "PLAYER_UPDATE_RESTING", "PLAYER_REGEN_ENABLED",
-			"PLAYER_REGEN_DISABLED", "PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_ALIVE", "PLAYER_DEAD",
+			"PLAYER_REGEN_DISABLED", "PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_DEAD",
 			"UPDATE_FACTION", "UNIT_AURA", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
 			"UNIT_COMBAT"}--, "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE"
 
@@ -928,12 +936,6 @@ end
 -- RAID_TARGET_UPDATE
 function XPerl_Player_Events:RAID_TARGET_UPDATE()
 	XPerl_Player_UpdateRaidTarget(XPerl_Player)
-end
-
--- PLAYER_ALIVE
-function XPerl_Player_Events:PLAYER_ALIVE()
---	XPerl_Player_UpdateDisplay(self)
-	XPerl_Unit_UpdatePortrait(self)
 end
 
 -- PLAYER_TALENT_UPDATE
