@@ -43,7 +43,7 @@ local hugeNumDiv10 = hugeNumDiv * 10
 local largeNumDiv100 = largeNumDiv * 100
 local ArcaneExclusions = XPerl_ArcaneExclusions
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
- 
+
 --@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))

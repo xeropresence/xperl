@@ -780,7 +780,7 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 
 	--Fix Player Portrait not updating after login
 	local frame = CreateFrame("Frame")
-		local t = 0 frame:SetScript("OnUpdate", function(self, e) t = t + e if t > 3 then--Schedule 3 second delay
+		local t = 0 frame:SetScript("OnUpdate", function(self, e) t = t + e if t > 5 then--Schedule 5 second delay
 			XPerl_Unit_UpdatePortrait(self)--Update portrait
 			frame:SetScript("OnUpdate", nil)--Unschedule so it doesn't loop.
 		end

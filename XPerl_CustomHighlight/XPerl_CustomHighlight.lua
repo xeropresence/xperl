@@ -294,8 +294,8 @@ function ch:DefaultZoneData()
 				[109459] = true,							-- Grip (Spine of Deathwing)
 				[106199] = true,							-- Blood Corruption: Death (Heroic Spine of Deathwing)
 
-				[110141] = true,							-- Shrapnal(Madness of Deathwing)
-				[108649] = true,							-- Paracite (Madness of Deathwing Heroic)
+				[110141] = true,							-- Shrapnal (Madness of Deathwing)
+				[108649] = true,							-- Parasite (Madness of Deathwing Heroic)
 			},
 		}
 end
