@@ -295,6 +295,7 @@ function ch:DefaultZoneData()
 				[106199] = true,							-- Blood Corruption: Death (Heroic Spine of Deathwing)
 
 				[110141] = true,							-- Shrapnal (Madness of Deathwing)
+				[109605] = true,							-- Tetanus (Madness of Deathwing)
 				[108649] = true,							-- Parasite (Madness of Deathwing Heroic)
 			},
 		}
