@@ -463,12 +463,14 @@ function ch:Check(frame, unit)
 		end
 
 		for i = 1,40 do
-			local name, rank, buffIcon = UnitDebuff(unit, i)
+			local debuffname, _, debuffIcon = UnitDebuff(unit, id)
+			local buffname, _, buffIcon = UnitBuff(unit, id)
 			if (not name) then
 				break
 			end
-			if (z[name]) then
-				self:Highlight(frame, "debuff", unit, name, buffIcon)
+			if (z[debuffname]) or (z[buffname]) then
+				self:Highlight(frame, "debuff", unit, debuffname, debuffIcon)
+				self:Highlight(frame, "debuff", unit, buffname, buffIcon)
 				return
 			end
 		end
