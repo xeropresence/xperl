@@ -649,7 +649,6 @@ local old_CT_RA_IsSendingWithVersion
 function Events:VARIABLES_LOADED()
 	self:UnregisterEvent("VARIABLES_LOADED")
 
-	conf = XPerlConfigHelper
 
 	if (CT_RA_IsSendingWithVersion) then
 		old_CT_RA_IsSendingWithVersion = CT_RA_IsSendingWithVersion
@@ -669,6 +668,7 @@ function Events:VARIABLES_LOADED()
 	XPerl_MTTargets:SetAttribute("template", "XPerl_MTList_UnitTemplate")
 
 	XPerl_Startup()
+	conf = XPerlConfigHelper
 	XPerl_RaidHelperCheck:Show()		-- XPerl_EnableDisable()
 
 	XPerl_RegisterOptionChanger(XPerl_SetFrameSizes)
