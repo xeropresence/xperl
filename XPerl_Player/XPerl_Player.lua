@@ -778,14 +778,6 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 
 	XPerl_Player_UpdateDisplay(self)
 
-	--Fix Player Portrait not updating after login
-	local frame = CreateFrame("Frame")
-		local t = 0 frame:SetScript("OnUpdate", function(self, e) t = t + e if t > 5 then--Schedule 5 second delay
-			XPerl_Unit_UpdatePortrait("player")--Update portrait
-			frame:SetScript("OnUpdate", nil)--Unschedule so it doesn't loop.
-		end
-	end)
-
 	--fix runes on player load
 	if self.runes then
 		for i = 1,6 do
