@@ -463,7 +463,7 @@ function ch:Check(frame, unit)
 		end
 
 		for i = 1,40 do
-			local name, _, icon = UnitAura(unit, i)
+			local name, _, icon = UnitDebuff(unit, i)
 			if (not name) then
 				break
 			end
