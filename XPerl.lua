@@ -2207,7 +2207,7 @@ end
 
 -- XPerl_StatusBarSetValue
 function XPerl_StatusBarSetValue(self, val)
-	if (not tempDisableFadeBars and conf.bar.fading and self:GetName()) then
+	if conf and (not tempDisableFadeBars and conf.bar.fading and self:GetName()) then
 		local min, max = self:GetMinMaxValues()
 		local current = self:GetValue()
 

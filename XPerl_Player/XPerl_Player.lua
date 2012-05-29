@@ -525,10 +525,10 @@ local function XPerl_Player_UpdateMana(self)
 	mb.tex:SetTexCoord(0, max(0, (percent)), 0, 1)
 	
 	if (not self.statsFrame.greyMana) then
-		if (pconf.values) then
+		if pconf and (pconf.values) then
 			mb.text:Show()
 		end
-		if (pconf.percent) then
+		if pconf and (pconf.percent) then
 			mb.percent:Show()
 		end
 	end
