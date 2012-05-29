@@ -20,11 +20,11 @@ if type(RegisterAddonMessagePrefix) == "function" then
 	RegisterAddonMessagePrefix("oRA")
 end
 
---@debug@
+--[===[@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
 end
---@end-debug@
+--@end-debug@]===]
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 

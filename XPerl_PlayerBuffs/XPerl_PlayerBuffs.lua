@@ -7,12 +7,12 @@ XPerl_RequestConfig(function(new) conf = new pconf = new.player end, "$Revision$
 
 local playerClass
 
---@debug@
+--[===[@debug@
 local function d(fmt, ...)
 	fmt = fmt:gsub("(%%[sdqxf])", "|cFF60FF60%1|r")
 	ChatFrame1:AddMessage("|cFFFF8080PlayerBuffs:|r "..format(fmt, ...), 0.8, 0.8, 0.8)
 end
---@end-debug@
+--@end-debug@]===]
 
 -- setCommon
 local function setCommon(self, filter, buffTemplate)

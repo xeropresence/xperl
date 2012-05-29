@@ -10,11 +10,11 @@ XPerl_RequestConfig(function(new) conf = new pconf = conf.player if (XPerl_Playe
 local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%d"..PERCENT_SYMBOL
 
---@debug@
+--[===[@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
 end
---@end-debug@
+--@end-debug@]===]
 
 local format = format
 local GetNumRaidMembers = GetNumRaidMembers
@@ -49,10 +49,19 @@ function XPerl_Player_OnLoad(self)
 
 	CombatFeedback_Initialize(self, self.hitIndicator.text, 30)
 
-	XPerl_SecureUnitButton_OnLoad(self, "player", nil, PlayerFrameDropDown, XPerl_ShowGenericMenu)					--PlayerFrame.menu)
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", nil, PlayerFrameDropDown, XPerl_ShowGenericMenu)		--PlayerFrame.menu)
-
-	self:RegisterEvent("VARIABLES_LOADED")
+	local events = {"PLAYER_ENTERING_WORLD", "PLAYER_FLAGS_CHANGED",  "PLAYER_UPDATE_RESTING",  
+					"PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_REGEN_ENABLED", 
+					"PLAYER_REGEN_DISABLED", "PLAYER_DEAD", "UPDATE_FACTION", "PLAYER_CONTROL_LOST", 
+					"PLAYER_CONTROL_GAINED", "PLAYER_TALENT_UPDATE", "UPDATE_SHAPESHIFT_FORM", 
+					"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE", "UNIT_AURA", "UNIT_COMBAT", "UNIT_HEALTH", 
+					"UNIT_MAXHEALTH", "UNIT_POWER", "UNIT_MAXPOWER", "UNIT_DISPLAYPOWER", "UNIT_LEVEL", 
+					"UNIT_NAME_UPDATE", "UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_FLAGS", 
+					"UNIT_DYNAMIC_FLAGS", "UNIT_PORTRAIT_UPDATE", "UNIT_ENTERED_VEHICLE", 
+					"UNIT_EXITED_VEHICLE", "RAID_TARGET_UPDATE", "RAID_ROSTER_UPDATE", 
+					"PARTY_MEMBERS_CHANGED", "PARTY_LEADER_CHANGED", "PARTY_LOOT_METHOD_CHANGED"}
+	for i,event in pairs(events) do
+		self:RegisterEvent(event)
+	end
 
 	self.EnergyLast = 0
 	self.tutorialPage = 2
@@ -83,6 +92,9 @@ function XPerl_Player_OnLoad(self)
 
 	XPerl_Player_InitWarlock(self)
 	XPerl_Player_SetupWarlock(self)
+
+	XPerl_SecureUnitButton_OnLoad(self, "player", nil, PlayerFrameDropDown, XPerl_ShowGenericMenu)	--PlayerFrame.menu)
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", nil, PlayerFrameDropDown, XPerl_ShowGenericMenu) --PlayerFrame.menu)
 
 	XPerl_RegisterHighlight(self.highlight, 3)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
@@ -700,10 +712,6 @@ end
 local function XPerl_Player_UpdateBuffs(self)
 	XPerl_CheckDebuffs(self, self.partyid)
 
-	if (playerClass == "DRUID") then
-		XPerl_Player_UpdateMana(self)
-	end
-
 	if (pconf.fullScreen.enable) then
 		if (isOutOfControl and not UnitOnTaxi("player")) then
 			XPerl_PlayerStatus_OnUpdate(self)
@@ -713,6 +721,7 @@ end
 
 -- XPerl_Player_UpdateDisplay
 function XPerl_Player_UpdateDisplay (self)
+	XPerl_Unit_UpdatePortrait(self)
 	XPerl_Player_UpdateXP(self)
 	XPerl_Player_UpdateRep(self)
 	XPerl_Player_UpdateManaType(self)
@@ -720,13 +729,11 @@ function XPerl_Player_UpdateDisplay (self)
 	XPerl_Player_UpdateName(self)
 	XPerl_Player_UpdateClass(self)
 	XPerl_Player_UpdatePVP(self)
-	XPerl_Player_UpdateCombat(self)
 	XPerl_Player_UpdateLeader(self)
 	XPerl_Player_UpdateRaidTarget(self)
 	XPerl_Player_UpdateMana(self)
 	XPerl_Player_UpdateHealth(self)
 	XPerl_Player_UpdateBuffs(self)
-	XPerl_Unit_UpdatePortrait(self)
 end
 
 -- EVENTS AND STUFF
@@ -759,21 +766,6 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 		if (XPerl_ArcaneBar_SetUnit) then
 			XPerl_ArcaneBar_SetUnit(self.nameFrame, "player")
 		end
-	end
-
-	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",
-			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
-			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
-			"UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "PLAYER_TALENT_UPDATE", "MASTERY_UPDATE", "RAID_TARGET_UPDATE", "UPDATE_SHAPESHIFT_FORM",
-			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE"}
-
-
-	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
-	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED"})
-	--XPerl_RegisterBasics(self, XPerl_Player_Events)
-
-	for i,e in pairs(events) do
-		self:RegisterEvent(e)
 	end
 
 	XPerl_Player_UpdateDisplay(self)
@@ -817,24 +809,6 @@ function XPerl_Player_Events:UNIT_PORTRAIT_UPDATE()
 	XPerl_Unit_UpdatePortrait(self)
 end
 
--- VARIABLES_LOADED
-function XPerl_Player_Events:VARIABLES_LOADED()
-	self.doubleCheckAFK = 2		-- Check during 2nd UPDATE_FACTION, which are the last guarenteed events to come after logging in
-	self:UnregisterEvent("VARIABLES_LOADED")
-
-	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBERS_CHANGED", "PARTY_LEADER_CHANGED",
-			"PARTY_LOOT_METHOD_CHANGED", "RAID_ROSTER_UPDATE", "PLAYER_UPDATE_RESTING", "PLAYER_REGEN_ENABLED",
-			"PLAYER_REGEN_DISABLED", "PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_DEAD",
-			"UPDATE_FACTION", "UNIT_AURA", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
-			"UNIT_COMBAT"}--, "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE"
-
-	for i,eventE in pairs(events) do
-		self:RegisterEvent(eventE)
-	end
-
-	XPerl_Player_Events.VARIABLES_LOADED = nil
-end
-
 -- PARTY_LOOT_METHOD_CHANGED
 function XPerl_Player_Events:PARTY_LOOT_METHOD_CHANGED()
 	XPerl_Player_UpdateLeader(self)
@@ -850,27 +824,31 @@ end
 XPerl_Player_Events.UNIT_MAXHEALTH = XPerl_Player_Events.UNIT_HEALTH
 XPerl_Player_Events.PLAYER_DEAD    = XPerl_Player_Events.UNIT_HEALTH
 
--- UNIT_MANA
-function XPerl_Player_Events:UNIT_MANA()
+-- UNIT_POWER
+function XPerl_Player_Events:UNIT_POWER()
 	XPerl_Player_UpdateMana(self)
 end
-
--- UNIT_MAXMANA
-function XPerl_Player_Events:UNIT_MAXMANA()
-	XPerl_Player_UpdateMana(self)
-end
-
-XPerl_Player_Events.UNIT_RAGE			= XPerl_Player_Events.UNIT_MAXMANA
-XPerl_Player_Events.UNIT_MAXRAGE		= XPerl_Player_Events.UNIT_RAGE
-XPerl_Player_Events.UNIT_RUNIC_POWER	= XPerl_Player_Events.UNIT_MAXMANA
-XPerl_Player_Events.UNIT_MAXRUNIC_POWER	= XPerl_Player_Events.UNIT_RUNIC_POWER
-XPerl_Player_Events.UNIT_ENERGY			= XPerl_Player_Events.UNIT_MAXMANA
-XPerl_Player_Events.UNIT_MAXENERGY		= XPerl_Player_Events.UNIT_ENERGY
+XPerl_Player_Events.UNIT_MAXPOWER = XPerl_Player_Events.UNIT_POWER
 
 -- UNIT_DISPLAYPOWER
 function XPerl_Player_Events:UNIT_DISPLAYPOWER()
 	XPerl_Player_UpdateManaType(self)
 	XPerl_Player_UpdateMana(self)
+end
+
+-- PLAYER_TALENT_UPDATE
+function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
+	XPerl_Player_UpdateMana(self)
+	if (playerClass == "DRUID") then
+		XPerl_Player_DruidBarUpdate(self)
+	end
+end
+
+-- UPDATE_SHAPESHIFT_FORM
+function XPerl_Player_Events:UPDATE_SHAPESHIFT_FORM()
+	if (playerClass == "DRUID") then
+		XPerl_Player_DruidBarUpdate(self)
+	end
 end
 
 -- UNIT_NAME_UPDATE
@@ -912,38 +890,15 @@ function XPerl_Player_Events:UNIT_FACTION()
 	XPerl_Player_UpdateCombat(self)
 end
 XPerl_Player_Events.UNIT_FLAGS = XPerl_Player_Events.UNIT_FACTION
+XPerl_Player_Events.UNIT_DYNAMIC_FLAGS = XPerl_Player_Events.UNIT_FACTION
 
 function XPerl_Player_Events:PLAYER_FLAGS_CHANGED(unit)
 	XPerl_Player_UpdateHealth(self)
 end
 
--- MASTERY_UPDATE
-function XPerl_Player_Events:MASTERY_UPDATE()
-	XPerl_Player_UpdateMana(self)
-	if (playerClass == "DRUID") then
-		XPerl_Player_DruidBarUpdate(self)
-	end
-end
-
 -- RAID_TARGET_UPDATE
 function XPerl_Player_Events:RAID_TARGET_UPDATE()
 	XPerl_Player_UpdateRaidTarget(XPerl_Player)
-end
-
--- PLAYER_TALENT_UPDATE
-function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
-	XPerl_Player_UpdateMana(self)
-	if (playerClass == "DRUID") then
-		XPerl_Player_DruidBarUpdate(self)
-	end
-end
-
--- UPDATE_SHAPESHIFT_FORM
-function XPerl_Player_Events:UPDATE_SHAPESHIFT_FORM()
-	if (playerClass == "DRUID") then
-		XPerl_Player_DruidBarUpdate(self)
-		XPerl_Unit_UpdatePortrait(self)--Maybe fix portraits not updating when shifting forms?
-	end
 end
 
 -- PLAYER_ENTER_COMBAT, PLAYER_LEAVE_COMBAT
@@ -1060,22 +1015,6 @@ function XPerl_Player_Events:RUNE_TYPE_UPDATE(self, runeIndex )
 		
 		RuneButton_Update(_G["XPerl_RuneButtonIndividual"..runeIndex], runeIndex);
 	end
-end
-
-
--- XPerl_Player_Energy_TickWatch
-function XPerl_Player_Energy_OnUpdate(self, elapsed)
-	local sparkPosition
-
-	local val = self:GetValue() + elapsed
-	if (val > 5) then
-		self:Hide()
-	else
-		self:SetValue(val)
-		sparkPosition = self:GetWidth() * (val / 5)
-	end
-
-	self.spark:SetPoint("CENTER", self, "LEFT", sparkPosition, 0)
 end
 
 -- XPerl_Player_SetWidth

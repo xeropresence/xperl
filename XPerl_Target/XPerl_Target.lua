@@ -45,9 +45,13 @@ function XPerl_Target_OnLoad(self, partyid)
 
 	self.hitIndicator.text:SetPoint("CENTER", self.portraitFrame, "CENTER", 0, 0)
 
-	local events = {"UNIT_COMBAT", "PLAYER_FLAGS_CHANGED",
-		"PARTY_MEMBER_DISABLE", "PARTY_MEMBER_ENABLE", "RAID_TARGET_UPDATE", "PARTY_MEMBERS_CHANGED",
-		"PARTY_LEADER_CHANGED", "PARTY_LOOT_METHOD_CHANGED", "UNIT_THREAT_LIST_UPDATE"}
+	local events = {"PLAYER_FLAGS_CHANGED", "PLAYER_REGEN_ENABLED", "PLAYER_REGEN_DISABLED", 
+					"UNIT_AURA", "UNIT_COMBAT", "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_POWER", 
+					"UNIT_MAXPOWER", "UNIT_DISPLAYPOWER", "UNIT_LEVEL", "UNIT_NAME_UPDATE", 
+					"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS", 
+					"UNIT_CLASSIFICATION_CHANGED", "UNIT_THREAT_LIST_UPDATE", "UNIT_PORTRAIT_UPDATE", 
+					"RAID_TARGET_UPDATE", "PARTY_MEMBER_ENABLE", "PARTY_MEMBER_DISABLE", "PARTY_MEMBERS_CHANGED", 
+					"PARTY_LEADER_CHANGED", "PARTY_LOOT_METHOD_CHANGED"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
@@ -63,7 +67,6 @@ function XPerl_Target_OnLoad(self, partyid)
 		self.tutorialPage = 3
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
-		self:RegisterEvent("VARIABLES_LOADED")
 		if (XPerl_Target_Events.INSPECT_READY) then
 			self:RegisterEvent("INSPECT_READY")
 		end
@@ -78,8 +81,6 @@ function XPerl_Target_OnLoad(self, partyid)
 		self.combatMask = 0x00020000
 	end
 	self:RegisterEvent("UNIT_COMBO_POINTS")			-- Not a standard unit event, becuase we want events for "player" even tho it's "target" or "focus" unit frame
-	self:RegisterEvent("PLAYER_REGEN_ENABLED")
-	self:RegisterEvent("PLAYER_REGEN_DISABLED")
 
 	self.nameFrame.cpMeter:SetMinMaxValues(0, 5)
 	self.nameFrame.cpMeter:GetStatusBarTexture():SetHorizTile(false)
@@ -115,12 +116,6 @@ function XPerl_Target_OnLoad(self, partyid)
 
 	XPerl_SecureUnitButton_OnLoad(self.nameFrame, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu)		--TargetFrame.menu)
 	XPerl_SecureUnitButton_OnLoad(self, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu)				--TargetFrame.menu)
-
-	--RegisterUnitWatch(self)
-
-	XPerl_UnitEvents(self, XPerl_Target_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS",
-				"UNIT_CLASSIFICATION_CHANGED", "UNIT_PORTRAIT_UPDATE", "UNIT_AURA", "UNIT_HEALTH"})
-	XPerl_RegisterBasics(self, XPerl_Target_Events)
 
 	--self.PlayerFlash = 0
 	self.perlBuffs, self.perlDebuffs, self.RangeUpdate = 0, 0, 0
@@ -1030,11 +1025,6 @@ function XPerl_Target_OnEvent(self, event, ...)
 	else
 XPerl_ShowMessage("EXTRA EVENT")
 	end
-end
-
--- VARIABLES_LOADED
-function XPerl_Target_Events:VARIABLES_LOADED()
-
 end
 
 function XPerl_Target_Events:PLAYER_REGEN_ENABLED()
