@@ -44,11 +44,11 @@ local largeNumDiv100 = largeNumDiv * 100
 local ArcaneExclusions = XPerl_ArcaneExclusions
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
---[===[@debug@
+--@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
 end
---@end-debug@]===]
+--@end-debug@
 
 ------------------------------------------------------------------------------
 -- Re-usable tables
@@ -2207,7 +2207,7 @@ end
 
 -- XPerl_StatusBarSetValue
 function XPerl_StatusBarSetValue(self, val)
-	if conf and (not tempDisableFadeBars and conf.bar.fading and self:GetName()) then
+	if (not tempDisableFadeBars and conf.bar.fading and self:GetName()) then
 		local min, max = self:GetMinMaxValues()
 		local current = self:GetValue()
 
@@ -3224,11 +3224,48 @@ function XPerl_NextMember(_, last)
 	end
 end
 
--- XPerlSetPortrait3D
+-- Some models have camera views switched for face/body or just don't look right with face
+local alternateCamera = {
+	[21717] = true,			-- Dragonmaw Wrangler
+	[21718] = true,			-- Dragonmaw Subjugator
+	[21719] = true,			-- Dragonmaw Drake-Rider
+	[21720] = true,			-- Dragonmaw Shaman
+	[22231] = true,			-- Dragonmaw Elite
+	[22252] = true,			-- Dragonmaw Peon
+	[23188] = true,			-- Dragonmaw Transporter
+	[28859] = true,			-- Malygos
+	[33136] = true,			-- Guardian of Yogg-Saron
+	[33687] = true,			-- Chillmaw
+	[33845] = true,			-- Quel'dorei Steed
+	[37230] = true,			-- Spire Frostwyrm (ICC)
+	[37955] = true,			-- Blood Queen Lana'thel
+	[40561] = true,			-- Deep Corruptor
+	[41378] = true,			-- Maloriak (Blackwing Depths)
+	[39392] = true,			-- Faceless Corruptor
+}
+local dragonmawIllusion = GetSpellInfo(42016)
+
+-- PerlSetPortrait3D
 local function XPerlSetPortrait3D(self, argUnit)
 	self:ClearModel()
 	self:SetUnit(argUnit)
-	self:SetPortraitZoom(1)
+	local guid = UnitGUID(argUnit)
+	local fullbody
+	--PlayerLin: Added other checks, UnitIsPlayer check isn't enough and it's weird...
+--	if UnitIsPlayer(argUnit) or UnitIsEnemy(argUnit, "target") or UnitIsFriend(argUnit, "target") then
+		--Male Worgen 3D Portrait fix, thanks sontix.
+		if string.find(tostring(self:GetModel()), "worgenmale", 1, true) ~= nil then
+			fullbody = true 
+		else
+			fullbody = UnitBuff(argUnit, dragonmawIllusion)
+		end
+--	end
+	local id = guid and tonumber(strsub(guid, -13, -9), 16)
+	if (alternateCamera[id] or fullbody ) then
+		self:SetCamera(1)
+	else
+		self:SetCamera(0)
+	end
 end
 
 -- XPerl_Unit_UpdatePortrait()

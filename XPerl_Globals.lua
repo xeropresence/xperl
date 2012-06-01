@@ -2,7 +2,7 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-XPerlLocked	= 1
+XPerlLocked		= 1
 local conf
 local ConfigRequesters = {}
 XPerl_OutOfCombatQueue	= {}
@@ -237,6 +237,75 @@ local function XPerl_UnitEvent(unit, event, a, b, c, d)
 	end
 end
 
+-- XPerl_RegisterBasics
+function XPerl_RegisterBasics(self, eventArray)
+
+        --WoW 4.0 UNIT_POWER change, thanks Brounks helps me fix this.
+        
+        
+        --local events = {"UNIT_POWER", "UNIT_MAXPOWER", "UNIT_HEALTH", "UNIT_MAXHEALTH",
+        --                "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
+
+        --if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
+        --        tinsert(events, "UNIT_POWER")
+        --end
+   
+	local events = { "UNIT_POWER", "UNIT_MAXPOWER", "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
+
+        if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
+                tinsert(events, "UNIT_POWER")
+        end
+               
+	XPerl_UnitEvents(self, eventArray, events)
+end
+
+--[[
+-- XPerl_GuildStatusUpdate()
+function XPerl_GuildRoster_Update()
+	if (conf.colour.class and conf.colour.guildList) then
+		local col = _G.GuildRosterColumnButton4
+		if (_G.GuildFrame.selectedTab ~= 2 or not col or col.sortType ~= "zone") then
+			return
+		end
+
+		local myZone = GetRealZoneText()
+
+		local scrollFrame = GuildRosterContainer
+		local offset = HybridScrollFrame_GetOffset(scrollFrame)
+		local buttons = scrollFrame.buttons
+		local numButtons = #buttons
+		local button, index, class
+		local totalMembers, onlineMembers = GetNumGuildMembers()
+		local selectedGuildMember = GetGuildRosterSelection()
+
+		for i = 1, numButtons do
+			button = buttons[i]
+			index = offset + i
+			local name, rank, rankIndex, level, class, zone, note, officernote, online, status, classFileName, achievementPoints, achievementRank, isMobile = GetGuildRosterInfo(index)
+
+			local color = GetQuestDifficultyColor(level)
+			if (online) then
+				_G["GuildRosterContainerButton"..i.."String1"]:SetTextColor(color.r, color.g, color.b)
+			else
+				_G["GuildRosterContainerButton"..i.."String1"]:SetTextColor(color.r / 2, color.g / 2, color.b / 2)
+			end
+
+			if (zone == myZone) then
+				if (online) then
+					_G["GuildRosterContainerButton"..i.."String3"]:SetTextColor(0, 1, 0)
+				else
+					_G["GuildRosterContainerButton"..i.."String3"]:SetTextColor(0, 0.5, 0)
+				end
+			end
+
+		end
+	end
+end
+
+if (_G.GuildRoster_Update) then
+	hooksecurefunc("GuildRoster_Update", XPerl_GuildRoster_Update)
+end ]]
+
 -- onEventPostSetup
 local function onEventPostSetup(self, event, unit, ...)
 	if (unit and XPerl_UnitEvent(unit, event, unit, ...)) then
@@ -254,7 +323,14 @@ local function onEventPostSetup(self, event, unit, ...)
 		for func,arg in pairs(XPerl_OutOfCombatQueue) do
 			assert(type(func) == "function")
 			func(arg)
- 
+
+			--if (type(v) == "function") then
+			--	v()
+			--elseif (type(v) == "table") then
+			--	v[1](v[2])
+			--elseif (type(v) == "string") then
+			--	RunScript(v)
+			--end
 			XPerl_OutOfCombatQueue[func] = nil
 		end
 

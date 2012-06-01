@@ -66,15 +66,21 @@ function XPerl_Player_Pet_OnLoad(self)
 
 	--RegisterUnitWatch(self)
         --Added UNIT_POWER/UNIT_MAXPOWER shit on events list by PlayerLin
-	local events = {"PLAYER_ENTERING_WORLD", "PLAYER_REGEN_ENABLED", "PLAYER_TARGET_CHANGED", 
-					"UNIT_PET", "UNIT_PET_EXPERIENCE", "PET_ATTACK_START", "UNIT_TARGET", 
-					"UNIT_AURA", "UNIT_COMBAT", "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_POWER", 
-					"UNIT_MAXPOWER", "UNIT_DISPLAYPOWER", "UNIT_LEVEL", "UNIT_NAME_UPDATE", 
-					"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS", 
-					"UNIT_THREAT_LIST_UPDATE", "UNIT_PORTRAIT_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE"}
+	local events = {"UNIT_RAGE", "UNIT_MAXRAGE", "UNIT_MAXENERGY", "UNIT_MAXMANA", "UNIT_MAXRUNIC_POWER",
+					"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_POWER",
+					"UNIT_MAXPOWER", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+					"UNIT_MANA", "UNIT_ENERGY", "UNIT_RUNIC_POWER", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
+					"UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS", "UNIT_AURA",
+					"UNIT_PET", "PET_ATTACK_START", "UNIT_COMBAT", "UNIT_SPELLMISS", "VARIABLES_LOADED",
+					"PLAYER_REGEN_ENABLED", "PLAYER_ENTERING_WORLD", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE",
+					"UNIT_THREAT_LIST_UPDATE", "PLAYER_TARGET_CHANGED", "UNIT_TARGET"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
+
+	--XPerl_UnitEvents(self, XPerl_Player_Pet_Events, {"UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "UNIT_DYNAMIC_FLAGS",
+	--					"UNIT_AURA"})
+	--XPerl_RegisterBasics(self, XPerl_Player_Pet_Events)
 
 	self.time = 0
 
@@ -269,6 +275,14 @@ function XPerl_Player_Pet_OnEvent(self, event, unitID, ...)
 	else
 XPerl_ShowMessage("EXTRA EVENT")
 	end
+end
+
+-- VARIABLES_LOADED
+function XPerl_Player_Pet_Events:VARIABLES_LOADED()
+	-- added UNIT_POWER event check for 4.0 by PlayerLin, thanks Brounks.
+	XPerl_UnitEvents(self, XPerl_Player_Pet_Events, {"UNIT_FOCUS", "UNIT_MAXFOCUS", "UNIT_PET_EXPERIENCE", "UNIT_POWER"})
+
+	XPerl_Player_Pet_Events.VARIABLES_LOADED = nil
 end
 
 -- UNIT_AURA

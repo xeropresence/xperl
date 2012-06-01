@@ -5,11 +5,11 @@
 local ArcaneBars = {}
 local shield_icon = "|TInterface\\GroupFrame\\UI-Group-MainTankIcon:0:0:0:0|t"
 
---[===[@debug@
+--@debug@
 local function d(...)
 	ChatFrame1:AddMessage("XPerl: "..format(...))
 end
---@end-debug@]===]
+--@end-debug@
 
 local conf
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
