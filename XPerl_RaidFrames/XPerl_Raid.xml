@@ -489,7 +489,7 @@
 		</Anchors>
 		<Scripts>
 			<OnLoad function="XPerl_Raid_OnLoad"/>
-			<OnEvent function="XPerl_Raid_OnEvent"/>
+			<!--<OnEvent function="XPerl_Raid_OnEvent"/>-->
 			<OnUpdate function="XPerl_Raid_OnUpdate"/>
 		</Scripts>
 	</Frame>

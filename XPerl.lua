@@ -44,11 +44,11 @@ local largeNumDiv100 = largeNumDiv * 100
 local ArcaneExclusions = XPerl_ArcaneExclusions
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
---@debug@
+--[===[@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
 end
---@end-debug@
+--@end-debug@]===]
 
 ------------------------------------------------------------------------------
 -- Re-usable tables
@@ -3247,6 +3247,7 @@ local dragonmawIllusion = GetSpellInfo(42016)
 
 -- PerlSetPortrait3D
 local function XPerlSetPortrait3D(self, argUnit)
+
 	self:ClearModel()
 	self:SetUnit(argUnit)
 	local guid = UnitGUID(argUnit)

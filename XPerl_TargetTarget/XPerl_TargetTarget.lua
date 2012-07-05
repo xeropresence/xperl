@@ -33,7 +33,9 @@ function XPerl_TargetTarget_OnLoad(self)
 	XPerl_SetChildMembers(self)
 
 	self.tutorialPage = 9
-
+	
+	events = {"UNIT_HEALTH_FREQUENT","UNIT_POWER","UNIT_AURA"};
+	
 	-- Events
 	self:RegisterEvent("RAID_TARGET_UPDATE")
 	if (self == XPerl_TargetTarget) then
@@ -42,21 +44,30 @@ function XPerl_TargetTarget_OnLoad(self)
 		self.partyid = "targettarget"
 		--self:RegisterEvent("UNIT_TARGET")
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
-		self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
+		for i,event in pairs(events) do
+			self:RegisterEvent(event)
+		end
+		--self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
 	elseif (self == XPerl_FocusTarget) then
 		self.parentid = "focus"
 		self.partyid = "focustarget"
 		self:RegisterEvent("UNIT_TARGET")
-		self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
+		for i,event in pairs(events) do
+			self:RegisterEvent(event)
+		end
+		--self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
 	elseif (self == XPerl_PetTarget) then
 		self.parentid = "pet"
 		self.partyid = "pettarget"
 		self:RegisterEvent("UNIT_TARGET")
-		self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
+		for i,event in pairs(events) do
+			self:RegisterEvent(event)
+		end
+		--self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
 	else
 		self.parentid = "targettarget"
 		self.partyid = "targettargettarget"
-		self:SetScript("OnUpdate", XPerl_TargetTargetTarget_OnUpdate)
+		--self:SetScript("OnUpdate", XPerl_TargetTargetTarget_OnUpdate)
 	end
 
 	XPerl_SecureUnitButton_OnLoad(self, self.partyid, XPerl_ShowGenericMenu)
@@ -324,7 +335,7 @@ function XPerl_TargetTarget_OnEvent(self, event, unitID, ...)
 	elseif (event == "PLAYER_TARGET_CHANGED") then
 		XPerl_TargetTarget_UpdateDisplay(self, true)
 
-	elseif (event == "UNIT_TARGET") then
+	elseif (strfind(event, "^UNIT_")) then--(event == "UNIT_TARGET") then
 		if (unitID == "target" and self == XPerl_TargetTarget) then
 			XPerl_NoFadeBars(true)
 			XPerl_TargetTarget_UpdateDisplay(self, true)

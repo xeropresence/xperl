@@ -20,11 +20,11 @@ if type(RegisterAddonMessagePrefix) == "function" then
 	RegisterAddonMessagePrefix("oRA")
 end
 
---@debug@
+--[===[@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
 end
---@end-debug@
+--@end-debug@]===]
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
@@ -87,16 +87,21 @@ local raidHeaders = {}
 -- XPerl_Raid_OnLoad
 function XPerl_Raid_OnLoad(self)
 	local events = {"CHAT_MSG_ADDON",
-			"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE", "UNIT_FACTION",
+			"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE",
 			"UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_POWER", "UNIT_MAXPOWER",
-			"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
+			"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
 			"UNIT_COMBAT", "UNIT_SPELLCAST_START", "UNIT_SPELLCAST_STOP", "UNIT_SPELLCAST_FAILED",
 			"UNIT_SPELLCAST_INTERRUPTED", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED",
 			"RAID_TARGET_UPDATE", "PLAYER_LOGIN", "ROLE_CHANGED_INFORM"
 			}
+			
+			
+			--"UNIT_FACTION"
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
+	
+	self:SetScript("OnEvent", XPerl_Raid_OnEvent);
 
 	for i = 1,WoWclassCount do
 		_G["XPerl_Raid_Grp"..i]:UnregisterEvent("UNIT_NAME_UPDATE")
@@ -1010,12 +1015,11 @@ function XPerl_Raid_OnUpdate(self, elapsed)
 
 	local updateHighlights, someUpdate
 	local enemyUnitList
-
 	self.time = self.time + elapsed
 	if (self.time >= 0.2) then
 		self.time = 0
 		someUpdate = true
-	end
+	
 
 	for i,frame in pairs(FrameArray) do
 		if (frame:IsShown()) then
@@ -1023,7 +1027,7 @@ function XPerl_Raid_OnUpdate(self, elapsed)
 				XPerl_Raid_CombatFlash(frame, elapsed, false)
 			end
 
-			if (someUpdate) then
+			--[[if (someUpdate) then
 				local unit = frame.partyid -- frame:GetAttribute("unit")
 				if (unit) then
 					local name = UnitName(unit)
@@ -1044,7 +1048,12 @@ function XPerl_Raid_OnUpdate(self, elapsed)
 
 					XPerl_UpdateSpellRange(frame, unit, true)
 				end
+			end]]--
+			
+			if (frame.partyid) then
+				XPerl_UpdateSpellRange(frame, frame.partyid, true)
 			end
+			
 		end
 	end
 
@@ -1057,7 +1066,7 @@ function XPerl_Raid_OnUpdate(self, elapsed)
 			break
 		end
 	end
-
+end
 	fullyInitiallized = true
 end
 
@@ -1200,9 +1209,31 @@ end
 -------------------
 -- Event Handler --
 -------------------
-
+local lastevent = nil;
 -- XPerl_Raid_OnEvent
-function XPerl_Raid_OnEvent(self, event, unit, ...)
+
+function dump(o)
+    if type(o) == 'table' then
+        local s = '{ '
+        for k,v in pairs(o) do
+                if type(k) ~= 'number' then k = '"'..k..'"' end
+                s = s .. '['..k..'] = ' .. dump(v) .. ','
+        end
+        return s .. '} '
+    else
+        return tostring(o)
+    end
+end
+
+local lastUnit = nil;
+local lastEvent = nil;
+function XPerl_Raid_OnEvent(self, ...)
+--print(event);
+--print(dump({...}));
+
+event = select(1,...);
+unit = select(2,...);
+
 	local func = XPerl_Raid_Events[event]
 	if (func) then
 		if (strfind(event, "^UNIT_")) then
@@ -1345,11 +1376,11 @@ function XPerl_Raid_Events:UNIT_COMBAT(...)
 end
 
 -- UNIT_HEALTH
-function XPerl_Raid_Events:UNIT_HEALTH()
+function XPerl_Raid_Events:UNIT_HEALTH_FREQUENT()
 	XPerl_Raid_UpdateHealth(self)
 	XPerl_Raid_UpdateCombat(self)
 end
-XPerl_Raid_Events.UNIT_MAXHEALTH = XPerl_Raid_Events.UNIT_HEALTH
+XPerl_Raid_Events.UNIT_MAXHEALTH = XPerl_Raid_Events.UNIT_HEALTH_FREQUENT
 
 function XPerl_Raid_Events:UNIT_DISPLAYPOWER()
 	XPerl_Raid_UpdateManaType(self)
@@ -1907,7 +1938,7 @@ end
 ------- XPerl_ToggleRaidBuffs -------
 -- Raid Buff Key Binding function --
 function XPerl_ToggleRaidBuffs(castable)
-
+print("hi, got toggled");
 	if (castable) then
 		if (rconf.buffs.castable == 1) then
 			rconf.buffs.castable = 0
