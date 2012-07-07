@@ -1227,12 +1227,10 @@ end
 
 local lastUnit = nil;
 local lastEvent = nil;
-function XPerl_Raid_OnEvent(self, ...)
+function XPerl_Raid_OnEvent(self, event,unit, ...)
 --print(event);
 --print(dump({...}));
 
-event = select(1,...);
-unit = select(2,...);
 
 	local func = XPerl_Raid_Events[event]
 	if (func) then
