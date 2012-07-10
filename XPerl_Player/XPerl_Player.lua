@@ -61,6 +61,8 @@ function XPerl_Player_OnLoad(self)
 	self:SetScript("OnShow", XPerl_Unit_UpdatePortrait)
 	self.time = 0
 
+	
+	self.Power = 0;
 	--[[self.nameFrame.pvp:SetScript("OnUpdate",
 		function(self, elapsed)
 			if (IsPVPTimerRunning()) then
@@ -488,6 +490,14 @@ end
 local function XPerl_Player_UpdateMana(self)
 	local mb = self.statsFrame.manaBar
 	local playermana = UnitMana(self.partyid)
+	
+	if (playermana == self.Power) then
+		return
+	else
+		self.Power = playermana;
+	end
+	
+	
 	local playermanamax = UnitManaMax(self.partyid)
 	mb:SetMinMaxValues(0, playermanamax)
 	mb:SetValue(playermana)
