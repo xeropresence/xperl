@@ -673,14 +673,7 @@ function XPerl_Player_OnUpdate(self, elapsed)
 		XPerl_Player_CombatFlash(self, elapsed, false)
 	end
 
-	--XPerl_Player_UpdateMana(self)
-	
-	-- Attempt to fix "not-updating bug", suggested by Taylla @ Curse
-	-- comment 1st, 2nd and 4th line.
-	-- if (self.updateAFK) then
-	-- 	self.updateAFK = nil
-	--       XPerl_Player_UpdateHealth(self)
-	-- end	
+	XPerl_Player_UpdateMana(self)
 
 	if (IsResting() and UnitLevel("player") < 85) then
 		self.restingDelay = (self.restingDelay or 2) - elapsed
@@ -690,6 +683,7 @@ function XPerl_Player_OnUpdate(self, elapsed)
 		end
 	end
 
+	-- Attempt to fix "not-updating bug", suggested by Taylla @ Curse (why was this code in onupdate function twice? identicle code, twice)
 	if (self.updateAFK) then
 		self.updateAFK = nil
 		XPerl_Player_UpdateHealth(self)
@@ -761,7 +755,7 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 		end
 	end
 
-	local events = {"UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+	local events = {"UNIT_HEALTH", "UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
 			"UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "PLAYER_TALENT_UPDATE", "RAID_TARGET_UPDATE", "UPDATE_SHAPESHIFT_FORM",
 			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE"}
@@ -848,6 +842,7 @@ function XPerl_Player_Events:UNIT_HEALTH()
 end
 XPerl_Player_Events.UNIT_MAXHEALTH = XPerl_Player_Events.UNIT_HEALTH
 XPerl_Player_Events.PLAYER_DEAD    = XPerl_Player_Events.UNIT_HEALTH
+XPerl_Player_Events.UNIT_HEALTH_FREQUENT = XPerl_Player_Events.UNIT_HEALTH
 
 -- UNIT_POWER
 function XPerl_Player_Events:UNIT_POWER()

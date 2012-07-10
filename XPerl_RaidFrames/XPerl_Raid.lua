@@ -17,7 +17,6 @@ local fullyInitiallized
 
 if type(RegisterAddonMessagePrefix) == "function" then
 	RegisterAddonMessagePrefix("CTRA")
-	RegisterAddonMessagePrefix("oRA")
 end
 
 --[===[@debug@
@@ -1535,7 +1534,7 @@ local QuickFuncs = {
 }
 
 -- DurabilityCheck(msg, author)
--- Quick DUR check for those people who don't have oRA2 and CTRA installed
+-- Quick DUR check for those people who don't have CTRA installed
 -- No, I'm not going to replace either mod
 local XPerl_DurabilityCheck
 do
@@ -1632,17 +1631,17 @@ local function ProcessCTRAMessage(unitName, msg)
 			update = nil
 
 		elseif (msg == "DURC") then
-			if (not CT_RA_VersionNumber and not oRA) then
+			if (not CT_RA_VersionNumber) then
 				XPerl_DurabilityCheck(unitName)
 			end
 
 		elseif (msg == "RSTC") then
-			if (not CT_RA_VersionNumber and not oRA) then
+			if (not CT_RA_VersionNumber) then
 				XPerl_ResistsCheck(unitName)
 			end
 
 		elseif (strsub(msg, 1, 4) == "ITMC") then
-			if (not CT_RA_VersionNumber and not oRA) then
+			if (not CT_RA_VersionNumber) then
 				local itemName = strmatch(msg, "^ITMC (.+)$")
 				if (itemName) then
 					XPerl_ItemCheckCount(itemName, unitName)
@@ -1655,19 +1654,6 @@ local function ProcessCTRAMessage(unitName, msg)
 
 	if (update) then
 		UpdateUnitByName(unitName, true)
-	end
-end
-
--- ProcessoRAMessage
-local function ProcessoRAMessage(unitName, msg)
-	local myRoster = XPerl_Roster[unitName]
-
-	if (not myRoster) then
-		return
-	end
-
-	if (strsub(msg, 1, 5) == "oRAV ") then
-		myRoster.oRAversion = strsub(msg, 6)
 	end
 end
 
@@ -1708,8 +1694,6 @@ function XPerl_Raid_Events:CHAT_MSG_ADDON(prefix, msg, channel, sender)
 	if (channel == "RAID") then
 		if (prefix == "CTRA") then
 			XPerl_ParseCTRA(sender, msg, ProcessCTRAMessage)
-		elseif (prefix == "oRA") then
-			XPerl_ParseCTRA(sender, msg, ProcessoRAMessage)
 		end
 	end
 end
