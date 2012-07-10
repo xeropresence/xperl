@@ -50,12 +50,7 @@ XPERL_LOC_ZONE_ULDUAR				= "Ulduar"
 XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER= "Trial of the Crusader"
 XPERL_LOC_ZONE_ICECROWN_CITADEL		= "Icecrown Citadel"
 XPERL_LOC_ZONE_RUBY_SANCTUM			= "The Ruby Sanctum"
-XPERL_LOC_ZONE_BARADIN_HOLD			= "Baradin Hold"
-XPERL_LOC_ZONE_BLACKWING_DECENT		= "Blackwing Descent"
-XPERL_LOC_ZONE_BASTION_OF_TWILIGHT	= "The Bastion of Twilight"
-XPERL_LOC_ZONE_THRONE_OF_FOUR_WINDS	= "Throne of the Four Winds"
-XPERL_LOC_ZONE_FIRELANDS			= "Firelands"
-XPERL_LOC_ZONE_DRAGONSOUL			= "Dragon Soul"
+--Any zones 4.x and higher can all be localized from EJ, in 5.0, even these above zones are in EJ which means the rest can go bye bye too
 
 -- Status
 XPERL_LOC_DEAD		= DEAD			-- "Dead"
