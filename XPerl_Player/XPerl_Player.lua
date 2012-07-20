@@ -817,6 +817,7 @@ end
 
 -- UNIT_PORTRAIT_UPDATE
 function XPerl_Player_Events:UNIT_PORTRAIT_UPDATE()
+	XPerl_Player_UpdateHealth(self)--This should force it to update dead/nodead status without scanning for UNIT_DIED combat events. since your portrat changes when you die/rez
 	XPerl_Unit_UpdatePortrait(self)
 end
 
