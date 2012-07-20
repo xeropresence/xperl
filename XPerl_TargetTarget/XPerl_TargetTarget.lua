@@ -67,7 +67,7 @@ function XPerl_TargetTarget_OnLoad(self)
 	else
 		self.parentid = "targettarget"
 		self.partyid = "targettargettarget"
-		--self:SetScript("OnUpdate", XPerl_TargetTargetTarget_OnUpdate)
+		self:SetScript("OnUpdate", XPerl_TargetTargetTarget_OnUpdate)
 	end
 
 	XPerl_SecureUnitButton_OnLoad(self, self.partyid, XPerl_ShowGenericMenu)
