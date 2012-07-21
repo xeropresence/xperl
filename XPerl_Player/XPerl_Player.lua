@@ -491,11 +491,11 @@ local function XPerl_Player_UpdateMana(self)
 	local mb = self.statsFrame.manaBar
 	local playermana = UnitMana(self.partyid)
 	
-	if (playermana == self.Power) then
-		return
-	else
-		self.Power = playermana;
-	end
+	--if (playermana == self.Power) then
+	--	return
+	--else
+	--	self.Power = playermana;
+	--end
 	
 	
 	local playermanamax = UnitManaMax(self.partyid)
@@ -683,7 +683,7 @@ function XPerl_Player_OnUpdate(self, elapsed)
 		XPerl_Player_CombatFlash(self, elapsed, false)
 	end
 
-	XPerl_Player_UpdateMana(self)
+	--XPerl_Player_UpdateMana(self)
 
 	if (IsResting() and UnitLevel("player") < 85) then
 		self.restingDelay = (self.restingDelay or 2) - elapsed
@@ -768,7 +768,7 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 	local events = {"UNIT_HEALTH", "UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
 			"UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "PLAYER_TALENT_UPDATE", "RAID_TARGET_UPDATE", "UPDATE_SHAPESHIFT_FORM",
-			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE"}
+			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE","UNIT_POWER_FREQUENT"}
 
 
 	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
@@ -817,7 +817,6 @@ end
 
 -- UNIT_PORTRAIT_UPDATE
 function XPerl_Player_Events:UNIT_PORTRAIT_UPDATE()
-	XPerl_Player_UpdateHealth(self)--This should force it to update dead/nodead status without scanning for UNIT_DIED combat events. since your portrat changes when you die/rez
 	XPerl_Unit_UpdatePortrait(self)
 end
 
@@ -830,7 +829,7 @@ function XPerl_Player_Events:VARIABLES_LOADED()
 			"PARTY_LOOT_METHOD_CHANGED", "RAID_ROSTER_UPDATE", "PLAYER_UPDATE_RESTING", "PLAYER_REGEN_ENABLED",
 			"PLAYER_REGEN_DISABLED", "PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_DEAD",
 			"UPDATE_FACTION", "UNIT_AURA", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
-			"UNIT_COMBAT","UNIT_POWER","UNIT_MAXPOWER"}--, "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE"
+			"UNIT_COMBAT","UNIT_POWER_FREQUENT","UNIT_MAXPOWER"}--, "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE"
 
 	for i,eventE in pairs(events) do
 		self:RegisterEvent(eventE)
@@ -856,7 +855,7 @@ XPerl_Player_Events.PLAYER_DEAD    = XPerl_Player_Events.UNIT_HEALTH
 XPerl_Player_Events.UNIT_HEALTH_FREQUENT = XPerl_Player_Events.UNIT_HEALTH
 
 -- UNIT_POWER
-function XPerl_Player_Events:UNIT_POWER()
+function XPerl_Player_Events:UNIT_POWER_FREQUENT()
 	XPerl_Player_UpdateMana(self)
 end
 
