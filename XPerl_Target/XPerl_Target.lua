@@ -1024,11 +1024,23 @@ end
 -- Event Handler --
 -------------------
 function XPerl_Target_OnEvent(self, event, ...)
+	--[[
 	local func = XPerl_Target_Events[event]
 	if (func) then
 		func(self, ...)
 	else
 XPerl_ShowMessage("EXTRA EVENT")
+	end]]--
+	
+	
+	local func = XPerl_Target_Events[event]
+	local unitid = select(1,...);
+	if (strsub(event, 1, 5) == "UNIT_") then
+	 	if (unitid == "target") then
+			func(self, ...)
+		end
+	else
+		func(self, ...)
 	end
 end
 
