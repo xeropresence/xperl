@@ -16,6 +16,10 @@ XPerl_RequestConfig(function(New) conf = New
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
+local isMOP = select(4, _G.GetBuildInfo()) >= 50000
+local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
+
 local AllPetFrames = {}
 local UnitName = UnitName
 local UnitHealth = UnitHealth

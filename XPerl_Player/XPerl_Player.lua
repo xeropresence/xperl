@@ -10,6 +10,19 @@ XPerl_RequestConfig(function(new) conf = new pconf = conf.player if (XPerl_Playe
 local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%d"..PERCENT_SYMBOL
 
+
+
+ isMOP = select(4, _G.GetBuildInfo()) >= 50000
+local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+local IsPartyLeader = IsPartyLeader;
+
+
+if (select(4, _G.GetBuildInfo()) >= 50000) then
+	IsPartyLeader = function() return UnitIsGroupLeader("player") end
+end
+
+
+
 --[===[@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))

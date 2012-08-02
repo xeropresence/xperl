@@ -32,6 +32,12 @@ local UnitPowerType = UnitPowerType
 local partyHeader
 local partyAnchor
 
+local isMOP = select(4, _G.GetBuildInfo()) >= 50000
+local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
+
+
+
 local XPerl_Party_HighlightCallback
 
 ----------------------

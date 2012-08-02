@@ -3,7 +3,7 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
 local XPerl_Raid_Events = {}
-local RaidGroupCounts = {0,0,0,0,0,0,0,0,0,0}
+local RaidGroupCounts = {0,0,0,0,0,0,0,0,0,0,0}
 local myGroup = 0
 local FrameArray = {}		-- List of raid frames indexed by raid ID
 local RaidPositions = {}	-- Back-matching of unit names to raid ID
@@ -14,6 +14,12 @@ local rosterUpdated
 local percD = "%d"..PERCENT_SYMBOL
 local lastNamesList, lastName, lastWith, lastNamesCount -- Stores with/without buff list (OnUpdate optimization)
 local fullyInitiallized
+
+
+local isMOP = select(4, _G.GetBuildInfo()) >= 50000
+local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
+
 
 if type(RegisterAddonMessagePrefix) == "function" then
 	RegisterAddonMessagePrefix("CTRA")
@@ -1211,18 +1217,7 @@ end
 local lastevent = nil;
 -- XPerl_Raid_OnEvent
 
-function dump(o)
-    if type(o) == 'table' then
-        local s = '{ '
-        for k,v in pairs(o) do
-                if type(k) ~= 'number' then k = '"'..k..'"' end
-                s = s .. '['..k..'] = ' .. dump(v) .. ','
-        end
-        return s .. '} '
-    else
-        return tostring(o)
-    end
-end
+
 
 local lastUnit = nil;
 local lastEvent = nil;
@@ -1706,7 +1701,7 @@ local function SetRaidRoster()
 	RaidPositions = new()
 
 	del(RaidGroupCounts)
-	RaidGroupCounts = new(0,0,0,0,0,0,0,0,0,0)
+	RaidGroupCounts = new(0,0,0,0,0,0,0,0,0,0,0)
 
 	for i = 1,GetNumRaidMembers() do
 		local name, rank, group, level, class, fileName = GetRaidRosterInfo(i)
@@ -2231,7 +2226,8 @@ function XPerl_Raid_ChangeAttributes()
 	rconf.anchor = (rconf and rconf.anchor) or "TOP"
 
 	local function DefaultRaidClasses()
-		return {
+
+				return {
 			{enable = true, name = "WARRIOR"},
 			{enable = true, name = "DEATHKNIGHT"},
 			{enable = true, name = "ROGUE"},
@@ -2242,7 +2238,9 @@ function XPerl_Raid_ChangeAttributes()
 			{enable = true, name = "DRUID"},
 			{enable = true, name = "SHAMAN"},
 			{enable = true, name = "PALADIN"},
+			{enable = true, name = "MONK"}
 		}
+	
 	end
 
 	local function GroupFilter(n)
@@ -2270,6 +2268,7 @@ function XPerl_Raid_ChangeAttributes()
 			end
 
 			for i = 1,WoWclassCount do
+				
 				if (rconf.class[i].enable) then
 					if (not f) then
 						f = rconf.class[i].name
@@ -2295,6 +2294,8 @@ function XPerl_Raid_ChangeAttributes()
 
 	XPerl_Raid_HideShowRaid()
 end
+
+
 
 -- XPerl_Raid_Set_Bits
 function XPerl_Raid_Set_Bits(self)
