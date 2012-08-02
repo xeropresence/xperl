@@ -1390,6 +1390,7 @@ end
 
 -- XPerl_PaladinPowerBar_OnLoad
 function XPerl_PaladinPowerBar_OnLoad(self)
+
 	if UnitLevel("player") < PALADINPOWERBAR_SHOW_LEVEL then
 		self:RegisterEvent("PLAYER_LEVEL_UP")
 		self:SetAlpha(0)
@@ -1430,7 +1431,7 @@ end
 -- XPerl_Player_InitPaladin
 function XPerl_Player_InitPaladin(self)
 	if ( select(2,UnitClass("player")) == "PALADIN") then
-		if (pconf and pconf.showRunes) then
+		--[[if (pconf and pconf.showRunes) then
 			if (not self.holyp) then
 				self.holyp = CreateFrame("Frame", "XPerl_Runes", self, "XPerl_PaladinPowerBarTemplate")
 				self.holyp:SetFrameLevel(self.portraitFrame:GetFrameLevel() + 5)
@@ -1440,15 +1441,21 @@ function XPerl_Player_InitPaladin(self)
 				-- How are people supposed to write mods if you go put in ties accross the place:
 				-- Blizzard_CombatText.lua(259): elseif ( arg3 == "HOLY_POWER" and PaladinPowerBar:IsShown() and PaladinPowerBar:GetAlpha() > 0.5 ) then
 				-- Surely there would be no HOLY_POWER event if it was not applicable. Why are you even checking if the bar is shown?
-				PaladinPowerBar:UnregisterAllEvents()
-				PaladinPowerBar:ClearAllPoints()
-				PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", -200, 200)		-- So, we'll put it far off the screen
+				--PaladinPowerBar:UnregisterAllEvents()
+				--PaladinPowerBar:ClearAllPoints()
+				--PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", -200, 200)		-- So, we'll put it far off the screen
+				PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", 0, 0)
 			else
 				self.holyp:Show()
 			end
 		elseif (self.holyp) then
 			self.holyp:Hide()
-		end
+		end]]--
+		PaladinPowerBar:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 0,6)
+		XPerl_Player.unit = "player"
+		PaladinPowerBar:SetParent(XPerl_Player)
+
+		
 	end
 end
 
