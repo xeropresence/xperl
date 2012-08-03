@@ -1464,6 +1464,11 @@ function XPerl_Player_InitPaladin(self)
 		elseif (self.holyp) then
 			self.holyp:Hide()
 		end]]--
+		
+		
+		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
+		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
 		PaladinPowerBar:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 0,6)
 		XPerl_Player.unit = "player"
 		PaladinPowerBar:SetParent(XPerl_Player)
