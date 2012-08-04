@@ -795,7 +795,7 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 	XPerl_Player_UpdateDisplay(self)
 
 	--fix runes on player load
-	if self.runes then
+	if self.runes and self.runes.list then
 		for i = 1,6 do
 			if self.runes.list[rune] then 
 				RuneButton_Update(self.runes.list[rune], rune, true);
