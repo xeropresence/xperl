@@ -71,6 +71,8 @@ function XPerl_Player_OnLoad(self)
 
 	self:RegisterEvent("VARIABLES_LOADED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("PLAYER_ALIVE")
+	
 	
 	
 
@@ -722,6 +724,11 @@ function XPerl_Player_OnEvent(self, event, unitID, ...)
 	end
 end
 
+function XPerl_Player_Events:PLAYER_ALIVE()
+XPerl_Player_UpdateDisplay(self)
+end
+
+
 -- PLAYER_ENTERING_WORLD
 function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 	self.updateAFK = true
@@ -824,7 +831,7 @@ function XPerl_Player_Events:VARIABLES_LOADED(who, what)
 		self:RegisterEvent(e)
 	end
 	
-	XPerl_Player_UpdateDisplay(self)
+	--XPerl_Player_UpdateDisplay(self)
 
 	XPerl_Player_Events.VARIABLES_LOADED = nil
 end
