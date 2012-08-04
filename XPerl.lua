@@ -712,7 +712,7 @@ local SetValuedText = XPerl_SetValuedText
 -- XPerl_SetHealthBar
 function XPerl_SetHealthBar(self, hp, Max)
 	local bar = self.statsFrame.healthBar
-
+	--print(self.partyid .. hp .. ":" .. Max)
 	bar:SetMinMaxValues(0, Max)
 	local percent
 	if hp >= 1 and Max == 0 then--For some dumb reason max HP is 0, normal HP is not, so lets use normal HP as max

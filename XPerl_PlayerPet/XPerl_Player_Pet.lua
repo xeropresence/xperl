@@ -270,10 +270,12 @@ end
 -------------------
 function XPerl_Player_Pet_OnEvent(self, event, unitID, ...)
 	local func = XPerl_Player_Pet_Events[event]
-	if (func) then
-		func(self, unitID, ...)
+	if (strsub(event, 1, 5) == "UNIT_") then
+	 	if (unitID == "pet") then
+			func(self,unitID,...)
+		end
 	else
-XPerl_ShowMessage("EXTRA EVENT")
+		func(self, unitID,...)
 	end
 end
 

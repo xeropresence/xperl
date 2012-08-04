@@ -42,6 +42,10 @@ local UnitPower = UnitPower
 local UnitPowerType = UnitPowerType
 local XPerl_SetHealthBar = XPerl_SetHealthBar
 
+
+local UnitHealth = UnitHealth
+
+
 local XPerl_Player_InitDK
 local XPerl_Player_InitWarlock
 local XPerl_Player_InitPaladin
@@ -66,6 +70,7 @@ function XPerl_Player_OnLoad(self)
 	XPerl_SecureUnitButton_OnLoad(self.nameFrame, "player", nil, PlayerFrameDropDown, XPerl_ShowGenericMenu)		--PlayerFrame.menu)
 
 	self:RegisterEvent("VARIABLES_LOADED")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 
 	self.EnergyLast = 0
 	self.tutorialPage = 2
@@ -549,52 +554,6 @@ local function XPerl_Player_UpdateMana(self)
 	end
 end
 
---[[
-local origUnitPowerBarAlt_OnUpdate = _G.UnitPowerBarAlt_OnUpdate
-local function XPerl_UnitPowerBarAlt_OnUpdate(self, elapsed)
-	origUnitPowerBarAlt_OnUpdate(self, elapsed)
-	if (self.maxPower and self.minPower and self.value and self.value > self.minPower) then
-		self.text:SetFormattedText("%d/%d (%d%%)", self.value, self.maxPower, ceil(100 / self.maxPower * self.value))
-		self.text:Show()
-	else
-		self.text:Hide()
-	end
-end
-
-function XPerl_CreateAltPower(parent, unit)
-	local p = CreateFrame("Frame", parent:GetName().."AltPowerBar", parent, "UnitPowerBarAltTemplate")
-	p:SetScript("OnUpdate", XPerl_UnitPowerBarAlt_OnUpdate)
-	p:EnableMouse(false)
-	p:ClearAllPoints()
-	p:SetPoint("CENTER", parent, "CENTER", 0, 1)
-	p:SetWidth(parent:GetWidth())
-	p:SetHeight(parent:GetHeight())
-
-	p.text = p:CreateFontString(p:GetName().."text", "OVERLAY", "GameFontNormalSmall")
-	p.text:SetAllPoints()
-	p.text:SetTextColor(1, 1, 1)
-	p.text:Hide()
-
-	parent.altPower = p
-	UnitPowerBarAlt_Initialize(p, unit, 0.5)
-	return p
-end
-
-function XPerl_Player_Events:UNIT_POWER_BAR_SHOW()
-	if not self.altPower then
-		self.altPower = XPerl_CreateAltPower(self.nameFrame, "player")
-		self.altPower.isPlayerBar = true
-	end
-	UnitPowerBarAlt_UpdateAll(self.altPower)
-	self.altPower:Show()
-end
-	
-function XPerl_Player_Events:UNIT_POWER_BAR_HIDE()
-	if self.altPower then
-		self.altPower:Hide()
-	end
-end
---]]
 
 local spiritOfRedemption = GetSpellInfo(27827)
 
@@ -764,6 +723,9 @@ end
 -- PLAYER_ENTERING_WORLD
 function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 	self.updateAFK = true
+	
+	--print("PLAYER_ENTERING_WORLD");
+	
 	if (UnitHasVehicleUI("player")) then
 		self.partyid = "vehicle"
 		self:SetAttribute("unit", "vehicle")
@@ -836,6 +798,7 @@ end
 -- VARIABLES_LOADED
 function XPerl_Player_Events:VARIABLES_LOADED()
 	self.doubleCheckAFK = 2		-- Check during 2nd UPDATE_FACTION, which are the last guarenteed events to come after logging in
+	--print("VARIABLES_LOADED")
 	self:UnregisterEvent("VARIABLES_LOADED")
 
 	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBERS_CHANGED", "PARTY_LEADER_CHANGED",
@@ -1545,6 +1508,7 @@ end
 
 -- XPerl_Player_SetupDK
 function XPerl_Player_SetupDK(self)
+if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
 	if (self.runes) then
 		if (not pconf or pconf.showRunes) then
 			self.runes:Show()
@@ -1588,5 +1552,6 @@ function XPerl_Player_SetupDK(self)
 			self.runes:Hide()
 		end
 	end
+end
 end
 
