@@ -707,10 +707,10 @@ function XPerl_Player_OnUpdate(self, elapsed)
 	end
 
 	-- Attempt to fix "not-updating bug", suggested by Taylla @ Curse (why was this code in onupdate function twice? identicle code, twice)
-	if (self.updateAFK) then
+	--[[if (self.updateAFK) then
 		self.updateAFK = nil
 		XPerl_Player_UpdateHealth(self)
-	end
+	end]]--
 end
 
 -- XPerl_Player_UpdateBuffs
@@ -778,7 +778,7 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 		end
 	end
 
-	local events = {"UNIT_HEALTH", "UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+	local events = {"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
 			"UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "PLAYER_TALENT_UPDATE", "RAID_TARGET_UPDATE", "UPDATE_SHAPESHIFT_FORM",
 			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE","UNIT_POWER_FREQUENT"}
@@ -860,12 +860,14 @@ XPerl_Player_Events.PARTY_LEADER_CHANGED	= XPerl_Player_Events.PARTY_LOOT_METHOD
 XPerl_Player_Events.RAID_ROSTER_UPDATE		= XPerl_Player_Events.PARTY_LOOT_METHOD_CHANGED
 
 -- UNIT_HEALTH, UNIT_MAXHEALTH
-function XPerl_Player_Events:UNIT_HEALTH()
+function XPerl_Player_Events:UNIT_HEALTH_FREQUENT()
 	XPerl_Player_UpdateHealth(self)
 end
-XPerl_Player_Events.UNIT_MAXHEALTH = XPerl_Player_Events.UNIT_HEALTH
-XPerl_Player_Events.PLAYER_DEAD    = XPerl_Player_Events.UNIT_HEALTH
-XPerl_Player_Events.UNIT_HEALTH_FREQUENT = XPerl_Player_Events.UNIT_HEALTH
+
+XPerl_Player_Events.UNIT_MAXHEALTH = XPerl_Player_Events.UNIT_HEALTH_FREQUENT
+XPerl_Player_Events.PLAYER_DEAD    = XPerl_Player_Events.UNIT_HEALTH_FREQUENT
+
+
 
 -- UNIT_POWER
 function XPerl_Player_Events:UNIT_POWER_FREQUENT()
@@ -1368,78 +1370,6 @@ local MAX_HOLY_POWER = _G.MAX_HOLY_POWER
 local PALADINPOWERBAR_SHOW_LEVEL = _G.PALADINPOWERBAR_SHOW_LEVEL
 local SPELL_POWER_HOLY_POWER = _G.SPELL_POWER_HOLY_POWER
 
--- XPerl_PaladinPowerBar_ToggleHolyRune
-local function XPerl_PaladinPowerBar_ToggleHolyRune(self, visible)
-	if visible then
-		self.deactivate:Play()
-	else
-		self.activate:Play()
-	end
-end
-
--- XPerl_PaladinPowerBar_Update
-local function XPerl_PaladinPowerBar_Update(self)
-	local numHolyPower = UnitPower( self:GetParent():GetAttribute("unit"), SPELL_POWER_HOLY_POWER )
-
-	for i=1,MAX_HOLY_POWER do
-		local holyRune = self.runes[i]
-		local isShown = holyRune:GetAlpha()> 0 or holyRune.activate:IsPlaying()
-		local shouldShow = i <= numHolyPower
-		if isShown ~= shouldShow then 
-			XPerl_PaladinPowerBar_ToggleHolyRune(holyRune, isShown)
-		end
-	end
-	
-	if numHolyPower == MAX_HOLY_POWER then
-		self.rune1.glow.activate:Play()
-		self.rune2.glow.activate:Play()
-		self.rune3.glow.activate:Play()
-	else
-		self.rune1.glow.deactivate:Play()
-		self.rune2.glow.deactivate:Play()
-		self.rune3.glow.deactivate:Play()
-	end
-end
-
--- XPerl_PaladinPowerBar_OnLoad
-function XPerl_PaladinPowerBar_OnLoad(self)
-
-	if UnitLevel("player") < PALADINPOWERBAR_SHOW_LEVEL then
-		self:RegisterEvent("PLAYER_LEVEL_UP")
-		self:SetAlpha(0)
-		PaladinPowerBar:Hide()
-		PaladinPowerBar:SetAlpha(0)
-	end
-
-	self:RegisterEvent("UNIT_POWER")
-	self:RegisterEvent("PLAYER_ENTERING_WORLD")
-	self:RegisterEvent("UNIT_DISPLAYPOWER")
-
-	self.rune1.glow:SetAlpha(0)
-	self.rune2.glow:SetAlpha(0)
-	self.rune3.glow:SetAlpha(0)
-
-	self.runes = {self.rune1, self.rune2, self.rune3}
-end
-
--- XPerl_PaladinPowerBar_OnEvent
-function XPerl_PaladinPowerBar_OnEvent(self, event, arg1, arg2)
-	if ( (event == "UNIT_POWER") and (arg1 == self:GetParent():GetAttribute("unit")) ) then
-		if ( arg2 == "HOLY_POWER" ) then
-			XPerl_PaladinPowerBar_Update(self)
-		end
-	elseif( event ==  "PLAYER_LEVEL_UP" ) then
-		local level = arg1
-		if level >= PALADINPOWERBAR_SHOW_LEVEL then
-			PaladinPowerBar:Show()
-			PaladinPowerBar:SetAlpha(1)
-			self.showAnim:Play()
-			XPerl_PaladinPowerBar_Update(self)
-		end
-	else
-		XPerl_PaladinPowerBar_Update(self)
-	end
-end
 
 -- XPerl_Player_InitPaladin
 function XPerl_Player_InitPaladin(self)
