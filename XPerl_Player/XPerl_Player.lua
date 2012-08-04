@@ -71,6 +71,8 @@ function XPerl_Player_OnLoad(self)
 
 	self:RegisterEvent("VARIABLES_LOADED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	
+	
 
 	self.EnergyLast = 0
 	self.tutorialPage = 2
@@ -740,19 +742,17 @@ function XPerl_Player_Events:PLAYER_ENTERING_WORLD()
 		end
 	end
 
-	local events = {"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+	--[[local events = {"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
 			"UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "PLAYER_TALENT_UPDATE", "RAID_TARGET_UPDATE", "UPDATE_SHAPESHIFT_FORM",
 			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE","UNIT_POWER_FREQUENT"}
 
 
-	--XPerl_UnitEvents(self, XPerl_Player_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE",
-	--						"UNIT_FLAGS", "PLAYER_FLAGS_CHANGED", "UNIT_SPELLCAST_SUCCEEDED"})
-	--XPerl_RegisterBasics(self, XPerl_Player_Events)
-
 	for i,e in pairs(events) do
 		self:RegisterEvent(e)
 	end
+	
+	]]--
 
 	XPerl_Player_UpdateDisplay(self)
 
@@ -796,7 +796,8 @@ function XPerl_Player_Events:UNIT_PORTRAIT_UPDATE()
 end
 
 -- VARIABLES_LOADED
-function XPerl_Player_Events:VARIABLES_LOADED()
+function XPerl_Player_Events:VARIABLES_LOADED(who, what)
+
 	self.doubleCheckAFK = 2		-- Check during 2nd UPDATE_FACTION, which are the last guarenteed events to come after logging in
 	--print("VARIABLES_LOADED")
 	self:UnregisterEvent("VARIABLES_LOADED")
@@ -805,14 +806,30 @@ function XPerl_Player_Events:VARIABLES_LOADED()
 			"PARTY_LOOT_METHOD_CHANGED", "RAID_ROSTER_UPDATE", "PLAYER_UPDATE_RESTING", "PLAYER_REGEN_ENABLED",
 			"PLAYER_REGEN_DISABLED", "PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_DEAD",
 			"UPDATE_FACTION", "UNIT_AURA", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
-			"UNIT_COMBAT","UNIT_POWER_FREQUENT","UNIT_MAXPOWER"}--, "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE"
+			"UNIT_COMBAT","UNIT_POWER_FREQUENT","UNIT_MAXPOWER"}
 
 	for i,eventE in pairs(events) do
 		self:RegisterEvent(eventE)
 	end
+	
+	
+	--Import events from player_entering_world
+	local events = {"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
+			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
+			"UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "PLAYER_TALENT_UPDATE", "RAID_TARGET_UPDATE", "UPDATE_SHAPESHIFT_FORM",
+			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE","UNIT_POWER_FREQUENT"}
+
+
+	for i,e in pairs(events) do
+		self:RegisterEvent(e)
+	end
+	
+	XPerl_Player_UpdateDisplay(self)
 
 	XPerl_Player_Events.VARIABLES_LOADED = nil
 end
+
+
 
 -- PARTY_LOOT_METHOD_CHANGED
 function XPerl_Player_Events:PARTY_LOOT_METHOD_CHANGED()
