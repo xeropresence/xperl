@@ -661,13 +661,13 @@ function XPerl_Player_OnUpdate(self, elapsed)
 
 	--XPerl_Player_UpdateMana(self)
 
-	if (IsResting() and UnitLevel("player") < 85) then
+	--[[if (IsResting() and UnitLevel("player") < 85) then
 		self.restingDelay = (self.restingDelay or 2) - elapsed
 		if (self.restingDelay <= 0) then
 			self.restingDelay = 2
 			XPerl_Player_UpdateXP(self)
 		end
-	end
+	end]]--
 
 	-- Attempt to fix "not-updating bug", suggested by Taylla @ Curse (why was this code in onupdate function twice? identicle code, twice)
 	--[[if (self.updateAFK) then
@@ -830,13 +830,17 @@ function XPerl_Player_Events:VARIABLES_LOADED(who, what)
 	for i,e in pairs(events) do
 		self:RegisterEvent(e)
 	end
+	self:RegisterEvent("UPDATE_EXHAUSTION")
+	
 	
 	--XPerl_Player_UpdateDisplay(self)
 
 	XPerl_Player_Events.VARIABLES_LOADED = nil
 end
 
-
+function XPerl_Player_Events:UPDATE_EXHAUSTION()
+	XPerl_Player_UpdateXP(self)
+end
 
 -- PARTY_LOOT_METHOD_CHANGED
 function XPerl_Player_Events:PARTY_LOOT_METHOD_CHANGED()
