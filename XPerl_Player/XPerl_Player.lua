@@ -85,8 +85,14 @@ function XPerl_Player_OnLoad(self)
 
 	
 	self.Power = 0;
-	--[[self.nameFrame.pvp:SetScript("OnUpdate",
+	self.nameFrame.pvp.time = 0;
+	
+	self.nameFrame.pvp:SetScript("OnUpdate",
 		function(self, elapsed)
+		
+			self.time = self.time + elapsed
+	if (self.time >= 0.2) then
+		self.time = 0
 			if (IsPVPTimerRunning()) then
 				local timeLeft = GetPVPTimer()
 				if (timeLeft > 0 and timeLeft < 300000) then		-- 5 * 60 * 1000
@@ -97,7 +103,8 @@ function XPerl_Player_OnLoad(self)
 				end
 			end
 			self.timer:Hide()
-		end)]]--
+			end
+		end)
 
 	XPerl_Player_InitDK(self)
 	XPerl_Player_SetupDK(self)
