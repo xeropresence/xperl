@@ -3344,18 +3344,22 @@ end
 
 -- XPerl_Unit_UpdatePortrait()
 function XPerl_Unit_UpdatePortrait(self)
+
+	
 	if (self.conf and self.conf.portrait) then
-		local pf = self.portraitFrame
-		SetPortraitTexture(pf.portrait, self.partyid)			-- If a player moves out of range for a 3D portrait, it will show their proper 2D one
+		SetPortraitTexture(self.portraitFrame.portrait, self.partyid)			-- If a player moves out of range for a 3D portrait, it will show their proper 2D one
 		if (self.conf.portrait3D and UnitIsVisible(self.partyid)) then
-			pf.portrait:Hide()
-			pf.portrait3D:Show()
-			XPerlSetPortrait3D(pf.portrait3D, self.partyid)
+			self.portraitFrame.portrait:Hide()
+			self.portraitFrame.portrait3D:Show()
+			self.portraitFrame.portrait3D:ClearModel()
+			self.portraitFrame.portrait3D:SetUnit(self.partyid)
+			self.portraitFrame.portrait3D:SetPortraitZoom(1)
 		else
-			pf.portrait:Show()
-			pf.portrait3D:Hide()
+			self.portraitFrame.portrait:Show()
+			self.portraitFrame.portrait3D:Hide()
 		end
-	end
+	end	
+	
 end
 
 -- XPerl_Unit_UpdateLevel
