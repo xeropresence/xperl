@@ -380,7 +380,8 @@ local function XPerl_RegisterLDB()
 	XPerl_RegisterLDB = nil
 end
 
-local function startupCheckSettings(self,event)
+
+local function settingspart1(self,event)
 	playerName = UnitName("player")
 	self:UnregisterEvent(event)
 
@@ -407,6 +408,12 @@ local function startupCheckSettings(self,event)
 	XPerl_UpgradeSettings = nil
 
 	XPerl_pcall(XPerl_ValidateSettings)
+end
+	
+
+
+local function startupCheckSettings(self,event)
+
 
 	XPerl_Init()
 	XPerl_BlizzFrameDisable = nil
@@ -418,9 +425,11 @@ end
 
 -- XPerl_Globals_OnEvent
 function XPerl_Globals_OnEvent(self, event, arg1, ...)
-	if (event == "VARIABLES_LOADED") then
+print(arg1)
+	--if (event == "VARIABLES_LOADED") then
+	if (event == "ADDON_LOADED" and arg1 == "XPerl") then
 		self:UnregisterEvent(event)
-
+		settingspart1(self,event)
 		-- Tell DHUD to hide Blizzard default Player and Target frames
 		if (type(DHUD_Config) == "table") then
 			if (XPerl_Player) then
