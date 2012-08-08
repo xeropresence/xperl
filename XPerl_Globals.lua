@@ -333,29 +333,6 @@ local function onEventPostSetup(self, event, unit, ...)
 			--end
 			XPerl_OutOfCombatQueue[func] = nil
 		end
-
---	elseif (event == "ADDON_LOADED") then
---		if (arg1 == "Blizzard_GuildUI") then
---			hooksecurefunc("GuildRoster_Update", XPerl_GuildRoster_Update)
---		end
-
-	--elseif (event == "ADDON_ACTION_BLOCKED") then
-		--totalBlocked = totalBlocked + 1
-		--if (strfind(arg2, "^XPerl")) then
-		--	xperlBlocked = xperlBlocked + 1
-		--end
-		--if (not iFixed1) then
-		--	if (strfind(arg2, "PetActionBarFrame")) then
-		--		if (not PetActionBarFrame:GetAttribute("unit", "pet")) then
-		--			iFixed1 = true
-		--			--XPerl_Notice("Pet Frame Issue Detected: Setting up workaround")
-		--			XPerl_ProtectedCall(function()
-		--				PetActionBarFrame:SetAttribute("unit", "pet")
-		--				RegisterUnitWatch(PetActionBarFrame)
-		--			end)
-		--		end
-		--	end
-		--end
 	end
 end
 
@@ -425,7 +402,7 @@ end
 
 -- XPerl_Globals_OnEvent
 function XPerl_Globals_OnEvent(self, event, arg1, ...)
-print(arg1)
+
 	--if (event == "VARIABLES_LOADED") then
 	if (event == "ADDON_LOADED" and arg1 == "XPerl") then
 		self:UnregisterEvent(event)
@@ -453,7 +430,7 @@ print(arg1)
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		self:UnregisterEvent(event)
 
-		self:SetScript("OnEvent", onEventPostSetup)
+		--self:SetScript("OnEvent", onEventPostSetup)
 		XPerl_Globals_OnEvent = nil
 	end
 end
