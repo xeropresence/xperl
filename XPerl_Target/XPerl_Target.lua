@@ -1046,7 +1046,7 @@ XPerl_ShowMessage("EXTRA EVENT")
 	if (strsub(event, 1, 5) == "UNIT_") then
 	
 	 	if (unitid == "target") then
-		print(event)
+		--print(event)
 			func(self, ...)
 		end
 	else
