@@ -1259,6 +1259,7 @@ function XPerl_Player_Set_Bits(self)
 	XPerl_Player_SetupDK(self)
 	XPerl_Player_SetupMoonkin(self)
 	XPerl_Player_InitPaladin(self)
+	XPerl_Player_InitMonk(self)
 	XPerl_Player_SetupWarlock(self)
 
 	self.highlight:ClearAllPoints()
@@ -1404,7 +1405,41 @@ function XPerl_Player_InitPaladin(self)
 		
 	end
 end
+-- XPerl_Player_InitPaladin
+function XPerl_Player_InitMonk(self)
+	if ( select(2,UnitClass("player")) == "MONK") then
+		--[[if (pconf and pconf.showRunes) then
+			if (not self.holyp) then
+				self.holyp = CreateFrame("Frame", "XPerl_Runes", self, "XPerl_PaladinPowerBarTemplate")
+				self.holyp:SetFrameLevel(self.portraitFrame:GetFrameLevel() + 5)
+				self.holyp:SetPoint("LEFT", self, "BOTTOMLEFT", 0, 5)
+		
+				-- DO NOT HIDE PaladinPowerBar. Blizzard_CombatText.lua check's it's visible before giving a message... really? guys...
+				-- How are people supposed to write mods if you go put in ties accross the place:
+				-- Blizzard_CombatText.lua(259): elseif ( arg3 == "HOLY_POWER" and PaladinPowerBar:IsShown() and PaladinPowerBar:GetAlpha() > 0.5 ) then
+				-- Surely there would be no HOLY_POWER event if it was not applicable. Why are you even checking if the bar is shown?
+				--PaladinPowerBar:UnregisterAllEvents()
+				--PaladinPowerBar:ClearAllPoints()
+				--PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", -200, 200)		-- So, we'll put it far off the screen
+				PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", 0, 0)
+			else
+				self.holyp:Show()
+			end
+		elseif (self.holyp) then
+			self.holyp:Hide()
+		end]]--
+		
+		
+		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
+		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
+		MonkHarmonyBar:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 75,15)
+		XPerl_Player.unit = "player"
+		MonkHarmonyBar:SetParent(XPerl_Player)
 
+		
+	end
+end
 --XPerl_Player_InitMoonkin
 function XPerl_Player_InitMoonkin(self)
 	if ( select(2,UnitClass("player")) == "DRUID") then
