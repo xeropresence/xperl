@@ -53,7 +53,8 @@ function XPerl_Target_OnLoad(self, partyid)
 
 	local events = {"UNIT_COMBAT", "PLAYER_FLAGS_CHANGED",
 		"PARTY_MEMBER_DISABLE", "PARTY_MEMBER_ENABLE", "RAID_TARGET_UPDATE", "PARTY_MEMBERS_CHANGED",
-		"PARTY_LEADER_CHANGED", "PARTY_LOOT_METHOD_CHANGED", "UNIT_THREAT_LIST_UPDATE"}
+		"PARTY_LEADER_CHANGED", "PARTY_LOOT_METHOD_CHANGED", "UNIT_THREAT_LIST_UPDATE","UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS",
+			"UNIT_CLASSIFICATION_CHANGED", "UNIT_PORTRAIT_UPDATE", "UNIT_AURA", "UNIT_HEALTH_FREQUENT","UNIT_POWER_FREQUENT", "UNIT_MAXPOWER", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
@@ -69,7 +70,7 @@ function XPerl_Target_OnLoad(self, partyid)
 		self.tutorialPage = 3
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		self:RegisterEvent("PLAYER_FOCUS_CHANGED")
-		self:RegisterEvent("VARIABLES_LOADED")
+	
 		if (XPerl_Target_Events.INSPECT_READY) then
 			self:RegisterEvent("INSPECT_READY")
 		end
@@ -124,9 +125,9 @@ function XPerl_Target_OnLoad(self, partyid)
 
 	--RegisterUnitWatch(self)
 
-	XPerl_UnitEvents(self, XPerl_Target_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS",
-				"UNIT_CLASSIFICATION_CHANGED", "UNIT_PORTRAIT_UPDATE", "UNIT_AURA", "UNIT_HEALTH"})
-	XPerl_RegisterBasics(self, XPerl_Target_Events)
+	--XPerl_UnitEvents(self, XPerl_Target_Events, {"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS",
+	--			"UNIT_CLASSIFICATION_CHANGED", "UNIT_PORTRAIT_UPDATE", "UNIT_AURA", "UNIT_HEALTH"})
+	--XPerl_RegisterBasics(self, XPerl_Target_Events)
 
 	--self.PlayerFlash = 0
 	self.perlBuffs, self.perlDebuffs, self.RangeUpdate = 0, 0, 0
@@ -1030,6 +1031,7 @@ end
 -- Event Handler --
 -------------------
 function XPerl_Target_OnEvent(self, event, ...)
+
 	--[[
 	local func = XPerl_Target_Events[event]
 	if (func) then
@@ -1042,7 +1044,9 @@ XPerl_ShowMessage("EXTRA EVENT")
 	local func = XPerl_Target_Events[event]
 	local unitid = select(1,...);
 	if (strsub(event, 1, 5) == "UNIT_") then
+	
 	 	if (unitid == "target") then
+		print(event)
 			func(self, ...)
 		end
 	else
@@ -1050,10 +1054,6 @@ XPerl_ShowMessage("EXTRA EVENT")
 	end
 end
 
--- VARIABLES_LOADED
-function XPerl_Target_Events:VARIABLES_LOADED()
-
-end
 
 function XPerl_Target_Events:PLAYER_REGEN_ENABLED()
 	XPerl_Unit_ThreatStatus(self, self.partyid == "target" and "player" or nil)
@@ -1209,10 +1209,10 @@ end
 XPerl_Target_Events.PLAYER_FOCUS_CHANGED = XPerl_Target_Events.PLAYER_TARGET_CHANGED
 
 -- UNIT_HEALTH, UNIT_MAXHEALTH
-function XPerl_Target_Events:UNIT_HEALTH()
+function XPerl_Target_Events:UNIT_HEALTH_FREQUENT()
 	XPerl_Target_UpdateHealth(self)
 end
-XPerl_Target_Events.UNIT_MAXHEALTH = XPerl_Target_Events.UNIT_HEALTH
+XPerl_Target_Events.UNIT_MAXHEALTH = XPerl_Target_Events.UNIT_HEALTH_FREQUENT
 
 -- UNIT_DYNAMIC_FLAGS
 function XPerl_Target_Events:UNIT_DYNAMIC_FLAGS()
@@ -1230,11 +1230,11 @@ function XPerl_Target_Events:RAID_TARGET_UPDATE()
 end
 
 -- UNIT_POWER / UNIT_MAXPOWER
-function XPerl_Target_Events:UNIT_POWER()
+function XPerl_Target_Events:UNIT_POWER_FREQUENT()
         XPerl_Target_SetMana(self)
 end
 
-XPerl_Target_Events.UNIT_MAXPOWER = XPerl_Target_Events.UNIT_POWER
+XPerl_Target_Events.UNIT_MAXPOWER = XPerl_Target_Events.UNIT_POWER_FREQUENT
 
 -- UNIT_DISPLAYPOWER
 function XPerl_Target_Events:UNIT_DISPLAYPOWER()
