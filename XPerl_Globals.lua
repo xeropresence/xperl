@@ -430,7 +430,7 @@ function XPerl_Globals_OnEvent(self, event, arg1, ...)
 	elseif (event == "PLAYER_ENTERING_WORLD") then
 		self:UnregisterEvent(event)
 
-		self:SetScript("OnEvent", onEventPostSetup)
+		--self:SetScript("OnEvent", onEventPostSetup)
 		XPerl_Globals_OnEvent = nil
 	end
 end
