@@ -35,14 +35,14 @@ function XPerl_TargetTarget_OnLoad(self)
 	self.tutorialPage = 9
 	
 	events = {"UNIT_HEALTH_FREQUENT","UNIT_POWER","UNIT_AURA"};
-	
+	self.guid = 0;
 	-- Events
 	self:RegisterEvent("RAID_TARGET_UPDATE")
 	if (self == XPerl_TargetTarget) then
 		self.tutorialPage = 8
 		self.parentid = "target"
 		self.partyid = "targettarget"
-		--self:RegisterEvent("UNIT_TARGET")
+		self:RegisterEvent("UNIT_TARGET")
 		self:RegisterEvent("PLAYER_TARGET_CHANGED")
 		for i,event in pairs(events) do
 			self:RegisterEvent(event)
@@ -55,7 +55,7 @@ function XPerl_TargetTarget_OnLoad(self)
 		for i,event in pairs(events) do
 			self:RegisterEvent(event)
 		end
-		--self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
+		self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
 	elseif (self == XPerl_PetTarget) then
 		self.parentid = "pet"
 		self.partyid = "pettarget"
@@ -63,7 +63,7 @@ function XPerl_TargetTarget_OnLoad(self)
 		for i,event in pairs(events) do
 			self:RegisterEvent(event)
 		end
-		--self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
+		self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
 	else
 		self.parentid = "targettarget"
 		self.partyid = "targettargettarget"
@@ -193,6 +193,7 @@ function XPerl_TargetTarget_UpdateDisplay(self,force)
 			-- Save these 2, so we know whether to update the frame later
 			self.targethp = UnitHealth(partyid)
 			self.targetmana = UnitMana(partyid)
+			self.guid = UnitGUID(partyid);
 			self.afk = UnitIsAFK(partyid) and conf.showAFK
 
 			XPerl_SetUnitNameColor(self.nameFrame.text, partyid)
@@ -282,11 +283,14 @@ end
 function XPerl_TargetTarget_OnUpdate(self, elapsed)
 
 	local partyid = self.partyid
-	local newHP = UnitHealth(partyid)
-	local newMana = UnitMana(partyid)
-	local newAFK = UnitIsAFK(partyid)
-
-	if ((newHP ~= self.targethp) or (newMana ~= self.targetmana) or (newAFK ~= self.afk)) then
+	--local newHP = UnitHealth(partyid)
+	--local newMana = UnitMana(partyid)
+	--local newAFK = UnitIsAFK(partyid)
+local newGuid = UnitGUID(partyid);
+	
+	
+	--if ((newHP ~= self.targethp) or (newMana ~= self.targetmana) or (newAFK ~= self.afk)) then
+	if (newGuid ~= self.guid) then
 		XPerl_TargetTarget_UpdateDisplay(self)
 	else
 		self.time = elapsed + self.time
@@ -307,14 +311,15 @@ end
 function XPerl_TargetTargetTarget_OnUpdate(self, elapsed)
 
 	local newName = UnitName(self.partyid)
-
+	local newGuid = UnitGUID(self.partyid);
+	
 	if (not newName) then
 		newName = ""
 		newHP = 0
 		newMana = 0
 	end
 
-	if (self == XPerl_TargetTargetTarget and newName ~= self.targetname) then
+	if (self == XPerl_TargetTargetTarget and newGuid ~= self.guid) then
 		XPerl_NoFadeBars(true)
 		XPerl_TargetTarget_UpdateDisplay(self,true)
 		XPerl_NoFadeBars()
