@@ -624,6 +624,11 @@ local function XPerl_Player_UpdateLevel(self)
 	self.levelFrame.text:SetText(UnitLevel(self.partyid))
 end
 
+local function XPerl_Player_UpdateLevel2(self,lvl)
+	self.levelFrame.text:SetText(lvl)
+end
+
+
 -- XPerl_PlayerStatus_OnUpdate
 function XPerl_PlayerStatus_OnUpdate(self, val, max)
 	if (pconf.fullScreen.enable) then
@@ -900,7 +905,12 @@ function XPerl_Player_Events:UNIT_LEVEL()
 	XPerl_Player_UpdateLevel(self)
 	XPerl_Player_UpdateXP(self)
 end
-XPerl_Player_Events.PLAYER_LEVEL_UP = XPerl_Player_Events.UNIT_LEVEL
+--XPerl_Player_Events.PLAYER_LEVEL_UP = XPerl_Player_Events.UNIT_LEVEL
+
+function XPerl_Player_Events:PLAYER_LEVEL_UP(arg1,arg2,arg3)
+	XPerl_Player_UpdateLevel2(self,arg2)
+	XPerl_Player_UpdateXP(self)
+end
 
 -- PLAYER_XP_UPDATE
 function XPerl_Player_Events:PLAYER_XP_UPDATE()
