@@ -283,14 +283,14 @@ end
 function XPerl_TargetTarget_OnUpdate(self, elapsed)
 
 	local partyid = self.partyid
-	--local newHP = UnitHealth(partyid)
-	--local newMana = UnitMana(partyid)
-	--local newAFK = UnitIsAFK(partyid)
+	local newHP = UnitHealth(partyid)
+	local newMana = UnitMana(partyid)
+	local newAFK = UnitIsAFK(partyid)
 local newGuid = UnitGUID(partyid);
 	
 	
-	--if ((newHP ~= self.targethp) or (newMana ~= self.targetmana) or (newAFK ~= self.afk)) then
-	if (newGuid ~= self.guid) then
+	--if () then
+	if ((newGuid ~= self.guid) or (newHP ~= self.targethp) or (newMana ~= self.targetmana) or (newAFK ~= self.afk)) then
 		XPerl_TargetTarget_UpdateDisplay(self)
 	else
 		self.time = elapsed + self.time
@@ -341,7 +341,7 @@ function XPerl_TargetTarget_OnEvent(self, event, unitID, ...)
 		XPerl_TargetTarget_UpdateDisplay(self, true)
 
 	elseif (strfind(event, "^UNIT_")) then--(event == "UNIT_TARGET") then
-		if (unitID == "target" and self == XPerl_TargetTarget) then
+		if ((unitID == "target" or unitID == "player") and (self == XPerl_TargetTarget or self == XPerl_TargetTargetTarget)) then
 			XPerl_NoFadeBars(true)
 			XPerl_TargetTarget_UpdateDisplay(self, true)
 			XPerl_NoFadeBars()
