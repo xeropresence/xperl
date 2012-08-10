@@ -831,7 +831,7 @@ function XPerl_Player_Events:VARIABLES_LOADED(who, what)
 	local events = {"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE",
 			"UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_PORTRAIT_UPDATE", "UNIT_FLAGS", "PLAYER_FLAGS_CHANGED",
 			"UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "PLAYER_TALENT_UPDATE", "RAID_TARGET_UPDATE", "UPDATE_SHAPESHIFT_FORM",
-			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE","UNIT_POWER_FREQUENT"}
+			"RUNE_TYPE_UPDATE", "RUNE_POWER_UPDATE","UNIT_POWER_FREQUENT","PLAYER_LEVEL_UP"}
 
 
 	for i,e in pairs(events) do
@@ -1175,7 +1175,6 @@ function XPerl_Player_Set_Bits(self)
 
 	if (pconf.level) then
 		self.levelFrame:Show()
-		self:RegisterEvent("PLAYER_LEVEL_UP")
 	else
 		self.levelFrame:Hide()
 	end
