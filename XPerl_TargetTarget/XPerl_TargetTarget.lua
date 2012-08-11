@@ -34,7 +34,7 @@ function XPerl_TargetTarget_OnLoad(self)
 
 	self.tutorialPage = 9
 	
-	events = {"UNIT_HEALTH_FREQUENT","UNIT_POWER","UNIT_AURA"};
+	events = {"UNIT_HEALTH","UNIT_POWER","UNIT_AURA"};
 	self.guid = 0;
 	-- Events
 	self:RegisterEvent("RAID_TARGET_UPDATE")
@@ -55,7 +55,7 @@ function XPerl_TargetTarget_OnLoad(self)
 		for i,event in pairs(events) do
 			self:RegisterEvent(event)
 		end
-		self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
+		--self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
 	elseif (self == XPerl_PetTarget) then
 		self.parentid = "pet"
 		self.partyid = "pettarget"
@@ -63,7 +63,7 @@ function XPerl_TargetTarget_OnLoad(self)
 		for i,event in pairs(events) do
 			self:RegisterEvent(event)
 		end
-		self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
+		--self:SetScript("OnUpdate", XPerl_TargetTarget_OnUpdate)
 	else
 		self.parentid = "targettarget"
 		self.partyid = "targettargettarget"
