@@ -8,6 +8,10 @@ local TableUnits = {}			-- Dynamic list of units indexed by raid id, changed on 
 XPerlRaidMonConfig = {}
 local config = XPerlRaidMonConfig
 
+
+local isMOP = select(4, _G.GetBuildInfo()) >= 50000
+local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+
 XPerl_SetModuleRevision("$Revision$")
 
 XPERL_RAIDMON_UNIT_WIDTH_MIN = 50

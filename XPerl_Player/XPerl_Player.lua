@@ -12,8 +12,10 @@ local percD = "%d"..PERCENT_SYMBOL
 
 
 
- isMOP = select(4, _G.GetBuildInfo()) >= 50000
+local isMOP = select(4, _G.GetBuildInfo()) >= 50000
 local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+local GetPrimaryTalentTree = isMOP and GetSpecialization or GetPrimaryTalentTree
+
 local IsPartyLeader = IsPartyLeader;
 
 
@@ -110,7 +112,7 @@ function XPerl_Player_OnLoad(self)
 	XPerl_Player_SetupDK(self)
 
 	XPerl_Player_InitMoonkin(self)
-	XPerl_Player_SetupMoonkin(self)
+	--XPerl_Player_SetupMoonkin(self)
 
 	XPerl_Player_InitWarlock(self)
 	XPerl_Player_SetupWarlock(self)
@@ -494,9 +496,9 @@ local function XPerl_Player_DruidBarUpdate(self)
 
 	local form = GetShapeshiftFormID()
 	if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
-		self.eclipse:Hide()
+		self.runes:Hide()
 	else
-		self.eclipse:Show()
+		self.runes:Show()
 	end
 
 	if (InCombatLockdown()) then
@@ -1255,7 +1257,7 @@ function XPerl_Player_Set_Bits(self)
 	self:SetHeight(max(h1, h2))
 
 	self.highlight:ClearAllPoints()
-	if (pconf.extendPortrait or ((self.runes or self.eclipse) and pconf.showRunes and pconf.dockRunes)) then
+	if (pconf.extendPortrait or (self.runes and pconf.showRunes and pconf.dockRunes)) then
 		self.portraitFrame:SetHeight(62 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
 		--self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 		--self.highlight:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, 0)
@@ -1266,7 +1268,7 @@ function XPerl_Player_Set_Bits(self)
 	end
 
 	XPerl_Player_SetupDK(self)
-	XPerl_Player_SetupMoonkin(self)
+	--XPerl_Player_SetupMoonkin(self)
 	XPerl_Player_InitPaladin(self)
 	XPerl_Player_InitMonk(self)
 	XPerl_Player_SetupWarlock(self)
@@ -1452,17 +1454,27 @@ end
 --XPerl_Player_InitMoonkin
 function XPerl_Player_InitMoonkin(self)
 	if ( select(2,UnitClass("player")) == "DRUID") then
-		self.eclipse = CreateFrame("Frame", "XPerl_Runes", self)
 
-		self.eclipse:SetMovable(true)
-		self.eclipse:RegisterForDrag("LeftButton")
-		self.eclipse:SetScript("OnDragStart",
+	
+		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
+		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
+		EclipseBarFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 0,5)
+		XPerl_Player.unit = "player"
+		self.runes:SetAlpha(0);
+		EclipseBarFrame:SetParent(XPerl_Player)
+
+		--[[self.runes = CreateFrame("Frame", "XPerl_Runes", self)
+
+		self.runes:SetMovable(true)
+		self.runes:RegisterForDrag("LeftButton")
+		self.runes:SetScript("OnDragStart",
 			function(self)
 				if (not pconf.dockRunes) then
 					self:StartMoving()
 				end
 			end)
-		self.eclipse:SetScript("OnDragStop",
+		self.runes:SetScript("OnDragStop",
 			function(self)
 				if (not pconf.dockRunes) then
 					self:StopMovingOrSizing()
@@ -1470,11 +1482,11 @@ function XPerl_Player_InitMoonkin(self)
 				end
 			end)
 
-		self.eclipse.unit = EclipseBarFrame:GetParent().unit
-		EclipseBarFrame:SetParent(self.eclipse)
+		self.runes.unit = EclipseBarFrame:GetParent().unit
+		EclipseBarFrame:SetParent(self.runes)
 		EclipseBarFrame:ClearAllPoints()
 		EclipseBarFrame:SetPoint("TOPLEFT", 3, 0)
-		EclipseBarFrame:SetPoint("BOTTOMLEFT", 15, 5)
+		EclipseBarFrame:SetPoint("BOTTOMLEFT", 15, 5)]]--
 
 	end
 
@@ -1485,21 +1497,22 @@ end
 -- Fix for Eclipse bar not show out problem when respec from Balance or relog in any form other 
 -- than human/moonkin, thanks sontix.
 function XPerl_Player_SetupMoonkin(self)
-	if (self.eclipse) then
-		self.eclipse:ClearAllPoints()
+--[[
+	if (self.runes) then
+		self.runes:ClearAllPoints()
 		if (not pconf or pconf.dockRunes) then
-			self.eclipse:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
-			self.eclipse:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
+			self.runes:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
+			self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
 		else
-			self.eclipse:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
-			XPerl_RestorePosition(self.eclipse)
+			self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+			XPerl_RestorePosition(self.runes)
 		end
 		if GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
-			self.eclipse:Hide()
+			self.runes:Hide()
 		else
-			self.eclipse:Show()
+			self.runes:Show()
 		end
-	end
+	end]]--
 end
 
 
