@@ -6,6 +6,10 @@ local init_done, gradient, conf, doneOptions
 local errorCount = 0
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
+local isMOP = select(4, _G.GetBuildInfo()) >= 50000
+local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
+local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+
 local classOrder = {"WARRIOR", "DEATHKNIGHT", "ROGUE", "HUNTER", "DRUID", "SHAMAN", "PALADIN", "PRIEST", "MAGE", "WARLOCK"}
 
 -- SetTex

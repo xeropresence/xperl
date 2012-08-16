@@ -495,11 +495,13 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 
 	local form = GetShapeshiftFormID()
-	if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
-		self.runes:Hide()
-	else
-		self.runes:Show()
-	end
+	--if (self.runes ~= nil) then
+		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
+			self.runes:Hide()
+		else
+			self.runes:Show()
+		end
+	--end
 
 	if (InCombatLockdown()) then
 		XPerl_ProtectedCall(XPerl_Player_DruidBarUpdate, self)
@@ -1177,6 +1179,8 @@ function XPerl_Player_Set_Bits(self)
 		XPerl_ArcaneBar_RegisterFrame(self.nameFrame, UnitHasVehicleUI("player") and "vehicle" or "player")
 	end
 
+	
+	
 	if (pconf.portrait) then
 		self.portraitFrame:Show()
 		self.portraitFrame:SetWidth(60)
@@ -1266,6 +1270,15 @@ function XPerl_Player_Set_Bits(self)
 		--self.highlight:SetPoint("BOTTOMLEFT", self.classFrame, "BOTTOMLEFT", -2, -2)
 		--self.highlight:SetPoint("TOPRIGHT", self.nameFrame, "TOPRIGHT", 0, 0)
 	end
+	
+	if (self.runes) then
+		if ( pconf.showRunes) then
+			self.runes:Show();
+		else
+			self.runes:Hide();
+		end
+	end
+	
 
 	XPerl_Player_SetupDK(self)
 	--XPerl_Player_SetupMoonkin(self)
@@ -1380,38 +1393,47 @@ local MAX_HOLY_POWER = _G.MAX_HOLY_POWER
 local PALADINPOWERBAR_SHOW_LEVEL = _G.PALADINPOWERBAR_SHOW_LEVEL
 local SPELL_POWER_HOLY_POWER = _G.SPELL_POWER_HOLY_POWER
 
+local specialframe;
+
+local function MakeMoveable(self)
+		self.runes:SetMovable(true)
+		self.runes:RegisterForDrag("LeftButton")
+		--specialframe:SetMovable(true)
+		
+		self.runes:SetScript("OnDragStart",
+			function(self)
+				if (not pconf.dockRunes) then
+					--specialframe:StartMoving()
+					self:StartMoving()
+				end
+			end)
+		self.runes:SetScript("OnDragStop",
+			function(self)
+				if (not pconf.dockRunes) then
+					--specialframe:StopMovingOrSizing()
+					self:StopMovingOrSizing()
+					XPerl_SavePosition(self)
+				end
+			end)
+end
+
 
 -- XPerl_Player_InitPaladin
 function XPerl_Player_InitPaladin(self)
 	if ( select(2,UnitClass("player")) == "PALADIN") then
-		--[[if (pconf and pconf.showRunes) then
-			if (not self.holyp) then
-				self.holyp = CreateFrame("Frame", "XPerl_Runes", self, "XPerl_PaladinPowerBarTemplate")
-				self.holyp:SetFrameLevel(self.portraitFrame:GetFrameLevel() + 5)
-				self.holyp:SetPoint("LEFT", self, "BOTTOMLEFT", 0, 5)
-		
-				-- DO NOT HIDE PaladinPowerBar. Blizzard_CombatText.lua check's it's visible before giving a message... really? guys...
-				-- How are people supposed to write mods if you go put in ties accross the place:
-				-- Blizzard_CombatText.lua(259): elseif ( arg3 == "HOLY_POWER" and PaladinPowerBar:IsShown() and PaladinPowerBar:GetAlpha() > 0.5 ) then
-				-- Surely there would be no HOLY_POWER event if it was not applicable. Why are you even checking if the bar is shown?
-				--PaladinPowerBar:UnregisterAllEvents()
-				--PaladinPowerBar:ClearAllPoints()
-				--PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", -200, 200)		-- So, we'll put it far off the screen
-				PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", 0, 0)
-			else
-				self.holyp:Show()
-			end
-		elseif (self.holyp) then
-			self.holyp:Hide()
-		end]]--
-		
+
+		if (not PaladinPowerBar or PaladinPowerBar:GetParent() ~= PlayerFrame or not PaladinPowerBar:IsShown() or not pconf.showRunes ) then
+			-- Only hijack runes if not already done so by another mod
+			return
+		end
+
 		
 		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
 		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
 		PaladinPowerBar:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 0,6)
-		XPerl_Player.unit = "player"
-		PaladinPowerBar:SetParent(XPerl_Player)
+		self.runes.unit = "player"
+		PaladinPowerBar:SetParent(self.runes)--XPerl_Player)
 
 		
 	end
@@ -1419,34 +1441,16 @@ end
 -- XPerl_Player_InitPaladin
 function XPerl_Player_InitMonk(self)
 	if ( select(2,UnitClass("player")) == "MONK") then
-		--[[if (pconf and pconf.showRunes) then
-			if (not self.holyp) then
-				self.holyp = CreateFrame("Frame", "XPerl_Runes", self, "XPerl_PaladinPowerBarTemplate")
-				self.holyp:SetFrameLevel(self.portraitFrame:GetFrameLevel() + 5)
-				self.holyp:SetPoint("LEFT", self, "BOTTOMLEFT", 0, 5)
-		
-				-- DO NOT HIDE PaladinPowerBar. Blizzard_CombatText.lua check's it's visible before giving a message... really? guys...
-				-- How are people supposed to write mods if you go put in ties accross the place:
-				-- Blizzard_CombatText.lua(259): elseif ( arg3 == "HOLY_POWER" and PaladinPowerBar:IsShown() and PaladinPowerBar:GetAlpha() > 0.5 ) then
-				-- Surely there would be no HOLY_POWER event if it was not applicable. Why are you even checking if the bar is shown?
-				--PaladinPowerBar:UnregisterAllEvents()
-				--PaladinPowerBar:ClearAllPoints()
-				--PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", -200, 200)		-- So, we'll put it far off the screen
-				PaladinPowerBar:SetPoint("BOTTOMRIGHT", UIParent, "TOPLEFT", 0, 0)
-			else
-				self.holyp:Show()
-			end
-		elseif (self.holyp) then
-			self.holyp:Hide()
-		end]]--
-		
+
+
 		
 		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
 		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
 		MonkHarmonyBar:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 75,15)
-		XPerl_Player.unit = "player"
-		MonkHarmonyBar:SetParent(XPerl_Player)
+		self.runes.unit = "player"
+		MonkHarmonyBar:SetParent(self.runes)--XPerl_Player)
+
 
 		
 	end
@@ -1455,14 +1459,25 @@ end
 function XPerl_Player_InitMoonkin(self)
 	if ( select(2,UnitClass("player")) == "DRUID") then
 
+		--[[if (not EclipseBarFrame or EclipseBarFrame:GetParent() ~= PlayerFrame or not EclipseBarFrame:IsShown() or not pconf.showRunes ) then
+			-- Only hijack runes if not already done so by another mod
+			return
+		end]]
+	
 	
 		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
 		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
-		EclipseBarFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 0,5)
-		XPerl_Player.unit = "player"
-		self.runes:SetAlpha(0);
-		EclipseBarFrame:SetParent(XPerl_Player)
+		EclipseBarFrame:SetPoint("TOPLEFT", self.runes, "CENTER", -60,18)
+		--XPerl_Player.unit = "player"
+		--self.runes:SetAlpha(0);
+		--EclipseBarFrame:SetParent(XPerl_Player)
+		self.runes.unit = "player"
+		--specialframe = EclipseBarFrame;
+		EclipseBarFrame:SetParent(self.runes)
+		
+		
+		MakeMoveable(self)
 
 		--[[self.runes = CreateFrame("Frame", "XPerl_Runes", self)
 
@@ -1493,29 +1508,6 @@ function XPerl_Player_InitMoonkin(self)
 	XPerl_Player_InitMoonkin = nil
 end
 
--- XPerl_Player_SetupMoonkin
--- Fix for Eclipse bar not show out problem when respec from Balance or relog in any form other 
--- than human/moonkin, thanks sontix.
-function XPerl_Player_SetupMoonkin(self)
---[[
-	if (self.runes) then
-		self.runes:ClearAllPoints()
-		if (not pconf or pconf.dockRunes) then
-			self.runes:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 2)
-			self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -35) 
-		else
-			self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
-			XPerl_RestorePosition(self.runes)
-		end
-		if GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
-			self.runes:Hide()
-		else
-			self.runes:Show()
-		end
-	end]]--
-end
-
-
 
 -- XPerl_Player_InitDK
 function XPerl_Player_InitDK(self)
@@ -1535,21 +1527,7 @@ function XPerl_Player_InitDK(self)
 		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
 
-		self.runes:SetMovable(true)
-		self.runes:RegisterForDrag("LeftButton")
-		self.runes:SetScript("OnDragStart",
-			function(self)
-				if (not pconf.dockRunes) then
-					self:StartMoving()
-				end
-			end)
-		self.runes:SetScript("OnDragStop",
-			function(self)
-				if (not pconf.dockRunes) then
-					self:StopMovingOrSizing()
-					XPerl_SavePosition(self)
-				end
-			end)
+		MakeMoveable(self)
 
 		local bgDef = {bgFile = "Interface\\Addons\\XPerl\\Images\\XPerl_FrameBack",
 				edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
