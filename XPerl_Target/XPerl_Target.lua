@@ -36,6 +36,8 @@ local mobhealth
 
 local isMOP = select(4, _G.GetBuildInfo()) >= 50000
 local IsPartyLeader = IsPartyLeader;
+local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+
 if (select(4, _G.GetBuildInfo()) >= 50000) then
 	IsPartyLeader = function() return UnitIsGroupLeader("player") end
 end
