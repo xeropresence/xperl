@@ -1235,6 +1235,7 @@ function XPerl_Player_AlignTop()
 			local newTop = top / other:GetEffectiveScale()
 			other:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", otherLeft, newTop)
 			other:SetUserPlaced(true)
+			XPerl_SavePosition(other)
 		end
 	end
 
