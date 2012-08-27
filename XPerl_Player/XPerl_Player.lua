@@ -121,11 +121,28 @@ function XPerl_Player_OnLoad(self)
 	--XPerl_Player_SetupWarlock(self)
 
 	XPerl_RegisterHighlight(self.highlight, 3)
-	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
+	
+	
+	
+	
+	
+	local perlframes = {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame}
+	self.FlashFrames = {self.portraitFrame, self.nameFrame,self.levelFrame, self.statsFrame}
+		--Only Add deathknight to the flash frame list
+	--This resolves an issue with the backdrop being added constantly to the other special frames.
+	if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
+		table.insert(self.FlashFrames, self.runes);
+		table.insert(perlframes, self.runes);
+	end
+	
+	
+	XPerl_RegisterPerlFrames(self, perlframes)--, self.runes
 
-	self.FlashFrames = {self.portraitFrame, self.nameFrame,
-				self.levelFrame, self.statsFrame, self.runes}
+	
 
+
+				
+				
 	XPerl_RegisterOptionChanger(XPerl_Player_Set_Bits, self)
 	XPerl_Highlight:Register(XPerl_Player_HighlightCallback, self)
 	--self.IgnoreHighlightStates = {AGGRO = true}
@@ -1287,6 +1304,7 @@ function XPerl_Player_Set_Bits(self)
 	--XPerl_Player_SetupMoonkin(self)
 	XPerl_Player_InitPaladin(self)
 	XPerl_Player_InitMonk(self)
+	XPerl_Player_InitMoonkin(self)
 	--XPerl_Player_SetupWarlock(self)
 
 	self.highlight:ClearAllPoints()
@@ -1422,11 +1440,12 @@ function XPerl_Player_InitWarlock(self)
 		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
 		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
-		WarlockPowerFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 0,6)
+		WarlockPowerFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 20,1)
 		self.runes.unit = "player"
 		WarlockPowerFrame:SetParent(self.runes)--XPerl_Player)
-
 		
+		--self.runes:SetBackdrop(nil)
+
 		
 	end
 	
@@ -1521,7 +1540,7 @@ function XPerl_Player_InitMoonkin(self)
 
 	end
 
-	XPerl_Player_InitMoonkin = nil
+	--XPerl_Player_InitMoonkin = nil
 end
 
 
