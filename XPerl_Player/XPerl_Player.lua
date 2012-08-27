@@ -53,6 +53,9 @@ local XPerl_Player_InitWarlock
 local XPerl_Player_InitPaladin
 local XPerl_Player_InitMoonkin
 
+
+
+
 local XPerl_PlayerStatus_OnUpdate
 local XPerl_Player_HighlightCallback
 
@@ -115,7 +118,7 @@ function XPerl_Player_OnLoad(self)
 	--XPerl_Player_SetupMoonkin(self)
 
 	XPerl_Player_InitWarlock(self)
-	XPerl_Player_SetupWarlock(self)
+	--XPerl_Player_SetupWarlock(self)
 
 	XPerl_RegisterHighlight(self.highlight, 3)
 	XPerl_RegisterPerlFrames(self, {self.nameFrame, self.statsFrame, self.levelFrame, self.portraitFrame, self.groupFrame, self.runes})
@@ -1284,7 +1287,7 @@ function XPerl_Player_Set_Bits(self)
 	--XPerl_Player_SetupMoonkin(self)
 	XPerl_Player_InitPaladin(self)
 	XPerl_Player_InitMonk(self)
-	XPerl_Player_SetupWarlock(self)
+	--XPerl_Player_SetupWarlock(self)
 
 	self.highlight:ClearAllPoints()
 	if (not pconf.level and not pconf.classIcon and (not XPerlConfigHelper or XPerlConfigHelper.ShowTargetCounters == 0)) then
@@ -1328,46 +1331,10 @@ function XPerl_Player_Set_Bits(self)
 	UpdateAssignedRoles(self)
 end
 
--- XPerl_Player_InitWarlock
-function XPerl_Player_InitWarlock(self)
-	if ( select(2,UnitClass("player")) == "WARLOCK" )  then
-		self.shards = CreateFrame("Frame", "XPerl_Player", self)
-		
-		self.shards:SetMovable(true)
-		self.shards:RegisterForDrag("LeftButton")
-		self.shards:SetScript("OnDragStart",
-			function(self)
-				if (not pconf.dockRunes) then
-					self:StartMoving()
-				end
-			end)
-		self.shards:SetScript("OnDragStop",
-			function(self)
-				if (not pconf.dockRunes) then
-					self:StopMovingOrSizing()
-					XPerl_SavePosition(self)
-				end
-			end)
-
-		self.shards.unit = "player"
-			
-		ShardBarFrame:SetParent(self.shards)
-		ShardBarFrame:ClearAllPoints()
-		ShardBarFrame:SetPoint("TOPLEFT", XPerl_Player, "TOPLEFT", 5, -5)
-		ShardBarFrame:SetScale(0.7)
-
-		ShardBarFrameShard2:ClearAllPoints()
-		ShardBarFrameShard3:ClearAllPoints()
-		ShardBarFrameShard2:SetPoint("TOPLEFT", ShardBarFrameShard1, "TOPLEFT", 28, 0)
-		ShardBarFrameShard3:SetPoint("TOPLEFT", ShardBarFrameShard2, "TOPLEFT", 28, 0)
-	end
-	
-	XPerl_Player_InitWarlock = nil
-end
 
 -- XPerl_Player_SetupWarlock
 function XPerl_Player_SetupWarlock(self)
-	if (self.shards) then
+	--[[if (self.shards) then
 		if (pconf and not pconf.showRunes) then 
 			self.shards:Hide()
 		else
@@ -1384,7 +1351,7 @@ function XPerl_Player_SetupWarlock(self)
 				XPerl_RestorePosition(self.shards)
 			end
 		end
-	end
+	end]]--
 end
 
 -- PALADIN
@@ -1418,6 +1385,55 @@ local function MakeMoveable(self)
 end
 
 
+
+-- XPerl_Player_InitWarlock
+function XPerl_Player_InitWarlock(self)
+	if ( select(2,UnitClass("player")) == "WARLOCK" )  then
+		--[[self.shards = CreateFrame("Frame", "XPerl_Player", self)
+		
+		self.shards:SetMovable(true)
+		self.shards:RegisterForDrag("LeftButton")
+		self.shards:SetScript("OnDragStart",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StartMoving()
+				end
+			end)
+		self.shards:SetScript("OnDragStop",
+			function(self)
+				if (not pconf.dockRunes) then
+					self:StopMovingOrSizing()
+					XPerl_SavePosition(self)
+				end
+			end)
+
+		self.shards.unit = "player"
+			
+		ShardBarFrame:SetParent(self.shards)
+		ShardBarFrame:ClearAllPoints()
+		ShardBarFrame:SetPoint("TOPLEFT", XPerl_Player, "TOPLEFT", 5, -5)
+		ShardBarFrame:SetScale(0.7)
+
+		ShardBarFrameShard2:ClearAllPoints()
+		ShardBarFrameShard3:ClearAllPoints()
+		ShardBarFrameShard2:SetPoint("TOPLEFT", ShardBarFrameShard1, "TOPLEFT", 28, 0)
+		ShardBarFrameShard3:SetPoint("TOPLEFT", ShardBarFrameShard2, "TOPLEFT", 28, 0)]]--
+		
+		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
+		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
+		WarlockPowerFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 0,6)
+		self.runes.unit = "player"
+		WarlockPowerFrame:SetParent(self.runes)--XPerl_Player)
+
+		
+		
+	end
+	
+	XPerl_Player_InitWarlock = nil
+end
+
+
 -- XPerl_Player_InitPaladin
 function XPerl_Player_InitPaladin(self)
 	if ( select(2,UnitClass("player")) == "PALADIN") then
@@ -1438,7 +1454,7 @@ function XPerl_Player_InitPaladin(self)
 		
 	end
 end
--- XPerl_Player_InitPaladin
+-- XPerl_Player_InitMonk
 function XPerl_Player_InitMonk(self)
 	if ( select(2,UnitClass("player")) == "MONK") then
 
