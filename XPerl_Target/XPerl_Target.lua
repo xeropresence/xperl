@@ -906,8 +906,8 @@ local function XPerl_Target_UpdateLeader(self)
 				ml = UnitIsUnit(partyid, "party"..index)
 			end
 		end]]--
-		print(rindex)
-		print(partyid)
+		--print(rindex)
+		--print(partyid)
 		if (UnitIsUnit("raid"..rindex, partyid)) then
 			ml = true
 		end
