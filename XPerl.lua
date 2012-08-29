@@ -49,6 +49,8 @@ local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
 local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
 local GetPrimaryTalentTree  =  isMOP and GetSpecialization or GetPrimaryTalentTree 
 
+local GetNumTalentTabs = isMOP and GetNumSpecializations or GetNumTalentTabs
+
 --[===[@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
