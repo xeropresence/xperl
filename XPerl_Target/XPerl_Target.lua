@@ -482,11 +482,12 @@ end
 -- XPerl_Target_UpdateTalents
 local XPerl_Target_UpdateTalents
 do
-	local function ShowSpec(self, spec, s1, s2, s3)
+	local function ShowSpec(self, spec)--, s1, s2, s3)
 		if (self.conf.talentsAsText and type(spec) == "string") then
 			self.creatureTypeFrame.text:SetText(spec)
 		else
-			self.creatureTypeFrame.text:SetFormattedText("%d / %d / %d", s1, s2, s3)
+			--self.creatureTypeFrame.text:SetFormattedText("%d / %d / %d", s1, s2, s3)
+			self.creatureTypeFrame.text:SetText(spec)
 		end
 		self.creatureTypeFrame:SetWidth(self.creatureTypeFrame.text:GetStringWidth() + 10)
 		self.creatureTypeFrame:Show()
@@ -501,7 +502,7 @@ do
 		function UpdateTalentsLGT(self)
 			local spec, s1, s2, s3 = LGT:GetUnitTalentSpec(self.partyid)
 			if (spec) then
-				ShowSpec(self, spec, s1, s2, s3)
+				ShowSpec(self, spec)--, s1, s2, s3)
 				return true
 			end
 		end
@@ -559,35 +560,34 @@ do
 					return
 				else
 					local cached = talentCache[name]
-					local name1, name2, name3, num1, num2, num3, iconTexture, background
+					--local name1, name2, name3, num1, num2, num3, iconTexture, background
+					local name1, name2, name3, group, iconTexture, background
 					if (cached) then
-						num1, name1, num2, name2, num3, name3 = unpack(cached)
+						name1, name2, name3, group = unpack(cached)
 					elseif (inspectReady and guid == UnitGUID(partyid)) then
-						local group = GetActiveTalentGroup(remoteInspectNeeded)
+						--local group = GetSpecialization(remoteInspectNeeded)
 						local remoteInspectNeeded = not UnitIsUnit("player", partyid) or nil
-						_, name1, _, iconTexture, num1, background = GetTalentTabInfo(1, remoteInspectNeeded, nil, group)
-						_, name2, _, iconTexture, num2, background = GetTalentTabInfo(2, remoteInspectNeeded, nil, group)
-						_, name3, _, iconTexture, num3, background = GetTalentTabInfo(3, remoteInspectNeeded, nil, group)
+						--group = GetSpecialization(true)
+						group =  GetInspectSpecialization("target")
+						--print(group)
+						name1 = group and select(2, GetSpecializationInfoByID(group)) or "None"
+						
+						
+						--_, name1, _, iconTexture, num1, background = GetSpecializationInfo(1, remoteInspectNeeded, nil, group)
+						--_, name2, _, iconTexture, num2, background = GetSpecializationInfo(2, remoteInspectNeeded, nil, group)
+						--_, name3, _, iconTexture, num3, background = GetSpecializationInfo(3, remoteInspectNeeded, nil, group)
 						inspectReady = nil
 					end
 
-					if (name1 and name2 and name3) then
-						if (num1 ~= 0 or num2 ~= 0 or num3 ~= 0) then
+					
+					if (name1) then
 							if (not cached) then
-								talentCache[name] = {num1, name1, num2, name2, num3, name3}
+								talentCache[name] = {name1, name2, name3, group}
 							end
-							local title
-							if (num1 > num2 and num1 > num3) then
-								title = name1
-							elseif (num2 > num1 and num2 > num3) then
-								title = name2
-							elseif (num3 > num1 and num3 > num2) then
-								title = name3
-							end
-							ShowSpec(self, title, num1, num2, num3)
-							return
-						end
+							ShowSpec(self, name1)
 					end
+					
+
 
 					if (not cached) then
 						if (LTQ) then
