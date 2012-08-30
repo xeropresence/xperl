@@ -1478,7 +1478,7 @@ local function GetTalentPosition(findName)
 end
 
 local function GetTalentValueByName(name)
-	local group = GetActiveTalentGroup()
+	local group = GetActiveSpecGroup()
 	local tab, index = GetTalentPosition(name)
 	if (index) then
 		local name, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tab, index, nil, nil, group)
