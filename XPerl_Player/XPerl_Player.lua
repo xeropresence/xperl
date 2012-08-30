@@ -1319,6 +1319,7 @@ function XPerl_Player_Set_Bits(self)
 	XPerl_Player_SetupDK(self)
 	--XPerl_Player_SetupMoonkin(self)
 	XPerl_Player_InitPaladin(self)
+	XPerl_Player_InitPriest(self)
 	XPerl_Player_InitMonk(self)
 	XPerl_Player_InitMoonkin(self)
 	--XPerl_Player_SetupWarlock(self)
@@ -1489,6 +1490,28 @@ function XPerl_Player_InitPaladin(self)
 		
 	end
 end
+--XPerl_Player_InitPriest
+function XPerl_Player_InitPriest(self)
+	if ( select(2,UnitClass("player")) == "PRIEST") then
+
+		--if (not PaladinPowerBar or PaladinPowerBar:GetParent() ~= PlayerFrame or not PaladinPowerBar:IsShown() or not pconf.showRunes ) then
+			-- Only hijack runes if not already done so by another mod
+		--	return
+		--end
+
+		
+		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
+		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
+		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
+		PriestBarFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 0,5)
+		self.runes.unit = "player"
+		PriestBarFrame:SetParent(self.runes)--XPerl_Player)
+
+		
+	end
+end
+
+
 -- XPerl_Player_InitMonk
 function XPerl_Player_InitMonk(self)
 	if ( select(2,UnitClass("player")) == "MONK") then
