@@ -254,7 +254,7 @@ local function XPerl_Target_DebuffUpdate(self)
 	local partyid = self.partyid
 	if (GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player", partyid) == 0) then
 		local numDebuffs = 0
-		if (playerClass == "WARRIOR") then
+		--[[if (playerClass == "WARRIOR") then
 			numDebuffs = TargetDebuffInformation(XPERL_SPELL_SUNDER)
 		elseif (playerClass == "MAGE") then
 			if (select(5,GetTalentTabInfo(3)) > select(5,GetTalentTabInfo(2))) then
@@ -262,7 +262,7 @@ local function XPerl_Target_DebuffUpdate(self)
 			else
 				numDebuffs = TargetDebuffInformation(XPERL_SPELL_FIREV)
 			end
-		end
+		end]]--
 
 		local r, g, b = GetComboColour(numDebuffs)
 		if (tconf.combo.enable) then
