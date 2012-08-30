@@ -879,10 +879,12 @@ local function XPerl_Target_UpdateLeader(self)
 		end
 
 	elseif (UnitInParty(partyid)) then
-		local index = GetPartyLeaderIndex()
-		if (index > 0) then
-			leader = UnitIsUnit(partyid, "party"..index)
-		end
+		--local index = GetPartyLeaderIndex()
+		--if (index > 0) then
+		--	leader = UnitIsUnit(partyid, "party"..index)
+		--end
+		
+		leader = UnitIsGroupLeader(partyid);
 	end
 
 	if (leader) then
@@ -894,7 +896,7 @@ local function XPerl_Target_UpdateLeader(self)
 	-- We can't determine who is master looter in raid if not in current party... :(
 	--Don't think this is the case anymore.... -- Cexikitin
 	local ml
-	if (UnitInParty("party1") or UnitInRaid("player")) then
+	--if (UnitInParty("party1") or UnitInRaid("player")) then
 	
 		method, pindex,rindex = GetLootMethod()
 		--[[local method, index = GetLootMethod()
@@ -908,12 +910,20 @@ local function XPerl_Target_UpdateLeader(self)
 		end]]--
 		--print(rindex)
 		--print(partyid)
-		if (UnitIsUnit("raid"..rindex, partyid)) then
-			ml = true
+		
+		if (method == "master") then
+			if (rindex ~= nil) then
+				if (UnitIsUnit("raid"..rindex, partyid)) then
+					ml = true
+				end
+			else
+				if (UnitIsUnit("party"..pindex, partyid) or (pindex == 0 and UnitIsUnit("player", partyid))) then
+					ml = true
+				end
+			end
 		end
 		
-		
-	end
+	--end
 
 	if (ml) then
 		self.nameFrame.masterIcon:Show()

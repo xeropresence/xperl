@@ -237,17 +237,25 @@ function XPerl_Player_UpdateLeader(self)
 
 	-- Loot Master
 	local method, index
-	if (UnitInParty("party1") or UnitInRaid("player")) then
+	--if (UnitInParty("party1") or UnitInRaid("player")) then
 		method, pindex,rindex = GetLootMethod()
-	end
+	--end
 	
 	if (method == "master") then
 		--Check pindex if not in raid
 		--if (not UnitInRaid("player")) then
 		
 		--end
+		local ml;
 		
-		 if (UnitIsUnit("raid"..rindex, "player")) then--index == 0) then
+		if (rindex ~= nil) then
+			ml = UnitIsUnit("raid"..rindex, "player");
+		elseif (pindex == 0) then
+			ml = true;
+		end
+		
+		
+		if (ml) then
 			nf.masterIcon:Show()
 		else
 			nf.masterIcon:Hide()
