@@ -1067,7 +1067,7 @@ XPerl_ShowMessage("EXTRA EVENT")
 	local unitid = select(1,...);
 	if (strsub(event, 1, 5) == "UNIT_") then
 	
-	 	if (unitid == "target") then
+	 	if (unitid == "target" or unitid == "focus") then
 		--print(event)
 			func(self, ...)
 		end
