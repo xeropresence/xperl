@@ -116,6 +116,35 @@ function XPerl_Raid_OnLoad(self)
 	self.time = 0
 	self.Array = {}
 
+	--Dump the orginal unitframes...
+	--Thanks to http://www.wowinterface.com/forums/showpost.php?p=261589&postcount=5
+		--InterfaceOptionsFrameCategoriesButton11:SetScale(0.00001)
+		--InterfaceOptionsFrameCategoriesButton11:SetAlpha(0)
+		
+		-- raid
+		CompactRaidFrameManager:SetParent(self)
+		CompactUnitFrameProfiles:UnregisterAllEvents()
+			
+		for i=1, MAX_PARTY_MEMBERS do
+			local name = "PartyMemberFrame" .. i
+			local frame = _G[name]
+
+			frame:SetParent(self)
+
+			_G[name .. "HealthBar"]:UnregisterAllEvents()
+			_G[name .. "ManaBar"]:UnregisterAllEvents()
+			
+			local pet = name.."PetFrame"
+			local petframe = _G[pet]
+			
+			petframe:SetParent(self)
+			
+			_G[pet .. "HealthBar"]:UnregisterAllEvents()
+		end
+	
+	
+	
+	
 	XPerl_RegisterOptionChanger(function()
 		if (raidLoaded) then
 			XPerl_RaidTitles()
