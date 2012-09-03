@@ -117,9 +117,12 @@ function XPerl_Raid_OnLoad(self)
 	self.Array = {}
 
 
-	
-	CompactRaidFrameManager:SetParent(self)
-	CompactUnitFrameProfiles:UnregisterAllEvents()
+	--Disable the creation of blizz CompactRaidFrameX, theres an issue with taint due to dropdown with more 7 items
+	--From http://www.wowinterface.com/forums/showpost.php?p=261589&postcount=5
+	if (rconf.enable) then
+		CompactRaidFrameManager:SetParent(self)
+		CompactUnitFrameProfiles:UnregisterAllEvents()
+	end
 	
 	XPerl_RegisterOptionChanger(function()
 		if (raidLoaded) then
