@@ -118,8 +118,8 @@ function XPerl_Raid_OnLoad(self)
 
 
 	
-	
-	
+	CompactRaidFrameManager:SetParent(self)
+	CompactUnitFrameProfiles:UnregisterAllEvents()
 	
 	XPerl_RegisterOptionChanger(function()
 		if (raidLoaded) then
