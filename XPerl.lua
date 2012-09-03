@@ -2600,7 +2600,7 @@ local function AuraButtonOnShow(self)
 		cd:SetAllPoints()
 	end
 	cd:SetReverse(true)
-	cd:SetDrawEdge(true)
+	--cd:SetDrawEdge(true) Blizzard removed this call from 5.0.4, commented it out to avoid lua error
 	
 	if (not cd.countdown) then
 		cd.countdown = self.cooldown:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge")
