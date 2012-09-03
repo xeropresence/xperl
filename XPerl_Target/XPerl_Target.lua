@@ -1066,8 +1066,7 @@ XPerl_ShowMessage("EXTRA EVENT")
 	local func = XPerl_Target_Events[event]
 	local unitid = select(1,...);
 	if (strsub(event, 1, 5) == "UNIT_") then
-	
-	 	if (unitid == "target" or unitid == "focus") then
+		if (unitid == "target" or unitid == "focus" or (event == "UNIT_COMBO_POINTS" and (unitid == "player" or unitid == "vehicle"))) then
 		--print(event)
 			func(self, ...)
 		end
