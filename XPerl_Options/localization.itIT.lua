@@ -953,7 +953,7 @@ XPERL_CONF_ADDON_RAIDHELP_DESC = "Abilita l'addon della finestra dell'aiutante d
 XPERL_CONF_ADDON_RAIDADMIN = "Amministrazione incursione"
 XPERL_CONF_ADDON_RAIDADMIN_DESC = "Abilita L'amministrazione dell'incursione di "..XPerl_ShortProductName..". Questo include lo strumento di caricamento/salvataggio dell'organizzazione dei gruppi dell'incursione e il controllo oggetti"
 XPERL_CONF_ADDON_RAIDMONITOR = "Monitor incursione"
-XPERL_CONF_ADDON_RAIDMONITOR_DESC = "Abilita l'addon della finestra del monitor dell'incursione di "..XPerl_ShortProductName". Questa è la barra del mana il monitor di lancio"
+XPERL_CONF_ADDON_RAIDMONITOR_DESC = "Abilita l'addon della finestra del monitor dell'incursione di "..XPerl_ShortProductName .. " Questa è la barra del mana il monitor di lancio"
 XPERL_CONF_ADDON_ARCANE = "Barra arcana"
 XPERL_CONF_ADDON_ARCANE_DESC = "Abilita la barra di lancio arcana di "..XPerl_ShortProductName..". E' necessario se vuoi visualizzare le barre di Lancio dei bersagli e dei membri del gruppo. Visualizza anche le barre di lancio del giocatore e del pet."
 
