@@ -2270,9 +2270,8 @@ local function GetFreeFader(parent)
 		bar.tex = parent.tex
 
 		local tex = parent:GetStatusBarTexture()
-		bar:SetStatusBarTexture(tex:GetTexture())
-		local sbt = bar:GetStatusBarTexture()
-		if sbt then
+		if tex:GetTexture() then
+			bar:SetStatusBarTexture(tex:GetTexture())
 			bar:GetStatusBarTexture():SetHorizTile(false)
 			bar:GetStatusBarTexture():SetVertTile(false)
 		end
