@@ -1549,7 +1549,7 @@ function XPerl_Player_InitDK(self)
 		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
 
-		MakeMoveable(self)
+		MakeMoveable(self.runes)
 
 		local bgDef = {bgFile = "Interface\\Addons\\XPerl\\Images\\XPerl_FrameBack",
 				edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
