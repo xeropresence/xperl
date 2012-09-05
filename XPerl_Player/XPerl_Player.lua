@@ -508,7 +508,7 @@ local function XPerl_Player_DruidBarUpdate(self)
 	druidBar:SetMinMaxValues(0, maxMana or 1)
 	druidBar:SetValue(currMana or 0)
 	druidBar.text:SetFormattedText("%d/%d", ceil(currMana or 0), maxMana or 1)
-	druidBar.percent:SetFormattedText(percD, currMana * 100 / maxMana)
+	druidBar.percent:SetFormattedText(percD, currMana * 100 / (maxMana or 1))
 
 	local druidBarExtra
 	if (UnitPowerType(self.partyid) > 0) then
