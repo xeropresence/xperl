@@ -39,17 +39,17 @@ XPERL_TYPE_RARE 	= "Raro"
 
 -- Zones
 XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Serpentshrine Cavern"
-XPERL_LOC_ZONE_BLACK_TEMPLE   = "Tempio nero"
-XPERL_LOC_ZONE_HYJAL_SUMMIT   = "Hyjal Summit"
-XPERL_LOC_ZONE_KARAZHAN    = "Karazhan"
-XPERL_LOC_ZONE_SUNWELL_PLATEAU  = "Sunwell Plateau"
-XPERL_LOC_ZONE_NAXXRAMAS   = "Naxxramas"
-XPERL_LOC_ZONE_OBSIDIAN_SANCTUM  = "The Obsidian Sanctum"
-XPERL_LOC_ZONE_EYE_OF_ETERNITY  = "The Eye of Eternity"
-XPERL_LOC_ZONE_ULDUAR    = "Ulduar"
-XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER= "Trial of the Crusader"
-XPERL_LOC_ZONE_ICECROWN_CITADEL  = "Corona di Ghiaccio"
-XPERL_LOC_ZONE_RUBY_SANCTUM   = "The Ruby Sanctum"
+XPERL_LOC_ZONE_BLACK_TEMPLE = "Tempio Nero"
+XPERL_LOC_ZONE_HYJAL_SUMMIT = "Hyjal Summit"
+XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
+XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Sunwell Plateau"
+XPERL_LOC_ZONE_NAXXRAMAS = "Naxxramas"
+XPERL_LOC_ZONE_OBSIDIAN_SANCTUM = "The Obsidian Sanctum"
+XPERL_LOC_ZONE_EYE_OF_ETERNITY = "The Eye of Eternity"
+XPERL_LOC_ZONE_ULDUAR = "Ulduar"
+XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Trial of the Crusader"
+XPERL_LOC_ZONE_ICECROWN_CITADEL = "Corona di Ghiaccio"
+XPERL_LOC_ZONE_RUBY_SANCTUM = "The Ruby Sanctum"
 --Any zones 4.x and higher can all be localized from EJ, in 5.0, even these above zones are in EJ which means the rest can go bye bye too
 
 -- Status
