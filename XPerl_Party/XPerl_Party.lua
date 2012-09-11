@@ -582,9 +582,9 @@ local function XPerl_Party_UpdateLeader(self)
 	
 	local lootMethod
 	local lootMaster
-	lootMethod, lootMaster = GetLootMethod()
+	lootMethod, lootMaster,raidLootMaster = GetLootMethod()
 	
-	if (lootMethod == "master") then
+	if (lootMethod == "master" and lootMaster) then
 		if (self.partyid == "party"..lootMaster) then
 			self.nameFrame.masterIcon:Show()
 		else
