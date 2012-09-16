@@ -762,8 +762,8 @@ function XPerl_EnableDisable()
 	XPerl_MTRosterChanged()
 end
 
--- RAID_ROSTER_UPDATE
-function Events:RAID_ROSTER_UPDATE()
+-- GROUP_ROSTER_UPDATE
+function Events:GROUP_ROSTER_UPDATE()
 	if (GetNumRaidMembers() == 0) then
 		del(MainTanks, 1)
 		MainTanks = new()

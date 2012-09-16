@@ -220,11 +220,11 @@ function XPerl_RaidPets_Events:UNIT_EXITED_VEHICLE(unit)
 	TitlesUpdateFrame:Show()
 end
 
--- RAID_ROSTER_UPDATE
-function XPerl_RaidPets_Events:RAID_ROSTER_UPDATE()
+-- GROUP_ROSTER_UPDATE
+function XPerl_RaidPets_Events:GROUP_ROSTER_UPDATE()
 	TitlesUpdateFrame:Show()
 end
-XPerl_RaidPets_Events.PARTY_MEMBERS_CHANGED = XPerl_RaidPets_Events.RAID_ROSTER_UPDATE
+XPerl_RaidPets_Events.GROUP_ROSTER_UPDATE= XPerl_RaidPets_Events.GROUP_ROSTER_UPDATE
 
 -- UNIT_HEALTH
 function XPerl_RaidPets_Events:UNIT_HEALTH()
@@ -424,7 +424,7 @@ end
 function XPerl_RaidPets_OptionActions()
 	SetMainHeaderAttributes(XPerl_Raid_GrpPets)
 
-	local events = {"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "PARTY_MEMBERS_CHANGED", "RAID_ROSTER_UPDATE", "UNIT_PET", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE"}
+	local events = {"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "PARTY_MEMBERS_CHANGED", "GROUP_ROSTER_UPDATE", "UNIT_PET", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE"}
 	for i,event in pairs(events) do
 		if (rconf.enable) then
 			XPerl_RaidPets_Frame:RegisterEvent(event)

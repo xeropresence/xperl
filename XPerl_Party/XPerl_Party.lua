@@ -45,7 +45,7 @@ local XPerl_Party_HighlightCallback
 ----------------------
 function XPerl_Party_Events_OnLoad(self)
 	-- Added UNIT_POWER/UNIT_MAXPOWER to events list for 4.0 (By PlayerLin)
-	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBER_ENABLE", "PARTY_MEMBER_DISABLE", "RAID_ROSTER_UPDATED", "PARTY_MEMBERS_CHANGED",
+	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBER_ENABLE", "PARTY_MEMBER_DISABLE", "GROUP_ROSTER_UPDATED", "PARTY_MEMBERS_CHANGED",
 			"UNIT_PHASE", "UNIT_COMBAT", "UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_PORTRAIT_UPDATE",
 			"UNIT_TARGET", "UNIT_POWER", "UNIT_MAXPOWER", "UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
 			"RAID_TARGET_UPDATE", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED", "PLAYER_LOGIN", "UNIT_THREAT_LIST_UPDATE",
@@ -55,7 +55,7 @@ function XPerl_Party_Events_OnLoad(self)
 	end
 
 	partyHeader:UnregisterEvent("UNIT_NAME_UPDATE")			-- IMPORTANT! Fix for WoW 2.1 UNIT_NAME_UPDATE lockup issues
-	UIParent:UnregisterEvent("RAID_ROSTER_UPDATE")			-- IMPORTANT! Stops raid framerate lagging when members join/leave/zone
+	UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")			-- IMPORTANT! Stops raid framerate lagging when members join/leave/zone
 
 	
 	self:RegisterEvent("GROUP_ROSTER_UPDATE")--Try detecting when we switch to raid.
@@ -1077,7 +1077,7 @@ end
 
 -- PLAYER_ENTERING_WORLD
 function XPerl_Party_Events:PLAYER_ENTERING_WORLD()
-	UIParent:UnregisterEvent("RAID_ROSTER_UPDATE")	-- Re-do, in case
+	UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")	-- Re-do, in case
 	if (not startupDone) then
 		startupDone = true
 		XPerl_ProtectedCall(XPerl_Party_SetInitialAttributes)
@@ -1088,8 +1088,8 @@ function XPerl_Party_Events:PLAYER_ENTERING_WORLD()
 	XPerl_Party_UpdateDisplayAll()
 end
 
--- RAID_ROSTER_UPDATED
-function XPerl_Party_Events:RAID_ROSTER_UPDATED()
+-- GROUP_ROSTER_UPDATED
+function XPerl_Party_Events:GROUP_ROSTER_UPDATED()
 	CheckRaid()
 end
 

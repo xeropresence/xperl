@@ -68,11 +68,11 @@ function XPerl_RosterText_Init(self)
 	self:SetScript("OnEvent", onEvent)
 	self.Update = Update
 
-	self.RAID_ROSTER_UPDATE = Update
+	self.GROUP_ROSTER_UPDATE = Update
 	self.PLAYER_ENTERING_WORLD = Update
 
 	self:SetScript("OnShow", function(self)
-		self:RegisterEvent("RAID_ROSTER_UPDATE")
+		self:RegisterEvent("GROUP_ROSTER_UPDATE")
 		self:RegisterEvent("PLAYER_ENTERING_WORLD")
 		Update(self)
 	end)

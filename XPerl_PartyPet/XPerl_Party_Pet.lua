@@ -432,7 +432,7 @@ end
 function XPerl_Party_Pet_Events:PLAYER_ENTERING_WORLD()
 	XPerl_Party_Pet_UpdateGUIDs()
 end
-XPerl_Party_Pet_Events.PARTY_MEMBERS_CHANGED = XPerl_Party_Pet_Events.PLAYER_ENTERING_WORLD
+XPerl_Party_Pet_Events.GROUP_ROSTER_UPDATE= XPerl_Party_Pet_Events.PLAYER_ENTERING_WORLD
 XPerl_Party_Pet_Events.UNIT_PET = XPerl_Party_Pet_Events.PLAYER_ENTERING_WORLD
 
 -- UNIT_FLAGS

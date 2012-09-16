@@ -158,8 +158,8 @@ function voice:VOICE_STOP(unit)
 	self:UpdateByUnit(unit, false)
 end
 
--- voice:RAID_ROSTER_UPDATE
-function voice:RAID_ROSTER_UPDATE()
+-- voice:GROUP_ROSTER_UPDATE
+function voice:GROUP_ROSTER_UPDATE()
 	self:ClearCache()
 end
 
@@ -173,5 +173,5 @@ voice:RegisterEvent("MUTELIST_UPDATE")
 voice:RegisterEvent("VOICE_START")
 voice:RegisterEvent("VOICE_STOP")
 voice:RegisterEvent("PARTY_MEMBERS_CHANGED")
-voice:RegisterEvent("RAID_ROSTER_UPDATE")
+voice:RegisterEvent("GROUP_ROSTER_UPDATE")
 voice:SetScript("OnEvent", voice.OnEvent)

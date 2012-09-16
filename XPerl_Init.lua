@@ -679,7 +679,7 @@ end
 -- XPerl_OptionActions()
 function XPerl_OptionActions(which)
 
-	UIParent:UnregisterEvent("RAID_ROSTER_UPDATE")			-- IMPORTANT! Stops raid framerate lagging when members join/leave/zone
+	UIParent:UnregisterEvent("GROUP_ROSTER_UPDATE")			-- IMPORTANT! Stops raid framerate lagging when members join/leave/zone
 
 	if (InCombatLockdown()) then
 		XPerl_OutOfCombatOptionSet = true

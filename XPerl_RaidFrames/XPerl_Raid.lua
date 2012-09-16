@@ -92,7 +92,7 @@ local raidHeaders = {}
 -- XPerl_Raid_OnLoad
 function XPerl_Raid_OnLoad(self)
 	local events = {"CHAT_MSG_ADDON",
-			"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "RAID_ROSTER_UPDATE",
+			"PLAYER_ENTERING_WORLD", "VARIABLES_LOADED", "GROUP_ROSTER_UPDATE",
 			"UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS", "UNIT_AURA", "UNIT_POWER", "UNIT_MAXPOWER",
 			"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
 			"UNIT_COMBAT", "UNIT_SPELLCAST_START", "UNIT_SPELLCAST_STOP", "UNIT_SPELLCAST_FAILED",
@@ -1325,8 +1325,8 @@ do
 		end
 	end
 
-	-- RAID_ROSTER_UPDATE
-	function XPerl_Raid_Events:RAID_ROSTER_UPDATE()
+	-- GROUP_ROSTER_UPDATE
+	function XPerl_Raid_Events:GROUP_ROSTER_UPDATE()
 		rosterUpdated = true -- Many roster updates can occur during 1 video frame, so we'll check everything at end of last one
 		BuildGuidMap()
 		if (GetNumRaidMembers() > 0) then

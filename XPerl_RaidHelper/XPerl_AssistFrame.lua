@@ -28,7 +28,7 @@ function XPerl_Assists_OnLoad(self)
 
 	self:RegisterEvent("VARIABLES_LOADED")
 	self:RegisterEvent("UNIT_TARGET")
-	self:RegisterEvent("RAID_ROSTER_UPDATE")
+	self:RegisterEvent("GROUP_ROSTER_UPDATE")
 	self:RegisterEvent("GROUP_ROSTER_UPDATE")
 	self:RegisterEvent("PLAYER_TARGET_CHANGED")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -325,7 +325,7 @@ function XPerl_Assists_OnEvent(self, event, unit)
 		end
 		XPerlAssistPin:SetButtonTex()
 
-	elseif (event == "RAID_ROSTER_UPDATE" or event == "GROUP_ROSTER_UPDATE") then
+	elseif (event == "GROUP_ROSTER_UPDATE" or event == "GROUP_ROSTER_UPDATE") then
 		MakeFriendlyUnitList()
 		doUpdate = true
 

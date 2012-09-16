@@ -66,7 +66,7 @@ function XPerl_AdminOnLoad(self)
 	SLASH_XPERLRAIDADMIN3 = "/xpad"
 
 	self:RegisterEvent("VARIABLES_LOADED")
-	self:RegisterEvent("RAID_ROSTER_UPDATE")
+	self:RegisterEvent("GROUP_ROSTER_UPDATE")
 	self:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
 	self:SetBackdropColor(0, 0, 0, 1)
 
@@ -356,7 +356,7 @@ end
 function XPerl_AdminOnEvent(self, event)
 	XPerl_AdminCheckMyRank()
 
-	if (event == "RAID_ROSTER_UPDATE") then
+	if (event == "GROUP_ROSTER_UPDATE") then
                 XPerl_AdminFrame_Controls:Details()
 
 		if (WaitingForRoster) then

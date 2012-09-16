@@ -1634,13 +1634,13 @@ function xpHigh:UNIT_AURA(unit)
 	end
 end
 
--- xpHigh:RAID_ROSTER_UPDATE
-function xpHigh:RAID_ROSTER_UPDATE()
+-- xpHigh:GROUP_ROSTER_UPDATE
+function xpHigh:GROUP_ROSTER_UPDATE()
 	self.rosterUpdate = true
 	self:SetScript("OnUpdate", self.OnUpdate)
 end
 
-xpHigh.PARTY_MEMBERS_CHANGED = xpHigh.RAID_ROSTER_UPDATE
+xpHigh.GROUP_ROSTER_UPDATE= xpHigh.GROUP_ROSTER_UPDATE
 
 -- PLAYER_TARGET_CHANGED
 function xpHigh:PLAYER_TARGET_CHANGED()
@@ -1699,12 +1699,12 @@ function xpHigh:OptionChange()
 	if (conf.highlight.enable and (conf.highlight.HOTCOUNT or conf.highlight.HOT or conf.highlight.SHIELD)) then
 		events = true
 		self:RegisterEvent("UNIT_AURA")
-		self:RegisterEvent("RAID_ROSTER_UPDATE")
+		self:RegisterEvent("GROUP_ROSTER_UPDATE")
 		self:RegisterEvent("PARTY_MEMBERS_CHANGED")
 		self:RefreshAllAuras()
 	else
 		self:UnregisterEvent("UNIT_AURA")
-		self:UnregisterEvent("RAID_ROSTER_UPDATE")
+		self:UnregisterEvent("GROUP_ROSTER_UPDATE")
 		self:UnregisterEvent("PARTY_MEMBERS_CHANGED")
 		self:ClearAll("HOTCOUNT")
 	end

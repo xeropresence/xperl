@@ -20,7 +20,7 @@ local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 local mod = CreateFrame("Frame", "XPerl_UsageFrame")
 mod:RegisterEvent("PLAYER_ENTERING_WORLD")
 mod:RegisterEvent("CHAT_MSG_ADDON")
-mod:RegisterEvent("RAID_ROSTER_UPDATE")
+mod:RegisterEvent("GROUP_ROSTER_UPDATE")
 mod:RegisterEvent("PARTY_MEMBERS_CHANGED")
 
 if type(RegisterAddonMessagePrefix) == "function" then
@@ -298,8 +298,8 @@ function mod:PLAYER_ENTERING_WORLD()
 	end
 end
 
--- RAID_ROSTER_UPDATE
-function mod:RAID_ROSTER_UPDATE()
+-- GROUP_ROSTER_UPDATE
+function mod:GROUP_ROSTER_UPDATE()
 	if (GetNumRaidMembers() > 0) then
 		if (not self.inRaid) then
 			self.inRaid = true

@@ -226,17 +226,17 @@ end
 
 -- XPerl_CheckOnShow
 function XPerl_CheckOnShow(self)
-	self:RegisterEvent("RAID_ROSTER_UPDATE")
+	self:RegisterEvent("GROUP_ROSTER_UPDATE")
 end
 
 -- XPerl_CheckOnHide
 function XPerl_CheckOnHide(self)
-	self:UnregisterEvent("RAID_ROSTER_UPDATE")
+	self:UnregisterEvent("GROUP_ROSTER_UPDATE")
 end
 
 -- XPerl_CheckOnEvent
 function XPerl_CheckOnEvent(self, event, a1, a2, a3, a4)
-	if (event == "RAID_ROSTER_UPDATE") then
+	if (event == "GROUP_ROSTER_UPDATE") then
 		if (GetNumRaidMembers() == 0) then
 			XPerl_ItemResults = {["type"] = "item"}
 			XPerl_ResistResults = {["type"] = "res", count = 0}
