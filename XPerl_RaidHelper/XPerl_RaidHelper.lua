@@ -770,7 +770,7 @@ function Events:GROUP_ROSTER_UPDATE()
 		del(BlizzardMainTanks)
 		BlizzardMainTanks = new()
 	end
-	XPerlRaidHelperCheck:show()
+	--XPerlRaidHelperCheck:show()
 end
 
 -- UNIT_HEALTH
