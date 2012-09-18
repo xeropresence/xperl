@@ -33,14 +33,22 @@ local playerClass
 local lastInspectPending = 0
 local mobhealth
 
-
 local isMOP = select(4, _G.GetBuildInfo()) >= 50000
-local IsPartyLeader = IsPartyLeader;
+local IsPartyLeader = isMOP and function() return UnitIsGroupLeader("player") end or IsPartyLeader
 local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
+local GetPartyLeaderIndex = isMOP and function()
+    local i
+    if UnitIsGroupLeader("player") or (GetNumPartyMembers() < 1) then
+        return 0
+    end
+    for i = 1,GetNumPartyMembers() do
+        if UnitIsGroupLeader("party"..i) then
+            return i
+        end
+    end
+    return 0
+end or GetPartyLeaderIndex
 
-if (select(4, _G.GetBuildInfo()) >= 50000) then
-	IsPartyLeader = function() return UnitIsGroupLeader("player") end
-end
 ----------------------
 -- Loading Function --
 ----------------------
@@ -879,12 +887,10 @@ local function XPerl_Target_UpdateLeader(self)
 		end
 
 	elseif (UnitInParty(partyid)) then
-		--local index = GetPartyLeaderIndex()
-		--if (index > 0) then
-		--	leader = UnitIsUnit(partyid, "party"..index)
-		--end
-		
-		leader = UnitIsGroupLeader(partyid);
+		local index = GetPartyLeaderIndex()
+		if (index > 0) then
+			leader = UnitIsUnit(partyid, "party"..index)
+		end
 	end
 
 	if (leader) then
@@ -896,34 +902,19 @@ local function XPerl_Target_UpdateLeader(self)
 	-- We can't determine who is master looter in raid if not in current party... :(
 	--Don't think this is the case anymore.... -- Cexikitin
 	local ml
-	--if (UnitInParty("party1") or UnitInRaid("player")) then
-	
-		method, pindex,rindex = GetLootMethod()
-		--[[local method, index = GetLootMethod()
+	if (UnitInParty("party1") or UnitInRaid("player")) then
+		method, pindex, rindex = GetLootMethod()
 
-		if (method == "master" and index) then
-			if (index == 0 and UnitIsUnit("player", partyid)) then
-				ml = true
-			elseif (index >= 1 and index <= 4) then
-				ml = UnitIsUnit(partyid, "party"..index)
-			end
-		end]]--
-		--print(rindex)
-		--print(partyid)
-		
 		if (method == "master") then
-			if (rindex ~= nil) then
-				if (UnitIsUnit("raid"..rindex, partyid)) then
-					ml = true
-				end
-			else
-				if (UnitIsUnit("party"..pindex, partyid) or (pindex == 0 and UnitIsUnit("player", partyid))) then
-					ml = true
-				end
+			if (pindex and (pindex == 0) and UnitIsUnit("player", partyid)) then
+				ml = true
+			elseif (pindex and (pindex >= 1) and (pindex <= 4)) then
+				ml = UnitIsUnit(partyid, "party"..pindex)
+			elseif (rindex and (rindex >= 1) and (rindex <= 25)) then
+				ml = UnitIsUnit(partyid, "raid"..rindex)
 			end
 		end
-		
-	--end
+	end
 
 	if (ml) then
 		self.nameFrame.masterIcon:Show()

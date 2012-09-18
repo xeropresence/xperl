@@ -10,20 +10,10 @@ XPerl_RequestConfig(function(new) conf = new pconf = conf.player if (XPerl_Playe
 local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%.0f"..PERCENT_SYMBOL
 
-
-
 local isMOP = select(4, _G.GetBuildInfo()) >= 50000
 local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
 local GetPrimaryTalentTree = isMOP and GetSpecialization or GetPrimaryTalentTree
-
-local IsPartyLeader = IsPartyLeader;
-
-
-if (select(4, _G.GetBuildInfo()) >= 50000) then
-	IsPartyLeader = function() return UnitIsGroupLeader("player") end
-end
-
-
+local IsPartyLeader = isMOP and function() return UnitIsGroupLeader("player") end or IsPartyLeader
 
 --[===[@debug@
 local function d(...)
@@ -233,31 +223,24 @@ function XPerl_Player_UpdateLeader(self)
 	local nf = self.nameFrame
 
 	-- Loot Master
-	local method, index
-	--if (UnitInParty("party1") or UnitInRaid("player")) then
-		method, pindex,rindex = GetLootMethod()
-	--end
+	local method, pindex, rindex, ml
+	if (UnitInParty("party1") or UnitInRaid("player")) then
+		method, pindex, rindex = GetLootMethod()
 	
-	if (method == "master") then
-		--Check pindex if not in raid
-		--if (not UnitInRaid("player")) then
-		
-		--end
-		local ml;
-		
-		if (rindex ~= nil) then
-			ml = UnitIsUnit("raid"..rindex, "player");
-		elseif (pindex == 0) then
-			ml = true;
-		end
-		
-		
-		if (ml) then
-			nf.masterIcon:Show()
-		else
-			nf.masterIcon:Hide()
-		end
-	end 
+		if (method == "master") then
+			if (rindex ~= nil) then
+				ml = UnitIsUnit("raid"..rindex, "player");
+			elseif (pindex and (pindex == 0)) then
+				ml = true;
+			end
+		end 
+	end
+
+	if (ml) then
+		nf.masterIcon:Show()
+	else
+		nf.masterIcon:Hide()
+	end
 
 	-- Leader
 	if (IsPartyLeader()) then
