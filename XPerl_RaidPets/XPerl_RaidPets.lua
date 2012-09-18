@@ -158,7 +158,7 @@ local function XPerl_RaidPet_UpdateHealth(self)
 		if (healthmax == 0) then
 			self.healthBar.text:SetText("")
 		else
-			self.healthBar.text:SetFormattedText("%d%%", health / healthmax * 100)
+			self.healthBar.text:SetFormattedText("%.0f%%", health / healthmax * 100)
 		end
 	end
 end

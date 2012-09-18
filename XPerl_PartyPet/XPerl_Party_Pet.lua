@@ -256,7 +256,7 @@ function XPerl_Party_Pet_UpdateHealth(self)
 				self.statsFrame.healthBar.text:SetText(Partypethealth - Partypethealthmax)
 			end
 		else
-			self.statsFrame.healthBar.text:SetFormattedText("%d%%",(100*(Partypethealth / Partypethealthmax))+0.5)
+			self.statsFrame.healthBar.text:SetFormattedText("%.0f%%",(100*(Partypethealth / Partypethealthmax))+0.5)
 		end
 
 		self.statsFrame.healthBar.text:Show()
@@ -290,7 +290,7 @@ local function XPerl_Party_Pet_UpdateMana(self)
 		if (UnitPowerType(self.partyid) >= 1) then
 			self.statsFrame.manaBar.text:SetText(Partypetmana)
 		else
-			self.statsFrame.manaBar.text:SetFormattedText("%d%%",(100*(Partypetmana / Partypetmanamax))+0.5)
+			self.statsFrame.manaBar.text:SetFormattedText("%.0f%%",(100*(Partypetmana / Partypetmanamax))+0.5)
 		end
 	end
 end
