@@ -32,8 +32,6 @@ local UnitPowerType = UnitPowerType
 local partyHeader
 local partyAnchor
 
-local isMOP = select(4, _G.GetBuildInfo()) >= 50000
-
 local GetNumSubgroupMembers = GetNumSubgroupMembers
 
 
@@ -565,18 +563,10 @@ end
 -- XPerl_Party_UpdateLeader
 local function XPerl_Party_UpdateLeader(self)
 	
-	if (not isMOP) then
-		if ("party"..GetPartyLeaderIndex() == self.partyid) then
-			self.nameFrame.leaderIcon:Show()
-		else
-			self.nameFrame.leaderIcon:Hide()
-		end
+	if (UnitIsGroupLeader(self.partyid)) then
+		self.nameFrame.leaderIcon:Show()
 	else
-		if (UnitIsGroupLeader(self.partyid)) then
-			self.nameFrame.leaderIcon:Show()
-		else
-			self.nameFrame.leaderIcon:Hide()
-		end
+		self.nameFrame.leaderIcon:Hide()
 	end
 
 	

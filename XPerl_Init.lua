@@ -6,7 +6,6 @@ local init_done, gradient, conf, doneOptions
 local errorCount = 0
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
-local isMOP = select(4, _G.GetBuildInfo()) >= 50000
 local GetNumSubgroupMembers = GetNumSubgroupMembers
 local GetNumGroupMembers = GetNumGroupMembers
 

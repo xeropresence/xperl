@@ -44,8 +44,6 @@ local largeNumDiv100 = largeNumDiv * 100
 local ArcaneExclusions = XPerl_ArcaneExclusions
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
-local isMOP = select(4, _G.GetBuildInfo()) >= 50000
-
 --[===[@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
@@ -1826,74 +1824,6 @@ end
  
 local DebuffExceptions
 local BuffExceptions
- 
-if (not isMOP) then
-
- BuffExceptions = {
-	PRIEST = {
-		[GetSpellInfo(774)] = true,					-- Rejuvenation
-		[GetSpellInfo(8936)] = true,				-- Regrowth
-		[GetSpellInfo(33076)] = true,				-- Prayer of Mending
-	},
-	DRUID = {
-		[GetSpellInfo(139)] = true,					-- Renew
-	},
-	WARLOCK = {
-		[GetSpellInfo(20707)] = true,				-- Soulstone Resurrection
-	},
-	HUNTER = {
-		
-		[GetSpellInfo(13165)] = "HUNTER",			-- Aspect of the Hawk
-		[GetSpellInfo(5118)] = "HUNTER",			-- Aspect of the Cheetah
-		[GetSpellInfo(13159)] = true,				-- Aspect of the Pack
-		[GetSpellInfo(20043)] = true,				-- Aspect of the Wild
-		[GetSpellInfo(61648)] = "HUNTER",			-- Aspect of the Beast
-		-- [GetSpellInfo(13163)] = "HUNTER",			-- Aspect of the Monkey
-		[GetSpellInfo(19506)] = true,				-- Trueshot Aura
-		[GetSpellInfo(5384)] = "HUNTER",			-- Feign Death
-	},
-	ROGUE = {
-		[GetSpellInfo(1784)] = "ROGUE",				-- Stealth
-		[GetSpellInfo(1856)] = "ROGUE",			-- Vanish
-		[GetSpellInfo(2983)] = "ROGUE",			-- Sprint
-		[GetSpellInfo(13750)] = "ROGUE",			-- Adrenaline Rush
-		[GetSpellInfo(13877)] = "ROGUE",			-- Blade Flurry
-	},
-	PALADIN = {
-		[GetSpellInfo(20154)] = true,				-- Seal of Righteousness
-		[GetSpellInfo(20165)] = true,				-- Seal of Insight
-		[GetSpellInfo(20164)] = true,				-- Seal of Justice
-		[GetSpellInfo(31801)] = true,				-- Seal of Truth
-		-- [GetSpellInfo(20375)] = true,				-- Seal of Command
-		-- [GetSpellInfo(20166)] = true,				-- Seal of Wisdom
-		-- [GetSpellInfo(20165)] = true,				-- Seal of Light
-		-- [GetSpellInfo(53736)] = true,				-- Seal of Corruption
-		-- [GetSpellInfo(31892)] = true,				-- Seal of Blood
-		-- [GetSpellInfo(31801)] = true,				-- Seal of Vengeance
-		
-		[GetSpellInfo(465)] = true,				-- Devotion Aura
-		[GetSpellInfo(7294)] = true,				-- Retribution Aura
-		[GetSpellInfo(19746)] = true,				-- Concentration Aura
-		[GetSpellInfo(19891)] = true,				-- Resistance Aura
-		[GetSpellInfo(32223)] = true,				-- Crusader Aura
-		[GetSpellInfo(25780)] = true,				-- Righteous Fury
-		[GetSpellInfo(20925)] = true,				-- Holy Shield
-		[GetSpellInfo(54428)] = true,				-- Divine Plea
-	},
-}
-
- DebuffExceptions = {
-	ALL = {
-		[GetSpellInfo(11196)] = true,				-- Recently Bandaged
-	},
-	PRIEST = {
-		[GetSpellInfo(6788)] = true,				-- Weakened Soul
-	},
-	PALADIN = {
-		[GetSpellInfo(25771)] = true				-- Forbearance
-	}
-}
-else
 
  BuffExceptions = {
 	PRIEST = {
@@ -1953,7 +1883,6 @@ else
 		[GetSpellInfo(25771)] = true				-- Forbearance
 	}
 }
-end
 
 local SeasonalDebuffs = {
 	[GetSpellInfo(26004)] = true,					-- Mistletoe
