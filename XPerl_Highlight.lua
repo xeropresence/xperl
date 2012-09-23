@@ -6,8 +6,8 @@ local playerClass, playerName, playerGUID
 local conf
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
-local GetNumPartyMembers = GetNumPartyMembers
-local GetNumRaidMembers = GetNumRaidMembers
+local GetNumSubgroupMembers = GetNumSubgroupMembers
+local GetNumGroupMembers = GetNumGroupMembers
 local GetTime = GetTime
 local UnitBuff = UnitBuff
 local UnitClass = UnitClass
@@ -853,7 +853,7 @@ end
 -- TriggerMendingAnimation
 function xpHigh:TriggerMendingAnimation(sourceGUID, targetGUID)
 	local sourceFrame, targetFrame
-	if (GetNumRaidMembers() > 0 and XPerl_Raid_GetUnitFrameByUnit) then
+	if (IsInRaid() and XPerl_Raid_GetUnitFrameByUnit) then
 		sourceFrame, targetFrame = XPerl_Raid_GetUnitFrameByGUID(sourceGUID), XPerl_Raid_GetUnitFrameByGUID(targetGUID)
 		if (not sourceFrame and XPerl_Raid_Pet_GetUnitFrameByGUID) then
 			sourceFrame = XPerl_Raid_Pet_GetUnitFrameByGUID(sourceGUID)
@@ -862,7 +862,7 @@ function xpHigh:TriggerMendingAnimation(sourceGUID, targetGUID)
 			targetFrame = XPerl_Raid_Pet_GetUnitFrameByGUID(targetGUID)
 		end
 
-	elseif (GetNumPartyMembers() > 0 and XPerl_Party_GetUnitFrameByUnit) then
+	elseif (GetNumSubgroupMembers() > 0 and XPerl_Party_GetUnitFrameByUnit) then
 		sourceFrame = sourceID == "player" and XPerl_Player or XPerl_Party_GetUnitFrameByGUID(sourceGUID)
 		targetFrame = targetID == "player" and XPerl_Player or XPerl_Party_GetUnitFrameByGUID(targetGUID)
 		if (not sourceFrame and XPerl_Party_Pet_GetUnitFrameByGUID) then
@@ -1700,12 +1700,10 @@ function xpHigh:OptionChange()
 		events = true
 		self:RegisterEvent("UNIT_AURA")
 		self:RegisterEvent("GROUP_ROSTER_UPDATE")
-		self:RegisterEvent("PARTY_MEMBERS_CHANGED")
 		self:RefreshAllAuras()
 	else
 		self:UnregisterEvent("UNIT_AURA")
 		self:UnregisterEvent("GROUP_ROSTER_UPDATE")
-		self:UnregisterEvent("PARTY_MEMBERS_CHANGED")
 		self:ClearAll("HOTCOUNT")
 	end
 

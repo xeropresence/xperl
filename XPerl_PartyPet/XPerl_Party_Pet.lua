@@ -16,10 +16,6 @@ XPerl_RequestConfig(function(New) conf = New
 
 local new, del, copy = XPerl_GetReusableTable, XPerl_FreeTable, XPerl_CopyTable
 
-local isMOP = select(4, _G.GetBuildInfo()) >= 50000
-local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
-local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
-
 local AllPetFrames = {}
 local UnitName = UnitName
 local UnitHealth = UnitHealth
@@ -31,7 +27,6 @@ local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitMana = UnitMana
 local UnitManaMax = UnitManaMax
 local UnitPowerType = UnitPowerType
-local GetNumRaidMembers = GetNumRaidMembers
 
 local XPerl_Player_Pet_HighlightCallback
 
@@ -41,7 +36,6 @@ local XPerl_Player_Pet_HighlightCallback
 function XPerl_Party_Pet_OnLoadEvents(self)
 	self.time = 0
 
-	--self:RegisterEvent("PARTY_MEMBERS_CHANGED")
 	local events = {"UNIT_COMBAT", "UNIT_FACTION", "UNIT_AURA", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS",
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "PLAYER_ENTERING_WORLD"}
 
@@ -67,7 +61,7 @@ do
 	function XPerl_Party_Pet_UpdateGUIDs()
 		del(guids)
 		guids = new()
-		for i = 1,GetNumPartyMembers() do
+		for i = 1,GetNumSubgroupMembers() do
 			local id = "partypet"..i
 			if (UnitExists(id)) then
 				guids[UnitGUID(id)] = PartyPetFrames[id]

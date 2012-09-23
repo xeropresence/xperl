@@ -163,15 +163,9 @@ function voice:GROUP_ROSTER_UPDATE()
 	self:ClearCache()
 end
 
--- voice:PARTY_MEMBERS_CHANGED
-function voice:PARTY_MEMBERS_CHANGED()
-	self:ClearCache()
-end
-
 voice:RegisterEvent("VOICE_STATUS_UPDATE")
 voice:RegisterEvent("MUTELIST_UPDATE")
 voice:RegisterEvent("VOICE_START")
 voice:RegisterEvent("VOICE_STOP")
-voice:RegisterEvent("PARTY_MEMBERS_CHANGED")
 voice:RegisterEvent("GROUP_ROSTER_UPDATE")
 voice:SetScript("OnEvent", voice.OnEvent)

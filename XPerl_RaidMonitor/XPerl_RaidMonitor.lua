@@ -8,10 +8,8 @@ local TableUnits = {}			-- Dynamic list of units indexed by raid id, changed on 
 XPerlRaidMonConfig = {}
 local config = XPerlRaidMonConfig
 
-
-local isMOP = select(4, _G.GetBuildInfo()) >= 50000
-local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
-local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
+local GetNumGroupMembers = GetNumGroupMembers
+local GetNumSubgroupMembers = GetNumSubgroupMembers
 
 
 XPerl_SetModuleRevision("$Revision$")
@@ -339,17 +337,12 @@ function cast:GROUP_ROSTER_UPDATE()
 	UpdateAllUnits()
 end
 
--- cast:PARTY_MEMBERS_CHANGED
-function cast:PARTY_MEMBERS_CHANGED()
-	UpdateAllUnits()
-end
-
 -- cast:ManaTotals
 function cast:ManaTotals()
 	self.doneMana = true
 
 	local manaTotal, count, manaHigh, manaLow, allTotal = 0, 0, 0, 0, 0
-	for i = 1,GetNumRaidMembers() do
+	for i = 1,GetNumGroupMembers() do
 		local v = self.area:GetAttribute("child"..i)
 		if (not v) then	break end
 		if (v.powerType == 0 and v:IsShown()) then
@@ -408,8 +401,8 @@ function cast:HealthTotals()
 
 	local totalHealth = 0
 	local total = 0
-	if GetNumRaidMembers() > 0 then--actually check if we are in a raid
-		for i = 1,GetNumRaidMembers() do
+	if IsInRaid() then--actually check if we are in a raid
+		for i = 1,GetNumGroupMembers() do
 			local id = "raid"..i
 			if (UnitIsConnected(id)) then
 				local hp, hpMax = UnitHealth(id), UnitHealthMax(id)
@@ -428,8 +421,8 @@ function cast:HealthTotals()
 				total = total + 1
 			end
 		end
-	elseif GetNumPartyMembers() > 0 then--if not a raid see if it's a party
-		for i = 1,GetNumPartyMembers() do
+	elseif GetNumSubgroupMembers() > 0 then--if not a raid see if it's a party
+		for i = 1,GetNumSubgroupMembers() do
 			local id = "party"..i
 			if (UnitIsConnected(id)) then
 				local hp, hpMax = UnitHealth(id), UnitHealthMax(id)
@@ -448,7 +441,7 @@ function cast:HealthTotals()
 				total = total + 1
 			end
 		end
-		--GetNumPartyMembers() doesn't return player, unlike GetNumRaidMembers which does, so we have to manually add player in for 5 mans
+		--GetNumSubgroupMembers() doesn't return player, unlike GetNumGroupMembers which does, so we have to manually add player in for 5 mans
 		local hp, hpMax = UnitHealth("player"), UnitHealthMax("player")
 		--Begin 4.3 anti /0 fix.
 		local percent
@@ -840,7 +833,7 @@ function cast:EnableDisable()
 			"UNIT_SPELLCAST_START", "UNIT_SPELLCAST_STOP", "UNIT_SPELLCAST_FAILED", "UNIT_SPELLCAST_INTERRUPTED",
 			"UNIT_SPELLCAST_DELAYED", "UNIT_SPELLCAST_CHANNEL_START", "UNIT_SPELLCAST_SUCCEEDED",
 			"UNIT_SPELLCAST_CHANNEL_UPDATE", "UNIT_SPELLCAST_CHANNEL_STOP", "PLAYER_ENTERING_WORLD", "GROUP_ROSTER_UPDATE",
-			"PLAYER_REGEN_DISABLED", "PLAYER_REGEN_ENABLED", "PARTY_MEMBERS_CHANGED"}
+			"PLAYER_REGEN_DISABLED", "PLAYER_REGEN_ENABLED"}
 
 	for k,v in pairs(events) do
 		if (self:IsShown()) then
@@ -866,7 +859,7 @@ function cast:SetFrameSizes()
 	end
 
 	local count = 0
-	for i = 1,GetNumRaidMembers() do
+	for i = 1,GetNumGroupMembers() do
 		if (config.classes[select(2, UnitClass("raid"..i))]) then
 			count = count + 1
 		end

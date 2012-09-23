@@ -13,13 +13,8 @@ local enemyUnitList = {}			-- Players with mobs targetted that target me
 local wholeEnemyUnitList = {}			-- Players with mobs targetted
 local currentPlayerAggro = {}
 
-
-local isMOP = select(4, _G.GetBuildInfo()) >= 50000
-local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
-local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
-
-
-
+local GetNumGroupMembers = GetNumGroupMembers
+local GetNumSubgroupMembers = GetNumSubgroupMembers
 
 -- XPerl_Assists_OnLoad(self)
 function XPerl_Assists_OnLoad(self)
@@ -270,10 +265,10 @@ end
 local function MakeFriendlyUnitList()
 
 	local start, prefix, total
-	if (GetNumRaidMembers() > 0) then
-		start, prefix, total = 1, "raid", GetNumRaidMembers()
+	if (IsInRaid()) then
+		start, prefix, total = 1, "raid", GetNumGroupMembers()
 	else
-		start, prefix, total = 0, "party", GetNumPartyMembers()
+		start, prefix, total = 0, "party", GetNumSubgroupMembers()
 	end
 
 	--friendlyUnitList = {"player", "pet"}
@@ -550,7 +545,7 @@ function XPerl_UpdateAssists()
 		end
 	end
 
-	if (GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0) then
+	if (not IsInRaid()) then
 		-- Don't show it if we're on our own... we know we have aggro..
 		playerAggro, petAggro = false, false
 	end

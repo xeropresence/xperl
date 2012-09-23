@@ -21,7 +21,6 @@ local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitMana = UnitMana
 local UnitManaMax = UnitManaMax
 local UnitPowerType = UnitPowerType
-local GetNumRaidMembers = GetNumRaidMembers
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
 local buffSetup

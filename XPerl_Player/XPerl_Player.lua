@@ -10,11 +10,6 @@ XPerl_RequestConfig(function(new) conf = new pconf = conf.player if (XPerl_Playe
 local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%.0f"..PERCENT_SYMBOL
 
-local isMOP = select(4, _G.GetBuildInfo()) >= 50000
-local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
-local GetPrimaryTalentTree = isMOP and GetSpecialization or GetPrimaryTalentTree
-local IsPartyLeader = isMOP and function() return UnitIsGroupLeader("player") end or IsPartyLeader
-
 --[===[@debug@
 local function d(...)
 	ChatFrame1:AddMessage(format(...))
@@ -22,7 +17,7 @@ end
 --@end-debug@]===]
 
 local format = format
-local GetNumRaidMembers = GetNumRaidMembers
+local GetNumGroupMembers = GetNumGroupMembers
 local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitIsGhost = UnitIsGhost
@@ -243,7 +238,7 @@ function XPerl_Player_UpdateLeader(self)
 	end
 
 	-- Leader
-	if (IsPartyLeader()) then
+	if (UnitIsGroupLeader("player")) then
 		nf.leaderIcon:Show()
 	else
 		nf.leaderIcon:Hide()
@@ -251,8 +246,8 @@ function XPerl_Player_UpdateLeader(self)
 
 	UpdateAssignedRoles(self)
 
-	if (pconf and pconf.partyNumber and GetNumRaidMembers() > 0) then
-		for i = 1,GetNumRaidMembers() do
+	if (pconf and pconf.partyNumber and IsInRaid()) then
+		for i = 1,GetNumGroupMembers() do
 			local name, rank, subgroup = GetRaidRosterInfo(i)
 			if (UnitIsUnit("raid"..i, "player")) then
 				if (pconf.withName) then
@@ -512,7 +507,7 @@ local function XPerl_Player_DruidBarUpdate(self)
 
 	local form = GetShapeshiftFormID()
 	if (self.runes ~= nil) then
-		if (form and form ~= MOONKIN_FORM) or GetPrimaryTalentTree() ~= 1 or (not pconf or not pconf.showRunes) then 
+		if (form and form ~= MOONKIN_FORM) or GetSpecialization() ~= 1 or (not pconf or not pconf.showRunes) then 
 			self.runes:Hide()
 		else
 			self.runes:Show()
@@ -841,7 +836,7 @@ function XPerl_Player_Events:VARIABLES_LOADED(who, what)
 	--print("VARIABLES_LOADED")
 	self:UnregisterEvent("VARIABLES_LOADED")
 
-	local events = {"PLAYER_ENTERING_WORLD", "PARTY_MEMBERS_CHANGED", "PARTY_LEADER_CHANGED",
+	local events = {"PLAYER_ENTERING_WORLD", "PARTY_LEADER_CHANGED",
 			"PARTY_LOOT_METHOD_CHANGED", "GROUP_ROSTER_UPDATE", "PLAYER_UPDATE_RESTING", "PLAYER_REGEN_ENABLED",
 			"PLAYER_REGEN_DISABLED", "PLAYER_ENTER_COMBAT", "PLAYER_LEAVE_COMBAT", "PLAYER_DEAD",
 			"UPDATE_FACTION", "UNIT_AURA", "PLAYER_CONTROL_LOST", "PLAYER_CONTROL_GAINED",
@@ -878,7 +873,6 @@ end
 function XPerl_Player_Events:PARTY_LOOT_METHOD_CHANGED()
 	XPerl_Player_UpdateLeader(self)
 end
-XPerl_Player_Events.PARTY_MEMBERS_CHANGED	= XPerl_Player_Events.PARTY_LOOT_METHOD_CHANGED
 XPerl_Player_Events.PARTY_LEADER_CHANGED	= XPerl_Player_Events.PARTY_LOOT_METHOD_CHANGED
 XPerl_Player_Events.GROUP_ROSTER_UPDATE		= XPerl_Player_Events.PARTY_LOOT_METHOD_CHANGED
 

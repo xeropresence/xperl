@@ -32,8 +32,8 @@ local UnitIsTapped = UnitIsTapped
 local UnitIsVisible = UnitIsVisible
 local UnitPlayerControlled = UnitPlayerControlled
 local UnitReaction = UnitReaction
-local GetNumRaidMembers = GetNumRaidMembers
-local GetNumPartyMembers = GetNumPartyMembers
+local GetNumGroupMembers = GetNumGroupMembers
+local GetNumSubgroupMembers = GetNumSubgroupMembers
 local GetRaidRosterInfo = GetRaidRosterInfo
 local largeNumDiv = XPERL_LOC_LARGENUMDIV
 local largeNumTag = XPERL_LOC_LARGENUMTAG
@@ -45,10 +45,6 @@ local ArcaneExclusions = XPerl_ArcaneExclusions
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
 local isMOP = select(4, _G.GetBuildInfo()) >= 50000
-local GetNumRaidMembers = isMOP and GetNumGroupMembers or GetNumRaidMembers
-local GetNumPartyMembers = isMOP and GetNumSubgroupMembers or GetNumPartyMembers
-local GetPrimaryTalentTree  =  isMOP and GetSpecialization or GetPrimaryTalentTree 
-local GetNumTalentTabs = isMOP and GetNumSpecializations or GetNumTalentTabs
 
 --[===[@debug@
 local function d(...)
@@ -1150,9 +1146,9 @@ function XPerl_MinimapButton_Details(tt, ldb)
 	end
 
 	if (GetRealNumRaidMembers) then
-		if (GetNumRaidMembers() > 0 and GetRealNumRaidMembers() > 0) then
+		if (GetNumGroupMembers() > 0 and GetRealNumRaidMembers() > 0) then
 			if (select(2, IsInInstance()) == "pvp") then
-				tt:AddLine(format(XPERL_MINIMAP_HELP3, GetRealNumRaidMembers(), GetRealNumPartyMembers()))
+				tt:AddLine(format(XPERL_MINIMAP_HELP3, GetRealNumRaidMembers(), GetNumSubgroupMembers(LE_PARTY_CATEGORY_HOME)))
 
 				if (IsRealPartyLeader()) then
 					tt:AddLine(XPERL_MINIMAP_HELP4)
@@ -1466,7 +1462,7 @@ function XPerl_CombatFlashSetFrames(self)
 end
 
 local function GetTalentPosition(findName)
-	for i = 1,GetNumTalentTabs() do
+	for i = 1,GetNumSpecializations() do
 		for j = 1,GetNumTalents(i) do
 			local name = GetTalentInfo(i, j)
 			if (name == findName) then
@@ -3271,7 +3267,7 @@ end
 -- nextMember(last)
 function XPerl_NextMember(_, last)
 	if (last) then
-		local raidCount = GetNumRaidMembers()
+		local raidCount = GetNumGroupMembers()
 		if (raidCount > 0) then
 			local i = tonumber(strmatch(last, "^raid(%d+)"))
 			if (i and i < raidCount) then
@@ -3280,7 +3276,7 @@ function XPerl_NextMember(_, last)
 				return "raid"..i, unitName, unitClass, group, zone, online, dead
 			end
 		else
-			local partyCount = GetNumPartyMembers()
+			local partyCount = GetNumSubgroupMembers()
 			if (partyCount > 0) then
 				local id
 				if (last == "player") then
@@ -3299,7 +3295,7 @@ function XPerl_NextMember(_, last)
 			end
 		end
 	else
-		if (GetNumRaidMembers() > 0) then
+		if (IsInRaid()) then
 			local unitName, rank, group, level, _, unitClass, zone, online, dead = GetRaidRosterInfo(1)
 			return "raid1", unitName, unitClass, group, zone, online, dead
 		else
