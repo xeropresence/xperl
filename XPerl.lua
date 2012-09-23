@@ -1142,8 +1142,8 @@ function XPerl_MinimapButton_Details(tt, ldb)
 			tt:AddLine(XPERL_MINIMAP_HELP5)
 		end
 	end
-
-	if (GetRealNumRaidMembers) then
+	--GetRealNumRaidMembers doesn't exist anymore in 5.0.4
+	--[==[if (GetRealNumRaidMembers) then
 		if (GetNumGroupMembers() > 0 and GetRealNumRaidMembers() > 0) then
 			if (select(2, IsInInstance()) == "pvp") then
 				tt:AddLine(format(XPERL_MINIMAP_HELP3, GetRealNumRaidMembers(), GetNumSubgroupMembers(LE_PARTY_CATEGORY_HOME)))
@@ -1153,7 +1153,7 @@ function XPerl_MinimapButton_Details(tt, ldb)
 				end
 			end
 		end
-	end
+	end]==]
 
 	if (UpdateAddOnMemoryUsage and IsAltKeyDown()) then
 		local showDiff = IsShiftKeyDown()
