@@ -1740,7 +1740,7 @@ local function SetRaidRoster()
 		end
 	end
 
-	if (IsInRaid() > 0) then
+	if (IsInRaid()) then
 		XPerl_Raid_Frame:Show()
 	else
 		XPerl_Raid_Frame:Hide()
