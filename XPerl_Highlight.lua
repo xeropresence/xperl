@@ -51,7 +51,7 @@ end
 local function getTalentModifier(self)
 	if (self.improved) then
 		local spent = GetTalentValueByName(self.improved.name)
-		return 1 + (self.improved.percentPerRank * spent) / 100
+		return 1 + (self.improved.percentPerRank * (spent or 0)) / 100
 	end
 	return 1
 end
