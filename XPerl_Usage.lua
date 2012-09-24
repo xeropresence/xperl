@@ -303,6 +303,16 @@ function mod:GROUP_ROSTER_UPDATE()
 	else
 		self.inRaid = nil
 	end
+	
+	if (UnitInParty("player")) then
+		if (not self.inParty and not self.inRaid) then
+			self.inParty = true
+			self:SendModules("PARTY")			-- Let other X-Perl users know which version we're running
+		end
+	else
+		self.inParty = nil
+	end
+	
 end
 
 -- CHAT_MSG_ADDON
