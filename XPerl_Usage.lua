@@ -345,7 +345,7 @@ function mod:SendModules(chan, target)
 			else
 				chan = "RAID"
 			end
-		elseif (GetNumSubgroupMembers() > 0) then
+		elseif (UnitInParty("player")) then
 			chan = "PARTY"
 		end
 	end
