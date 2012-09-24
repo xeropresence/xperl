@@ -346,7 +346,7 @@ end
 local function XPerl_ToolTip_AddBuffDuration(self, partyid, buffID, filter)
 	local name, rank, buff, count, _, dur, max, caster, isStealable = UnitAura(partyid, buffID, filter)
 
-	if (IsInRaid()) then
+	if (IsInRaid() or UnitInParty("player")) then
 		if (conf.buffHelper.enable and partyid and (UnitInParty(partyid) or UnitInRaid(partyid))) then
 			if (name) then
 				local names, count = GetNamesWithoutBuff(name, IsAltKeyDown(), filter)
