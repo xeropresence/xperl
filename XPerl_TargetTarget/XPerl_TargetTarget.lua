@@ -135,7 +135,7 @@ end
 -- The Update Function --
 -------------------------
 function XPerl_TargetTarget_UpdatePVP(self)
-	local pvp = self.conf.pvpIcon and (UnitIsPVP(self.partyid) and UnitFactionGroup(self.partyid)) or (UnitIsPVPFreeForAll(self.partyid) and "FFA")
+	local pvp = self.conf.pvpIcon and (UnitIsPVPFreeForAll(self.partyid) and "FFA") or (UnitIsPVP(self.partyid) and (UnitFactionGroup(self.partyid) ~= "Neutral") and UnitFactionGroup(self.partyid))
 	if (pvp) then
 		self.nameFrame.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..pvp)
 		self.nameFrame.pvpIcon:Show()
