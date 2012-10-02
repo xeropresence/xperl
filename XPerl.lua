@@ -1561,11 +1561,7 @@ function XPerl_DebufHighlightInit()
 			if (not conf.highlightDebuffs.class) then
 				show = Curses.Magic or Curses.Curse or Curses.Poison or Curses.Disease
 			end
-			local magic
-			if (CanClassCureMagic(playerClass)) then
-				magic = Curses.Magic
-			end
-			return Curses.Curse or magic or show
+			return Curses.Curse or Curses.Magic or show
 		end
 
 	elseif (playerClass == "ROGUE") then
