@@ -1278,7 +1278,7 @@
 					<OnLoad>
 						self:SetID(self:GetParent():GetID())
 						self.tooltipText = XPERL_CONF_RAID_CLASS_DOWN
-						if (self:GetID() == 10) then
+						if (self:GetID() == 11) then
 							self:Hide()
 						end
 					</OnLoad>

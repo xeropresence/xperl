@@ -974,7 +974,7 @@ local function SetClassNames(self)
 	ValidateClassNames(XPerlDB.raid)
 
 	local prefix = self:GetParent():GetParent():GetName().."_"
-	for i = 1,10 do
+	for i = 1,11 do
 		local f = _G[prefix.."ClassSel"..i.."_EnableText"]
 		if (f) then
 			local class = XPerlDB.raid.class[i].name
