@@ -10005,10 +10005,10 @@
 									XPerl_Options_EnableSibling(self, "BuffHelperSortClass", "BuffTooltipHelper")
 									XPerl_Options_EnableSibling(self, "BuffTooltipHelperVis", "BuffTooltipHelper")
 									XPerl_Options_EnableSibling(self, "Healer")
-									for i = 1,10 do
+									for i = 1,11 do
 										XPerl_Options_EnableSibling(self, "Groups_Grp"..i)
 									end
-									for i = 1,10 do
+									for i = 1,11 do
 										XPerl_Options_EnableSibling(self, "Groups_ClassSel"..i.."_Enable")
 										XPerl_Options_EnableSibling(self, "Groups_ClassSel"..i.."_Up")
 										XPerl_Options_EnableSibling(self, "Groups_ClassSel"..i.."_Down")
