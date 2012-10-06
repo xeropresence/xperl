@@ -1202,7 +1202,7 @@ function XPerl_Raid_HideShowRaid()
 	end
 
 	for i = 1,WoWclassCount do
-		if (rconf.group[i] == 1 and enable and (i < 9 or rconf.sortByClass) and not singleGroup) then
+		if (rconf.group[i] == 1 and enable and (i < 11 or rconf.sortByClass) and not singleGroup) then
 			if (not raidHeaders[i]:IsShown()) then
 				raidHeaders[i]:Show()
 			end
@@ -2284,7 +2284,7 @@ function XPerl_Raid_ChangeAttributes()
 		end
 	end
 
-	for i = 1,rconf.sortByClass and WoWclassCount or 8 do
+	for i = 1,rconf.sortByClass and WoWclassCount or 11 do
 		local groupHeader = raidHeaders[i]
 
 		-- Hide this when we change attributes, so the whole re-calc is only done once, instead of for every attribute change

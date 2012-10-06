@@ -10679,6 +10679,24 @@
 									</OnLoad>
 								</Scripts>
 							</CheckButton>
+							
+							<CheckButton name="$parent_Grp11" inherits="XPerlCheckButtonTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_Grp10" relativePoint="BOTTOMLEFT">
+										<Offset><AbsDimension x="0" y="6"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										_G[self:GetName().."Text"]:SetText("11")
+										self.tooltipText = XPERL_CONF_RAID_GROUP_DESC
+										self.configBase = "XPerlDB.raid.group"
+										self.configIndex = 11
+										self.configClick = function() XPerl_Raid_ChangeAttributes() XPerl_Raid_OptionActions() end
+										XPerl_Options_RegisterProtected(self)
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
 
 							<Frame name="$parent_Title2">
 								<Size>
@@ -10736,12 +10754,16 @@
 								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_ClassSel9" relativePoint="BOTTOMLEFT"/></Anchors>
 							</Frame>
 
+							<Frame name="$parent_ClassSel11" inherits="XPerl_OptClassSelTemplate" id="11">
+								<Anchors><Anchor point="TOPLEFT" relativeTo="$parent_ClassSel10" relativePoint="BOTTOMLEFT"/></Anchors>
+							</Frame>
+							
 							<Button name="$parent_All" inherits="XPerlButtonTemplate">
 								<Size>
 									<AbsDimension x="70" y="24"/>
 								</Size>
 								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="$parent_Grp9" relativePoint="BOTTOMLEFT">
+									<Anchor point="TOPLEFT" relativeTo="$parent_Grp10" relativePoint="BOTTOMLEFT">
 										<Offset><AbsDimension x="3" y="-22"/></Offset>
 									</Anchor>
 								</Anchors>
