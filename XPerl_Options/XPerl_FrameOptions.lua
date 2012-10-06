@@ -1016,7 +1016,7 @@ function XPerl_Options_RaidSelectAll(self, enable)
 	local val
 	local prefix = self:GetParent():GetName().."_"
 
-	for i = 1,10 do
+	for i = 1,11 do
 		local f = _G[prefix.."Grp"..i]
 		if (f) then
 			f:SetChecked(enable)
@@ -1242,15 +1242,15 @@ local function InterestingFrames()
 	local ret = {}
 
 	if (interest == "all") then
-		for i = 1,10 do
+		for i = 1,11 do
 			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	elseif (interest == "odd") then
-		for i = 1,10,2 do
+		for i = 1,11,2 do
 			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	elseif (interest == "even") then
-		for i = 2,10,2 do
+		for i = 2,11,2 do
 			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	elseif (interest == "first4") then
@@ -1258,7 +1258,7 @@ local function InterestingFrames()
 			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	elseif (interest == "last4") then
-		for i = 5,9 do
+		for i = 5,11 do
 			tinsert(ret, _G["XPerl_Raid_Title"..i])
 		end
 	end
@@ -2001,6 +2001,7 @@ function XPerl_Options_ImportOldConfig(old)
 				{enable = Convert(old.RaidClass8Enable), name = old.RaidClass8 or "SHAMAN"},
 				{enable = Convert(old.RaidClass9Enable), name = old.RaidClass9 or "PALADIN"},
 				{enable = true, name = "DEATHKNIGHT"},
+				{enable = true, name = "MONK"},
 			},
 			titles			= Convert(old.ShowRaidTitles),
 			percent			= Convert(old.ShowRaidPercents),
@@ -2427,7 +2428,7 @@ local function XPerl_Raid_ConfigDefault(default)
 		enable			= 1,
 --		sortByClass		= nil,
 --		sortAlpha		= nil,
-		group = {1, 1, 1, 1, 1, 1, 1, 1, 1},
+		group = {1, 1, 1, 1, 1, 1, 1, 1, 1,1},
 		class = {
 			{enable = 1, name = "WARRIOR"},
 			{enable = 1, name = "ROGUE"},
@@ -2439,6 +2440,7 @@ local function XPerl_Raid_ConfigDefault(default)
 			{enable = 1, name = "SHAMAN"},
 			{enable = 1, name = "PALADIN"},
 			{enable = 1, name = "DEATHKNIGHT"},
+			{enable = 1, name = "MONK"},
 		},
 		titles			= 1,
 		percent			= 1,
