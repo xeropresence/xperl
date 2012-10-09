@@ -15,7 +15,6 @@ local percD = "%d"..PERCENT_SYMBOL
 local lastNamesList, lastName, lastWith, lastNamesCount -- Stores with/without buff list (OnUpdate optimization)
 local fullyInitiallized
 
-
 if type(RegisterAddonMessagePrefix) == "function" then
 	RegisterAddonMessagePrefix("CTRA")
 end
@@ -104,7 +103,7 @@ function XPerl_Raid_OnLoad(self)
 	self:SetScript("OnEvent", XPerl_Raid_OnEvent);
 
 	for i = 1,WoWclassCount do
-		_G["XPerl_Raid_Grp"..i]:UnregisterEvent("UNIT_NAME_UPDATE")
+		--_G["XPerl_Raid_Grp"..i]:UnregisterEvent("UNIT_NAME_UPDATE")
 		tinsert(raidHeaders, _G[XPERL_RAIDGRP_PREFIX..i])
 	end
 
@@ -633,6 +632,7 @@ end
 -- onAttrChanged
 local function onAttrChanged(self, name, value)
 	if (name == "unit") then
+		--print(debugstack())
 		if (value) then
 			SetFrameArray(self, value)
 			if (self.lastID ~= value or self.lastName ~= UnitName(value)) then
@@ -1324,9 +1324,9 @@ do
 	function XPerl_Raid_Events:GROUP_ROSTER_UPDATE()
 		rosterUpdated = true -- Many roster updates can occur during 1 video frame, so we'll check everything at end of last one
 		BuildGuidMap()
+		XPerl_Raid_ChangeAttributes()
 		if (IsInRaid()) then
 			XPerl_Raid_Frame:Show()
-
 			if (rconf.raid_role ) then
 				for i,frame in pairs(FrameArray) do
 					if (frame.partyid) then
@@ -1697,7 +1697,7 @@ function XPerl_Raid_Events:CHAT_MSG_ADDON(prefix, msg, channel, sender)
 end
 
 -- SetRaidRoster
-local function SetRaidRoster()
+function SetRaidRoster()
 	local NewRoster = new()
 
 	del(RaidPositions)
@@ -2185,7 +2185,7 @@ end
 -- SetMainHeaderAttributes
 local function SetMainHeaderAttributes(self)
 
-	self:Hide()
+	self:Show()
 
 	self.initialConfigFunction = initialConfigFunction
 
@@ -2222,6 +2222,7 @@ end
 -- XPerl_Raid_SetAttributes
 function XPerl_Raid_ChangeAttributes()
 	if (InCombatLockdown()) then
+		print("incombat smut")
 		XPerl_OutOfCombatQueue[XPerl_Raid_ChangeAttributes] = false
 		return
 	end
