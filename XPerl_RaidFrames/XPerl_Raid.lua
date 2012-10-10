@@ -2222,7 +2222,7 @@ end
 -- XPerl_Raid_SetAttributes
 function XPerl_Raid_ChangeAttributes()
 	if (InCombatLockdown()) then
-		print("incombat smut")
+		--print("incombat smut")
 		XPerl_OutOfCombatQueue[XPerl_Raid_ChangeAttributes] = false
 		return
 	end
