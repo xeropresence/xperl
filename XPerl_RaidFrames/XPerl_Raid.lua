@@ -1324,7 +1324,6 @@ do
 	function XPerl_Raid_Events:GROUP_ROSTER_UPDATE()
 		rosterUpdated = true -- Many roster updates can occur during 1 video frame, so we'll check everything at end of last one
 		BuildGuidMap()
-		XPerl_Raid_ChangeAttributes()
 		if (IsInRaid()) then
 			XPerl_Raid_Frame:Show()
 			if (rconf.raid_role ) then
@@ -2185,7 +2184,7 @@ end
 -- SetMainHeaderAttributes
 local function SetMainHeaderAttributes(self)
 
-	self:Show()
+	self:Hide()
 
 	self.initialConfigFunction = initialConfigFunction
 
@@ -2222,7 +2221,6 @@ end
 -- XPerl_Raid_SetAttributes
 function XPerl_Raid_ChangeAttributes()
 	if (InCombatLockdown()) then
-		--print("incombat smut")
 		XPerl_OutOfCombatQueue[XPerl_Raid_ChangeAttributes] = false
 		return
 	end
