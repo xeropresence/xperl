@@ -48,7 +48,7 @@ function XPerl_Target_OnLoad(self, partyid)
 	local events = {"UNIT_COMBAT", "PLAYER_FLAGS_CHANGED",
 		"PARTY_MEMBER_DISABLE", "PARTY_MEMBER_ENABLE", "RAID_TARGET_UPDATE", "GROUP_ROSTER_UPDATE",
 		"PARTY_LEADER_CHANGED", "PARTY_LOOT_METHOD_CHANGED", "UNIT_THREAT_LIST_UPDATE","UNIT_SPELLMISS", "UNIT_FACTION", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS",
-			"UNIT_CLASSIFICATION_CHANGED", "UNIT_PORTRAIT_UPDATE", "UNIT_AURA", "UNIT_HEALTH_FREQUENT","UNIT_POWER_FREQUENT", "UNIT_MAXPOWER", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
+			"UNIT_CLASSIFICATION_CHANGED", "UNIT_PORTRAIT_UPDATE", "UNIT_AURA", "UNIT_HEALTH_FREQUENT","UNIT_POWER_FREQUENT", "UNIT_MAXPOWER", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE", "PET_BATTLE_OPENING_START","PET_BATTLE_CLOSE"}
 	for i,event in pairs(events) do
 		self:RegisterEvent(event)
 	end
@@ -1074,6 +1074,42 @@ end
 
 function XPerl_Target_Events:PLAYER_REGEN_DISABLED()
 	XPerl_Unit_ThreatStatus(self, self.partyid == "target" and "player" or nil)
+end
+
+function XPerl_Target_Events:PET_BATTLE_OPENING_START()
+	if(XPerl_Target) then
+		XPerl_Target:Hide()
+	end
+	if(XPerl_Focus) then
+		XPerl_Focus:Hide()
+	end
+	if(XPerl_PetTarget) then
+		XPerl_Target:Hide()
+	end
+	if(XPerl_TargetTarget) then
+		XPerl_Focus:Hide()
+	end
+	if(XPerl_FocusTarget) then
+		XPerl_Target:Hide()
+	end
+end
+
+function XPerl_Target_Events:PET_BATTLE_CLOSE()
+	if(XPerl_Target) then
+		XPerl_Target:Show()
+	end
+	if(XPerl_Focus) then
+		XPerl_Focus:Show()
+	end
+	if(XPerl_PetTarget) then
+		XPerl_Target:Show()
+	end
+	if(XPerl_TargetTarget) then
+		XPerl_Focus:Show()
+	end
+	if(XPerl_FocusTarget) then
+		XPerl_Target:Show()
+	end
 end
 
 -- PLAYER_ENTERING_WORLD

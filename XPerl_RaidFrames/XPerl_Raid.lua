@@ -91,7 +91,7 @@ function XPerl_Raid_OnLoad(self)
 			"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
 			"UNIT_COMBAT", "UNIT_SPELLCAST_START", "UNIT_SPELLCAST_STOP", "UNIT_SPELLCAST_FAILED",
 			"UNIT_SPELLCAST_INTERRUPTED", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED",
-			"RAID_TARGET_UPDATE", "PLAYER_LOGIN", "ROLE_CHANGED_INFORM"
+			"RAID_TARGET_UPDATE", "PLAYER_LOGIN", "ROLE_CHANGED_INFORM", "PET_BATTLE_OPENING_START","PET_BATTLE_CLOSE"
 			}
 			
 			
@@ -1261,6 +1261,18 @@ function XPerl_Raid_Events:VARIABLES_LOADED()
 	XPerl_Highlight:Register(XPerl_Raid_HighlightCallback, self)
 
 	XPerl_Raid_Events.VARIABLES_LOADED = nil
+end
+
+function XPerl_Raid_Events:PET_BATTLE_OPENING_START()
+	if(self) then
+		XPerl_Raid_HideShowRaid();
+	end
+end
+
+function XPerl_Raid_Events:PET_BATTLE_CLOSE()
+	if(self) then
+		XPerl_Raid_HideShowRaid();
+	end
 end
 
 -- XPerl_Raid_Events:PLAYER_ENTERING_WORLDsmall()
