@@ -11,7 +11,7 @@ local GetNumGroupMembers = GetNumGroupMembers
 
 local UnitIsGroupAssistant = UnitIsGroupAssistant;
 
-local classOrder = {"WARRIOR", "DEATHKNIGHT", "ROGUE", "HUNTER", "DRUID", "SHAMAN", "PALADIN", "PRIEST", "MAGE", "WARLOCK"}
+local classOrder = {"WARRIOR", "DEATHKNIGHT", "ROGUE", "HUNTER", "DRUID", "SHAMAN", "PALADIN", "PRIEST", "MAGE", "WARLOCK", "MONK"}
 
 -- SetTex
 local highlightPositions = {	{0, 0.25, 0, 0.5},
