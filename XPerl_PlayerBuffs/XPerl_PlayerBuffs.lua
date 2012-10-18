@@ -31,7 +31,7 @@ local function setCommon(self, filter, buffTemplate)
 	self:SetAttribute("xOffset", 32)	-- pconf.buffs.size)
 	self:SetAttribute("yOffset", 0)
 	self:SetAttribute("wrapXOffset", 0)
-	self:SetAttribute("wrapYOffset", pconf.buffs.above and 32 or -32)
+	self:SetAttribute("wrapYOffset", pconf.buffs.above and 0 or -32)
 
 	self:SetAttribute("minWidth", 32)
 	self:SetAttribute("minHeight", 32)
