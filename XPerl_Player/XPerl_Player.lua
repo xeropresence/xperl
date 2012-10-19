@@ -970,7 +970,7 @@ function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	XPerl_Player_UpdateMana(self)
 	if (playerClass == "DRUID") then
 		XPerl_Player_DruidBarUpdate(self)
-	else if(playerClass == "PRIEST" and PriestBarFrame) then
+	elseif(playerClass == "PRIEST" and PriestBarFrame) then
 		PriestBarFrame_CheckAndShow(PriestBarFrame);
 	end
 end
