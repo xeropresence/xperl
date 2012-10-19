@@ -1128,7 +1128,9 @@ end
 
 -- XPerl_Raid_RoleUpdate
 local function XPerl_Raid_RoleUpdate(self, role)
-	if(not self) then return
+	if(not self) then
+		return
+	end
 	local icon = self.nameFrame.roleIcon or nil
 
 	if (role) then
