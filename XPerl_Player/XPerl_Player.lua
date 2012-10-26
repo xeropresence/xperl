@@ -968,8 +968,8 @@ end
 -- PLAYER_TALENT_UPDATE
 function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	XPerl_Player_UpdateMana(self)
-	if (playerClass == "DRUID") then
-		XPerl_Player_DruidBarUpdate(self)
+	XPerl_Player_InitMoonkin(self)
+	
 	elseif(playerClass == "PRIEST" and PriestBarFrame) then
 		PriestBarFrame_CheckAndShow(PriestBarFrame);
 	end
