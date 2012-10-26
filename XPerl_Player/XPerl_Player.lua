@@ -970,7 +970,7 @@ function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	XPerl_Player_UpdateMana(self)
 	XPerl_Player_InitMoonkin(self)
 	
-	elseif(playerClass == "PRIEST" and PriestBarFrame) then
+	if(playerClass == "PRIEST" and PriestBarFrame) then
 		PriestBarFrame_CheckAndShow(PriestBarFrame);
 	end
 end
