@@ -622,7 +622,13 @@ local function XPerl_Target_UpdateType(self)
 	end
 
 	self.typeFramePlayer:Hide()
-	self.creatureTypeFrame.text:SetText(targettype)
+	
+	
+	if ( UnitIsWildBattlePet(partyid) or UnitIsBattlePetCompanion(partyid) ) then
+		self.creatureTypeFrame.text:SetText(PET_TYPE_SUFFIX[UnitBattlePetType(partyid)])
+	else
+		self.creatureTypeFrame.text:SetText(targettype)
+	end
 
 	--if (UnitIsPlayer(partyid)) then
 		if (self.conf.classIcon and (UnitIsPlayer(partyid) or UnitClassification(partyid) == "normal")) then
