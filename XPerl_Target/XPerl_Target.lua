@@ -1086,34 +1086,34 @@ function XPerl_Target_Events:PET_BATTLE_OPENING_START()
 	if(XPerl_Target) then
 		XPerl_Target:Hide()
 	end
-	if(XPerl_Focus and self.conf.enable) then
+	if(XPerl_Focus) then
 		XPerl_Focus:Hide()
 	end
 	if(XPerl_PetTarget) then
 		XPerl_Target:Hide()
 	end
-	if(XPerl_TargetTarget and self.conf.enable) then
+	if(XPerl_TargetTarget) then
 		XPerl_Focus:Hide()
 	end
-	if(XPerl_FocusTarget and self.conf.enable) then
+	if(XPerl_FocusTarget) then
 		XPerl_Target:Hide()
 	end
 end
 
 function XPerl_Target_Events:PET_BATTLE_CLOSE()
-	if(XPerl_Target) then
+	if(XPerl_Target and UnitExists("target")) then
 		XPerl_Target:Show()
 	end
-	if(XPerl_Focus and self.conf.enable) then
+	if(XPerl_Focus and self.conf.enable and UnitExists("focus")) then
 		XPerl_Focus:Show()
 	end
-	if(XPerl_PetTarget) then
+	if(XPerl_PetTarget and UnitExists("pettarget")) then
 		XPerl_Target:Show()
 	end
-	if(XPerl_TargetTarget and self.conf.enable) then
+	if(XPerl_TargetTarget and self.conf.enable and UnitExists("targettarget")) then
 		XPerl_Focus:Show()
 	end
-	if(XPerl_FocusTarget and self.conf.enable) then
+	if(XPerl_FocusTarget and self.conf.enable and UnitExists("focustarget")) then
 		XPerl_Target:Show()
 	end
 end
