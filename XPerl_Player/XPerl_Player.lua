@@ -971,8 +971,8 @@ function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	
 	if(playerClass == "PRIEST" and PriestBarFrame) then
 		PriestBarFrame_CheckAndShow(PriestBarFrame);
-	elseif (playerClass == "DRUID" and self.runes and pconf.showRunes) then
-		self.runes:Show();
+	elseif (playerClass == "DRUID" and pconf.showRunes) then
+		XPerl_Player_InitMoonkin(self)
 	end
 end
 
