@@ -971,8 +971,6 @@ function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	
 	if(playerClass == "PRIEST" and PriestBarFrame) then
 		PriestBarFrame_CheckAndShow(PriestBarFrame);
-	elseif (playerClass == "DRUID" and pconf.showRunes) then
-		XPerl_Player_InitMoonkin(self)
 	end
 end
 
@@ -981,6 +979,9 @@ function XPerl_Player_Events:UPDATE_SHAPESHIFT_FORM()
 	if (playerClass == "DRUID") then
 		XPerl_Player_DruidBarUpdate(self)
 		XPerl_Unit_UpdatePortrait(self)--Maybe fix portraits not updating when shifting forms?
+		if GetSpecialization() == 1 then
+			XPerl_Player_InitMoonkin(self)
+		end
 	end
 end
 
