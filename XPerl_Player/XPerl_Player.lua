@@ -431,7 +431,7 @@ local function XPerl_Player_UpdatePVP(self)
 		XPerl_ColourFriendlyUnit(nf.text, "player")
 	end
 
-	local pvp = pconf.pvpIcon and (UnitIsPVPFreeForAll("player") and "FFA") or (UnitIsPVP("player") and (UnitFactionGroup("player") ~= "Neutral") and UnitFactionGroup("player"))
+	local pvp = pconf.pvpIcon and ((UnitIsPVPFreeForAll("player") and "FFA") or (UnitIsPVP("player") and (UnitFactionGroup("player") ~= "Neutral") and UnitFactionGroup("player")))
 	if (pvp) then
 		nf.pvp.icon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..pvp)
 		nf.pvp:Show()
