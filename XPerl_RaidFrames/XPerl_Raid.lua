@@ -1221,13 +1221,8 @@ end
 -------------------
 -- Event Handler --
 -------------------
-local lastevent = nil;
+
 -- XPerl_Raid_OnEvent
-
-
-
-local lastUnit = nil;
-local lastEvent = nil;
 function XPerl_Raid_OnEvent(self, event,unit, ...)
 --print(event);
 --print(dump({...}));
