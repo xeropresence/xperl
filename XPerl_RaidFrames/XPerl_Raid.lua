@@ -648,6 +648,23 @@ local function onAttrChanged(self, name, value)
 	end
 end
 
+
+local function taintable(self)
+	--self:SetAttribute("*type1", "target")
+	--self:SetAttribute("type2", "menu")
+	
+	--self.menu = XPerl_Raid_ShowPopup -- Wtf, doesnt seem todo anything....
+	
+	-- Does AllowAttributeChange work for children?
+	-- This taints the UI if done in combat. there a fix?
+	self.nameFrame:SetAttribute("useparent-unit", true)
+	--self.nameFrame:SetAttribute("*type1", "target")
+	--self.nameFrame:SetAttribute("type2", "menu")
+	--self.nameFrame.menu = XPerl_Raid_ShowPopup --Again, doesnt seem todo anything...
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu)		--TargetFrame.menu)
+	XPerl_SecureUnitButton_OnLoad(self, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu)
+end
+
 -- XPerl_Raid_Single_OnLoad
 function XPerl_Raid_Single_OnLoad(self)
 	XPerl_SetChildMembers(self)
@@ -669,17 +686,13 @@ function XPerl_Raid_Single_OnLoad(self)
 
 	Setup1RaidFrame(self)
 
-	self:SetAttribute("*type1", "target")
-	self:SetAttribute("type2", "menu")
-	self.menu = XPerl_Raid_ShowPopup
-	-- Does AllowAttributeChange work for children?
-	-- This taints the UI if done in combat. there a fix?
-	self.nameFrame:SetAttribute("useparent-unit", true)
-	self.nameFrame:SetAttribute("*type1", "target")
-	self.nameFrame:SetAttribute("type2", "menu")
-	self.nameFrame.menu = XPerl_Raid_ShowPopup
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu)		--TargetFrame.menu)
-	XPerl_SecureUnitButton_OnLoad(self, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu)
+	if (InCombatLockdown()) then
+		XPerl_OutOfCombatQueue[taintable] = self
+		return
+	else
+		taintable(self)
+	end
+
 end
 
 -- XPerl_Raid_CombatFlash
