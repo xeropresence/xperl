@@ -15,6 +15,8 @@ local percD = "%d"..PERCENT_SYMBOL
 local lastNamesList, lastName, lastWith, lastNamesCount -- Stores with/without buff list (OnUpdate optimization)
 local fullyInitiallized
 
+local taintFrames = {}
+
 if type(RegisterAddonMessagePrefix) == "function" then
 	RegisterAddonMessagePrefix("CTRA")
 end
@@ -91,7 +93,7 @@ function XPerl_Raid_OnLoad(self)
 			"UNIT_HEALTH_FREQUENT", "UNIT_MAXHEALTH", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED",
 			"UNIT_COMBAT", "UNIT_SPELLCAST_START", "UNIT_SPELLCAST_STOP", "UNIT_SPELLCAST_FAILED",
 			"UNIT_SPELLCAST_INTERRUPTED", "READY_CHECK", "READY_CHECK_CONFIRM", "READY_CHECK_FINISHED",
-			"RAID_TARGET_UPDATE", "PLAYER_LOGIN", "ROLE_CHANGED_INFORM", "PET_BATTLE_OPENING_START","PET_BATTLE_CLOSE","UNIT_CONNECTION"
+			"RAID_TARGET_UPDATE", "PLAYER_LOGIN", "ROLE_CHANGED_INFORM", "PET_BATTLE_OPENING_START","PET_BATTLE_CLOSE","UNIT_CONNECTION","PLAYER_REGEN_ENABLED"
 			}
 			
 			
@@ -687,7 +689,7 @@ function XPerl_Raid_Single_OnLoad(self)
 	Setup1RaidFrame(self)
 
 	if (InCombatLockdown()) then
-		XPerl_OutOfCombatQueue[taintable] = self
+		tinsert(taintFrames,self);
 		return
 	else
 		taintable(self)
@@ -1297,6 +1299,15 @@ function XPerl_Raid_Events:PLAYER_ENTERING_WORLDsmall()
 		LoadAddOn("XPerl_CustomHighlight")
 	end
 end
+
+function XPerl_Raid_Events:PLAYER_REGEN_ENABLED()
+--Update all raid frame that would have tained
+		for frame,arg in pairs(taintFrames) do
+			taintable(frame)
+			taintFrames[frame] = nil
+		end
+end
+
 
 function XPerl_Raid_Events:UNIT_CONNECTION()
 --Update players health when their connection state changes.
