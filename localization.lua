@@ -139,6 +139,9 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(33763)] = 8,			-- Lifebloom
 		[GetSpellInfo(28880)] = 15,			-- Gift of the Naaru (Racial)
 		[GetSpellInfo(61295)] = 15,			-- Riptide
+		[GetSpellInfo(115151)] = 18,		-- Renewing Mist
+		[GetSpellInfo(115175)] = 8,			-- Soothing Mist
+		[GetSpellInfo(124682)] = 6,			-- Enveloping Mist
 	},
 	pomSpells = {
 		[GetSpellInfo(33076)] = 30			-- Prayer of Mending
@@ -158,6 +161,7 @@ XPERL_HIGHLIGHT_SPELLS = {
 		[GetSpellInfo(8004)] = 1.5,			-- Lesser Healing Wave (old id 25420)
 		[GetSpellInfo(19750)] = 1.5,		-- Flash Heal (old id 27137)
 		[GetSpellInfo(635)] = 2.5,			-- Holy Light (old id 27136)
+		[GetSpellInfo(116694)] = 1.5,		-- Surging Mist
 		[GetSpellInfo(50464)] = 3.0			-- Nourish
 	},
 	buffSpells = {
