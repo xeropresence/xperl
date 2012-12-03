@@ -341,7 +341,7 @@ function mod:SendModules(chan, target)
 	if (not chan) then
 		if (IsInRaid()) then
 			if (select(2, IsInInstance()) == "pvp") then
-				chan = "INSTANCE"
+				chan = "INSTANCE_CHAT"
 			else
 				chan = "RAID"
 			end
