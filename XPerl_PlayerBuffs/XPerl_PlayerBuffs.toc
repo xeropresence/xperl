@@ -1,4 +1,4 @@
-﻿## Interface: 50001
+﻿## Interface: 50100
 ## Title: X-Perl |cffeda55fPlayer Buffs|r by |cFFFF8080Zek|r
 ## Title-itIT: X-Perl |cffeda55fBenefici Giocatore|r di |cFFFF8080Zek|r
 ## Title-ruRU: X-Perl |cffeda55fБаффы игрока|r
