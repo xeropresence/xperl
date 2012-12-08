@@ -297,7 +297,7 @@ function XPerl_Player_TempEnchantUpdate(self)
                 -- Fix to check to see if the player is a shaman and sets the fullDuration to 30 minutes. Shaman weapon enchants are only 30 minutes.
                 if (playerClass1 == "SHAMAN") then
                         if ((expire / 1000) > 30 * 60) then
-                                buff.fullDuration = 60 * 60
+                                button.fullDuration = 60 * 60
                         else         
                                 button.fullDuration = 30 * 60
                         end
