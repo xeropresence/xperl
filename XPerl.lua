@@ -1459,27 +1459,6 @@ function XPerl_CombatFlashSetFrames(self)
 	end
 end
 
-local function GetTalentPosition(findName)
-	for i = 1,GetNumSpecializations() do
-		for j = 1,GetNumTalents(i) do
-			local name = GetTalentInfo(i, j)
-			if (name == findName) then
-				return i, j
-			end
-		end
-	end
-end
-
-local function GetTalentValueByName(name)
-	local group = GetActiveSpecGroup()
-	local tab, index = GetTalentPosition(name)
-	if (index) then
-		local name, iconPath, tier, column, currentRank, maxRank, isExceptional, meetsPrereq = GetTalentInfo(tab, index, nil, nil, group)
-		return currentRank
-	end
-	return 0
-end
-
 --[[local MagicCureTalents = {
 	["DRUID"] = GetSpellInfo(88423),			-- Nature's Cure
 	["PALADIN"] = GetSpellInfo(53551),			-- Sacred Cleansing
@@ -1495,7 +1474,6 @@ local MagicCureTalents = {
 
 local function CanClassCureMagic(class)
 	if (MagicCureTalents[class]) then
-		--return GetTalentValueByName(MagicCureTalents[class]) > 0
 		return (GetSpecialization() == MagicCureTalents[class])--IsSpellKnown(MagicCureTalents[class])	
 	end
 end
