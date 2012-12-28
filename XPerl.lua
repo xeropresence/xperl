@@ -500,12 +500,6 @@ do
 	function XPerl_RegisterSMBarTextures()
 		if (LibStub) then
 			media = LibStub("LibSharedMedia-3.0", true)
-			if (not media) then
-				media = LibStub("SharedMedia-2.0", true)
-				if (not media) then
-					media = LibStub("SharedMedia-1.0", true)
-				end
-			end
 		end
 
 		shortlist = {
@@ -2411,7 +2405,7 @@ function XPerl_GetBuffButton(self, buffnum, debuff, createIfAbsent, newID)
 		end
 
 		buffIconCount = buffIconCount + 1
-		button = CreateFrame("Button", "XPerlBuff"..buffIconCount, parent, format("XPerl_Cooldown_%sTemplate", buffType))
+			button = CreateFrame("Button", "XPerlBuff"..buffIconCount, parent, format("XPerl_Cooldown_%sTemplate", buffType))
 		button:Hide()
 		--button.cooldown.noCooldownCount = true				-- OmniCC to NOT show cooldown
 
