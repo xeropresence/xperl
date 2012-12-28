@@ -14,3 +14,4 @@
 ## X-License: GNU GPL v3, 29 June 2007
 ## RequiredDeps: XPerl_Player
 XPerl_PlayerBuffs.lua
+XPerl_PlayerBuffs.xml
