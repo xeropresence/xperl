@@ -52,6 +52,8 @@ end
 function XPerl_Player_Buffs_Position(self)
 	if (self.buffFrame and not InCombatLockdown()) then
 		self.buffFrame:ClearAllPoints()
+		self.debuffFrame:ClearAllPoints()
+		
 		if (pconf.buffs.above) then
 			self.buffFrame:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 3, 0)
 		else
@@ -61,6 +63,12 @@ function XPerl_Player_Buffs_Position(self)
 				self.buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, 0)
 			end
 			
+		end
+		
+		if (pconf.buffs.above) then
+			self.debuffFrame:SetPoint("BOTTOMLEFT", self.buffFrame, "TOPLEFT", 0, 2)
+		else
+			self.debuffFrame:SetPoint("TOPLEFT", self.buffFrame, "BOTTOMLEFT", 0, -2)
 		end
 
 		XPerl_Unit_BuffPositions(self, self.buffFrame.buff, self.buffFrame.debuff, pconf.buffs.size, pconf.debuffs.size)
@@ -86,7 +94,7 @@ function XPerl_Player_BuffSetup(self)
 
 	if (not self.buffFrame) then
 		self.buffFrame = CreateFrame("Frame", self:GetName().."buffFrame", self, "SecureAuraHeaderTemplate")
-		self.debuffFrame = CreateFrame("Frame", self:GetName().."debuffFrame", self, "SecureAuraHeaderTemplate")
+		self.debuffFrame = CreateFrame("Frame", self:GetName().."debuffFrame", self.buffFrame, "SecureAuraHeaderTemplate")
 
 		self.buffFrame.BuffFrameUpdateTime = 0
 		self.buffFrame.BuffFrameFlashTime = 0
