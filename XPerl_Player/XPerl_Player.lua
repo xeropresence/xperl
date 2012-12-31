@@ -506,7 +506,7 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 
 	local form = GetShapeshiftFormID()
-	if (self.runes ~= nil) then
+	if (self.runes ~= nil and not InCombatLockdown()) then
 		if (form and form ~= MOONKIN_FORM) or GetSpecialization() ~= 1 or (not pconf or not pconf.showRunes) then 
 			self.runes:Hide()
 		else
