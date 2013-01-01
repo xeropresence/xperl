@@ -59,10 +59,13 @@ function XPerl_Player_Buffs_Position(self)
 		else
 			if (self.runes and self.runes:IsShown() and pconf.dockRunes) then
 				self.buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
+			elseif ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait) then
+				local diff = self.statsFrame:GetBottom() - self.portraitFrame:GetBottom()
+				self.buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, diff - 5)
 			else
 				self.buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, 0)
 			end
-			
+
 		end
 		
 		if (pconf.buffs.above) then
