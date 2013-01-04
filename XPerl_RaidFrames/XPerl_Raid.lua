@@ -2120,11 +2120,7 @@ function XPerl_RaidTipExtra(unitid)
 			local t = GetTime()
 
 			if (stats.version) then
-				if (stats.oRAversion) then
-					GameTooltip:AddLine("CTRA "..stats.version.." (oRA "..stats.oRAversion..")", 1, 1, 1)
-				else
-					GameTooltip:AddLine("CTRA "..stats.version, 1, 1, 1)
-				end
+				GameTooltip:AddLine("CTRA "..stats.version, 1, 1, 1)
 			end
 
 			if (stats.offline and UnitIsConnected(unitid)) then

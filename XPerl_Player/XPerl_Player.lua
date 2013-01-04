@@ -970,7 +970,7 @@ function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	XPerl_Player_UpdateMana(self)
 	
 	if(playerClass == "PRIEST" and PriestBarFrame) then
-		PriestBarFrame_CheckAndShow(PriestBarFrame);
+		PriestBarFrame_CheckAndShow();
 	end
 end
 
@@ -1297,13 +1297,11 @@ function XPerl_Player_Set_Bits(self)
 	
 
 	XPerl_Player_SetupDK(self)
-	--XPerl_Player_SetupMoonkin(self)
 	XPerl_Player_InitPaladin(self)
 	XPerl_Player_InitPriest(self)
 	XPerl_Player_InitMonk(self)
 	XPerl_Player_InitMoonkin(self)
 	XPerl_Player_InitWarlock(self)
-	--XPerl_Player_SetupWarlock(self)
 
 	self.highlight:ClearAllPoints()
 	if (not pconf.level and not pconf.classIcon and (not XPerlConfigHelper or XPerlConfigHelper.ShowTargetCounters == 0)) then
