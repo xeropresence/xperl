@@ -41,9 +41,11 @@ local function setCommon(self, filter, buffTemplate)
 	-- Workaround: We can't set the initial-width/height (beacuse the api ignores this so far)
 	-- So, we'll scale the parent frame so the effective size matches our setting
 
-	local settings = filter == "HELPFUL" and pconf.buffs or pconf.debuffs
-	if (settings) then
-		local needScale = settings.size / 32
+	if (filter == "HELPFUL" and pconf.buffs) then
+		local needScale = pconf.buffs.size / 32
+		self:SetScale(needScale)
+	elseif (pconf.debuffs) then
+		local needScale = pconf.debuffs.size / pconf.buffs.size 
 		self:SetScale(needScale)
 	end
 end
