@@ -382,8 +382,6 @@ function XPerl_MTRosterChanged()
 	del(MainTanks, true)
 	MainTanks = new()
 
-	-- TODO: oRA:GetSortedTanks()
-
 	blizzMTanks, ctraTanks = 0, 0
 	
 	-- if conf is nothing, just return.

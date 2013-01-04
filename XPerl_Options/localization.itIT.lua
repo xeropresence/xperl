@@ -895,12 +895,12 @@ XPERL_CONF_ASSIST_BACKALPHA_DESC        = "Modifica la trasparenza dello sfondo 
 
 XPERL_CONF_RAIDHELP_ENABLE                = ENABLE
 XPERL_CONF_RAIDHELP_ENABLE_DESC            = "Abilita la finestra dei bersagli dei Guardiani"
-XPERL_CONF_RAIDHELP_CTTARGETS            = "Usa i bersagli dei Guardiani di CTRA (o oRA)"
-XPERL_CONF_RAIDHELP_CTTARGETS_DESC        = "Usa CTRA o oRA per la lista dei Guardiani, al posto di crearla dai Guerrieri nel raid"
+XPERL_CONF_RAIDHELP_CTTARGETS            = "Usa i bersagli dei Guardiani di CTRA"
+XPERL_CONF_RAIDHELP_CTTARGETS_DESC        = "Usa CTRA per la lista dei Guardiani, al posto di crearla dai Guerrieri nel raid"
 XPERL_CONF_RAIDHELP_BLIZZMTTARGETS        = "Usa i bersagli dei Guardiani della Blizzard"
-XPERL_CONF_RAIDHELP_BLIZZMTTARGETS_DESC    = "Questo unirà i bersagli dei Guardiani della Blizzard a quelli dei oRA2"
+XPERL_CONF_RAIDHELP_BLIZZMTTARGETS_DESC    = "Questo unirà i bersagli dei Guardiani della Blizzard a quelli di CTRA"
 XPERL_CONF_RAIDHELP_NOAUTO                = "Nessun default"
-XPERL_CONF_RAIDHELP_NOAUTO_DESC            = "Non creare automaticamente la lista dei Guardiani se non c'è quella definita da  Don't CTRA/oRA"
+XPERL_CONF_RAIDHELP_NOAUTO_DESC            = "Non creare automaticamente la lista dei Guardiani se non c'è quella definita da CTRA"
 XPERL_CONF_RAIDHELP_GROWUP                = "Allarga verso l'alto"
 XPERL_CONF_RAIDHELP_GROWUP_DESC            = "Allarga la lista dei Guardiani principali verso l'alto"
 XPERL_CONF_RAIDHELP_THREATBAR            = "Barra della minaccia"
