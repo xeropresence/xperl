@@ -657,6 +657,10 @@ local function taintable(self)
 	
 	--self.menu = XPerl_Raid_ShowPopup -- Wtf, doesnt seem todo anything....
 	
+	if(not self) then
+		return
+	end
+	
 	-- Does AllowAttributeChange work for children?
 	-- This taints the UI if done in combat. there a fix?
 	self.nameFrame:SetAttribute("useparent-unit", true)
