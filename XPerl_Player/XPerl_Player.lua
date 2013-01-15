@@ -22,8 +22,8 @@ local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitIsGhost = UnitIsGhost
 local UnitIsAFK = UnitIsAFK
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
+local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
 local UnitPower = UnitPower
 local UnitPowerType = UnitPowerType
@@ -533,7 +533,7 @@ end
 -- XPerl_Player_UpdateMana
 local function XPerl_Player_UpdateMana(self)
 	local mb = self.statsFrame.manaBar
-	local playermana = UnitMana(self.partyid)
+	local playermana = UnitPower(self.partyid)
 	
 	--if (playermana == self.Power) then
 	--	return
@@ -542,7 +542,7 @@ local function XPerl_Player_UpdateMana(self)
 	--end
 	
 	
-	local playermanamax = UnitManaMax(self.partyid)
+	local playermanamax = UnitPowerMax(self.partyid)
 	mb:SetMinMaxValues(0, playermanamax)
 	mb:SetValue(playermana)
 	--Begin 4.3 division by 0 work around to ensure we don't divide if max is 0

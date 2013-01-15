@@ -24,8 +24,8 @@ local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
+local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
 
 local XPerl_Player_Pet_HighlightCallback
@@ -273,8 +273,8 @@ end
 -- XPerl_Party_Pet_UpdateMana
 local function XPerl_Party_Pet_UpdateMana(self)
 	if (self.partyid) then
-		local Partypetmana = UnitMana(self.partyid)
-		local Partypetmanamax = UnitManaMax(self.partyid)
+		local Partypetmana = UnitPower(self.partyid)
+		local Partypetmanamax = UnitPowerMax(self.partyid)
 
 		self.statsFrame.manaBar:SetMinMaxValues(0, Partypetmanamax)
 		self.statsFrame.manaBar:SetValue(Partypetmana)

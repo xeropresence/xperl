@@ -38,8 +38,8 @@ local UnitIsConnected = UnitIsConnected
 local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitIsGhost = UnitIsGhost
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
+local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
 local UnitPowerType = UnitPowerType
 local XPerl_UnitBuff = XPerl_UnitBuff
@@ -603,8 +603,8 @@ local function XPerl_Raid_UpdateMana(self)
 			return
 		end
 
-		local mana = UnitMana(partyid)
-		local manamax = UnitManaMax(partyid)
+		local mana = UnitPower(partyid)
+		local manamax = UnitPowerMax(partyid)
 
 		if (rconf.manaPercent and UnitPowerType(partyid) == 0 and not self.pet) then
 			if (rconf.values) then -- TODO rconf.manavalues

@@ -18,8 +18,8 @@ local UnitIsConnected = UnitIsConnected
 local UnitIsGhost = UnitIsGhost
 local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
+local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 local UnitPowerType = UnitPowerType
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
@@ -191,7 +191,7 @@ function XPerl_TargetTarget_UpdateDisplay(self,force)
 
 			-- Save these 2, so we know whether to update the frame later
 			self.targethp = UnitHealth(partyid)
-			self.targetmana = UnitMana(partyid)
+			self.targetmana = UnitPower(partyid)
 			self.guid = UnitGUID(partyid);
 			self.afk = UnitIsAFK(partyid) and conf.showAFK
 
@@ -283,7 +283,7 @@ function XPerl_TargetTarget_OnUpdate(self, elapsed)
 
 	local partyid = self.partyid
 	local newHP = UnitHealth(partyid)
-	local newMana = UnitMana(partyid)
+	local newMana = UnitPower(partyid)
 	local newAFK = UnitIsAFK(partyid)
 local newGuid = UnitGUID(partyid);
 	

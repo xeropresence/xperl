@@ -25,8 +25,8 @@ local UnitIsConnected = UnitIsConnected
 local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitIsGhost = UnitIsGhost
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
+local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
 local UnitPowerType = UnitPowerType
 local partyHeader
@@ -636,8 +636,8 @@ local function XPerl_Party_UpdateMana(self)
 		XPerl_Party_UpdatePlayerFlags(self)
 	end
 
-	local Partymana = UnitMana(self.partyid)
-	local Partymanamax = UnitManaMax(self.partyid)
+	local Partymana = UnitPower(self.partyid)
+	local Partymanamax = UnitPowerMax(self.partyid)
 
 	--Begin 4.3 division by 0 work around to ensure we don't divide if max is 0
 	local percent

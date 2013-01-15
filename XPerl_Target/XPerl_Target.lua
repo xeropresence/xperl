@@ -23,8 +23,8 @@ local UnitIsConnected = UnitIsConnected
 local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitIsGhost = UnitIsGhost
-local UnitMana = UnitMana
-local UnitManaMax = UnitManaMax
+local UnitPower = UnitPower
+local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
 local UnitPowerType = UnitPowerType
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
@@ -670,7 +670,7 @@ end
 
 -- XPerl_Target_SetManaType
 function XPerl_Target_SetManaType(self)
-	local targetmanamax = UnitManaMax(self.partyid)
+	local targetmanamax = UnitPowerMax(self.partyid)
 
 	if (targetmanamax == 0 or not self.conf.mana) then
 		if (self.statsFrame.manaBar:IsShown()) then
@@ -698,7 +698,7 @@ end
 
 -- XPerl_Target_SetMana
 function XPerl_Target_SetMana(self)
-	local targetmana, targetmanamax = UnitMana(self.partyid), UnitManaMax(self.partyid)
+	local targetmana, targetmanamax = UnitPower(self.partyid), UnitPowerMax(self.partyid)
 	local mb = self.statsFrame.manaBar
 
 	--Begin 4.3 division by 0 work around to ensure we don't divide if max is 0

@@ -176,8 +176,8 @@ end
 
 -- XPerl_Player_Pet_UpdateMana()
 local function XPerl_Player_Pet_UpdateMana(self)
-	local petmana = UnitMana(self.partyid)
-	local petmanamax = UnitManaMax(self.partyid)
+	local petmana = UnitPower(self.partyid)
+	local petmanamax = UnitPowerMax(self.partyid)
 
 	self.statsFrame.manaBar:SetMinMaxValues(0, petmanamax)
 	self.statsFrame.manaBar:SetValue(petmana)

@@ -1215,6 +1215,7 @@ local ManaColours = {
 	[4] = "happiness",
 	[5] = "runes",
 	[6] = "runic_power",
+	[10] = "energy", -- SPELL_POWER_ALTERNATE_POWER used by some bosses, show it as energy bar
 }
 function XPerl_SetManaBarType(self)
 	local m = self.statsFrame.manaBar
@@ -2752,7 +2753,7 @@ end
 
 -- XPerl_Unit_BuffPositions
 function XPerl_Unit_BuffPositions(self, buffList1, buffList2, size1, size2)
-	local optMix = format("%d%d%d%d%d%d%d", self.perlBuffs or 0, self.perlDebuffs or 0, self.perlBuffsMine or 0, self.perlDebuffsMine or 0, UnitCanAttack("player", self.partyid) or 2, (UnitManaMax(self.partyid) > 0 and 1) or 0, (self.creatureTypeFrame and self.creatureTypeFrame:IsVisible() and 1) or 0)
+	local optMix = format("%d%d%d%d%d%d%d", self.perlBuffs or 0, self.perlDebuffs or 0, self.perlBuffsMine or 0, self.perlDebuffsMine or 0, UnitCanAttack("player", self.partyid) or 2, (UnitPowerMax(self.partyid) > 0 and 1) or 0, (self.creatureTypeFrame and self.creatureTypeFrame:IsVisible() and 1) or 0)
 	if (optMix ~= self.buffOptMix) then
 		WieghAnchor(self)
 
