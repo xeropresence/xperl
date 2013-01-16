@@ -632,12 +632,8 @@ local function XPerl_Target_UpdateType(self)
 
 	--if (UnitIsPlayer(partyid)) then
 		if (self.conf.classIcon and (UnitIsPlayer(partyid) or UnitClassification(partyid) == "normal")) then
-			local LocalClass, PlayerClass
-			if (UnitClassBase) then			-- WoW 2.4 LocalClass became unit name for NPCs... WHY??
-				LocalClass, PlayerClass = UnitClassBase(partyid)
-			else
-				LocalClass, PlayerClass = UnitClass(partyid)
-			end
+			local LocalClass, PlayerClass = UnitClassBase(partyid)
+				
 			if (self.conf.classText) then
 				self.bossFrame.text:SetText(LocalClass)
 				self.bossFrame.text:SetTextColor(1, 1, 1)
