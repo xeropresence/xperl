@@ -1754,7 +1754,7 @@ function SetRaidRoster()
 	for i = 1,GetNumGroupMembers() do
 		local name, rank, group, level, class, fileName = GetRaidRosterInfo(i)
 
-		if (name) then
+		if (name and IsInRaid()) then
 			local unit = "raid"..i
 			RaidPositions[name] = unit
 
