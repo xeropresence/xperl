@@ -530,21 +530,25 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 end
 
+local function XPerl_Player_GetDisplayedPowerID(unitID) -- copied from CompactUnitFrame.lua
+	local barType, minPower, startInset, endInset, smooth, hideFromOthers, showOnRaid, opaqueSpark, opaqueFlash, powerName, powerTooltip = UnitAlternatePowerInfo(unitID);
+	if ( showOnRaid and (UnitInParty(unitID) or UnitInRaid(unitID)) ) then
+		return ALTERNATE_POWER_INDEX;
+	else
+		return UnitPowerType(unitID);
+	end
+end
+
 -- XPerl_Player_UpdateMana
 local function XPerl_Player_UpdateMana(self)
 	local mb = self.statsFrame.manaBar
-	local playermana = UnitPower(self.partyid)
+	local pType = XPerl_Player_GetDisplayedPowerID(self.partyid);
+	local playermana = UnitPower(self.partyid, pType);
+	local playermanamax = UnitPowerMax(self.partyid, pType);
 	
-	--if (playermana == self.Power) then
-	--	return
-	--else
-	--	self.Power = playermana;
-	--end
-	
-	
-	local playermanamax = UnitPowerMax(self.partyid)
 	mb:SetMinMaxValues(0, playermanamax)
 	mb:SetValue(playermana)
+	
 	--Begin 4.3 division by 0 work around to ensure we don't divide if max is 0
 	local percent
 	if playermana > 0 and playermanamax == 0 then--We have current mana but max mana failed.
@@ -556,8 +560,9 @@ local function XPerl_Player_UpdateMana(self)
 		percent = playermana / playermanamax--Everything is dandy, so just do it right way.
 	end
 	--end division by 0 check
+	
 	mb.text:SetFormattedText("%d/%d", playermana, playermanamax)
-	local pType = UnitPowerType(self.partyid)
+
 	if (pType >= 1 or UnitPowerMax(self.partyid, pType) < 1) then
 		mb.percent:SetText(playermana)
 	else
