@@ -26,7 +26,11 @@ local function setCommon(self, filter, buffTemplate)
 		self:SetAttribute("includeWeapons", 1)
 	end
 	self:SetAttribute("point", pconf.buffs.above and "BOTTOMLEFT" or "TOPLEFT")
-	self:SetAttribute("wrapAfter", max(1, floor(XPerl_Player:GetWidth() / pconf.buffs.size)))	-- / XPerl_Player:GetEffectiveScale() 
+	if (pconf.buffs.wrap) then
+		self:SetAttribute("wrapAfter", max(1, floor(XPerl_Player:GetWidth() / pconf.buffs.size)))	-- / XPerl_Player:GetEffectiveScale()
+	else
+		self:SetAttribute("wrapAfter", 0)
+	end
 	self:SetAttribute("maxWraps", pconf.buffs.rows)
 	self:SetAttribute("xOffset", 32)	-- pconf.buffs.size)
 	self:SetAttribute("yOffset", 0)
