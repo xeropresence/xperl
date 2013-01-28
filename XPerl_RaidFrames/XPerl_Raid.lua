@@ -41,7 +41,6 @@ local UnitIsGhost = UnitIsGhost
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
-local UnitPowerType = UnitPowerType
 local XPerl_UnitBuff = XPerl_UnitBuff
 local XPerl_UnitDebuff = XPerl_UnitDebuff
 local XPerl_CheckDebuffs = XPerl_CheckDebuffs
@@ -116,7 +115,7 @@ function XPerl_Raid_OnLoad(self)
 	--Disable the creation of blizz CompactRaidFrameX, theres an issue with taint due to dropdown with more 7 items
 	--From http://www.wowinterface.com/forums/showpost.php?p=261589&postcount=5
 	
-	if (rconf.enable) then
+	if (rconf.enable and CompactUnitFrameProfiles) then
 		--CompactRaidFrameManager:SetParent(self)
 		CompactUnitFrameProfiles:UnregisterAllEvents()--This disables the creation of the blizzard raid frames
 	end
@@ -606,7 +605,7 @@ local function XPerl_Raid_UpdateMana(self)
 		local mana = UnitPower(partyid)
 		local manamax = UnitPowerMax(partyid)
 
-		if (rconf.manaPercent and UnitPowerType(partyid) == 0 and not self.pet) then
+		if (rconf.manaPercent and XPerl_GetDisplayedPowerType(partyid) == 0 and not self.pet) then
 			if (rconf.values) then -- TODO rconf.manavalues
 			 	self.statsFrame.manaBar.text:SetFormattedText("%d/%d", mana, manamax)
 		 	else

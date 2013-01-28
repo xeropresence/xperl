@@ -1205,24 +1205,31 @@ function XPerl_MinimapButton_Details(tt, ldb)
 	tt.updateTooltip = 1
 end
 
+function XPerl_GetDisplayedPowerType(unitID) -- copied from CompactUnitFrame.lua
+	local barType, minPower, startInset, endInset, smooth, hideFromOthers, showOnRaid, opaqueSpark, opaqueFlash, powerName, powerTooltip = UnitAlternatePowerInfo(unitID);
+	if ( showOnRaid and (UnitInParty(unitID) or UnitInRaid(unitID)) ) then
+		return ALTERNATE_POWER_INDEX;
+	else
+		return UnitPowerType(unitID);
+	end
+end
 
 -- XPerl_SetManaBarType
 local ManaColours = {
-	[0] = "mana",
-	[1] = "rage",
-	[2] = "focus",
-	[3] = "energy",
-	[4] = "happiness",
-	[5] = "runes",
-	[6] = "runic_power",
-	[10] = "energy", -- SPELL_POWER_ALTERNATE_POWER used by some bosses, show it as energy bar
+	[SPELL_POWER_MANA] = "mana",
+	[SPELL_POWER_RAGE] = "rage",
+	[SPELL_POWER_FOCUS] = "focus",
+	[SPELL_POWER_ENERGY] = "energy",
+	[SPELL_POWER_RUNES] = "runes",
+	[SPELL_POWER_RUNIC_POWER] = "runic_power",
+	[SPELL_POWER_ALTERNATE_POWER] = "energy", -- used by some bosses, show it as energy bar
 }
 function XPerl_SetManaBarType(self)
 	local m = self.statsFrame.manaBar
 	if (m and not self.statsFrame.greyMana) then
 		local unit = self.partyid		-- SecureButton_GetUnit(self)
 		if (unit) then
-			local p = UnitPowerType(unit)
+			local p = XPerl_GetDisplayedPowerType(unit)
 			if (p) then
 				local c = conf.colour.bar[ManaColours[p]]
 				if (c) then

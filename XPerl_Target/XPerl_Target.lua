@@ -26,7 +26,6 @@ local UnitIsGhost = UnitIsGhost
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
-local UnitPowerType = UnitPowerType
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 local buffSetup
 local playerClass
@@ -712,7 +711,7 @@ function XPerl_Target_SetMana(self)
 	mb:SetMinMaxValues(0, targetmanamax)
 	mb:SetValue(targetmana)
 
-	local p = UnitPowerType(self.partyid)
+	local p = XPerl_GetDisplayedPowerType(self.partyid)
 	if (p == 0) then
 		mb.percent:SetFormattedText(percD, 100 * pmanaPct)	--	XPerl_Percent[floor(100 * (targetmana / targetmanamax))])
 	else

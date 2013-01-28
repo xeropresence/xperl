@@ -28,7 +28,6 @@ local UnitIsGhost = UnitIsGhost
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
-local UnitPowerType = UnitPowerType
 local partyHeader
 local partyAnchor
 
@@ -658,7 +657,7 @@ local function XPerl_Party_UpdateMana(self)
 	self.statsFrame.manaBar:SetMinMaxValues(0, Partymanamax)
 	self.statsFrame.manaBar:SetValue(Partymana)
 
-	if (UnitPowerType(self.partyid)>=1) then
+	if (XPerl_GetDisplayedPowerType(self.partyid)>=1) then
 		self.statsFrame.manaBar.percent:SetText(Partymana)
 	else
 		self.statsFrame.manaBar.percent:SetFormattedText(percD, 100 * percent)

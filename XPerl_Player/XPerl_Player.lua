@@ -26,7 +26,6 @@ local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
 local UnitName = UnitName
 local UnitPower = UnitPower
-local UnitPowerType = UnitPowerType
 local XPerl_SetHealthBar = XPerl_SetHealthBar
 
 
@@ -530,19 +529,10 @@ local function XPerl_Player_DruidBarUpdate(self)
 	end
 end
 
-local function XPerl_Player_GetDisplayedPowerID(unitID) -- copied from CompactUnitFrame.lua
-	local barType, minPower, startInset, endInset, smooth, hideFromOthers, showOnRaid, opaqueSpark, opaqueFlash, powerName, powerTooltip = UnitAlternatePowerInfo(unitID);
-	if ( showOnRaid and (UnitInParty(unitID) or UnitInRaid(unitID)) ) then
-		return ALTERNATE_POWER_INDEX;
-	else
-		return UnitPowerType(unitID);
-	end
-end
-
 -- XPerl_Player_UpdateMana
 local function XPerl_Player_UpdateMana(self)
 	local mb = self.statsFrame.manaBar
-	local pType = XPerl_Player_GetDisplayedPowerID(self.partyid);
+	local pType = XPerl_GetDisplayedPowerType(self.partyid);
 	local playermana = UnitPower(self.partyid, pType);
 	local playermanamax = UnitPowerMax(self.partyid, pType);
 	

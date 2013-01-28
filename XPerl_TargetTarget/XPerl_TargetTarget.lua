@@ -20,7 +20,6 @@ local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
-local UnitPowerType = UnitPowerType
 local GetDifficultyColor = GetDifficultyColor or GetQuestDifficultyColor
 
 local buffSetup

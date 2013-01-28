@@ -26,7 +26,6 @@ local UnitIsDead = UnitIsDead
 local UnitIsDeadOrGhost = UnitIsDeadOrGhost
 local UnitPower = UnitPower
 local UnitPowerMax = UnitPowerMax
-local UnitPowerType = UnitPowerType
 
 local XPerl_Player_Pet_HighlightCallback
 
@@ -281,7 +280,7 @@ local function XPerl_Party_Pet_UpdateMana(self)
 
 		pmanaPct = (Partypetmana * 100.0) / Partypetmanamax
 		pmanaPct =  format("%3.0f", pmanaPct)
-		if (UnitPowerType(self.partyid) >= 1) then
+		if (XPerl_GetDisplayedPowerType(self.partyid) >= 1) then
 			self.statsFrame.manaBar.text:SetText(Partypetmana)
 		else
 			self.statsFrame.manaBar.text:SetFormattedText("%.0f%%",(100*(Partypetmana / Partypetmanamax))+0.5)
