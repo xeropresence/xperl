@@ -5366,7 +5366,7 @@
 							<OnLoad>
 								class = select(2, UnitClass("player"))
 								self:Hide()
-								if ((class == "SHAMAN") or (class == "DRUID")) then
+								if ((class == "SHAMAN") or (class == "DRUID") or (class == "MAGE")) then
 									self:Show()
 								end
 							</OnLoad>
