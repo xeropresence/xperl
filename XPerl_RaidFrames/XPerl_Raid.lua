@@ -601,9 +601,11 @@ local function XPerl_Raid_UpdateMana(self)
 		if (not partyid) then
 			return
 		end
+		
+		local pType = XPerl_GetDisplayedPowerType(self.partyid);
 
-		local mana = UnitPower(partyid)
-		local manamax = UnitPowerMax(partyid)
+		local mana = UnitPower(partyid, pType)
+		local manamax = UnitPowerMax(partyid, pType)
 
 		if (rconf.manaPercent and XPerl_GetDisplayedPowerType(partyid) == 0 and not self.pet) then
 			if (rconf.values) then -- TODO rconf.manavalues

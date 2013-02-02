@@ -634,9 +634,11 @@ local function XPerl_Party_UpdateMana(self)
 	if (self.afk and not UnitIsAFK(self.partyid)) then
 		XPerl_Party_UpdatePlayerFlags(self)
 	end
-
-	local Partymana = UnitPower(self.partyid)
-	local Partymanamax = UnitPowerMax(self.partyid)
+	
+	local pType = XPerl_GetDisplayedPowerType(self.partyid);
+	
+	local Partymana = UnitPower(self.partyid, pType)
+	local Partymanamax = UnitPowerMax(self.partyid, pType)
 
 	--Begin 4.3 division by 0 work around to ensure we don't divide if max is 0
 	local percent
