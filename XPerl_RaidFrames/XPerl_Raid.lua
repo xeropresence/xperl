@@ -11,7 +11,7 @@ local ResArray = {}		-- List of currently active resserections in progress
 local buffUpdates = {}		-- Queue for buff updates after a roster change
 local raidLoaded
 local rosterUpdated
-local percD = "%d"..PERCENT_SYMBOL
+local percD = "%.1f"..PERCENT_SYMBOL
 local lastNamesList, lastName, lastWith, lastNamesCount -- Stores with/without buff list (OnUpdate optimization)
 local fullyInitiallized
 
@@ -561,7 +561,8 @@ function XPerl_Raid_UpdateHealth(self)
 				if (rconf.values) then
 					self.statsFrame.healthBar.text:SetFormattedText("%d/%d", health, healthmax)
 				else
-					self.statsFrame.healthBar.text:SetFormattedText(percD, (percentHp + 0.005) * 100)
+					--self.statsFrame.healthBar.text:SetFormattedText(percD, (percentHp + 0.005) * 100)
+					self.statsFrame.healthBar.text:SetFormattedText(percD, (percentHp) * 100)
 				end
 			end
 
