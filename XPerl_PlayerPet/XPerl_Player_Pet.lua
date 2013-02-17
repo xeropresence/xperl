@@ -306,7 +306,7 @@ end
 
 function XPerl_Player_Pet_Events:PET_BATTLE_CLOSE()
 	if(UnitExists("pet")) then
-		self:Show()
+		XPerl_ProtectedCall(Show, self);
 	end
 end
 

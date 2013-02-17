@@ -659,7 +659,7 @@ local function taintable(self)
 	
 	--self.menu = XPerl_Raid_ShowPopup -- Wtf, doesnt seem todo anything....
 	
-	if(not self) then
+	if(not self or self == 1) then
 		return
 	end
 	
