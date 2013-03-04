@@ -180,6 +180,8 @@ XPerl_AnchorList = {"TOP", "LEFT", "BOTTOM", "RIGHT"}
 -- FindABandage()
 local function FindABandage()
 	local bandages = {
+		[72986] = true, -- Heavy Windwool Bandage
+		[72985] = true, -- Windwool Bandage
 		[53051] = true, -- Dense Embersilk Bandage
 		[53050] = true, -- Heavy Embersilk Bandage
 		[53049] = true, -- Embersilk Bandage
@@ -265,9 +267,9 @@ local function DoRangeCheck(unit, opt)
 			else
 				range = CheckInteractDistance(unit, opt.interact)
 			end
-			-- 1 = Inspect = 30 yards
+			-- 1 = Inspect = 28 yards
 			-- 2 = Trade = 11.11 yards
-			-- 3 = Duel = 10 yards
+			-- 3 = Duel = 9.9 yards
 			-- 4 = Follow = 28 yards
 		elseif (opt.spell) then
 			range = IsSpellInRange(opt.spell, unit)
