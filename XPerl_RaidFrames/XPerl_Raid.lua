@@ -2209,13 +2209,13 @@ local function initialConfigFunction(self)
 	Setup1RaidFrame(self)
 
 	self:SetAttribute("*type1", "target")
-	self:SetAttribute("type2", "menu")
+	self:SetAttribute("type2", "togglemenu")
 	self.menu = XPerl_Raid_ShowPopup
 
 	-- Does AllowAttributeChange work for children?
 	self.nameFrame:SetAttribute("useparent-unit", true)
 	self.nameFrame:SetAttribute("*type1", "target")
-	self.nameFrame:SetAttribute("type2", "menu")
+	self.nameFrame:SetAttribute("type2", "togglemenu")
 	self.nameFrame.menu = XPerl_Raid_ShowPopup
 
 	if (rconf.mana) then
