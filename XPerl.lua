@@ -2273,9 +2273,14 @@ local function unitmenuOnPostClick(self)
 end
 
 -- XPerl_SecureUnitButton_OnLoad
-function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc, m1, m2)
+function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc, m1, m2, toggledisabled)
 	self:SetAttribute("*type1", "target")
-	self:SetAttribute("type2", "togglemenu")
+	if (toggledisabled) then
+		self:SetAttribute("type2", "menu")
+	else
+	    self:SetAttribute("type2", "togglemenu")
+	end
+	
 	if (unit) then
 		self:SetAttribute("unit", unit)
 	end
@@ -2328,22 +2333,20 @@ function XPerl_GenericDropDown_Initialize()
 	end
 end
 
-local function HideSetFocus()
-	if (XPerl_ShouldHideSetFocus) then
-		local which = UIDROPDOWNMENU_INIT_MENU.which
-		if (which) then
-			for index, value in ipairs(UnitPopupMenus[which]) do
-				if (UnitPopupShown[1][index] == 1) then
-					if (value == "SET_FOCUS") then
-						UnitPopupShown[1][index] = 0
-						break
-					end
+local function HideSetFocus(param)
+	local unit = UIDROPDOWNMENU_INIT_MENU.unit
+	if (strsub(unit, 0, 4) == "raid") then
+		for index, value in ipairs(UnitPopupMenus[UIDROPDOWNMENU_INIT_MENU.which]) do
+			if (UnitPopupShown[1][index] == 1) then
+				if (value == "SET_FOCUS") then
+					UnitPopupShown[1][index] = 0
+					break
 				end
 			end
 		end
-	end
+ 	end
 end
--- hooksecurefunc("UnitPopup_HideButtons", HideSetFocus)
+hooksecurefunc("UnitPopup_HideButtons", HideSetFocus)
 
 -- XPerl_ShowGenericMenu
 -- self, unit, button are passed from secure template handler (SecureTemplates.lua, line 288 in SecureActionButton_OnClick)
@@ -2373,9 +2376,7 @@ function XPerl_ShowGenericMenu(self, unit, button, actionType)
 			parent = self:GetParent()
 		end
 
-		XPerl_ShouldHideSetFocus = true
 		ToggleDropDownMenu(1, nil, XPerl_DropDown, parent, 0, 0)
-		XPerl_ShouldHideSetFocus = nil
 	end
 end
 
