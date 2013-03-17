@@ -2335,7 +2335,7 @@ end
 
 local function HideSetFocus(param)
 	local unit = UIDROPDOWNMENU_INIT_MENU.unit
-	if (strsub(unit, 0, 4) == "raid") then
+	if (unit and strsub(unit, 0, 4) == "raid") then
 		for index, value in ipairs(UnitPopupMenus[UIDROPDOWNMENU_INIT_MENU.which]) do
 			if (UnitPopupShown[1][index] == 1) then
 				if (value == "SET_FOCUS") then
