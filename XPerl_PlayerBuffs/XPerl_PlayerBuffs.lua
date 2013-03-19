@@ -105,6 +105,9 @@ function XPerl_Player_BuffSetup(self)
 		self.buffFrame = CreateFrame("Frame", self:GetName().."buffFrame", self, "SecureAuraHeaderTemplate")
 		self.debuffFrame = CreateFrame("Frame", self:GetName().."debuffFrame", self.buffFrame, "SecureAuraHeaderTemplate")
 
+		
+		self.buffFrame:SetAttribute("frameStrata", "DIALOG")
+		
 		self.buffFrame.BuffFrameUpdateTime = 0
 		self.buffFrame.BuffFrameFlashTime = 0
 		self.buffFrame.BuffFrameFlashState = 1
