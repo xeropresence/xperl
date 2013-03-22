@@ -281,23 +281,6 @@ function XPerl_PlayerBuffs_Update(self)
 	local slot = self:GetAttribute("target-slot")
 	if (slot) then
 		-- Weapon Enchant
-
-		if (XPerl_PlayerbuffFrameTempEnchant1 and XPerl_PlayerbuffFrameTempEnchant2) then
-			-- TODO Remove when fixed after WoW 13164 sometime
-			-- Build 13164: SecureGroupHeaders.lua(777) uses main hand slot instead of offhand
-			-- (ie: all weapon icons have 16 as their ID and their target-slot)
-			if (XPerl_PlayerbuffFrameTempEnchant1:GetAttribute("target-slot") == XPerl_PlayerbuffFrameTempEnchant2:GetAttribute("target-slot")) then
-				if (self:GetName() == "XPerl_PlayerbuffFrameTempEnchant2") then
-					slot = 17
-					XPerl_Notice("PlayerbuffFrameTempEnchant still doesn't work, please report this error on WoWAce")
-					if (not InCombatLockdown()) then
-						XPerl_PlayerbuffFrameTempEnchant2:SetAttribute("target-slot", 17)
-						XPerl_PlayerbuffFrameTempEnchant2:SetID(17)
-					end
-				end
-			end
-		end
-
 		local hasMainHandEnchant, mainHandExpiration, mainHandCharges, hasOffHandEnchant, offHandExpiration, offHandCharges = GetWeaponEnchantInfo();
 		if (slot == 16) then
 			DoEnchant(self, 16, hasMainHandEnchant, mainHandExpiration, mainHandCharges)
