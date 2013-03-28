@@ -2225,7 +2225,7 @@
 								self.varGet = function() return (XPerlDB and XPerlDB.party.anchor) or "TOP" end
 								self.varSet = function(n) XPerlDB.party.anchor = n end
 								self.setFunc = function() if (XPerl_Party_SetMainAttributes) then XPerl_Party_SetMainAttributes() XPerl_Party_Virtual(true) end end
-								XPerl_Options_Anchor_OnLoad(self)
+								--XPerl_Options_Anchor_OnLoad(self)
 							</OnLoad>
 							<OnShow>
 								XPerl_Options_Anchor_OnLoad(self)
@@ -2357,7 +2357,7 @@
 								self.varGet = function() return (XPerlDB and XPerlDB.raid.anchor) or "TOP" end
 								self.varSet = function(n) XPerlDB.raid.anchor = n end
 								self.setFunc = XPerl_Raid_ChangeAttributes
-								XPerl_Options_Anchor_OnLoad(self)
+								--XPerl_Options_Anchor_OnLoad(self)
 							</OnLoad>
 							<OnShow>
 								XPerl_Options_Anchor_OnLoad(self)
@@ -4518,7 +4518,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_Options_RegisterProtected(_G[self:GetName().."Button"])
-								XPerl_Options_LoadSettings_OnLoad(self)
+								--XPerl_Options_LoadSettings_OnLoad(self)
 							</OnLoad>
 							<OnShow>
 								XPerl_Options_LoadSettings_OnLoad(self)

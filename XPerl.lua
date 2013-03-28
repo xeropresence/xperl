@@ -2298,7 +2298,7 @@ end
 
 -- XPerl_GenericDropDown_OnLoad
 function XPerl_GenericDropDown_OnLoad(self)
-	UIDropDownMenu_Initialize(self, XPerl_GenericDropDown_Initialize, "MENU")
+	--UIDropDownMenu_Initialize(self, XPerl_GenericDropDown_Initialize, "MENU")
 	tinsert(UnitPopupFrames, "XPerl_DropDown")
 end
 
