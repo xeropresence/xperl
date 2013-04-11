@@ -62,8 +62,9 @@ function XPerl_Player_OnLoad(self)
 	self:RegisterEvent("PLAYER_ENTERING_WORLD")
 	self:RegisterEvent("PLAYER_ALIVE")
 	
-	
-	
+	if(HealBot_Options_EnablePlayerFrame) then
+		HealBot_Options_EnablePlayerFrame = function () end
+	end
 
 	self.EnergyLast = 0
 	self.tutorialPage = 2
