@@ -1514,7 +1514,7 @@ end
 -- XPerl_Player_InitDK
 function XPerl_Player_InitDK(self)
 	if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
-		if (not RuneFrame or RuneFrame:GetParent() ~= UIParent or not RuneFrame:IsShown()) then
+		if (not RuneFrame or RuneFrame:GetParent() ~= PlayerFrame or not RuneFrame:IsShown()) then
 			-- Only hijack runes if not already done so by another mod
 			return
 		end
