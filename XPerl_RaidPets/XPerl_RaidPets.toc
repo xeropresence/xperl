@@ -1,4 +1,4 @@
-﻿## Interface: 50200
+﻿## Interface: 50300
 ## Title: X-Perl |cffeda55fRaid Pets|r by |cFFFF8080Zek|r
 ## Title-itIT: X-Perl |cffeda55fFamigli Incursione|r by |cFFFF8080Zek|r
 ## Title-ruRU: X-Perl |cffeda55fПитомцы рейда|r
