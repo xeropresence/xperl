@@ -3141,8 +3141,8 @@ if (XPerl_UpgradeSettings) then
 				old.xperlOldroleicons = 1
 			end
 			
-			if (oldVersion < "3.7.0") then
-				old.raid.sortByRole = 1
+			if (oldVersion < "3.7.1") then
+				old.raid.sortByRole = 0
 			end
 			
 		end
