@@ -35,7 +35,7 @@ local XPerl_Player_Pet_HighlightCallback
 function XPerl_Party_Pet_OnLoadEvents(self)
 	self.time = 0
 
-	local events = {"UNIT_COMBAT", "UNIT_FACTION", "UNIT_AURA", "UNIT_DYNAMIC_FLAGS", "UNIT_FLAGS",
+	local events = {"UNIT_COMBAT", "UNIT_FACTION", "UNIT_AURA", "UNIT_FLAGS",
 			"UNIT_HEALTH", "UNIT_MAXHEALTH", "PLAYER_ENTERING_WORLD", "PET_BATTLE_OPENING_START","PET_BATTLE_CLOSE"}
 
 	for k,v in pairs(events) do
@@ -444,8 +444,6 @@ XPerl_Party_Pet_Events.UNIT_PET = XPerl_Party_Pet_Events.PLAYER_ENTERING_WORLD
 function XPerl_Party_Pet_Events:UNIT_FLAGS()
 	XPerl_Party_Pet_UpdateCombat(self)
 end
-
-XPerl_Party_Pet_Events.UNIT_DYNAMIC_FLAGS = XPerl_Party_Pet_Events.UNIT_FLAGS
 
 -- UNIT_NAME_UPDATE
 function XPerl_Party_Pet_Events:UNIT_NAME_UPDATE()
