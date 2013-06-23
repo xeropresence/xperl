@@ -587,8 +587,8 @@ local function taintable(self)
 	--self.nameFrame:SetAttribute("*type1", "target")
 	--self.nameFrame:SetAttribute("type2", "menu")
 	--self.nameFrame.menu = XPerl_Raid_ShowPopup --Again, doesnt seem todo anything...
-	XPerl_SecureUnitButton_OnLoad(self.nameFrame, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu, 1)
-	XPerl_SecureUnitButton_OnLoad(self, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu, 1)
+	XPerl_SecureUnitButton_OnLoad(self.nameFrame, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu)
+	XPerl_SecureUnitButton_OnLoad(self, partyid, nil, TargetFrameDropDown, XPerl_ShowGenericMenu)
 end
 
 -- XPerl_Raid_Single_OnLoad
