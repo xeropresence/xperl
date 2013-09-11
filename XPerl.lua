@@ -2273,9 +2273,13 @@ local function unitmenuOnPostClick(self)
 end
 
 -- XPerl_SecureUnitButton_OnLoad
-function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc, m1, m2)
+function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc, m1, m2, toggledisabled)
 	self:SetAttribute("*type1", "target")
-	self:SetAttribute("type2", "togglemenu")
+	if (toggledisabled) then
+		self:SetAttribute("type2", "menu")
+	else
+	    self:SetAttribute("type2", "togglemenu")
+	end
 	
 	if (unit) then
 		self:SetAttribute("unit", unit)
@@ -2342,7 +2346,7 @@ local function HideSetFocus(param)
 		end
  	end
 end
---hooksecurefunc("UnitPopup_HideButtons", HideSetFocus)
+hooksecurefunc("UnitPopup_HideButtons", HideSetFocus)
 
 -- XPerl_ShowGenericMenu
 -- self, unit, button are passed from secure template handler (SecureTemplates.lua, line 288 in SecureActionButton_OnClick)
