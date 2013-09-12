@@ -1,4 +1,4 @@
-﻿## Interface: 50300
+﻿## Interface: 50400
 ## Title: X-Perl |cffeda55fRaidFrames|r by |cFFFF8080Zek|r
 ## Title-itIT: X-Perl |cffeda55fIncursione|r di |cFFFF8080Zek|r
 ## Title-ruRU: X-Perl |cffeda55fРейд|r
