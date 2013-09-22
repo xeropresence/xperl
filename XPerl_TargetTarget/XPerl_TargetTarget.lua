@@ -145,7 +145,7 @@ end
 
 -- XPerl_TargetTarget_Buff_UpdateAll
 local function XPerl_TargetTarget_Buff_UpdateAll(self)
-	if (self.conf.buffs.enable) then
+	if (self.conf.buffs.enable or self.conf.debuffs.enable) then
 		self.buffFrame:Show()
 		XPerl_Targets_BuffUpdate(self)
 	else
