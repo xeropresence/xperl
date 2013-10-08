@@ -7198,7 +7198,10 @@
 										self.flashFrame = XPerl_TargetTargetTarget
 										self.configBase = "XPerlDB.targettargettarget"
 										self.configIndex = "enable"
-										self.configClick = XPerl_TargetTarget_Reset
+										self.configClick = function()
+											XPerlDB.targettargettarget.debuffs.enable = XPerlDB.targettargettarget.buffs.enable
+											XPerl_TargetTarget_Reset()
+										end
 										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 								</Scripts>
