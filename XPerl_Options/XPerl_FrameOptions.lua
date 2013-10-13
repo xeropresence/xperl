@@ -3152,8 +3152,10 @@ if (XPerl_UpgradeSettings) then
 				old.raid.precisionManaPercent = 1
 			end
 			
-			if (oldVersion < "3.7.4") then
+			if (oldVersion < "3.7.5") then
 				old.targettargettarget.debuffs.enable = old.targettargettarget.buffs.enable;
+				old.pettarget.debuffs.enable = old.pettarget.buffs.enable;
+				old.focustarget.debuffs.enable = old.focustarget.buffs.enable;
 			end
 		end
 	end
