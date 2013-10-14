@@ -282,7 +282,7 @@ end
 local function XPerl_Target_UpdatePVP(self)
 	local partyid = self.partyid
 
-	local pvp = self.conf.pvpIcon and (UnitIsPVPFreeForAll(partyid) and "FFA") or (UnitIsPVP(partyid) and (UnitFactionGroup(partyid) ~= "Neutral") and UnitFactionGroup(partyid))
+	local pvp = self.conf.pvpIcon and ((UnitIsPVPFreeForAll(partyid) and "FFA") or (UnitIsPVP(partyid) and (UnitFactionGroup(partyid) ~= "Neutral") and UnitFactionGroup(partyid)))
 	if (pvp) then
 		self.nameFrame.pvpIcon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..pvp)
 		self.nameFrame.pvpIcon:Show()
