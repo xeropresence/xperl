@@ -966,7 +966,13 @@ function XPerl_Player_Events:PLAYER_TALENT_UPDATE()
 	XPerl_Player_UpdateMana(self)
 	
 	if(playerClass == "PRIEST") then
-		PriestBarFrame_CheckAndShow();
+		if (self.runes) then
+			self.runes:Hide()
+		end
+		XPerl_Player_InitPriest(self);
+		if (XPerl_Player_Buffs_Position) then
+			XPerl_Player_Buffs_Position(self)
+		end
 	end
 end
 
@@ -1449,11 +1455,10 @@ end
 function XPerl_Player_InitPriest(self)
 	if ( select(2,UnitClass("player")) == "PRIEST") then
 
-		if (not PriestBarFrame or PriestBarFrame:GetParent() ~= PlayerFrame or not PriestBarFrame:IsShown() or not pconf.showRunes ) then
+		if (not PriestBarFrame or (PriestBarFrame:GetParent() ~= PlayerFrame and PriestBarFrame:GetParent() ~= self.runes) or not PriestBarFrame:IsShown() or not pconf.showRunes ) then
 			-- Only hijack runes if not already done so by another mod
 			return
 		end
-
 		
 		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
 		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
@@ -1462,7 +1467,6 @@ function XPerl_Player_InitPriest(self)
 		self.runes.unit = "player"
 		PriestBarFrame:SetParent(self.runes)--XPerl_Player)
 		--MakeMoveable(self)
-		
 	end
 end
 
@@ -1483,8 +1487,6 @@ function XPerl_Player_InitMonk(self)
 		self.runes.unit = "player"
 		MonkHarmonyBar:SetParent(self.runes)--XPerl_Player)
 		--MakeMoveable(self)
-
-		
 	end
 end
 --XPerl_Player_InitMoonkin
@@ -1496,7 +1498,6 @@ function XPerl_Player_InitMoonkin(self)
 			return
 		end
 	
-	
 		self.runes = CreateFrame("Frame", "XPerl_Runes", self)
 		self.runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
 		self.runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
@@ -1506,8 +1507,6 @@ function XPerl_Player_InitMoonkin(self)
 		EclipseBarFrame:SetParent(self.runes)
 		
 	end
-
-	--XPerl_Player_InitMoonkin = nil
 end
 
 
