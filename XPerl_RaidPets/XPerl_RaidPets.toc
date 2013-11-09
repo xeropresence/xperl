@@ -9,7 +9,7 @@
 ## Notes-itIT: Famigli dell'incursione di X-Perl
 ## Notes-ruRU: Фреймы питомцев рейда.
 ## Notes-deDE: X-Perl Schlachtzugsbegleiter
-## Notes-zhTW: 顯示 X-Perl 團隊寵物框架
+## Notes-zhTW: X-Perl 團隊寵物框架
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## Dependencies: XPerl_RaidFrames

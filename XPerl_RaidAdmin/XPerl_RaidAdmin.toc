@@ -9,7 +9,7 @@
 ## Notes-itIT: Fornisce degli strumenti utili agli ufficiali delle incursioni.
 ## Notes-ruRU: Обеспечивает рейд лидера полезными инструментами рейд админа.
 ## Notes-deDE: Bietet Schlachtzugsleitern nützliche Einstellungsmöglichkeiten.
-## Notes-zhTW: 提供團隊工具給予領隊方便的整合人員.
+## Notes-zhTW: 提供團隊管理工具給予領隊以方便地整合人員
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## SavedVariablesPerCharacter: XPerl_Admin, XPerl_CheckItems

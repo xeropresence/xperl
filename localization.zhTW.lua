@@ -8,12 +8,12 @@ if (GetLocale() == "zhTW") then
 XPerl_ProductName	= "|cFFD00000X-Perl|r 單位框架"
 XPerl_Description	= XPerl_ProductName.." 作者 "..XPerl_Author
 
-XPerl_LongDescription	= "全新外觀的玩家狀態框架模組，包括玩家、寵物、隊伍、專注(focus)、團隊、目標以及目標的目標等。"
+XPerl_LongDescription	= "全新外觀的玩家單位狀態框架模組，包括玩家、寵物、隊伍、專注(focus)、團隊、目標以及目標的目標等。"
 
 XPERL_MINIMAP_HELP1	= "|c00FFFFFF左鍵點擊|r 開啟設定視窗 (以及 |c0000FF00解鎖框架|r)"
 XPERL_MINIMAP_HELP2	= "|c00FFFFFF右鍵拖動|r 移動此圖標"
 XPERL_MINIMAP_HELP3	= "\r團隊成員: |c00FFFF80%d|r\r隊伍成員: |c00FFFF80%d|r"
-XPERL_MINIMAP_HELP4	= "\r你是此 隊伍/團隊 隊長"
+XPERL_MINIMAP_HELP4	= "\r你是此 隊伍/團隊 的隊長"
 XPERL_MINIMAP_HELP5	= "|c00FFFFFFAlt|r 顯示 X-Perl 記憶體用量"
 XPERL_MINIMAP_HELP6	= "|c00FFFFFF+Shift|r 顯示 X-Perl 記憶體使用明細"
 

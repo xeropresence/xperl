@@ -4,7 +4,7 @@
 ## Title-ruRU: X-Perl |cffeda55fЦель|r
 ## Title-deDE: X-Perl |cffeda55fZiel|r
 ## Title-zhCN: X-Perl |cffeda55f目标窗|r
-## Title-zhTW: X-Perl |cffeda55f目標|r 由 |cFFFF8080Zek|r 開發
+## Title-zhTW: X-Perl |cffeda55f目標框架|r 由 |cFFFF8080Zek|r 開發
 ## Notes: Replaces the default target frame.
 ## Notes-itIT: Rimpiazza la finestra del bersaglio.
 ## Notes-ruRU: Заменяет стандартный фрейм цели.

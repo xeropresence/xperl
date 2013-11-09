@@ -9,7 +9,7 @@
 ## Notes-itIT: Rimpiazza la finestra del gruppo.
 ## Notes-ruRU: Заменяет стандартные фреймы группы.
 ## Notes-deDE: Ersetzt die Gruppenfenster.
-## Notes-zhTW: 整合預設的隊伍框架顯示.
+## Notes-zhTW: X-Perl 隊伍框架 替換內建的隊伍框架
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## RequiredDeps: XPerl

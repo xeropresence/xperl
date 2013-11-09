@@ -9,7 +9,7 @@
 ## Notes-itIT: Rimpiazza le finestre dei famigli del gruppo.
 ## Notes-ruRU: Заменяет стандартные фреймы питомцев группы.
 ## Notes-deDE: Ersetzt die Begleiterfenster der Gruppe.
-## Notes-zhTW: 整合顯示原有隊員寵物框架.
+## Notes-zhTW: 提供增強的隊員寵物框架
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## RequiredDeps: XPerl, XPerl_Party

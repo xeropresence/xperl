@@ -13,7 +13,7 @@
 ## Notes-deDE: Ersetzt die normalen Fenster (Einheit, Gruppe, Ziel, Begleiter und Ziel des Ziels).
 ## Notes-esES: Reemplazo para los marcos de unidades, con nuevo aspecto para jugador, mascota, grupo, objetivo, objetivo del objetivo, y banda
 ## Notes-zhCN: 玩家头像增强插件，附带团队助手功能
-## Notes-zhTW: 提供玩家、隊伍、目標、寵物、目標的目標頭像增強以及團隊框架顯示、團隊助手功能
+## Notes-zhTW: 提供玩家單位、隊伍、目標、寵物、目標的目標頭像增強以及團隊框架顯示、團隊助手等等功能
 ## X-eMail: zeksie@gmail.com
 ## X-Donate: PayPal:zeksie@gmail.com
 ## X-Category: Interface Enhancements

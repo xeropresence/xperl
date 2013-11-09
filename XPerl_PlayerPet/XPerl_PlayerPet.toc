@@ -9,7 +9,7 @@
 ## Notes-itIT: Rimpiazza la finestra del famiglio del giocatore.
 ## Notes-ruRU: Заменяет стандартный фрейм питомца игрока.
 ## Notes-deDE: Ersetzt das Begleiterfenster des Spielers.
-## Notes-zhTW: 顯示玩家寵物框架.
+## Notes-zhTW: 顯示玩家單位的寵物框架
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## RequiredDeps: XPerl, XPerl_Player

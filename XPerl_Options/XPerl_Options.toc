@@ -8,7 +8,7 @@
 ## Notes-itIT: Finestra opzioni di X-Perl
 ## Notes-ruRU: Интерфейс настроек X-Perl'а
 ## Notes-deDE: X-Perl UnitFrames Optionen GUI
-## Notes-zhTW: X-Perl 功能設定 GUI
+## Notes-zhTW: X-Perl 單位框架功能設定 GUI
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## RequiredDeps: XPerl

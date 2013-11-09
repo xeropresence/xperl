@@ -9,7 +9,7 @@
 ## Notes-itIT: Gestisce i benefici e le penalità del giocatore.
 ## Notes-ruRU: Отображает иконки баффов на фрейме игрока.
 ## Notes-deDE: Zeigt die Buffsymbole am X-Perl Spielerfenster an.
-## Notes-zhTW: 給予 X-Perl 玩家框架增益狀態圖標功能.
+## Notes-zhTW: 給予 X-Perl 玩家單位框架增益狀態圖標功能
 ## Author: Zek
 ## X-License: GNU GPL v3, 29 June 2007
 ## RequiredDeps: XPerl_Player
