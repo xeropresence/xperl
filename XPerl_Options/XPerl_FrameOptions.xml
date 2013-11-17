@@ -13430,6 +13430,7 @@
 									XPerl_Options_EnableSibling(self, "Rogue")
 									XPerl_Options_EnableSibling(self, "Warrior")
 									XPerl_Options_EnableSibling(self, "DeathKnight")
+									XPerl_Options_EnableSibling(self, "Monk")
 									XPerl_Options_EnableSibling(self, "LowMana")
 									XPerl_Options_EnableSibling(self, "HighMana")
 									XPerl_Options_EnableSibling(self, "UnitWidth")
@@ -13655,12 +13656,33 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_Monk" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_DeathKnight" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_MONITOR_MONK")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlRaidMonConfig.classes.MONK)
+							</OnShow>
+							<OnClick>
+								XPerlRaidMonConfig.classes.MONK = not XPerlRaidMonConfig.classes.MONK
+								XPerl_RaidMonitor_Frame:Init()
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
 					<Slider name="$parent_LowMana" inherits="XPerlSlider">
 						<Size>
 							<AbsDimension x="75" y="16"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_DeathKnight" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeTo="$parent_Monk" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="-10"/>
 								</Offset>
