@@ -712,7 +712,7 @@
 					tex:SetVertexColor(1, 1, 1)
 
 					if (ticked == 0) then
-						self:SetChecked(nil)
+						self:SetChecked(false)
 					elseif (ticked == vars) then
 						self:SetChecked(true)
 					else
@@ -3534,7 +3534,7 @@
 									XPerl_Options_EnableSibling(self,"ExtraSparkles")
 
 									local _, class = UnitClass("player")
-									if (class ~= "DRUID" and class ~= "PRIEST" and class ~= "SHAMAN" and class ~= "MONK") then
+									if (class ~= "DRUID" and class ~= "PRIEST" and class ~= "SHAMAN" and class ~= "MONK" and class ~= "PALADIN") then
 										--XPerlDB.highlight.HOT = nil
 										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightHoTs",self), false)
 									end

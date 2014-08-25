@@ -1807,7 +1807,16 @@ function XPerl_RestoreAllPositions()
 								v.height, v.width = nil, nil
 							end
 						end
-						frame:SetUserPlaced(true)
+						if (k == "XPerl_Runes") then
+                            frame:SetMovable(true)
+                            frame:EnableMouse(true)
+                            frame:RegisterForDrag("LeftButton")
+                            frame:SetScript("OnDragStart", frame.StartMoving)
+                            frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+                            frame:SetUserPlaced(true)
+                        else
+                            frame:SetUserPlaced(true)
+                        end
 					end
 				end
 			end

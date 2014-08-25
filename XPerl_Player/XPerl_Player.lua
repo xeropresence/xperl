@@ -646,7 +646,7 @@ function XPerl_PlayerStatus_OnUpdate(self, val, max)
 		local testLow = pconf.fullScreen.lowHP / 100
 		local testHigh = pconf.fullScreen.highHP / 100
 
-		if (val and max) then
+		if (val > 0 and max > 0) then
 			local test = val / max
 
 			if ( test <= testLow and not XPerl_LowHealthFrame.frameFlash and not UnitIsDeadOrGhost("player")) then
@@ -1148,7 +1148,7 @@ function XPerl_Player_SetWidth(self)
 		end
 	end
 
-	local h = 40 + ((((self.statsFrame.druidBar and self.statsFrame.druidBar:IsShown()) or 0) + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
+	local h = 40 + ((((self.statsFrame.druidBar and self.statsFrame.druidBar:IsShown()) and 1 or 0) + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
 	self.statsFrame:SetHeight(h)
 
 	self:SetWidth((pconf.portrait or 0) * 62 + (pconf.percent or 0) * 32 + 124 + pconf.size.width)
