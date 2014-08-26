@@ -1843,7 +1843,7 @@ local BuffExceptions
 	},
 	HUNTER = {
 		
-		[GetSpellInfo(13165)] = "HUNTER",			-- Aspect of the Hawk
+		--[GetSpellInfo(13165)] = "HUNTER",			-- Aspect of the Hawk
 		[GetSpellInfo(5118)] = "HUNTER",			-- Aspect of the Cheetah
 		[GetSpellInfo(13159)] = true,				-- Aspect of the Pack
 		[GetSpellInfo(61648)] = "HUNTER",			-- Aspect of the Beast
