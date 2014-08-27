@@ -646,7 +646,7 @@ function XPerl_PlayerStatus_OnUpdate(self, val, max)
 		local testLow = pconf.fullScreen.lowHP / 100
 		local testHigh = pconf.fullScreen.highHP / 100
 
-		if (val > 0 and max > 0) then
+		if (val and max and val > 0 and max > 0) then
 			local test = val / max
 
 			if ( test <= testLow and not XPerl_LowHealthFrame.frameFlash and not UnitIsDeadOrGhost("player")) then
