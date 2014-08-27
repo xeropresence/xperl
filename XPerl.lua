@@ -1872,7 +1872,7 @@ local BuffExceptions
 
 		[GetSpellInfo(25780)] = true,				-- Righteous Fury
 		[GetSpellInfo(20925)] = true,				-- Holy Shield
-		[GetSpellInfo(54428)] = true,				-- Divine Plea
+		--[GetSpellInfo(54428)] = true,				-- Divine Plea
 	},
 }
 
