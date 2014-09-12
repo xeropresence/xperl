@@ -203,7 +203,7 @@
 						GameTooltip:AddLine(self.tooltipText, nil, nil, nil, 1)
 						GameTooltip:Show()
 					else
-						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1)
+						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true)
 					end
 				end
 			</OnEnter>
@@ -358,7 +358,7 @@
 							GameTooltip:SetText(title, 1, 1, 1)
 							GameTooltip:AddLine(self.tooltipText, nil, nil, nil, 1)
 						else
-							GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
+							GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true);
 						end
 						GameTooltip:Show()
 					end
@@ -446,7 +446,7 @@
 						GameTooltip:SetText(title, 1, 1, 1)
 						GameTooltip:AddLine(self.tooltipText, nil, nil, nil, 1)
 					else
-						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
+						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true);
 					end
 					GameTooltip:Show()
 				end
@@ -780,7 +780,7 @@
 						GameTooltip:SetText(title, 1, 1, 1)
 						GameTooltip:AddLine(self.tooltipText, nil, nil, nil, 1)
 					else
-						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
+						GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true);
 					end
 					GameTooltip:Show()
 				end
@@ -2232,7 +2232,7 @@
 							</OnShow>
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)
-								GameTooltip:SetText(XPERL_CONF_ANCHORMENU_DESC, nil, nil, nil, nil, 1)
+								GameTooltip:SetText(XPERL_CONF_ANCHORMENU_DESC, nil, nil, nil, nil, true)
 								_G[self:GetName().."Label"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 							</OnEnter>
 							<OnLeave>
@@ -2364,7 +2364,7 @@
 							</OnShow>
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)
-								GameTooltip:SetText(XPERL_CONF_ANCHORMENU_DESC, nil, nil, nil, nil, 1)
+								GameTooltip:SetText(XPERL_CONF_ANCHORMENU_DESC, nil, nil, nil, nil, true)
 								_G[self:GetName().."Label"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 							</OnEnter>
 							<OnLeave>
@@ -4528,7 +4528,7 @@
 							</OnShow>
 							<OnEnter>
 								GameTooltip:SetOwner(self, "ANCHOR_RIGHT", -15, 0)
-								GameTooltip:SetText(XPERL_CONF_LOAD_SETTINGS_DESC, nil, nil, nil, nil, 1)
+								GameTooltip:SetText(XPERL_CONF_LOAD_SETTINGS_DESC, nil, nil, nil, nil, true)
 								_G[self:GetName().."Label"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
 							</OnEnter>
 							<OnLeave>
@@ -10844,7 +10844,7 @@
 										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 									<OnClick>
-										XPerl_Options_RaidSelectAll(self, 1)
+										XPerl_Options_RaidSelectAll(self, true)
 									</OnClick>
 								</Scripts>
 							</Button>
@@ -10864,7 +10864,7 @@
 										XPerl_Options_RegisterProtected(self)
 									</OnLoad>
 									<OnClick>
-										XPerl_Options_RaidSelectAll(self)
+										XPerl_Options_RaidSelectAll(self, false)
 									</OnClick>
 								</Scripts>
 							</Button>
@@ -11901,7 +11901,7 @@
 									</OnShow>
 									<OnClick>
 										XPerlDB.colour.classic = nil
-										_G[self:GetParent():GetName().."_ClassicHealth"]:SetChecked(0)
+										_G[self:GetParent():GetName().."_ClassicHealth"]:SetChecked(false)
 
 										XPerlLocked = 1
 										XPerl_ColourPicker.ParentFrame = XPerl_Options
@@ -11935,7 +11935,7 @@
 									</OnShow>
 									<OnClick>
 										XPerlDB.colour.classic = nil
-										_G[self:GetParent():GetName().."_ClassicHealth"]:SetChecked(0)
+										_G[self:GetParent():GetName().."_ClassicHealth"]:SetChecked(false)
 
 										XPerlLocked = 1
 										XPerl_ColourPicker.ParentFrame = XPerl_Options

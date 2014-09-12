@@ -109,7 +109,7 @@ function XPerl_Options_CheckButton_OnEnter(self)
 			GameTooltip:SetText(title, 1, 1, 1)
 			GameTooltip:AddLine(self.tooltipText, nil, nil, nil, 1)
 		else
-			GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, 1);
+			GameTooltip:SetText(self.tooltipText, nil, nil, nil, nil, true);
 		end
 		GameTooltip:Show()
 	end

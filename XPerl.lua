@@ -3534,10 +3534,10 @@ local function scaleMouseEnter(self)
 	self.tex:SetVertexColor(1, 1, 1, 1)
 	GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
 	if (self.scalable) then
-		GameTooltip:SetText(XPERL_DRAGHINT1, nil, nil, nil, nil, 1)
+		GameTooltip:SetText(XPERL_DRAGHINT1, nil, nil, nil, nil, true)
 	end
 	if (self.resizable) then
-		GameTooltip:AddLine(XPERL_DRAGHINT2, nil, nil, nil, 1)
+		GameTooltip:AddLine(XPERL_DRAGHINT2, nil, nil, nil, true)
 	end
 	GameTooltip:Show()
 end
