@@ -571,8 +571,14 @@ function XPerl_BlizzFrameDisable(self)
 		self:UnregisterAllEvents()
 		self:Hide()
 		-- Make it so it won't be visible, even if shown by another mod
-		self:ClearAllPoints()
-		self:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", -400, 500)
+		--[[self:ClearAllPoints()
+		self:SetPoint("BOTTOMLEFT", UIParent, "TOPLEFT", -400, 500)]]
+		self:SetMovable(true)
+		self:SetUserPlaced(false)
+		self:SetMovable(false)
+		self:HookScript("OnShow", function(self)
+			self:Hide()
+		end)
 
 		local healthBar = _G[self:GetName().."HealthBar"]
 		if (healthBar) then
