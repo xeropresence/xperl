@@ -517,9 +517,9 @@ local function XPerl_Player_DruidBarUpdate(self)
 	if (InCombatLockdown()) then
 		XPerl_ProtectedCall(XPerl_Player_DruidBarUpdate, self)
 	else
-		local h = 40 + ((druidBarExtra + (pconf.repBar or 0) + (pconf.xpBar or 0)) * 10)
+		local h = 40 + ((druidBarExtra + (pconf.repBar and 1 or 0) + (pconf.xpBar and 1 or 0)) * 10)
 		if (pconf.extendPortrait) then
-			self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
+			self.portraitFrame:SetHeight(62 + druidBarExtra * 10 + (((pconf.xpBar and 1 or 0) + (pconf.repBar and 1 or 0)) * 10))
 		end
 		self.statsFrame:SetHeight(h)
 	end
@@ -1151,7 +1151,7 @@ function XPerl_Player_SetWidth(self)
 	local h = 40 + ((((self.statsFrame.druidBar and self.statsFrame.druidBar:IsShown()) and 1 or 0) + (pconf.repBar and 1 or 0) + (pconf.xpBar and 1 or 0)) * 10)
 	self.statsFrame:SetHeight(h)
 
-	self:SetWidth((pconf.portrait or 0) * 62 + (pconf.percent or 0) * 32 + 124 + pconf.size.width)
+	self:SetWidth((pconf.portrait and 1 or 0) * 62 + (pconf.percent and 1 or 0) * 32 + 124 + pconf.size.width)
 	self:SetScale(pconf.scale)
 
 	XPerl_StatsFrameSetup(self, {self.statsFrame.druidBar, self.statsFrame.xpBar, self.statsFrame.repBar})
@@ -1280,7 +1280,7 @@ function XPerl_Player_Set_Bits(self)
 
 	self.highlight:ClearAllPoints()
 	if (pconf.extendPortrait or (self.runes and pconf.showRunes and pconf.dockRunes)) then
-		self.portraitFrame:SetHeight(62 + (((pconf.xpBar or 0) + (pconf.repBar or 0)) * 10))
+		self.portraitFrame:SetHeight(62 + (((pconf.xpBar and 1 or 0) + (pconf.repBar and 1 or 0)) * 10))
 		--self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 		--self.highlight:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, 0)
 	else
