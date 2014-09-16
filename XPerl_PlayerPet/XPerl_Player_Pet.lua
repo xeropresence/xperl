@@ -586,7 +586,7 @@ function XPerl_Player_Pet_Set_Bits(self)
 		self.statsFrame.manaBar.text:Hide()
 	end
 
-	self.portraitFrame:SetHeight(56 + (pconf.extendPortrait or 0) * 10)
+	self.portraitFrame:SetHeight(56 + (pconf.extendPortrait and 1 or 0) * 10)
 
 	self.highlight:ClearAllPoints()
 	if (pconf.portrait or pconf.name) then

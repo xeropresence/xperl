@@ -1387,7 +1387,7 @@ end
 function XPerl_Target_SetWidth(self)
 
 	self.conf.size.width = max(0, self.conf.size.width or 0)
-	local w = 128 + ((self.conf.portrait or 0) * 60) + ((self.conf.percent or 0) * 32) + self.conf.size.width
+	local w = 128 + ((self.conf.portrait and 1 or 0) * 60) + ((self.conf.percent and 1 or 0) * 32) + self.conf.size.width
 
 	if (not InCombatLockdown()) then
 		self:SetWidth(w)
