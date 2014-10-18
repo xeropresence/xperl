@@ -1150,7 +1150,7 @@ function XPerl_Raid_HideShowRaid()
 	end
 
 	for i = 1,WoWclassCount do
-		if (rconf.group[i] == 1 and enable and (i < 11 or rconf.sortByClass) and not singleGroup) then
+		if (rconf.group[i] and enable and (i < 11 or rconf.sortByClass) and not singleGroup) then
 			if (not raidHeaders[i]:IsShown()) then
 				raidHeaders[i]:Show()
 			end

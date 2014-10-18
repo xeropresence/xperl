@@ -1020,13 +1020,23 @@ function XPerl_Options_RaidSelectAll(self, enable)
 		local f = _G[prefix.."Grp"..i]
 		if (f) then
 			f:SetChecked(enable)
-			XPerlDB.raid.group[i] = enable
+			--print(f:GetChecked(), enable)
+			if f:GetChecked() then
+				XPerlDB.raid.group[i] = 1
+			else
+				XPerlDB.raid.group[i] = nil
+			end
 		end
 
 		f = _G[prefix.."ClassSel"..i.."_Enable"]
 		if (f) then
 			f:SetChecked(enable)
-			XPerlDB.raid.class[i].enable = enable
+			--print(f:GetChecked(), enable)
+			if f:GetChecked() then
+				XPerlDB.raid.class[i].enable = 1
+			else
+				XPerlDB.raid.class[i].enable = nil
+			end
 		end
 	end
 
