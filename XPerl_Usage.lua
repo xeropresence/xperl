@@ -83,10 +83,10 @@ function mod:CheckForNewerVersion(ver)
 			if (not self.notifiedVersion or self.notifiedVersion < ver) then
 				self.notifiedVersion = ver
 
-				if (not conf or conf.tooltip.xperlInfo) then
+				--if (not conf or conf.tooltip.xperlInfo) then
 					DEFAULT_CHAT_FRAME:AddMessage(format(XPERL_USAGE_AVAILABLE, XPerl_ProductName, ver))
 					print("|cFFD00000X-Perl|r has been abandoned, for more information and the updated version of the addon please visit: |cFF80FF80http://www.curse.com/addons/wow/zperl|r")
-				end
+				--end
 			end
 			return true
 		end
