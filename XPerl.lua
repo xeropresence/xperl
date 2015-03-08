@@ -2,6 +2,8 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+print("|cFFD00000X-Perl|r has been abandoned, for more information and the updated version of the addon please visit: |cFF80FF80http://www.curse.com/addons/wow/zperl|r")
+
 local conf
 local percD	= "%d"..PERCENT_SYMBOL
 local perc1F = "%.1f"..PERCENT_SYMBOL

@@ -78,32 +78,33 @@ end
 
 -- CheckForNewerVersion
 function mod:CheckForNewerVersion(ver)
-	if (not strfind(strlower(ver), "beta")) then
+	--if (not strfind(strlower(ver), "beta")) then
 		if (ver > XPerl_VersionNumber) then
 			if (not self.notifiedVersion or self.notifiedVersion < ver) then
 				self.notifiedVersion = ver
 
 				if (not conf or conf.tooltip.xperlInfo) then
 					DEFAULT_CHAT_FRAME:AddMessage(format(XPERL_USAGE_AVAILABLE, XPerl_ProductName, ver))
+					print("|cFFD00000X-Perl|r has been abandoned, for more information and the updated version of the addon please visit: |cFF80FF80http://www.curse.com/addons/wow/zperl|r")
 				end
 			end
 			return true
 		end
-	end
+	--end
 end
 
 -- ProcessXPerlMessage
 function mod:ProcessXPerlMessage(sender, msg, channel)
+	if string.find(sender, string.gsub(GetRealmName(), " ", "")) then
+		sender = Ambiguate(sender, "none")
+	end
 	local myUsage = XPerl_Usage[sender]
 
 	if (strsub(msg, 1, 4) == "VER ") then
-		-- ChatFrame7:AddMessage(" Received info from "..sender..", channel: "..channel)
 		if (not myUsage) then
 			myUsage = {}
 			XPerl_Usage[sender] = myUsage
 		end
-
-		if (XPerlTest) then myUsage.packets = (myUsage.packets or 0) + 1 end
 
 		myUsage.old = nil
 		local ver = strsub(msg, 5)
@@ -112,7 +113,7 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 			myUsage.version = nil
 		else
 			myUsage.version = ver
-			self:CheckForNewerVersion(ver)			-- Won't do a per revision check
+			self:CheckForNewerVersion(ver) -- Won't do a per revision check
 		end
 
 		if (channel ~= "WHISPER" and sender and sender ~= UnitName("player")) then
@@ -414,7 +415,7 @@ end
 -- XPerl_GetUsage
 function XPerl_GetUsage(unitName, unitID)
 	local ver = XPerl_Usage[unitName]
-	if (not ver and XPerlTest) then
+	if (not ver) then
 		if (unitID and unitName ~= UNKNOWN and (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
 			if (not mod.directQueries) then
 				mod.directQueries = {}
