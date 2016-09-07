@@ -1,4 +1,4 @@
-﻿## Interface: 60000
+﻿## Interface: 70000
 ## Title: X-Perl |cffeda55fOptions|r by |cFFFF8080Zek |cFF40FF40(LoadOnDemand)|r
 ## Title-itIT: X-Perl |cffeda55fOpzioni|r di |cFFFF8080Zek |cFF40FF40(Caricabile su richiesta)|r
 ## Title-ruRU: X-Perl |cffeda55fНастройки |cFF40FF40(LoadOnDemand)|r

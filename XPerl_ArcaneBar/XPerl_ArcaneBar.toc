@@ -1,4 +1,4 @@
-﻿## Interface: 60000
+﻿## Interface: 70000
 ## Title: X-Perl |cffeda55fArcane Bars|r by |cFFFF8080Zek|r
 ## Title-itIT: X-Perl |cffeda55fBarre Arcane|r di |cFFFF8080Zek|r
 ## Title-ruRU: X-Perl |cffeda55fПолосы применений|r
