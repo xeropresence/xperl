@@ -18,12 +18,7 @@ XPERL_MINIMAP_HELP5	= "|c00FFFFFFAlt|r 顯示 X-Perl 記憶體用量"
 XPERL_MINIMAP_HELP6	= "|c00FFFFFF+Shift|r 顯示 X-Perl 記憶體使用明細"
 
 XPERL_MINIMENU_OPTIONS	= "功能設定"
-XPERL_MINIMENU_ASSIST	= "顯示協助框架"
-XPERL_MINIMENU_CASTMON	= "顯示施法監視"
-XPERL_MINIMENU_RAIDAD	= "顯示團隊幫手"
-XPERL_MINIMENU_ITEMCHK	= "顯示物品確認"
 XPERL_MINIMENU_RAIDBUFF = "團隊 Buffs"
-XPERL_MINIMENU_ROSTERTEXT="名單文字"
 XPERL_MINIMENU_RAIDSORT = "團隊排序"
 XPERL_MINIMENU_RAIDSORT_GROUP = "依據隊伍排序"
 XPERL_MINIMENU_RAIDSORT_CLASS = "依據職業排序"
@@ -36,18 +31,6 @@ XPERL_TYPE_ELITE	= "精英"
 XPERL_TYPE_RARE		= "稀有"
 
 -- Zones
-XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "毒蛇神殿洞穴"
-XPERL_LOC_ZONE_BLACK_TEMPLE = "黑暗神廟"
-XPERL_LOC_ZONE_HYJAL_SUMMIT = "海加爾山"
-XPERL_LOC_ZONE_KARAZHAN = "卡拉贊"
-XPERL_LOC_ZONE_SUNWELL_PLATEAU = "太陽之井高地"
-XPERL_LOC_ZONE_NAXXRAMAS = "納克薩瑪斯"
-XPERL_LOC_ZONE_OBSIDIAN_SANCTUM = "黑曜聖所"
-XPERL_LOC_ZONE_EYE_OF_ETERNITY = "永恆之眼"
-XPERL_LOC_ZONE_ULDUAR = "奧杜亞"
-XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "十字軍試煉"
-XPERL_LOC_ZONE_ICECROWN_CITADEL = "冰冠城塞"
-XPERL_LOC_ZONE_RUBY_SANCTUM = "晶紅聖所"
 
 -- Status
 XPERL_LOC_DEAD		= DEAD			-- "Dead"
@@ -55,11 +38,16 @@ XPERL_LOC_GHOST		= "靈魂"
 XPERL_LOC_FEIGNDEATH	= "假死"
 XPERL_LOC_OFFLINE	= PLAYER_OFFLINE	-- "Offline"
 XPERL_LOC_RESURRECTED	= "復活"
-XPERL_LOC_SS_AVAILABLE	= "靈魂保存"
 XPERL_LOC_UPDATING	= "更新中"
-XPERL_LOC_ACCEPTEDRES	= "已接受"		-- Res accepted
 XPERL_RAID_GROUP	= "小隊 %d"
 XPERL_RAID_GROUPSHORT	= "%d隊"
+XPERL_RAID_TOOLTIP_OFFLINE	= "%s 已離線"
+XPERL_RAID_TOOLTIP_AFK		= "%s 已暫離"
+XPERL_RAID_TOOLTIP_DND		= "%s 已勿擾"
+XPERL_RAID_TOOLTIP_DYING	= "%s 已死亡"
+XPERL_RAID_RESSING		= " 復活中"
+XPERL_RAID_AFK			= "暫離"
+XPERL_RAID_RESSER_AVAIL		= "可施展復活技能者仍有："
 
 XPERL_LOC_NONEWATCHED	= "無監看"
 
@@ -68,8 +56,6 @@ XPERL_LOC_STATUSTIPLIST = {
 	HOT = "持續治療",
 	AGGRO = "敵方目標",
 	MISSING = "你職業的 buff 被遺漏",
-	HEAL = "已受治療",
-	SHIELD = "已上盾"
 }
 
 XPERL_OK		= "確定"
@@ -100,7 +86,7 @@ XPERL_DRAGHINT1		= "|c00FFFFFF點擊|r 調整視窗比例"
 XPERL_DRAGHINT2		= "|c00FFFFFFShift+點擊|r 重置視窗尺寸"
 
 -- Usage
-XPerlUsageNameList	= {XPerl = "核心", XPerl_Player = "玩家", XPerl_PlayerPet = "寵物", XPerl_Target = "目標", XPerl_TargetTarget = "目標的目標", XPerl_Party = "隊友", XPerl_PartyPet = "隊友寵物", XPerl_RaidFrames = "團隊框架", XPerl_RaidHelper = "團隊助手", XPerl_RaidAdmin = "團隊紀錄", XPerl_TeamSpeak = "TS 監視", XPerl_RaidMonitor = "團隊監視", XPerl_RaidPets = "團隊寵物", XPerl_ArcaneBar = "施法條", XPerl_PlayerBuffs = "玩家 Buffs"}
+XPerlUsageNameList	= {XPerl = "核心", XPerl_Player = "玩家", XPerl_PlayerPet = "寵物", XPerl_Target = "目標", XPerl_TargetTarget = "目標的目標", XPerl_Party = "隊友", XPerl_PartyPet = "隊友寵物", XPerl_RaidFrames = "團隊框架", XPerl_RaidPets = "團隊寵物", XPerl_ArcaneBar = "施法條", XPerl_PlayerBuffs = "玩家 Buffs"}
 XPERL_USAGE_MEMMAX	= "UI 記憶體用量: %d"
 XPERL_USAGE_MODULES	= "模組: "
 XPERL_USAGE_NEWVERSION	= "*新版本"
@@ -114,8 +100,5 @@ XPERL_CANNOT_DELETE_BADARGS	= "請給予正確的伺服器名稱以及玩家名�
 XPERL_CONFIG_LIST		= "設定清單："
 XPERL_CONFIG_CURRENT		= " (目前)"
 
-XPERL_RAID_TOOLTIP_WITHBUFF	= "有此 buff 的：(%s)"
-XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "沒有此 buff 的：(%s)"
-XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s 的 %s 將要在 %s 後消失。"	-- Name, buff name, time to expire
 
 end

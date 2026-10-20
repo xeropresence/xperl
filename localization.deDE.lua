@@ -13,12 +13,7 @@ if (GetLocale() == "deDE") then
 	XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Umschalt|r, f\195\188r die X-Perl Speicherausnutzung seit dem Start"
 
 	XPERL_MINIMENU_OPTIONS			= MAIN_MENU
-	XPERL_MINIMENU_ASSIST			= "Zeige Assistiert-Frame"
-	XPERL_MINIMENU_CASTMON			= "Zeige Casting-Monitor"
-	XPERL_MINIMENU_RAIDAD			= "Zeige Schlachtzugs-Admin"
-	XPERL_MINIMENU_ITEMCHK			= "Zeige Gegenstands-Checker"
 	XPERL_MINIMENU_RAIDBUFF 		= "Schlachtzugsbuffs"
-	XPERL_MINIMENU_ROSTERTEXT 		= "Listen-Text"
 	XPERL_MINIMENU_RAIDSORT 		= "Sortierung des Schlachtzugs"
 	XPERL_MINIMENU_RAIDSORT_GROUP 	= "Nach Gruppe sortieren"
 	XPERL_MINIMENU_RAIDSORT_CLASS 	= "Nach Klasse sortieren"
@@ -31,18 +26,6 @@ if (GetLocale() == "deDE") then
 	XPERL_TYPE_RARE 				= "Rar"
 
 -- Zones
-	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN 	= "H\195\182hle des Schlangenschreins"
-	XPERL_LOC_ZONE_BLACK_TEMPLE 			= "Der Schwarze Tempel"
-	XPERL_LOC_ZONE_HYJAL_SUMMIT 			= "Hyjalgipfel"
-	XPERL_LOC_ZONE_KARAZHAN 				= "Karazhan"
-	XPERL_LOC_ZONE_SUNWELL_PLATEAU 			= "Sonnenbrunnenplateau"
-	XPERL_LOC_ZONE_NAXXRAMAS 				= "Naxxramas"
-	XPERL_LOC_ZONE_OBSIDIAN_SANCTUM 		= "Das Obsidiansanktum"
-	XPERL_LOC_ZONE_EYE_OF_ETERNITY 			= "Das Auge der Ewigkeit"
-	XPERL_LOC_ZONE_ULDUAR 					= "Ulduar"
-	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER 	= "Pr\195\188fung des Kreuzfahrers"
-	XPERL_LOC_ZONE_ICECROWN_CITADEL 		= "Eiskronenzitadelle"
-	XPERL_LOC_ZONE_RUBY_SANCTUM 			= "Das Rubinsanktum"
 
 -- Status
 	XPERL_LOC_DEAD			= DEAD			-- "Tot"
@@ -50,11 +33,16 @@ if (GetLocale() == "deDE") then
 	XPERL_LOC_FEIGNDEATH	= "Totstellen"
 	XPERL_LOC_OFFLINE		= PLAYER_OFFLINE	-- "Offline"
 	XPERL_LOC_RESURRECTED	= "Wiederbelebung"
-	XPERL_LOC_SS_AVAILABLE	= "SS verf\195\188gbar"
 	XPERL_LOC_UPDATING		= "Aktualisierung"
-	XPERL_LOC_ACCEPTEDRES	= "Akzeptiert"		-- Wiederbelebung akzeptiert
 	XPERL_RAID_GROUP		= "Gruppe %d"
 	XPERL_RAID_GROUPSHORT	= "G%d"
+	XPERL_RAID_TOOLTIP_OFFLINE		= "Offline seit %s"
+	XPERL_RAID_TOOLTIP_AFK			= "AFK seit %s"
+	XPERL_RAID_TOOLTIP_DND			= "DND seit %s"
+	XPERL_RAID_TOOLTIP_DYING		= "Tot seit %s"
+	XPERL_RAID_RESSING				= " wiederbelebt"
+	XPERL_RAID_AFK					= AFK
+	XPERL_RAID_RESSER_AVAIL			= "Rezzer verf\195\188gbar: "
 
 	XPERL_LOC_NONEWATCHED	= "nicht beobachtet"
 
@@ -63,8 +51,6 @@ if (GetLocale() == "deDE") then
 		HOT = "Heilung \195\188ber Zeit",
 		AGGRO = "Aggro",
 		MISSING = "Dein Klassenbuff fehlt",
-		HEAL = "Wird geheilt",
-		SHIELD = SHIELDSLOT
 	}
 
 	XPERL_OK							= "OK"
@@ -95,7 +81,7 @@ if (GetLocale() == "deDE") then
 	XPERL_DRAGHINT2						= "|c00FFFFFFUmschalt+Klick|r, zum Anpassen der Fenstergr\195\182\195\159e"
 
 	-- Usage
-	XPerlUsageNameList					= {XPerl = "Core", XPerl_Player = "Player", XPerl_PlayerPet = "Pet", XPerl_Target = "Target", XPerl_TargetTarget = "Target's Target", XPerl_Party = "Party", XPerl_PartyPet = "Party Pets", XPerl_RaidFrames = "Raid Frames", XPerl_RaidHelper = "Raid Helper", XPerl_RaidAdmin = "Raid Admin", XPerl_TeamSpeak = "TS Monitor", XPerl_RaidMonitor = "Raid Monitor", XPerl_RaidPets = "Raid Pets", XPerl_ArcaneBar = "Arcane Bar", XPerl_PlayerBuffs = "Player Buffs", XPerl_GrimReaper = "Grim Reaper"}
+	XPerlUsageNameList					= {XPerl = "Core", XPerl_Player = "Player", XPerl_PlayerPet = "Pet", XPerl_Target = "Target", XPerl_TargetTarget = "Target's Target", XPerl_Party = "Party", XPerl_PartyPet = "Party Pets", XPerl_RaidFrames = "Raid Frames", XPerl_RaidPets = "Raid Pets", XPerl_ArcaneBar = "Arcane Bar", XPerl_PlayerBuffs = "Player Buffs"}
 	XPERL_USAGE_MEMMAX					= "UI Max. Speicher: %d"
 	XPERL_USAGE_MODULES 				= "Module: "
 	XPERL_USAGE_NEWVERSION				= "*Neuere Version"
@@ -116,8 +102,5 @@ if (GetLocale() == "deDE") then
 	XPERL_CONFIG_LIST					= "Konfigurationsliste:"
 	XPERL_CONFIG_CURRENT				= " (Aktuell)"
 
-	XPERL_RAID_TOOLTIP_WITHBUFF      	= "Mit Buff: (%s)"
-	XPERL_RAID_TOOLTIP_WITHOUTBUFF   	= "Ohne Buff: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING		= "%s's %s schwindet in %s"	-- Name, buff name, time to expire
 
 end

@@ -1,0 +1,252 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<Script file="Raid.lua"/>
+
+	<!-- Compact bar of the raid and raid pet buttons -->
+	<StatusBar name="XPerlRaidStatusBar" virtual="true">
+		<BarTexture name="$parenttex" file="Interface\TargetingFrame\UI-StatusBar"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parenttext" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+					</Anchors>
+					<Color r="1.0" g="1.0" b="1.0"/>
+				</FontString>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentbg" file="Interface\TargetingFrame\UI-TargetingFrame-BarFill" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad>
+				XPerl_SetChildMembers(self)
+				XPerl_RegisterBar(self)
+				XPerl_RegisterUnitText(self.text)
+			</OnLoad>
+		</Scripts>
+	</StatusBar>
+
+	<!-- Raid member button (Units/Raid.lua), made by the group headers XPerl_Raid_Grp1-13. Headers make buttons
+	     mid-combat too, so the clicks are declared here rather than set up from Lua. -->
+	<Button name="XPerl_Raid_FrameTemplate" inherits="XPerl_UnitButtonTemplate" registerForClicks="AnyUp" virtual="true">
+		<Size x="80" y="38"/>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_RaidFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="raid"/>
+			<KeyValue key="headerChild" value="true" type="boolean"/>
+		</KeyValues>
+		<Attributes>
+			<Attribute name="*type1" type="string" value="target"/>
+			<Attribute name="type2" type="string" value="togglemenu"/>
+		</Attributes>
+		<Frames>
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate" registerForClicks="AnyUp">
+				<Size x="80" y="17"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="XPERL_BACKDROP_RAID" type="global"/>
+				</KeyValues>
+				<Attributes>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+					<Attribute name="*type1" type="string" value="target"/>
+					<Attribute name="type2" type="string" value="togglemenu"/>
+				</Attributes>
+			</Button>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" inherits="BackdropTemplate">
+				<Size x="80" y="21"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame" relativePoint="BOTTOMLEFT"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="XPERL_BACKDROP_RAID" type="global"/>
+				</KeyValues>
+				<Frames>
+					<StatusBar name="$parenthealthBar" parentKey="healthBar" inherits="XPerlRaidStatusBar">
+						<Size x="70" y="15"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="3" y="-3"/>
+							<Anchor point="BOTTOMRIGHT" relativePoint="TOPRIGHT" x="-3" y="-18"/>
+						</Anchors>
+						<BarColor r="0" g="0.8" b="0"/>
+					</StatusBar>
+
+					<Frame name="$parentready" parentKey="ready" hidden="true" setAllPoints="true" toplevel="true">
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentcheck" parentKey="check">
+									<Size x="24" y="24"/>
+									<Anchors>
+										<Anchor point="RIGHT" x="-5" y="0"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+				</Frames>
+				<Scripts>
+					<OnLoad function="XPerl_StatsFrame_Setup" inherit="prepend"/>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parentbuffFrame" parentKey="buffFrame" frameStrata="MEDIUM" hidden="true">
+				<Size x="10" y="10"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentstatsFrame" relativePoint="BOTTOMRIGHT" x="-2" y="2"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate" setAllPoints="true"/>
+		</Frames>
+	</Button>
+
+	<!-- A raid group header (or a class/role column): SecureRaidGroupHeaderTemplate making XPerl_Raid_FrameTemplate
+	     buttons. Its attributes and anchor come from the raid settings (Units/Raid.lua). -->
+	<Frame name="XPerl_Raid_HeaderTemplate" inherits="SecureRaidGroupHeaderTemplate" clampedToScreen="true" frameStrata="LOW" virtual="true" hidden="true">
+		<Size x="80" y="10"/>
+		<Attributes>
+			<Attribute name="template" type="string" value="XPerl_Raid_FrameTemplate"/>
+			<Attribute name="templateType" type="string" value="Button"/>
+			<Attribute name="minWidth" type="number" value="80"/>
+			<Attribute name="minHeight" type="number" value="10"/>
+		</Attributes>
+	</Frame>
+
+	<!-- Title of a raid group (also of the raid pets, Units/RaidPets.xml), the frame Edit Mode moves. Its header
+	     hangs below or above it; the placeholder shows the group's extent in Edit Mode and while unlocked. -->
+	<Frame name="XPerl_Raid_TitleTemplate" parent="UIParent" clampedToScreen="true" movable="true" frameStrata="LOW" virtual="true">
+		<Size x="80" y="10"/>
+		<Scripts>
+			<OnLoad function="XPerl_Raid_TitleOnLoad"/>
+		</Scripts>
+		<Frames>
+			<Frame name="$parentTitle" parentKey="titleFrame" setAllPoints="true" scale="0.75">
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentText" parentKey="text" inherits="GameFontNormal">
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame name="$parentVirtual" parentKey="virtual" inherits="BackdropTemplate" hidden="true">
+				<Size x="80" y="10"/>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="XPERL_BACKDROP_RAID" type="global"/>
+				</KeyValues>
+			</Frame>
+		</Frames>
+	</Frame>
+
+	<Frame name="XPerl_Raid_Title1" inherits="XPerl_Raid_TitleTemplate" id="1">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="0" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp1" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title2" inherits="XPerl_Raid_TitleTemplate" id="2">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="76" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp2" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title3" inherits="XPerl_Raid_TitleTemplate" id="3">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="152" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp3" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title4" inherits="XPerl_Raid_TitleTemplate" id="4">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="228" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp4" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title5" inherits="XPerl_Raid_TitleTemplate" id="5">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="304" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp5" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title6" inherits="XPerl_Raid_TitleTemplate" id="6">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="380" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp6" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title7" inherits="XPerl_Raid_TitleTemplate" id="7">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="456" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp7" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title8" inherits="XPerl_Raid_TitleTemplate" id="8">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="532" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp8" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title9" inherits="XPerl_Raid_TitleTemplate" id="9">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="608" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp9" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title10" inherits="XPerl_Raid_TitleTemplate" id="10">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="684" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp10" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title11" inherits="XPerl_Raid_TitleTemplate" id="11">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="760" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp11" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title12" inherits="XPerl_Raid_TitleTemplate" id="12">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="836" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp12" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+	<Frame name="XPerl_Raid_Title13" inherits="XPerl_Raid_TitleTemplate" id="13">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="912" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_Grp13" parentKey="header" inherits="XPerl_Raid_HeaderTemplate"/>
+		</Frames>
+	</Frame>
+</Ui>

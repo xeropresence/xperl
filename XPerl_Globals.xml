@@ -1,5 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
 
+	<Script file="XPerl_Api.lua"/>
+	<Script file="XPerl_Backdrops.lua"/>
+
 	<Script file="localization.lua"/>
 	<Script file="localization.deDE.lua"/>
 	<Script file="localization.frFR.lua"/>
@@ -11,8 +14,8 @@
 	<Script file="localization.itIT.lua"/>
 	<Script file="XPerl_Globals.lua"/>
 	<Script file="XPerl_Init.lua"/>
-	<Script file="XPerl_Voice.lua"/>
 	<Script file="XPerl_Slash.lua"/>
+	<Script file="XPerl_Profiles.lua"/>
 
 	<Button name="XPerl_BasicButton" virtual="true">
 		<Scripts>
@@ -66,18 +69,10 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="XPerl_BorderStyleTemplate" virtual="true">
-		<Backdrop bgFile="Interface\Addons\XPerl\Images\XPerl_FrameBack" edgeFile="Interface\Tooltips\UI-Tooltip-Border" tile="true">
-			<EdgeSize>
-				<AbsValue val="16"/>
-			</EdgeSize>
-			<TileSize>
-				<AbsValue val="32"/>
-			</TileSize>
-			<BackgroundInsets>
-				<AbsInset left="4" right="4" top="4" bottom="4"/>
-			</BackgroundInsets>
-		</Backdrop>
+	<Frame name="XPerl_BorderStyleTemplate" inherits="BackdropTemplate" virtual="true">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="XPERL_BACKDROP_FRAME" type="global"/>
+		</KeyValues>
 	</Frame>
 
 	<Frame name="XPerl_Portrait_Template" inherits="XPerl_BorderStyleTemplate" virtual="true">
@@ -115,7 +110,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad function="XPerl_SetChildMembers"/>
+			<OnLoad function="XPerl_SetChildMembers" inherit="prepend"/>
 		</Scripts>
 	</Frame>
 
@@ -158,10 +153,6 @@
 				XPerl_SetChildMembers(self)
 				XPerl_RegisterBar(self)
 				self:SetScript("OnLoad", nil)
-				if (not XPerl_OldStatusBarSetValue) then
-					XPerl_OldStatusBarSetValue = self.SetValue
-				end
-				self.SetValue = XPerl_StatusBarSetValue
 				XPerl_RegisterUnitText(self.text)
 				XPerl_RegisterUnitText(self.percent)
 			</OnLoad>
@@ -189,30 +180,6 @@
 				<BarColor r="0" g="0.8" b="0"/>
 			</StatusBar>
 
-			<StatusBar name="$parentexpectedHealth" drawLayer="OVERLAY" hidden="true">
-				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parenthealthBar">
-						<Offset>
-							<AbsDimension x="0" y="-2"/>
-						</Offset>
-					</Anchor>
-					<Anchor point="BOTTOMRIGHT" relativeTo="$parenthealthBar">
-						<Offset>
-							<AbsDimension x="0" y="2"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<BarTexture name="$parenttex" file="Interface\TargetingFrame\UI-StatusBar"/>
-				<BarColor r="0" g="1" b="1"/>
-				<Scripts>
-					<OnLoad>
-						XPerl_SetChildMembers(self)
-						XPerl_RegisterBar(self)
-						self:SetFrameLevel(_G[self:GetParent():GetName().."healthBar"]:GetFrameLevel() - 1)
-					</OnLoad>
-				</Scripts>
-			</StatusBar>
-
 			<!-- Mana Bar -->
 			<StatusBar name="$parentmanaBar" drawLayer="BACKGROUND" inherits="XPerlStatusBar">
 				<Size>
@@ -229,7 +196,7 @@
 			</StatusBar>
 		</Frames>
 		<Scripts>
-			<OnLoad function="XPerl_StatsFrame_Setup"/>
+			<OnLoad function="XPerl_StatsFrame_Setup" inherit="prepend"/>
 		</Scripts>
 	</Frame>
 
@@ -264,100 +231,65 @@
 		</Frames>
 	</Frame>
 
-	<Button name="XPerl_BuffTemplate" virtual="true">
-		<Size>
-			<AbsDimension x="32" y="32"/>
-		</Size>
+	<!-- Aura icon parts handed to the client's aura containers (XPerl_Auras_* in XPerl.lua); the container
+	     supplies the button itself through CustomAuraButtonTemplate. No scripts: add-on scripts don't run on
+	     aura buttons. -->
+	<Button name="XPerl_AuraButtonTemplate" virtual="true">
+		<Size x="32" y="32"/>
 		<Layers>
 			<Layer level="ARTWORK">
-				<Texture name="$parenticon" setAllPoints="true" />
+				<Texture parentKey="Icon" setAllPoints="true"/>
 			</Layer>
 			<Layer level="OVERLAY">
-				<FontString name="$parentcount" inherits="NumberFontNormalLarge" justifyV="BOTTOM" justifyH="RIGHT">
-					<FontHeight>
-						<AbsValue val="24"/>
-					</FontHeight>
+				<Texture parentKey="Border" file="Interface\Buttons\UI-Debuff-Overlays" hidden="true">
 					<Anchors>
-						<Anchor point="TOPLEFT"/>
-						<Anchor point="BOTTOMRIGHT">
-							<Offset>
-								<AbsDimension x="-2" y="2"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
-		<Scripts>
-			<OnLoad function="XPerl_SetChildMembers"/>
-		</Scripts>
-	</Button>
-
-	<Button name="XPerl_Cooldown_BuffTemplate" inherits="XPerl_BuffTemplate" virtual="true">
-		<Frames>
-			<Cooldown name="$parentcooldown" inherits="CooldownFrameTemplate" setAllPoints="true" reverse="true" drawEdge="true" hidden="true">
-				<Layers>
-					<Layer level="OVERLAY">
-						<FontString name="$parentcountdown" inherits="GameFontNormalHuge">
-							<Anchors>
-								<Anchor point="TOPLEFT"/>
-								<Anchor point="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="-1" y="2"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-							<Color r="1" g="1" b="0"/>
-						</FontString>
-					</Layer>
-				</Layers>
-			</Cooldown>
-		</Frames>
-	</Button>
-
-	<Button name="XPerl_DeBuffTemplate" virtual="true" inherits="XPerl_BuffTemplate">
-		<Size>
-			<AbsDimension x="32" y="32"/>
-		</Size>
-		<Layers>
-			<Layer level="OVERLAY">
-				<Texture name="$parentborder" file="Interface\Buttons\UI-Debuff-Overlays" setAllPoints="true">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="-1" y="1"/>
-							</Offset>
-						</Anchor>
+						<Anchor point="TOPLEFT" x="-1" y="1"/>
 						<Anchor point="BOTTOMRIGHT"/>
 					</Anchors>
 					<TexCoords left="0.296875" right="0.5703125" top="0" bottom="0.515625"/>
 				</Texture>
+				<Texture parentKey="Steal" hidden="true">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-2" y="2"/>
+						<Anchor point="BOTTOMRIGHT" x="2" y="-2"/>
+					</Anchors>
+				</Texture>
 			</Layer>
 		</Layers>
-		<Scripts>
-			<OnLoad function="XPerl_SetChildMembers"/>
-		</Scripts>
-	</Button>
-
-	<Button name="XPerl_Cooldown_DeBuffTemplate" inherits="XPerl_DeBuffTemplate" virtual="true">
 		<Frames>
-			<Cooldown name="$parentcooldown" inherits="CooldownFrameTemplate" setAllPoints="true" reverse="true" drawEdge="true" hidden="true">
+			<Frame parentKey="CooldownHolder" setAllPoints="true">
+				<Frames>
+					<Cooldown parentKey="Cooldown" inherits="CooldownFrameTemplate" setAllPoints="true" reverse="true" drawEdge="true" hideCountdownNumbers="true" hidden="true"/>
+				</Frames>
+			</Frame>
+			<Frame parentKey="TextHolder" setAllPoints="true">
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString name="$parentcountdown" inherits="GameFontNormalHuge" setAllPoints="true" hidden="true">
+						<FontString parentKey="Count" inherits="NumberFontNormalLarge" justifyV="BOTTOM" justifyH="RIGHT">
+							<FontHeight>
+								<AbsValue val="24"/>
+							</FontHeight>
 							<Anchors>
 								<Anchor point="TOPLEFT"/>
-								<Anchor point="BOTTOMRIGHT">
-									<Offset>
-										<AbsDimension x="-1" y="2"/>
-									</Offset>
-								</Anchor>
+								<Anchor point="BOTTOMRIGHT" x="-2" y="2"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Frame parentKey="CountdownHolder" setAllPoints="true">
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="Countdown" inherits="GameFontNormalHuge">
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT" x="-1" y="2"/>
 							</Anchors>
 							<Color r="1" g="1" b="0"/>
 						</FontString>
 					</Layer>
 				</Layers>
-			</Cooldown>
+			</Frame>
 		</Frames>
 	</Button>
 
@@ -395,7 +327,7 @@
 					if (XPerlDB.highlightSelection) then
 						self.sel = true
 						self.tex:Show()
-						XPerl_Highlight:SetHighlight(self:GetParent())
+						XPerl_Highlight:UnitFrameChanged(self:GetParent())
 					end
 				end
 
@@ -403,7 +335,7 @@
 					if (XPerlDB.highlightSelection) then
 						self.sel = nil
 						self.tex:Hide()
-						XPerl_Highlight:SetHighlight(self:GetParent())
+						XPerl_Highlight:UnitFrameChanged(self:GetParent())
 					end
 				end
 			</OnLoad>
@@ -425,7 +357,7 @@
 		</Scripts>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentbackground" file="Interface\Addons\XPerl\Images\GaugeCircle" setAllPoints="true" blendMode="ADD">
+				<Texture name="$parentbackground" file="Interface\Addons\XPerl\Images\GaugeCircle" setAllPoints="true" alphaMode="ADD">
 					<Color r="1" g="1" b="1" a="0.5"/>
 				</Texture>
 			</Layer>

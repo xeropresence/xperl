@@ -20,33 +20,27 @@ if (GetLocale() == "frFR") then
 	XPERL_LOC_CLASS_SHAMANFEM = "Chamane"
 	XPERL_LOC_CLASS_PRIESTFEM = "Pr\195\170tresse"
 
-	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Caverne du sanctuaire du Serpent"
-	XPERL_LOC_ZONE_BLACK_TEMPLE = "Temple noir"
-	XPERL_LOC_ZONE_HYJAL_SUMMIT = "Sommet d'Hyjal"
-	XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
-	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Plateau du Puits de soleil"
-	XPERL_LOC_ZONE_ULDUAR = "Ulduar"
-	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "L'épreuve du croisé"
-	XPERL_LOC_ZONE_ICECROWN_CITADEL = "Citadelle de la Couronne de glace"
-	XPERL_LOC_ZONE_RUBY_SANCTUM = "Le sanctum Rubis"
 
 	XPERL_LOC_DEAD = "Mort"
 	XPERL_LOC_GHOST = "Fant\195\180me"
 	XPERL_LOC_FEIGNDEATH = "Feindre la Mort"
 	XPERL_LOC_OFFLINE = "Hors-ligne"
 	XPERL_LOC_RESURRECTED = "R\195\169ssusict\195\169"
-	XPERL_LOC_SS_AVAILABLE = "SS Available"
 	XPERL_LOC_UPDATING = "Mise \195\162 jour"
-	XPERL_LOC_ACCEPTEDRES = "Accepter la r\195\169sur\195\169ction" -- Res accepted
 	XPERL_RAID_GROUP = "Groupe %d"
+	XPERL_RAID_TOOLTIP_OFFLINE = "Hors ligne depuis %s"
+	XPERL_RAID_TOOLTIP_AFK = "ABS depuis %s"
+	XPERL_RAID_TOOLTIP_DND = "NPD depuis %s"
+	XPERL_RAID_TOOLTIP_DYING = "Meurt dans %s"
+	XPERL_RAID_RESSING = " ressing"
+	XPERL_RAID_AFK = "Afk"
+	XPERL_RAID_RESSER_AVAIL = "R\195\169surrection possible: "
 
 	XPERL_LOC_STATUSTIP = "Statuts accentu\195\169s: " -- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
 		HOT = "Soins sur la dur\195\169e",
 		AGGRO = "Aggro",
 		MISSING = "Manque votre buff de classe",
-		HEAL = "Viens d'\195\170tre soign\195\169",
-		SHIELD = "envellop\195\169 d'un bouclier"
 	}
 
 	XPERL_OK = "Ok"
@@ -69,12 +63,6 @@ if (GetLocale() == "frFR") then
 	XPERL_KEY_NOTICE_RAID_BUFFS = "Montrer les buffs du raid"
 	XPERL_KEY_NOTICE_RAID_DEBUFFS = "Montrer les debuffs du raid"
 	XPERL_KEY_NOTICE_RAID_NOBUFFS = "Ne pas montrer les debuffs du raid"
-
-	XPerl_DefaultRangeSpells.ANY = {item = "Bandage \195\169pais en \195\169toffe runique"}
-
-	XPERL_RAID_TOOLTIP_WITHBUFF	      = "Avec buffs: (%s)"
-	XPERL_RAID_TOOLTIP_WITHOUTBUFF	      = "Sans buffs: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING	      = "%s's %s expires dans %s"	-- Name, buff name, time to expire
 
 
 end

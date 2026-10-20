@@ -79,26 +79,11 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="XPerl_LowHealthFrame" parent="UIParent" setAllPoints="true" hidden="true">
-		<Layers>
-			<Layer level="BACKGROUND">
-				<Texture file="Interface\FullScreenTextures\LowHealth" alphaMode="ADD"/>
-			</Layer>
-		</Layers>
-	</Frame>
 	<Frame name="XPerl_OutOfControlFrame" parent="UIParent" setAllPoints="true" hidden="true">
 		<Layers>
 			<Layer level="BACKGROUND">
 				<Texture file="Interface\FullScreenTextures\OutOfControl" alphaMode="ADD"/>
 			</Layer>
 		</Layers>
-	</Frame>
-
-	<Frame name="XPerl_DropDown" inherits="UIDropDownMenuTemplate" id="1" hidden="true">
-		<Size><AbsDimension x="10" y="10"/></Size>
-		<Anchors><Anchor point="TOP"/></Anchors>
-		<Scripts>
-			<OnLoad function="XPerl_GenericDropDown_OnLoad"/>
-		</Scripts>
 	</Frame>
 </Ui>

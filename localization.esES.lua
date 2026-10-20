@@ -15,12 +15,7 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_MINIMAP_HELP6 = "|c00FFFFFF+Shift|r para ver el uso de memoria de X-Perl desde el inicio"
 
 	XPERL_MINIMENU_OPTIONS	= "Opciones"
-	XPERL_MINIMENU_ASSIST	= "Mostrar el Asistente de Marco"
-	XPERL_MINIMENU_CASTMON	= "Mostrar Monitor de Casteo"
-	XPERL_MINIMENU_RAIDAD	= "Mostrar Admin Banda"
-	XPERL_MINIMENU_ITEMCHK	= "Mostrar Comprobador Elementos"
 	XPERL_MINIMENU_RAIDBUFF = "Buffs Banda"
-	XPERL_MINIMENU_ROSTERTEXT="Lista Texto"
 	XPERL_MINIMENU_RAIDSORT = "Orden Banda"
 	XPERL_MINIMENU_RAIDSORT_GROUP = "Ordenar por Grupo"
 	XPERL_MINIMENU_RAIDSORT_CLASS = "Ordenar por Clase"
@@ -32,15 +27,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_TYPE_ELITE	= "\195\137lite"
 	XPERL_TYPE_RARE 	= "Raro"
 
-	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Caverna Santuario Serpiente"
-	XPERL_LOC_ZONE_BLACK_TEMPLE = "El Templo Oscuro"
-	XPERL_LOC_ZONE_HYJAL_SUMMIT = "Cima Hyjal"
-	XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
-	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Meseta de la Fuente del Sol"
-	XPERL_LOC_ZONE_ULDUAR = "Ulduar"
-	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Prueba del Cruzado"
-	XPERL_LOC_ZONE_ICECROWN_CITADEL = "Ciudadela de la Corona de Hielo"
-	XPERL_LOC_ZONE_RUBY_SANCTUM = "El Sagrario Rubí"
 
 	-- Status
 	XPERL_LOC_DEAD		= "Muerto"
@@ -48,11 +34,16 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_LOC_FEIGNDEATH	= "Fingir muerte"
 	XPERL_LOC_OFFLINE	= "Desconectado"
 	XPERL_LOC_RESURRECTED	= "Resucitado"
-	XPERL_LOC_SS_AVAILABLE	= "PA disponible"
 	XPERL_LOC_UPDATING	= "Actualizando"
-	XPERL_LOC_ACCEPTEDRES	= "Aceptado"	-- Res accepted
 	XPERL_RAID_GROUP	= "Grupo %d"
 	XPERL_RAID_GROUPSHORT	= "G%d"
+	XPERL_RAID_TOOLTIP_OFFLINE	= "Desconectado durante %s"
+	XPERL_RAID_TOOLTIP_AFK		= "AUS durante %s"
+	XPERL_RAID_TOOLTIP_DND		= "NoMolestar durante %s"
+	XPERL_RAID_TOOLTIP_DYING	= "Muerto desde hace %s"
+	XPERL_RAID_RESSING		= " resucitando"
+	XPERL_RAID_AFK			= "AUS"
+	XPERL_RAID_RESSER_AVAIL		= "Resurrectores disponibles: "
 
 	XPERL_LOC_NONEWATCHED	= "Ninguno mirado"
 
@@ -61,8 +52,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 		HOT = "Sanaci\195\179n en el Tiempo",
 		AGGRO = "Agresivo",
 		MISSING = "Perdiendo tus buffs de clase",
-		HEAL = "Siendo sanado",
-		SHIELD = "Blindado"
 	}
 
 	XPERL_OK	= "Vale"
@@ -91,7 +80,7 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_DRAGHINT2	= "|c00FFFFFFShift+Click|r para redimensionar ventana"
 
 	-- Usage
-	XPerlUsageNameList	= {XPerl = "N\195\186cleo", XPerl_Player = "Jugador", XPerl_PlayerPet = "Mascota", XPerl_Target = "Objetivo", XPerl_TargetTarget = "Objetivo de Objetivo", XPerl_Party = "Grupo", XPerl_PartyPet = "Mascotas Grupo", XPerl_RaidFrames = "Marcos Banda", XPerl_RaidHelper = "Ayudante Banda", XPerl_RaidAdmin = "Admin Banda", XPerl_TeamSpeak = "Monitor TS", XPerl_RaidMonitor = "Monitor Banda", XPerl_RaidPets = "Mascotas Banda", XPerl_ArcaneBar = "Barra Arcana", XPerl_PlayerBuffs = "Buffs Jugador", XPerl_GrimReaper = "Grim Reaper"}
+	XPerlUsageNameList	= {XPerl = "N\195\186cleo", XPerl_Player = "Jugador", XPerl_PlayerPet = "Mascota", XPerl_Target = "Objetivo", XPerl_TargetTarget = "Objetivo de Objetivo", XPerl_Party = "Grupo", XPerl_PartyPet = "Mascotas Grupo", XPerl_RaidFrames = "Marcos Banda", XPerl_RaidPets = "Mascotas Banda", XPerl_ArcaneBar = "Barra Arcana", XPerl_PlayerBuffs = "Buffs Jugador"}
 	XPERL_USAGE_MEMMAX	= "UI Mem Max: %d"
 	XPERL_USAGE_MODULES 	= "M\195\179dulos: "
 	XPERL_USAGE_NEWVERSION	= "*Nueva versi\195\179n"
@@ -112,7 +101,4 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_CONFIG_LIST		= "Lista Configuraci\195\179n:"
 	XPERL_CONFIG_CURRENT		= " (Actual)"
 
-	XPERL_RAID_TOOLTIP_WITHBUFF	= "Con ventaja: (%s)"
-	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Sin ventaja: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s ha usado la %s que expira en %s"	-- Name, buff name, time to expire
 end

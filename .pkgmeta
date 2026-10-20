@@ -1,18 +1,6 @@
 package-as: XPerl
 
-move-folders:
-   XPerl/XPerl_ArcaneBar: XPerl_ArcaneBar
-   XPerl/XPerl_CustomHighlight: XPerl_CustomHighlight
-   XPerl/XPerl_Options: XPerl_Options
-   XPerl/XPerl_Party: XPerl_Party
-   XPerl/XPerl_PartyPet: XPerl_PartyPet
-   XPerl/XPerl_Player: XPerl_Player
-   XPerl/XPerl_PlayerBuffs: XPerl_PlayerBuffs
-   XPerl/XPerl_PlayerPet: XPerl_PlayerPet
-   XPerl/XPerl_RaidAdmin: XPerl_RaidAdmin
-   XPerl/XPerl_RaidFrames: XPerl_RaidFrames
-   XPerl/XPerl_RaidHelper: XPerl_RaidHelper
-   XPerl/XPerl_RaidMonitor: XPerl_RaidMonitor
-   XPerl/XPerl_RaidPets: XPerl_RaidPets
-   XPerl/XPerl_Target: XPerl_Target
-   XPerl/XPerl_TargetTarget: XPerl_TargetTarget
+ignore:
+   - .github
+   - .editorconfig
+   - .luacheckrc

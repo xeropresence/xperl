@@ -1,0 +1,13 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<!-- Boss frames XPerl_Boss1..5 (boss1-5): the target frame's layout. Units/Boss.lua creates them from this
+	     template, so it loads after it. -->
+	<Button name="XPerl_BossFrameTemplate" inherits="XPerl_TargetFrameTemplate" virtual="true">
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_BossFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="boss"/>
+		</KeyValues>
+	</Button>
+
+	<Script file="Boss.lua"/>
+</Ui>

@@ -1,0 +1,34 @@
+name: Release
+
+# CurseForge builds its own file from the same tag through the repository
+# webhook; this workflow publishes the matching GitHub release. No CurseForge
+# project ID or token is set here, so the packager doesn't upload there too.
+on:
+  push:
+    tags: ["*"]
+  # For a tag that was pushed before this workflow existed or whose run failed
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to publish
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+          # Full history and tags: the release notes are the commits since the previous tag
+          fetch-depth: 0
+
+      # Zip per .pkgmeta (one XPerl folder, both TOCs), released under the tag's
+      # name with the zip attached; alpha/beta tags become pre-releases.
+      - name: Package and publish
+        uses: BigWigsMods/packager@v2
+        env:
+          GH_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}

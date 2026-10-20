@@ -42,12 +42,6 @@ A. X-Perl has 3 combo point display options. The Combo Bar Meter shows a proress
 Q. How can I move the frames?
 A. All X-Perl frames are unlocked when you have the options window open. Click the minimap icon or type /perl. You may also use the /perl unlock and /perl lock options.
 
-Q. What are the extra numbers below my Player level and Target level?
-A. They are the people targetting you, and people assisting on your target. Click either of them to toggle the permenant detailed display.
-
-Q. I closed the Assists frame. How do I get it back?
-A. Either open the options and enable it under the Helper tab. Or click the small numbered frame under player and target levels.
-
 Q. What's with the red and blue glowing screen edges?
 A. That's the Full Screen Warnings. You can turn it off in player options.
 
@@ -66,7 +60,7 @@ A. In the options. Bottom left hand corner, there's the Border and Background co
 Q. I can't find the controls to scale my (insert frame name) frame.
 A. With the options window open, mouse over the frame you want to scale and the scaling controls for those frames will appear.
 
-Q. What are the hand icons above my target and party member names?
+Q. What are the hand icons above my target's name?
 A. If you see the hand, you are further away than 30 yards from that unit.
 
 Q. Can you make that 40 yards instead please?
@@ -75,7 +69,7 @@ A. No. Another limitation of the WoW API. We can only check if you're within 4 p
 Q. Can I see raid member's pets?
 A. Yes. From the Blizzard Raid UI, drag out either a group or a class while holding down the Control key. This will create the usual pullout raid view, but with their pets instead where the players are pet classes.
 
-Q. X-Perl does a lot of background work (MT Targets, Assists Frame, Fading Frames, Combat Flashes) and such. Does these slow down my system?
+Q. X-Perl does a lot of background work (Fading Frames, Combat Flashes) and such. Does these slow down my system?
 A. Not really. A lot of work has been put into improving on the original Nymbia code, which is many times more efficient in performance and memory usage. The processes that X-Perl does do not even come close to losing what was gained from optimizations.
 
 Q. Why does my Player frame lose it's position when I login?

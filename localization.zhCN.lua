@@ -14,12 +14,7 @@ XPERL_MINIMAP_HELP5	= "|c00FFFFFFAlt|r  X-Perl 内存占用"
 XPERL_MINIMAP_HELP6	= "|c00FFFFFF+Shift|r  X-Perl 启用以来的内存占用"
 
 XPERL_MINIMENU_OPTIONS	= "选项"
-XPERL_MINIMENU_ASSIST	= "显示助手窗口"
-XPERL_MINIMENU_CASTMON	= "显示施法监控窗口"
-XPERL_MINIMENU_RAIDAD	= "显示团队管理窗口"
-XPERL_MINIMENU_ITEMCHK	= "显示物品检查窗口"
 XPERL_MINIMENU_RAIDBUFF = "团队Buff"
-XPERL_MINIMENU_ROSTERTEXT="名单文字"
 XPERL_MINIMENU_RAIDSORT = "分组设置"
 XPERL_MINIMENU_RAIDSORT_GROUP = "按照队伍"
 XPERL_MINIMENU_RAIDSORT_CLASS = "按照职业"
@@ -32,15 +27,6 @@ XPERL_TYPE_ELITE	= "精英"
 XPERL_TYPE_RARE		= "稀有"
 
 -- Zones
-XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "毒蛇神殿"
-XPERL_LOC_ZONE_BLACK_TEMPLE = "黑暗神殿"
-XPERL_LOC_ZONE_HYJAL_SUMMIT = "海加尔峰"
-XPERL_LOC_ZONE_KARAZHAN = "卡拉赞"
-XPERL_LOC_ZONE_SUNWELL_PLATEAU = "太阳之井高地"
-XPERL_LOC_ZONE_ULDUAR = "奥杜尔"
-XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "十字军的试炼"
-XPERL_LOC_ZONE_ICECROWN_CITADEL = "冰冠堡垒"
-XPERL_LOC_ZONE_RUBY_SANCTUM = "红玉圣殿"
 
 -- Status
 XPERL_LOC_DEAD		= DEAD		--"死亡"
@@ -48,11 +34,16 @@ XPERL_LOC_GHOST		= "幽灵"
 XPERL_LOC_FEIGNDEATH	= "假死"
 XPERL_LOC_OFFLINE	= PLAYER_OFFLINE	--"离线"
 XPERL_LOC_RESURRECTED	= "已被复活"
-XPERL_LOC_SS_AVAILABLE	= "灵魂已保存"
 XPERL_LOC_UPDATING	= "更新中"
-XPERL_LOC_ACCEPTEDRES	= "已接受"
 XPERL_RAID_GROUP		= "小队 %d"
 XPERL_RAID_GROUPSHORT	= "%d 队"
+XPERL_RAID_TOOLTIP_OFFLINE	= "离线计时： %s"
+XPERL_RAID_TOOLTIP_AFK		= "暂离计时： %s"
+XPERL_RAID_TOOLTIP_DND		= "勿扰计时： %s"
+XPERL_RAID_TOOLTIP_DYING	= "死亡倒计时： %s"
+XPERL_RAID_RESSING		= "正在复活"
+XPERL_RAID_AFK			= "暂离"
+XPERL_RAID_RESSER_AVAIL		= "可以复活者: "
 
 XPERL_LOC_NONEWATCHED	= "无监控"
 
@@ -61,8 +52,6 @@ XPERL_LOC_STATUSTIPLIST = {
 	HOT = "持续治疗",
 	AGGRO = "你仇恨过高了",
 	MISSING = "你的职业 buff 消失",
-	HEAL = "正被治疗",
-	SHIELD = "盾"
 }
 
 XPERL_OK            	= "确定"
@@ -93,7 +82,7 @@ XPERL_DRAGHINT1		= "|c00FFFFFF点击|r 改变窗口比例"
 XPERL_DRAGHINT2		= "|c00FFFFFFShift+单击|r 改变窗口大小"
 
 -- Usage
-XPerlUsageNameList = {XPerl = "主体文件", XPerl_Player = "玩家", XPerl_PlayerPet = "玩家宠物", XPerl_Target = "目标", XPerl_TargetTarget = "目标的目标", XPerl_Party = "队伍", XPerl_PartyPet = "队友宠物", XPerl_RaidFrames = "团队框", XPerl_RaidHelper = "团队助手", XPerl_RaidAdmin = "团队管理", XPerl_TeamSpeak = "TS监视", XPerl_RaidMonitor = "团队监控", XPerl_RaidPets = "团队宠物", XPerl_ArcaneBar = "施法条", XPerl_PlayerBuffs = "玩家增益", XPerl_GrimReaper = "死神之收割"}
+XPerlUsageNameList = {XPerl = "主体文件", XPerl_Player = "玩家", XPerl_PlayerPet = "玩家宠物", XPerl_Target = "目标", XPerl_TargetTarget = "目标的目标", XPerl_Party = "队伍", XPerl_PartyPet = "队友宠物", XPerl_RaidFrames = "团队框", XPerl_RaidPets = "团队宠物", XPerl_ArcaneBar = "施法条", XPerl_PlayerBuffs = "玩家增益"}
 XPERL_USAGE_MEMMAX	= "UI Mem Max: %d"
 XPERL_USAGE_MODULES	= "模块: "
 XPERL_USAGE_NEWVERSION	= "*新版本"
@@ -107,10 +96,5 @@ XPERL_CANNOT_DELETE_BADARGS = "请输入服务器以及玩家名"
 XPERL_CONFIG_LIST		= "配置列表:"
 XPERL_CONFIG_CURRENT		= " (当前)"
 
-XPerl_DefaultRangeSpells.ANY = {item = "厚灵纹布绷带"}
-
-XPERL_RAID_TOOLTIP_WITHBUFF	= "有该buff的成员： (%s)"
-XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "无该buff的成员： (%s)"
-XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s的%s将在%s后过期"	-- Name, buff name, time to expire
 
 end

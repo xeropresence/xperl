@@ -1,0 +1,135 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<Script file="Player.lua"/>
+
+	<!-- One death knight rune (XPerl_RuneButtonIndividual1..6) -->
+	<Button name="XPerl_RuneButtonIndividualTemplate" virtual="true">
+		<Size x="22" y="22"/>
+		<Frames>
+			<Cooldown name="$parentCooldown" parentKey="cooldown" drawEdge="true" frameStrata="LOW">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+				</Anchors>
+			</Cooldown>
+			<Frame frameStrata="MEDIUM" setAllPoints="true" name="$parentShine">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentTexture" file="Interface\ComboFrame\ComboPoint" alphaMode="ADD" hidden="true">
+							<Size x="60" y="35"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+							<TexCoords left="0.5625" right="1" top="0" bottom="1"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentRune" file="Interface\PlayerFrame\UI-PlayerFrame-Deathknight-Blood" parentKey="rune">
+					<Anchors>
+						<Anchor point="TOPLEFT" x="1" y="-1"/>
+						<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+	</Button>
+
+	<Button name="XPerl_Player" inherits="XPerl_UnitButtonTemplate" parent="UIParent">
+		<Size x="220" y="60"/>
+		<HitRectInsets>
+			<AbsInset left="2" right="2" top="2" bottom="2"/>
+		</HitRectInsets>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="23" y="-12"/>
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_PlayerFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="player"/>
+			<KeyValue key="initialUnit" value="player"/>
+			<KeyValue key="blizzardFrame" value="PlayerFrame"/>
+			<KeyValue key="editModeLabel" value="PLAYER" type="global"/>
+		</KeyValues>
+		<Frames>
+			<Frame name="$parentportraitFrame" parentKey="portraitFrame" inherits="XPerl_Portrait_Template">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="2" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentportraitFrame" relativePoint="TOPRIGHT" x="-3" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<FontString name="$parentgroup" parentKey="group" inherits="GameFontNormalSmall" text="G" hidden="true" justifyH="LEFT">
+							<Anchors>
+								<Anchor point="LEFT" x="8" y="1"/>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+							<Color r="0.7" g="0.7" b="0.7"/>
+						</FontString>
+						<FontString name="$parentpvpTimer" parentKey="pvpTimer" inherits="GameFontNormalSmall" hidden="true">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="-1" y="-8"/>
+							</Anchors>
+							<Color r="1" g="1" b="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Button>
+
+			<Frame name="$parentlevelFrame" parentKey="levelFrame" inherits="XPerl_UnitLevelFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentportraitFrame" relativePoint="TOPLEFT" x="2" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentclassFrame" parentKey="classFrame" inherits="XPerl_UnitClassIconTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentportraitFrame" relativePoint="BOTTOMLEFT" x="-1" y="2"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" inherits="XPerl_Stats_Template">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame" relativePoint="BOTTOMLEFT" x="0" y="2"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentgroupFrame" parentKey="groupFrame" inherits="BackdropTemplate" hidden="true">
+				<Size x="65" y="18"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentnameFrame" relativePoint="TOPLEFT" x="1" y="-2"/>
+				</Anchors>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="XPERL_BACKDROP_PLAYER_GROUP" type="global"/>
+				</KeyValues>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parenttext" parentKey="text" inherits="GameFontHighlightSmall" text="Error!" setAllPoints="true">
+							<Color r="0.7" g="0.7" b="0.7"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnLoad inherit="prepend">
+						XPerl_RegisterUnitText(self.text)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parenthitIndicator" parentKey="hitIndicator" inherits="XPerl_UnitHitIndicatorTemplate"/>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate"/>
+
+			<Frame name="$parentbuffFrame" parentKey="buffFrame">
+				<Size x="1" y="1"/>
+			</Frame>
+		</Frames>
+	</Button>
+</Ui>

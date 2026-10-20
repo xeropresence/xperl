@@ -20,12 +20,7 @@ XPERL_MINIMAP_HELP5		= "|c00FFFFFFAlt|r per info sull'uso di memoria di X-Perl"
 XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Maiusc|r per l'uso di memoria di X-Perl dall'avvio"
 
 XPERL_MINIMENU_OPTIONS	= "Opzioni"
-XPERL_MINIMENU_ASSIST	= "Visualizza finestra assist"
-XPERL_MINIMENU_CASTMON	= "Visualizza monitor dei lanci delle magie"
-XPERL_MINIMENU_RAIDAD	= "Visualizza Amministratore Incursione"
-XPERL_MINIMENU_ITEMCHK	= "Visualizza Controllo Oggetti"
 XPERL_MINIMENU_RAIDBUFF = "Buff Incursione"
-XPERL_MINIMENU_ROSTERTEXT="Roster Text"
 XPERL_MINIMENU_RAIDSORT = "Riorganizzazione Incursione"
 XPERL_MINIMENU_RAIDSORT_GROUP = "Organizza per gruppo"
 XPERL_MINIMENU_RAIDSORT_CLASS = "Organizza per classe"
@@ -38,18 +33,6 @@ XPERL_TYPE_ELITE	= "Elite"
 XPERL_TYPE_RARE 	= "Raro"
 
 -- Zones
-XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Serpentshrine Cavern"
-XPERL_LOC_ZONE_BLACK_TEMPLE = "Tempio Nero"
-XPERL_LOC_ZONE_HYJAL_SUMMIT = "Hyjal Summit"
-XPERL_LOC_ZONE_KARAZHAN = "Karazhan"
-XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Sunwell Plateau"
-XPERL_LOC_ZONE_NAXXRAMAS = "Naxxramas"
-XPERL_LOC_ZONE_OBSIDIAN_SANCTUM = "The Obsidian Sanctum"
-XPERL_LOC_ZONE_EYE_OF_ETERNITY = "The Eye of Eternity"
-XPERL_LOC_ZONE_ULDUAR = "Ulduar"
-XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Trial of the Crusader"
-XPERL_LOC_ZONE_ICECROWN_CITADEL = "Corona di Ghiaccio"
-XPERL_LOC_ZONE_RUBY_SANCTUM = "The Ruby Sanctum"
 --Any zones 4.x and higher can all be localized from EJ, in 5.0, even these above zones are in EJ which means the rest can go bye bye too
 
 -- Status
@@ -58,11 +41,16 @@ XPERL_LOC_GHOST 	= "Spirito"
 XPERL_LOC_FEIGNDEATH	= "Finta morte"
 XPERL_LOC_OFFLINE	= PLAYER_OFFLINE	-- "Offline"
 XPERL_LOC_RESURRECTED	= "Riportato in vita"
-XPERL_LOC_SS_AVAILABLE	= "SS Disponibile"
 XPERL_LOC_UPDATING	= "In aggiornamento"
-XPERL_LOC_ACCEPTEDRES	= "Accettata"		-- Res accepted
 XPERL_RAID_GROUP	= "Gruppo %d"
 XPERL_RAID_GROUPSHORT	= "G%d"
+XPERL_RAID_TOOLTIP_OFFLINE	= "Offline da %s"
+XPERL_RAID_TOOLTIP_AFK		= "Assente da %s"
+XPERL_RAID_TOOLTIP_DND		= "DND da %s"
+XPERL_RAID_TOOLTIP_DYING	= "Morto da %s"
+XPERL_RAID_RESSING		= " sta rivivendo"
+XPERL_RAID_AFK			= "Assente"
+XPERL_RAID_RESSER_AVAIL		= "Curatori Disponibili: "
 
 XPERL_LOC_NONEWATCHED	= "none watched"
 
@@ -71,8 +59,6 @@ XPERL_LOC_STATUSTIPLIST = {
 	HOT = "Cure nel Tempo (HOT)",
 	AGGRO = "Aggressione",
 	MISSING = "Missing your class' buff",
-	HEAL = "Sta per essere curato",
-	SHIELD = "Shielded"
 }
 
 XPERL_OK		= "OK"
@@ -103,7 +89,7 @@ XPERL_DRAGHINT1		= "|c00FFFFFFFai Click|r per riscalare la finestra"
 XPERL_DRAGHINT2		= "|c00FFFFFFFai Maiusc+Click|r per ridimensionare la finestra"
 
 -- Usage
-XPerlUsageNameList = {XPerl = "Core", XPerl_Player = "Giocatore", XPerl_PlayerPet = "Famiglio", XPerl_Target = "Bersaglio", XPerl_TargetTarget = "Bersaglio del bersaglio", XPerl_Party = "Gruppo", XPerl_PartyPet = "Famigli del gruppo", XPerl_RaidFrames = "Finestre del raid", XPerl_RaidHelper = "Aiutante dell'incursione", XPerl_RaidAdmin = "Amministrazione incursione", XPerl_TeamSpeak = "TS Monitor", XPerl_RaidMonitor = "Monitor dell'incursione", XPerl_RaidPets = "Famigli dell'incursione", XPerl_ArcaneBar = "Barra arcana", XPerl_PlayerBuffs = "Benefici del giocatore", XPerl_GrimReaper = "Grim Reaper"}
+XPerlUsageNameList = {XPerl = "Core", XPerl_Player = "Giocatore", XPerl_PlayerPet = "Famiglio", XPerl_Target = "Bersaglio", XPerl_TargetTarget = "Bersaglio del bersaglio", XPerl_Party = "Gruppo", XPerl_PartyPet = "Famigli del gruppo", XPerl_RaidFrames = "Finestre del raid", XPerl_RaidPets = "Famigli dell'incursione", XPerl_ArcaneBar = "Barra arcana", XPerl_PlayerBuffs = "Benefici del giocatore"}
 XPERL_USAGE_MEMMAX	= "IU Mem Max: %d"
 XPERL_USAGE_MODULES = "Moduli: "
 XPERL_USAGE_NEWVERSION	= "*Una nuova versione"
@@ -124,8 +110,5 @@ XPERL_CANNOT_DELETE_BADARGS = "Prego scrivi il del reame e quello del personaggi
 XPERL_CONFIG_LIST		= "Elenco configurazioni:"
 XPERL_CONFIG_CURRENT		= " (In uso)"
 
-XPERL_RAID_TOOLTIP_WITHBUFF	= "Con buff: (%s)"
-XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Senza buff: (%s)"
-XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s ha usato %s che finisce in %s"	-- Name, buff name, time to expire
 
 end

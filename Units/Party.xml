@@ -1,0 +1,216 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<Script file="Party.lua"/>
+
+	<!-- Party member (XPerl_party1..4, children of XPerl_Party_SecureHeader). Anchors and sizes of the parts
+	     follow the portrait and flip settings (Units/Party.lua Layout). -->
+	<Button name="XPerl_Party_FrameTemplate" inherits="XPerl_UnitButtonTemplate" virtual="true">
+		<Size x="160" y="60"/>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_PartyFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="party"/>
+			<KeyValue key="headerChild" value="true" type="boolean"/>
+		</KeyValues>
+		<Frames>
+			<Frame name="$parentportraitFrame" parentKey="portraitFrame" inherits="XPerl_Portrait_Template" hidden="true"/>
+
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
+				<Size x="106" y="24"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+				</Attributes>
+			</Button>
+
+			<!-- Level text and class icon (the icon sits beside the portrait when there is one) -->
+			<Frame name="$parentlevelFrame" parentKey="levelFrame" inherits="XPerl_UnitLevelFrameTemplate">
+				<Size x="30" y="41"/>
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="XPERL_BACKDROP_PARTY_LEVEL" type="global"/>
+				</KeyValues>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentclassTexture" parentKey="classTexture" file="Interface\Glues\CharacterCreate\UI-CharacterCreate-Classes">
+							<Size x="20" y="20"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" inherits="XPerl_Stats_Template">
+				<Size x="142" y="41"/>
+				<Frames>
+					<Frame name="$parentready" hidden="true" setAllPoints="true" toplevel="true">
+						<Layers>
+							<Layer level="OVERLAY">
+								<Texture name="$parentcheck">
+									<Size x="32" y="32"/>
+									<Anchors>
+										<Anchor point="RIGHT" x="-5" y="0"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+						</Layers>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<Frame name="$parentPhasingIcon" parentKey="phasingIcon" hidden="true">
+				<Size x="22" y="22"/>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture file="Interface\TargetingFrame\UI-PhasingIcon" setAllPoints="true">
+							<TexCoords left="0.15625" right="0.84375" top="0.15625" bottom="0.84375"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+						GameTooltip:SetText(PARTY_PHASED_MESSAGE, nil, nil, nil, nil, true)
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave function="GameTooltip_Hide"/>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate"/>
+
+			<Frame name="$parenthitIndicator" parentKey="hitIndicator" inherits="XPerl_UnitHitIndicatorTemplate"/>
+
+			<Frame name="$parentbuffFrame" parentKey="buffFrame">
+				<Size x="170" y="20"/>
+			</Frame>
+		</Frames>
+	</Button>
+
+	<!-- Party member's target (XPerl_party<N>targetFrame), created by the party frame. Its unit is the party
+	     frame's unit + "target"; it has no events of its own and is polled. -->
+	<Button name="XPerl_Party_TargetTemplate" inherits="XPerl_UnitButtonTemplate" virtual="true">
+		<Size x="120" y="28"/>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_PartyTargetFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="party"/>
+		</KeyValues>
+		<Attributes>
+			<Attribute name="useparent-unit" type="boolean" value="true"/>
+			<Attribute name="unitsuffix" type="string" value="target"/>
+		</Attributes>
+		<Frames>
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+					<Anchor point="BOTTOMRIGHT"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+					<Attribute name="useparent-unitsuffix" type="boolean" value="true"/>
+				</Attributes>
+				<Frames>
+					<StatusBar name="$parenthealthBar" parentKey="healthBar" inherits="XPerlStatusBar" hidden="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="5" y="-16"/>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+						</Anchors>
+						<BarColor r="0" g="0.8" b="0"/>
+					</StatusBar>
+				</Frames>
+			</Button>
+		</Frames>
+	</Button>
+
+	<!-- Party member's pet (XPerl_partypet1..4), beside its party frame's stats -->
+	<Button name="XPerl_Party_PetTemplate" inherits="XPerl_UnitButtonTemplate" virtual="true">
+		<Size x="80" y="50"/>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_PartyPetFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="partypet"/>
+		</KeyValues>
+		<Attributes>
+			<Attribute name="useparent-unit" type="boolean" value="true"/>
+			<Attribute name="unitsuffix" type="string" value="pet"/>
+		</Attributes>
+		<Frames>
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
+				<Size x="80" y="20"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Attributes>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+					<Attribute name="useparent-unitsuffix" type="boolean" value="true"/>
+				</Attributes>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parentlevel" parentKey="level" inherits="GameFontNormalSmall" justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT" x="-5" y="2"/>
+							</Anchors>
+							<Color r="1" g="1" b="0"/>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Button>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" inherits="XPerl_Stats_Template">
+				<Size x="80" y="33"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame" relativePoint="BOTTOMLEFT" x="0" y="4"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentstatsFrame"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentbuffFrame" parentKey="buffFrame">
+				<Size x="170" y="20"/>
+			</Frame>
+		</Frames>
+	</Button>
+
+	<!-- Container moved by Edit Mode; carries party.scale and is sized to cover four party frames -->
+	<Frame name="XPerl_Party_Anchor" mixin="XPerl_PartyAnchorMixin" frameStrata="LOW" parent="UIParent" clampedToScreen="true" movable="true" hidden="true">
+		<Size x="100" y="60"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="0" y="-150"/>
+		</Anchors>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+			<OnEvent method="OnEvent"/>
+		</Scripts>
+	</Frame>
+
+	<Frame name="XPerl_Party_SecureHeader" parent="XPerl_Party_Anchor" inherits="SecurePartyHeaderTemplate" hidden="true">
+		<Size x="100" y="60"/>
+		<Anchors>
+			<Anchor point="TOPLEFT"/>
+		</Anchors>
+		<Attributes>
+			<Attribute name="template" type="string" value="XPerl_Party_FrameTemplate"/>
+			<Attribute name="templateType" type="string" value="Button"/>
+			<Attribute name="minWidth" type="number" value="80"/>
+			<Attribute name="minHeight" type="number" value="10"/>
+		</Attributes>
+	</Frame>
+
+	<Button name="XPerl_party1" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="1">
+		<KeyValues>
+			<KeyValue key="blizzardFrame" value="PartyFrame"/>
+		</KeyValues>
+	</Button>
+	<Button name="XPerl_party2" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="2"/>
+	<Button name="XPerl_party3" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="3"/>
+	<Button name="XPerl_party4" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="4"/>
+
+	<Button name="XPerl_partypet1" inherits="XPerl_Party_PetTemplate" parent="XPerl_party1" id="1"/>
+	<Button name="XPerl_partypet2" inherits="XPerl_Party_PetTemplate" parent="XPerl_party2" id="2"/>
+	<Button name="XPerl_partypet3" inherits="XPerl_Party_PetTemplate" parent="XPerl_party3" id="3"/>
+	<Button name="XPerl_partypet4" inherits="XPerl_Party_PetTemplate" parent="XPerl_party4" id="4"/>
+</Ui>

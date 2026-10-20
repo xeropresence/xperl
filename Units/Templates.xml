@@ -1,0 +1,152 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<!-- Base unit button. A unit type's template or instance inherits this and sets KeyValues:
+	       typeMixin      (global) the type's mixin table, applied over XPerl_UnitFrameMixin
+	       frameKey       config section (XPerlDB[frameKey]) and Edit Mode frame key
+	       initialUnit    unit token at load (omit for group header children)
+	       blizzardFrame  name of the Blizzard frame this one replaces (hidden when the type is enabled)
+	       editModeLabel  (global) Edit Mode label
+	     The element children (name frame, stats, portrait, ...) come from the templates below, declared by
+	     the type with its own anchors, using $parent names so the global child names stay stable.
+	     No parent here: standalone frames set parent="UIParent" themselves; group header children and frames
+	     created with CreateFrame keep the parent they are given. -->
+	<Button name="XPerl_UnitButtonTemplate" inherits="SecureUnitButtonTemplate" virtual="true" clampedToScreen="true" frameStrata="LOW" movable="true" hidden="true">
+		<Scripts>
+			<OnLoad function="XPerl_UnitFrame_OnLoad"/>
+		</Scripts>
+	</Button>
+
+	<!-- Name bar with its icons (the status icons are the unit frame's, Units/UnitFrame.lua); types move or
+	     resize icons in their InitType -->
+	<Button name="XPerl_UnitNameFrameTemplate" inherits="SecureUnitButtonTemplate,BackdropTemplate" virtual="true">
+		<Size x="160" y="24"/>
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="XPERL_BACKDROP_FRAME" type="global"/>
+		</KeyValues>
+		<Layers>
+			<Layer level="BORDER">
+				<Texture name="$parentrangeIcon" parentKey="rangeIcon" file="Interface\Addons\XPerl\images\XPerl_30Yard" hidden="true">
+					<Size x="48" y="19"/>
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="TOP" x="0" y="-2"/>
+					</Anchors>
+					<TexCoords left="0" right="1" top="0" bottom="0.4"/>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<Texture name="$parentpvpIcon" parentKey="pvpIcon" file="Interface\TargetingFrame\UI-PVP-FFA" hidden="true">
+					<Size x="40" y="40"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="-5" y="0"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentwarningIcon" parentKey="warningIcon" file="Interface\Minimap\Ping\ping6" alphaMode="ADD" hidden="true">
+					<Size x="32" y="31"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="2"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentroleIcon" parentKey="roleIcon" file="Interface\GroupFrame\UI-Group-MainAssistIcon" hidden="true">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="10" y="5"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parenttext" parentKey="text" inherits="GameFontNormal">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad function="XPerl_UnitNameFrame_OnLoad" inherit="prepend"/>
+		</Scripts>
+	</Button>
+
+	<!-- Level box (text, or a skull for units far above the player) -->
+	<Frame name="XPerl_UnitLevelFrameTemplate" inherits="XPerl_BorderStyleTemplate" virtual="true">
+		<Size x="27" y="22"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parenttext" parentKey="text" inherits="GameFontNormalSmall" text="0" setAllPoints="true"/>
+				<Texture name="$parentskull" parentKey="skull" file="Interface\TargetingFrame\UI-TargetingFrame-Skull" hidden="true">
+					<Size x="16" y="16"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnLoad inherit="prepend">
+				XPerl_RegisterUnitText(self.text)
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<!-- Class icon -->
+	<Frame name="XPerl_UnitClassIconTemplate" inherits="BackdropTemplate" virtual="true">
+		<Size x="20" y="20"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentclassTexture" parentKey="classTexture" file="Interface\Glues\CharacterCreate\UI-CharacterCreate-Classes" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<!-- Combat feedback text (damage/heal numbers over the portrait) -->
+	<Frame name="XPerl_UnitHitIndicatorTemplate" frameStrata="HIGH" virtual="true">
+		<Size x="1" y="1"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parenttext" parentKey="text" inherits="NumberFontNormalHuge" hidden="true" text="Error!">
+					<FontHeight>
+						<AbsValue val="30"/>
+					</FontHeight>
+					<Color r="1.0" g="1.0" b="1.0"/>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<!-- Cast bar (Units/CastBar.lua), placed over a unit frame's name frame -->
+	<StatusBar name="XPerl_CastBarTemplate" hidden="true" virtual="true">
+		<BarTexture file="Interface\TargetingFrame\UI-StatusBar"/>
+		<Layers>
+			<Layer level="OVERLAY">
+				<Texture name="$parentbarSpark" parentKey="spark" file="Interface\Addons\XPerl\Images\XPerl_ArcaneBarSpark" hidden="true" alphaMode="ADD">
+					<Size x="28" y="56"/>
+				</Texture>
+				<Texture name="$parentshield" parentKey="shield" file="Interface\GroupFrame\UI-Group-MainTankIcon" alpha="0">
+					<Size x="14" y="14"/>
+					<Anchors>
+						<Anchor point="LEFT" x="1" y="0"/>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentcastTimeText" parentKey="castTimeText" inherits="GameFontHighlight" hidden="true"/>
+				<FontString name="$parentspellText" parentKey="spellText" inherits="GameFontNormalSmall">
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+						<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+					</Anchors>
+					<Color r="1" g="1" b="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentbarFlash" parentKey="flashFrame" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-5" y="12"/>
+					<Anchor point="BOTTOMRIGHT" x="5" y="-12"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parenttex" parentKey="tex" file="Interface\Addons\XPerl\Images\XPerl_ArcaneBarFlash" setAllPoints="true" alphaMode="ADD"/>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</StatusBar>
+</Ui>

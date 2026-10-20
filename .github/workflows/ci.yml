@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+    tags: ["*"]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Camelot and Mainline TOCs are in sync
+        run: python3 .github/scripts/check_tocs.py
+
+      - name: Install Lua 5.1
+        run: sudo apt-get update && sudo apt-get install -y lua5.1
+
+      # The client runs Lua 5.1; a file that does not compile takes the whole
+      # module down at load, so this one is blocking. The client skips a UTF-8
+      # BOM (the localization files start with one) but luac5.1 doesn't, so it
+      # is stripped first.
+      - name: Every Lua file compiles
+        run: |
+          status=0
+          while IFS= read -r -d '' f; do
+            if ! sed '1s/^\xEF\xBB\xBF//' "$f" | luac5.1 -p -; then
+              echo "::error file=$f::$f does not compile"
+              status=1
+            fi
+          done < <(find . -name '*.lua' -not -path './.git/*' -print0)
+          exit $status
+
+      # Informational for now: the 2016 code base still has a few hundred
+      # style warnings (unused locals, shadowing). The undefined-global ones
+      # are the interesting part - read_globals is the client's API, so a
+      # removed call shows up here.
+      - name: luacheck
+        uses: nebularg/actions-luacheck@v1
+        continue-on-error: true
+        with:
+          args: --no-color --codes

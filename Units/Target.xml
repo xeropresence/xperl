@@ -1,0 +1,170 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<Script file="Target.lua"/>
+
+	<!-- Target and focus (Units/Target.lua) -->
+	<Button name="XPerl_TargetFrameTemplate" inherits="XPerl_UnitButtonTemplate" virtual="true">
+		<!-- The size of this frame determines what can be clicked for the menu and moving, hence it is the same size as the name frame. -->
+		<Size x="220" y="60"/>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_TargetFrameMixin" type="global"/>
+		</KeyValues>
+		<Frames>
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+				<Frames>
+					<StatusBar name="$parentcpMeter" parentKey="cpMeter">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="6" y="-6"/>
+							<Anchor point="BOTTOMRIGHT" x="-6" y="6"/>
+						</Anchors>
+						<BarTexture name="$parentTex" file="Interface\TargetingFrame\UI-StatusBar">
+							<TexCoords left=".8" right="1" top=".8" bottom="1"/>
+						</BarTexture>
+						<BarColor r="0" g="0" b="1" a="0.25"/>
+					</StatusBar>
+				</Frames>
+			</Button>
+
+			<Frame name="$parentportraitFrame" parentKey="portraitFrame" inherits="XPerl_Portrait_Template">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame" relativePoint="TOPRIGHT" x="-2" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentlevelFrame" parentKey="levelFrame" inherits="XPerl_UnitLevelFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentportraitFrame" relativePoint="TOPRIGHT" x="-2" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentcreatureTypeFrame" parentKey="creatureTypeFrame" inherits="XPerl_BorderStyleTemplate">
+				<Size x="68" y="22"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentportraitFrame" relativePoint="BOTTOMRIGHT" x="0" y="2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parenttext" parentKey="text" inherits="GameFontNormalSmall" text="none" setAllPoints="true"/>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Frame name="$parenttypeFramePlayer" parentKey="classFrame" inherits="XPerl_UnitClassIconTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentportraitFrame" relativePoint="BOTTOMRIGHT" x="2" y="2"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentbossFrame" parentKey="bossFrame" inherits="XPerl_BorderStyleTemplate">
+				<Size x="38" y="20"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentportraitFrame" relativePoint="BOTTOMRIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parenttext" parentKey="text" inherits="GameFontNormalSmall" text="Elite">
+							<Anchors>
+								<Anchor point="TOPLEFT"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Frame name="$parentcpFrame" parentKey="cpFrame" inherits="XPerl_BorderStyleTemplate" hidden="true">
+				<Size x="26" y="22"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentlevelFrame" relativePoint="TOPRIGHT" x="-4" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString name="$parenttext" parentKey="text" inherits="GameFontNormalSmall" text="0" setAllPoints="true"/>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" inherits="XPerl_Stats_Template">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentnameFrame" relativePoint="BOTTOM" x="0" y="2"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentfocusTarget" parentKey="focusTarget" file="Interface\Addons\XPerl\images\XPerl_Highlight" alphaMode="ADD" setAllPoints="true" hidden="true">
+							<TexCoords left="0" right="1" top="0.5" bottom="1"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Frame name="$parenteliteFrame" parentKey="eliteFrame" hidden="true">
+				<Size x="128" y="128"/>
+				<Anchors>
+					<Anchor point="RIGHT" x="40" y="-5"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture name="$parenttex" parentKey="tex" file="Interface\Addons\XPerl\Images\XPerl_Elite" setAllPoints="true"/>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentportraitFrame" x="26" y="-1"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parenthitIndicator" parentKey="hitIndicator" inherits="XPerl_UnitHitIndicatorTemplate"/>
+
+			<Frame name="$parentbuffFrame" parentKey="buffFrame">
+				<Size x="100" y="50"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentstatsFrame" relativePoint="BOTTOMLEFT" x="2" y="0"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Button>
+
+	<Button name="XPerl_Target" inherits="XPerl_TargetFrameTemplate" parent="UIParent">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="271" y="-12"/>
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="frameKey" value="target"/>
+			<KeyValue key="initialUnit" value="target"/>
+			<KeyValue key="blizzardFrame" value="TargetFrame"/>
+			<KeyValue key="editModeLabel" value="TARGET" type="global"/>
+			<KeyValue key="threatRelative" value="player"/>
+		</KeyValues>
+	</Button>
+
+	<Button name="XPerl_Focus" inherits="XPerl_TargetFrameTemplate" parent="UIParent">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="271" y="-200"/>
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="frameKey" value="focus"/>
+			<KeyValue key="initialUnit" value="focus"/>
+			<KeyValue key="blizzardFrame" value="FocusFrame"/>
+			<KeyValue key="editModeLabel" value="FOCUS" type="global"/>
+		</KeyValues>
+		<Frames>
+			<Frame>
+				<Size x="28" y="14"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="XPerl_FocusnameFrame"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parent_FocusIcon" file="Interface\Addons\XPerl\Images\XPerl_EyeBall"/>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</Button>
+</Ui>

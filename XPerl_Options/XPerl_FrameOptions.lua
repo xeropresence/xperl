@@ -4,9 +4,7 @@
 
 XPerl_SetModuleRevision("$Revision$")
 
-local localGroups = LOCALIZED_CLASS_NAMES_MALE
-local WoWclassCount = 0
-for k,v in pairs(localGroups) do WoWclassCount = WoWclassCount + 1 end
+local WoWclassCount = XPERL_RAID_CLASS_COUNT	-- Raid class columns (XPerl.lua)
 
 
 function XPerl_OptionsFrame_DisableSlider(slider)
@@ -54,14 +52,11 @@ function XPerl_OptionsFrame_SelectFrame(frame)
 end
 
 -- XPerl_OptionsSetMyText
-function XPerl_OptionsSetMyText(f, str, keep)
-
+-- Label and tooltip from the localization globals str and str_DESC. The globals stay: the Edit Mode
+-- dialogs (XPerl_EditModeSettings.lua) use the same strings.
+function XPerl_OptionsSetMyText(f, str)
 	if (f and str) then
 		local textFrame = _G[f:GetName().."Text"]
-
-		if (not keep and not strfind(str, "^XPERL")) then
-			ChatFrame1:AddMessage("WARNING: Not keeping '"..str.."'")
-		end
 
 		if (textFrame) then
 			textFrame:SetText(_G[str])
@@ -74,11 +69,6 @@ function XPerl_OptionsSetMyText(f, str, keep)
 		elseif ((f.GetFrameType or f.GetObjectType)(f) == "Button") then
 			f:SetText(_G[str])
 			f.tooltipText = _G[str.."_DESC"]
-		end
-
-		if (not keep) then
-			setglobal(str, nil)
-			setglobal(str.."_DESC", nil)
 		end
 	end
 end
@@ -261,18 +251,6 @@ function XPerl_Options_GetSiblingChecked(name,self)
 	return _G[prefix..name]:GetChecked()
 end
 
--- XPerl_Raid_OptionActions
-function XPerl_Raid_OptionActions()
-	if (XPerl_Raid_Position) then
-		XPerl_Raid_Position()
-		XPerl_Raid_Set_Bits(XPerl_Raid_Frame)
-		XPerl_Raid_UpdateDisplayAll()
-		if (XPerl_RaidPets_OptionActions) then
-			XPerl_RaidPets_OptionActions()
-		end
-	end
-end
-
 -- XPerl_Options_OnUpdate
 function XPerl_Options_OnUpdate(self,arg1)
 
@@ -297,7 +275,7 @@ function XPerl_Options_OnUpdate(self,arg1)
 	                self.Fading = nil
 		end
 	else
-		local f = GetMouseFocus()
+		local f = GetMouseFoci()[1]
 		if (f) then
 			local n = f:GetName()
 			if (n) then
@@ -525,7 +503,7 @@ local function GetPlayerList()
 	if (XPerlConfigNew) then
 		local me = GetRealmName().." / "..UnitName("player")
 		for realmName, realmConfig in pairs(XPerlConfigNew) do
-			if (type(realmConfig) == "table" and realmName ~= "global" and realmName ~= "savedPositions") then
+			if (type(realmConfig) == "table" and not XPerl_ConfigReservedKeys[realmName]) then
 				for playerName, settings in pairs(realmConfig) do
 					local entry = realmName.." / "..playerName
 
@@ -600,32 +578,39 @@ function XPerl_Options_Anchor_OnClick(self)
 	UIDropDownMenu_SetSelectedID(obj, MyIndex, 1)
 
 	XPerl_ProtectedCall(obj.setFunc)
-
-	if (XPerl_Party_Virtual) then
-		XPerl_Party_Virtual(true)
-	end
-
-	if (XPerl_RaidTitles) then
-		XPerl_RaidTitles()
-	end
 end
 
 -- CopySelectedSettings
+-- Copies another character's account-wide settings into the settings slot in use. Frame settings follow the
+-- Edit Mode layouts, so the slot keeps its own frame sections.
 local CopyFrom
 local function CopySelectedSettings()
-	--ChatFrame7:AddMessage("Copying settings from "..CopyFrom)
-	--UIDropDownMenu_SetSelectedID(XPerl_Options_DropDown_LoadSettings, self:GetID(), 1)
+	XPerl_EditMode_DetachConfig()
 
-	XPerlDB = XPerl_CopyTable(CopyFrom.config)
+	local realm, name = GetRealmName(), UnitName("player")
+	local current
+	if (XPerlConfigSavePerCharacter) then
+		current = XPerlConfigNew[realm] and XPerlConfigNew[realm][name]
+	else
+		current = XPerlConfigNew.global
+	end
+
+	local new = XPerl_CopyTable(CopyFrom.config)
+	if (current) then
+		for _, key in ipairs(XPerl_FrameConfigKeys) do
+			if (current[key] ~= nil) then
+				new[key] = current[key]
+			end
+		end
+	end
 
 	if (XPerlConfigSavePerCharacter) then
-		if (not XPerlConfigNew[GetRealmName()]) then
-			XPerlConfigNew[GetRealmName()] = {}
+		if (not XPerlConfigNew[realm]) then
+			XPerlConfigNew[realm] = {}
 		end
-
-		XPerlConfigNew[GetRealmName()][UnitName("player")] = XPerlDB
+		XPerlConfigNew[realm][name] = new
 	else
-		XPerlConfigNew[GetRealmName()].global = XPerlDB
+		XPerlConfigNew.global = new
 	end
 
 	XPerl_GiveConfig()
@@ -842,25 +827,12 @@ local function GetSpell()
 	return XPerlDB and XPerlDB.rangeFinder[XPerl_Options.optRange].spell
 end
 
--- GetItem
-local function GetItem()
-	return XPerlDB and XPerlDB.rangeFinder[XPerl_Options.optRange].item
-end
-
 -- XPerl_Options_GetRangeTexture
 function XPerl_Options_GetRangeTexture(self)
 	local spell = GetSpell()
 	if (spell) then
-		local tex = GetSpellTexture(spell)
+		local tex = C_Spell.GetSpellTexture(spell)
 		return tex, spell
-	end
-
-	local item = GetItem()
-	if (item) then
-		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, invTexture = GetItemInfo(item)
-		if (itemName) then
-			return invTexture, itemName
-		end
 	end
 
 	return ""
@@ -873,105 +845,25 @@ function XPerl_Options_DoRangeTooltip(self)
 
 	local spell = GetSpell()
 	if (spell) then
-		local link = GetSpellLink(spell)
+		local link = C_Spell.GetSpellLink(spell)
 		if (link) then
 			GameTooltip:SetHyperlink(link)
 		else
-			GameTooltip:SetText(spell or UNKNOWN, 1, 1, 1)
+			GameTooltip:SetText(spell, 1, 1, 1)
 		end
 
 		GameTooltip:AddLine(" ")
-		if (XPerlDB.rangeFinder[XPerl_Options.optRange].spell) then
-			GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC, 0.5, 1, 0.5)
-		else
-			GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC2, 0.5, 1, 0.5)
-		end
-		GameTooltip:Show()
-		return
+		GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC, 0.5, 1, 0.5)
+	else
+		GameTooltip:SetText(XPERL_CONF_CUSTOMSPELL, 1, 1, 1)
+		GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC2, 0.5, 1, 0.5)
 	end
-
-	local item = GetItem()
-	if (item) then
-		local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, invTexture = GetItemInfo(item)
-		if (itemName) then
-			local itemId = strmatch(itemLink, "item:(%d+):");
-   			if (itemId) then
-				local newLink = format("item:%d:0:0:0", itemId)
-				GameTooltip:SetHyperlink(newLink)
-
-				GameTooltip:AddLine(" ")
-				if (XPerlDB.rangeFinder[XPerl_Options.optRange].CustomRangeItem) then
-					GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC, 0.5, 1, 0.5)
-				else
-					GameTooltip:AddLine(XPERL_CONF_CUSTOMSPELL_DESC2, 0.5, 1, 0.5)
-				end
-				GameTooltip:Show()
-			end
-		end
-	end
-end
-
--- DefaultRaidClasses
-local function DefaultRaidClasses()
-	
-		return {
-			{enable = true, name = "WARRIOR"},
-			{enable = true, name = "DEATHKNIGHT"},
-			{enable = true, name = "ROGUE"},
-			{enable = true, name = "HUNTER"},
-			{enable = true, name = "MAGE"},
-			{enable = true, name = "WARLOCK"},
-			{enable = true, name = "PRIEST"},
-			{enable = true, name = "DRUID"},
-			{enable = true, name = "SHAMAN"},
-			{enable = true, name = "PALADIN"},
-			{enable = true, name = "MONK"},
-		}
-end
-
--- ValidateClassNames
-local function ValidateClassNames(part)
-	-- This should never happen, but I'm sure someone will find a way to break it
-
-	local list = {WARRIOR = false, MAGE = false, ROGUE = false, DRUID = false,
-				HUNTER = false, SHAMAN = false, PRIEST = false,	WARLOCK = false, PALADIN = false, DEATHKNIGHT = false, MONK = false}
-	local valid
-	if (part.class) then
-		local classCount = 0
-		for i,info in pairs(part.class) do
-			if (type(info) == "table" and info.name) then
-				classCount = classCount + 1
-			end
-		end
-		if (classCount == WoWclassCount) then
-			valid = true
-		end
-
-		if (valid) then
-			for i = 1,WoWclassCount do
-				if (part.class[i]) then
-					list[part.class[i].name] = true
-				end
-			end
-		end
-	end
-
-	if (valid) then
-		for k,v in pairs(list) do
-			if (not v) then
-				valid = nil
-			end
-		end
-	end
-
-	if (not valid) then
-		part.class = DefaultRaidClasses(true)
-	end
+	GameTooltip:Show()
 end
 
 -- SetClassNames
 local function SetClassNames(self)
-	ValidateClassNames(XPerlDB.raid)
+	XPerl_ValidateRaidClasses(XPerlDB.raid)
 
 	local prefix = self:GetParent():GetParent():GetName().."_"
 	for i = 1,WoWclassCount do
@@ -988,7 +880,7 @@ end
 function XPerl_Options_MoveRaidClassUp(self)
 	local i = self:GetID()
 
-	ValidateClassNames(XPerlDB.raid)
+	XPerl_ValidateRaidClasses(XPerlDB.raid)
 
 	local save = XPerlDB.raid.class[i].name
 	XPerlDB.raid.class[i].name = XPerlDB.raid.class[i - 1].name
@@ -1001,7 +893,7 @@ end
 function XPerl_Options_MoveRaidClassDown(self)
 	local i = self:GetID()
 
-	ValidateClassNames(XPerlDB.raid)
+	XPerl_ValidateRaidClasses(XPerlDB.raid)
 
 	local save = XPerlDB.raid.class[i]
 	XPerlDB.raid.class[i] = XPerlDB.raid.class[i + 1]
@@ -1012,8 +904,6 @@ end
 
 -- XPerl_Options_RaidSelectAll
 function XPerl_Options_RaidSelectAll(self, enable)
-
-	local val
 	local prefix = self:GetParent():GetName().."_"
 
 	for i = 1,WoWclassCount do
@@ -1040,100 +930,187 @@ function XPerl_Options_RaidSelectAll(self, enable)
 		end
 	end
 
-	XPerl_Raid_ChangeAttributes()
 	XPerl_Raid_OptionActions()
 end
 
 -- XPerl_Options_SetupStatsFrames
 function XPerl_Options_SetupStatsFrames()
 
-	if (XPerl_Player) then
-		XPerl_StatsFrameSetup(XPerl_Player, {XPerl_Player.statsFrame.druidBar, XPerl_Player.statsFrame.xpBar, XPerl_Player.statsFrame.repBar})
-	end
-	if (XPerl_Player_Pet) then
-		XPerl_StatsFrameSetup(XPerl_Player_Pet, nil, 2)
-	end
-	XPerl_StatsFrameSetup(XPerl_Target)
-	XPerl_StatsFrameSetup(XPerl_Focus)
-	XPerl_StatsFrameSetup(XPerl_TargetTarget)
-	XPerl_StatsFrameSetup(XPerl_TargetTargetTarget)
-	XPerl_StatsFrameSetup(XPerl_FocusTarget)
-	XPerl_StatsFrameSetup(XPerl_PetTarget)
-
-	for i = 1,4 do
-		XPerl_StatsFrameSetup(_G["XPerl_party"..i])
-		XPerl_StatsFrameSetup(_G["XPerl_partypet"..i], nil, 2)
-	end
+	-- Raid and raid pet buttons have their own compact bars (no mana bar / percent text by default)
+	XPerl_ForEachUnitFrame(function(frame)
+		local sf = frame.statsFrame
+		if (sf and sf.healthBar and sf.healthBar.percent and sf.manaBar and sf.manaBar.percent) then
+			XPerl_StatsFrameSetup(frame, frame:GetExtraBars(), frame.statsOffset)
+		end
+	end)
 end
 
 
 
 
 -- XPerl_Player_Reset()
+-- Options refresh for the player frame (settings, then a full redraw)
 function XPerl_Player_Reset()
-	if (XPerl_Player) then
-		XPerl_Player_Set_Bits(XPerl_Player)
-		XPerl_Player_UpdateDisplay(XPerl_Player)
-		if (XPerl_Player_BuffSetup) then
-			XPerl_Player.buffOptMix = nil
-			XPerl_Player_BuffSetup(XPerl_Player)
-		end
-	end
+	XPerl_Player:ApplySettings()
 end
 
 -- XPerl_Player_Pet_Reset
+-- Options refresh for the pet frame
 function XPerl_Player_Pet_Reset()
-	if (XPerl_Player_Pet) then
-		XPerl_Player_Pet_Set_Bits(XPerl_Player_Pet)
-		XPerl_Player_Pet_UpdateDisplay(XPerl_Player_Pet)
-	end
+	XPerl_Player_Pet:ApplySettings()
 end
 
 -- XPerl_Target_Reset()
+-- Options refresh for the target and focus frames
 function XPerl_Target_Reset()
-	if (XPerl_Target) then
-		XPerl_Target_Set_Bits(XPerl_Target)
-		XPerl_Target_UpdateDisplay(XPerl_Target)
-	end
+	XPerl_Target:ApplySettings()
+	XPerl_Focus:ApplySettings()
+end
 
-	if (XPerl_Focus) then
-		XPerl_Target_Set_Bits(XPerl_Focus)
-		XPerl_Target_UpdateDisplay(XPerl_Focus)
+-- All -> Frames panel: the frame enable flags (XPerlDB.<key>.enable, 1 or false) with the type a row
+-- depends on. The flags in use when the UI loaded tell whether a reload is needed. A second column switches
+-- each type's heal prediction (XPerlDB.<key>.healPrediction, 1 or false), which belongs to the active Edit Mode
+-- layout like the other frame settings.
+local frameToggles = {
+	{"player", "XPERL_CONF_ADDON_PLAYER"},
+	{"pet", "XPERL_CONF_ADDON_PET"},
+	{"pettarget", "XPERL_CONF_ADDON_PETTARGET", "pet"},
+	{"target", "XPERL_CONF_ADDON_TARGET"},
+	{"targettarget", "XPERL_CONF_ADDON_TARGETTARGET", "target"},
+	{"targettargettarget", "XPERL_CONF_ADDON_TARGETTARGETTARGET", "targettarget"},
+	{"focus", "XPERL_CONF_ADDON_FOCUS"},
+	{"focustarget", "XPERL_CONF_ADDON_FOCUSTARGET", "focus"},
+	{"party", "XPERL_CONF_ADDON_PARTY"},
+	{"partypet", "XPERL_CONF_ADDON_PARTYPET", "party"},
+	{"raid", "XPERL_CONF_ADDON_RAID"},
+	{"raidpet", "XPERL_CONF_ADDON_RAIDPETS", "raid"},
+	{"boss", "XPERL_CONF_ADDON_BOSS"},
+	{"arena", "XPERL_CONF_ADDON_ARENA"},
+}
+
+local function FrameEnabled(key)
+	local section = XPerlDB[key]
+	return (section and section.enable) and true or false
+end
+
+local HEAL_COLUMN = 185		-- from the left of a row's check box; the panel is at least 256 wide
+
+local loadedFrameFlags
+XPerl_RequestConfig(function()
+	if (not loadedFrameFlags) then
+		loadedFrameFlags = {}
+		for _, row in ipairs(frameToggles) do
+			loadedFrameFlags[row[1]] = FrameEnabled(row[1])
+		end
 	end
+end, "$Revision$")
+
+-- UpdateFrameToggles(panel)
+local function UpdateFrameToggles(panel)
+	local changed
+	for _, row in ipairs(frameToggles) do
+		local key, parent = row[1], row[3]
+		local check = panel.toggles[key]
+		local on = FrameEnabled(key)
+		check:SetChecked(on)
+		local available = not parent or FrameEnabled(parent)
+		XPerl_Options_EnableCheck(check, available)
+		local heal = panel.healToggles[key]
+		local section = XPerlDB[key]
+		heal:SetChecked(section and section.healPrediction and true or false)
+		XPerl_Options_EnableCheck(heal, on and available)
+		if (loadedFrameFlags and on ~= loadedFrameFlags[key]) then
+			changed = true
+		end
+	end
+	panel.reload:SetEnabled(changed and true or false)
+end
+
+-- XPerl_Options_FrameToggles_OnLoad
+function XPerl_Options_FrameToggles_OnLoad(self)
+	local name = self:GetName()
+	self.toggles, self.healToggles = {}, {}
+	self.reload = _G[name.."_Reload"]
+	local prev = _G[name.."_Title"]
+	for i, row in ipairs(frameToggles) do
+		local key = row[1]
+		local check = CreateFrame("CheckButton", name.."_"..key, self, "XPerlCheckButtonTemplate")
+		check:SetPoint("TOPLEFT", prev, "BOTTOMLEFT", 0, i == 1 and -3 or 6)
+		XPerl_OptionsSetMyText(check, row[2])
+		check:SetScript("OnShow", nil)
+		check:SetScript("OnClick", function(button)
+			-- One flag per settings slot, whatever the Edit Mode layout
+			XPerl_EditMode_SetFrameEnabledFlag(key, button:GetChecked() and 1 or false)
+			UpdateFrameToggles(self)
+		end)
+		self.toggles[key] = check
+
+		local heal = CreateFrame("CheckButton", name.."_"..key.."_Heal", self, "XPerlCheckButtonTemplate")
+		heal:SetPoint("LEFT", check, "LEFT", HEAL_COLUMN, 0)
+		heal:SetScript("OnShow", nil)
+		heal:SetScript("OnEnter", function(button)
+			GameTooltip:SetOwner(button, "ANCHOR_RIGHT")
+			GameTooltip:SetText(XPERL_CONF_HEALPREDICTION, 1, 1, 1)
+			GameTooltip:AddLine(XPERL_CONF_HEALPREDICTION_DESC, nil, nil, nil, 1)
+			GameTooltip:Show()
+		end)
+		heal:SetScript("OnLeave", GameTooltip_Hide)
+		heal:SetScript("OnClick", function(button)
+			local section = XPerlDB[key]
+			if (section) then
+				section.healPrediction = button:GetChecked() and 1 or false
+				XPerl_OptionActions()
+			end
+		end)
+		self.healToggles[key] = heal
+		if (i == 1) then
+			local header = self:CreateFontString(nil, "ARTWORK", "GameFontNormalSmall")
+			header:SetPoint("BOTTOM", heal, "TOP", 0, -4)
+			header:SetTextColor(1, 1, 1)
+			header:SetText(XPERL_CONF_HEALPREDICTION)
+		end
+		prev = check
+	end
+	self.reload:ClearAllPoints()
+	self.reload:SetPoint("TOPLEFT", prev, "BOTTOMLEFT", 0, 6)
+	self:SetScript("OnShow", UpdateFrameToggles)
 end
 
 -- XPerl_TargetTarget_Reset()
+-- Options refresh for the target's target, its target, the focus target and the pet target
 function XPerl_TargetTarget_Reset()
-	if (XPerl_TargetTarget_Set_Bits) then
-		XPerl_TargetTarget_Set_Bits()
-
-		XPerl_TargetTarget_UpdateDisplay(XPerl_TargetTarget)
-		if (XPerl_TargetTargetTarget) then
-			XPerl_TargetTarget_UpdateDisplay(XPerl_TargetTargetTarget)
-		end
-		if (XPerl_FocusTarget) then
-			XPerl_TargetTarget_UpdateDisplay(XPerl_FocusTarget)
-		end
-		if (XPerl_PetTarget) then
-			XPerl_TargetTarget_UpdateDisplay(XPerl_PetTarget)
-		end
-	end
+	XPerl_TargetTarget:ApplySettings()
+	XPerl_TargetTargetTarget:ApplySettings()
+	XPerl_FocusTarget:ApplySettings()
+	XPerl_PetTarget:ApplySettings()
 end
 
 -- XPerl_Party_Reset()
+-- Options refresh for the party frames; each also applies its target, its pet and (party 1) the anchor
 function XPerl_Party_Reset()
-	if (XPerl_Party_Set_Bits) then
-		XPerl_Party_Set_Bits()
-		XPerl_Party_UpdateDisplayAll()
+	for i = 1, 4 do
+		_G["XPerl_party"..i]:ApplySettings()
 	end
 end
 
 -- XPerl_PartyPet_Reset()
 function XPerl_PartyPet_Reset()
-	if (XPerl_Party_Pet_Set_Bits) then
-		XPerl_Party_Pet_Set_Bits()
-		XPerl_Party_Pet_UpdateDisplayAll()
+	for i = 1, 4 do
+		_G["XPerl_partypet"..i]:ApplySettings()
 	end
+end
+
+-- XPerl_Party_GetGap / XPerl_Party_SetGap: the Party quick panel's spacing (party.spacing)
+function XPerl_Party_GetGap()
+	return XPerlDB.party.spacing
+end
+
+function XPerl_Party_SetGap(newGap)
+	if (type(newGap) ~= "number") then
+		return
+	end
+	XPerlDB.party.spacing = newGap
+	XPerl_Party_Reset()
 end
 
 
@@ -1182,7 +1159,6 @@ function XPerl_Player_SetGap(newGap)
 
 				other:ClearAllPoints()
 				other:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
-				other:SetUserPlaced(true)
 				XPerl_SavePosition(other)
 			end
 		end
@@ -1206,7 +1182,7 @@ function XPerl_Player_AlignTop()
 	if (XPerl_Player) then
 		XPerl_Player:ClearAllPoints()
 		XPerl_Player:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", XPerl_Player:GetLeft() or 5, XPerl_Player:GetTop() or 948)
-		XPerl_Player:SetUserPlaced(true)
+		XPerl_SavePosition(XPerl_Player)
 	end
 
 	local function AlignChildTop(self, other)
@@ -1222,7 +1198,6 @@ function XPerl_Player_AlignTop()
 			other:ClearAllPoints()
 			local newTop = top / other:GetEffectiveScale()
 			other:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", otherLeft, newTop)
-			other:SetUserPlaced(true)
 			XPerl_SavePosition(other)
 		end
 	end
@@ -1234,125 +1209,133 @@ function XPerl_Player_AlignTop()
 	AlignChildTop(XPerl_Player_Pet, XPerl_PetTarget)
 end
 
--- Moving stuff
-function XPerl_Raid_GetGap()
-	if (XPerl_Raid_Grp2) then
-		if (XPerlDB.raid.anchor == "TOP" or XPerlDB.raid.anchor == "BOTTOM") then
-			return floor((floor(((XPerl_Raid_Grp2:GetLeft() or 0) - (XPerl_Raid_Grp1:GetRight() or XPerl_Raid_Grp2:GetLeft() or 80) + 0.01) * 100) / 100))
-		else
-			return floor((floor(((XPerl_Raid_Grp1:GetTop() or XPerl_Raid_Grp2:GetTop() or 200) - (XPerl_Raid_Grp2:GetBottom() or 200) + 0.01) * 100) / 100) - 46)
-		end
-	end
-	return (0)
+-- Raid group placement (quick panel). Titles are moved and their positions stored for the active Edit Mode
+-- layout. Groups side by side (raid.anchor TOP/BOTTOM) are spaced horizontally, stacked groups (LEFT/RIGHT,
+-- each a row of buttons below its title) vertically. The tools move all 13 titles, the ones the sort mode
+-- doesn't use too, so they line up once in use.
+
+local function RaidSideBySide()
+	return XPerlDB.raid.anchor ~= "LEFT" and XPerlDB.raid.anchor ~= "RIGHT"
 end
 
--- InterestingFrames
+-- Height of a raid button below a stacked group's title, in the titles' scale
+local function RaidButtonHeight()
+	return XPerlDB.raid.mana and 43 or 38
+end
+
+-- XPerl_Raid_GetGap
+function XPerl_Raid_GetGap()
+	local first, second = XPerl_Raid_Title1, XPerl_Raid_Title2
+	if (RaidSideBySide()) then
+		local left, right = second:GetLeft(), first:GetRight()
+		return (left and right) and floor(left - right + 0.5) or 0
+	end
+	local bottom, top = first:GetBottom(), second:GetTop()
+	return (bottom and top) and floor(bottom - RaidButtonHeight() - top + 0.5) or 0
+end
+
+-- InterestingFrames: the titles the quick panel's group selector (XPerl_Options.raidAlign) picks
 local function InterestingFrames()
 	local interest = XPerl_Options.raidAlign
-	local ret = {}
-
-	if (interest == "all") then
-		for i = 1,WoWclassCount do
-			tinsert(ret, _G["XPerl_Raid_Title"..i])
-		end
-	elseif (interest == "odd") then
-		for i = 1,WoWclassCount,2 do
-			tinsert(ret, _G["XPerl_Raid_Title"..i])
-		end
+	local first, last, step = 1, WoWclassCount, 1
+	if (interest == "odd") then
+		step = 2
 	elseif (interest == "even") then
-		for i = 2,WoWclassCount,2 do
-			tinsert(ret, _G["XPerl_Raid_Title"..i])
-		end
+		first, step = 2, 2
 	elseif (interest == "first4") then
-		for i = 1,4 do
-			tinsert(ret, _G["XPerl_Raid_Title"..i])
-		end
+		last = 4
 	elseif (interest == "last4") then
-		for i = 5,WoWclassCount do
-			tinsert(ret, _G["XPerl_Raid_Title"..i])
-		end
+		first = 5
+	elseif (interest ~= "all") then
+		return {}
+	end
+	local ret = {}
+	for i = first, last, step do
+		tinsert(ret, _G["XPerl_Raid_Title"..i])
 	end
 	return ret
 end
 
+-- MoveTitle(frame, left, top): TOPLEFT at left/top (the frame's own coordinates), stored for Edit Mode; a
+-- linked raid group stays linked
+local function MoveTitle(frame, left, top)
+	frame:ClearAllPoints()
+	frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
+	XPerl_SavePosition(frame, true)
+end
+
 -- XPerl_Raid_SetGap
 function XPerl_Raid_SetGap(newGap)
-	if (type(newGap) == "number") then
-		local frames = InterestingFrames()
-
-		if (XPerlDB.raid.anchor == "TOP" or XPerlDB.raid.anchor == "BOTTOM") then
-			local framePrev
-
-			for i,frame in pairs(frames) do
-				if (framePrev and frame) then
-					local right = framePrev:GetRight()
-					local top = frame:GetTop()
-
-					frame:ClearAllPoints()
-					frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", right + newGap, top)
-					frame:SetUserPlaced(true)
-					XPerl_SavePosition(frame)
-				end
-
-				framePrev = frame
-			end
-		else
-			local framePrev
-
-			for i,frame in pairs(frames) do
-				if (framePrev and frame) then
-					local bottom = framePrev:GetBottom()
-					local left = frame:GetLeft()
-
-					frame:ClearAllPoints()
-					frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, bottom + newGap - 26)
-					frame:SetUserPlaced(true)
-					XPerl_SavePosition(frame)
-				end
-
-				framePrev = frame
+	if (type(newGap) ~= "number" or InCombatLockdown()) then
+		return
+	end
+	local framePrev
+	for _, frame in ipairs(InterestingFrames()) do
+		if (framePrev) then
+			if (RaidSideBySide()) then
+				MoveTitle(frame, framePrev:GetRight() + newGap, frame:GetTop())
+			else
+				MoveTitle(frame, frame:GetLeft(), framePrev:GetBottom() - RaidButtonHeight() - newGap)
 			end
 		end
+		framePrev = frame
 	end
 end
 
 -- XPerl_Raid_AlignTop
 function XPerl_Raid_AlignTop()
-	if (not XPerl_Raid_Grp1) then
+	local frames = InterestingFrames()
+	if (not frames[1] or InCombatLockdown()) then
 		return
 	end
-
-	local frames = InterestingFrames()
-
 	local top = frames[1]:GetTop()
-
-	for i,frame in pairs(frames) do
-		local left = frame:GetLeft()
-
-		frame:ClearAllPoints()
-		frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
-		frame:SetUserPlaced(true)
-		XPerl_SavePosition(frame)
+	for _, frame in ipairs(frames) do
+		MoveTitle(frame, frame:GetLeft(), top)
 	end
 end
 
 -- XPerl_Raid_AlignLeft
 function XPerl_Raid_AlignLeft()
-	if (not XPerl_Raid_Grp1) then
+	local frames = InterestingFrames()
+	if (not frames[1] or InCombatLockdown()) then
 		return
 	end
-
-	local frames = InterestingFrames()
-
 	local left = frames[1]:GetLeft()
+	for _, frame in ipairs(frames) do
+		MoveTitle(frame, left, frame:GetTop())
+	end
+end
 
-	for i,frame in pairs(frames) do
-		local top = frame:GetTop()
+-- XPerl_Raid_ArrangeGrid(gap)
+-- Puts the 13 raid groups in rows of four from group 1's spot, as many rows deep as it takes, `gap` apart (the
+-- Spacing value, at least 0). Columns are as wide as the widest group and each row as tall as its tallest
+-- group, measured by the groups' placeholders (five buttons; a class column as many as its class has).
+local GRID_COLUMNS = 4
+function XPerl_Raid_ArrangeGrid(gap)
+	local left, top = XPerl_Raid_Title1:GetLeft(), XPerl_Raid_Title1:GetTop()
+	if (InCombatLockdown() or not (left and top)) then
+		return
+	end
+	gap = max(0, tonumber(gap) or 0)
 
-		frame:ClearAllPoints()
-		frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, top)
-		frame:SetUserPlaced(true)
-		XPerl_SavePosition(frame)
+	local titles, columnWidth = {}, 0
+	for i = 1, WoWclassCount do
+		local title = _G["XPerl_Raid_Title"..i]
+		titles[i] = title
+		columnWidth = max(columnWidth, title:GetWidth(), title.virtual:GetWidth())
+	end
+	for rowStart = 1, WoWclassCount, GRID_COLUMNS do
+		local rowEnd = min(rowStart + GRID_COLUMNS - 1, WoWclassCount)
+		local rowHeight = 0
+		for i = rowStart, rowEnd do
+			rowHeight = max(rowHeight, titles[i]:GetHeight() + titles[i].virtual:GetHeight())
+		end
+		for i = rowStart, rowEnd do
+			if (i > 1) then
+				MoveTitle(titles[i], left + (i - rowStart) * (columnWidth + gap), top)
+			end
+		end
+		top = top - rowHeight - gap
 	end
 end
 
@@ -1360,115 +1343,59 @@ end
 -------------------------- LAYOUT STUFF ----------------------------
 --------------------------------------------------------------------
 
+-- Named frame layouts save and load the active Edit Mode layout's frame positions. The list also offers
+-- the positions of the other Edit Mode layouts X-Perl knows (loading copies them into the active one).
+
 -- XPerl_Options_LayoutGetList
+-- {label =, positions =, named =} entries (XPerl_EditMode_PositionSets)
 function XPerl_Options_LayoutGetList(self)
-	local list = {}
-
-	if (XPerlConfigNew.savedPositions) then
-		for realmName,realmList in pairs(XPerlConfigNew.savedPositions) do
-			for playerName,frames in pairs(realmList) do
-				if (realmName == "saved") then
-					tinsert(list, playerName)
-				else
-					tinsert(list, format("%s(%s)", realmName, playerName))
-				end
-			end
-		end
-
-		sort(list)
-	end
-
-	return list
+	return XPerl_EditMode_PositionSets()
 end
 
 -- XPerl_Options_GetLayout
-function XPerl_Options_GetLayout(self, name)
-	if (XPerlConfigNew.savedPositions) then
-		for realmName,realmList in pairs(XPerlConfigNew.savedPositions) do
-			for playerName,frames in pairs(realmList) do
-				local find
-				if (realmName == "saved") then
-					find = playerName
-				else
-					find = format("%s(%s)", realmName, playerName)
-				end
-
-				if (name == find) then
-					return frames
-				end
-			end
+function XPerl_Options_GetLayout(self, label)
+	for _, set in ipairs(XPerl_EditMode_PositionSets()) do
+		if (set.label == label) then
+			return set
 		end
 	end
 end
 
+-- XPerl_Options_LayoutNameChanged
+-- Save takes any new name or an existing named layout; Load any listed entry; Delete only named layouts
+function XPerl_Options_LayoutNameChanged(editBox)
+	local text = editBox:GetText()
+	local set = text and text ~= "" and XPerl_Options_GetLayout(nil, text)
+	local canSave = text and text ~= "" and (not set or set.named)
+
+	XPerl_Options_GetSibling("Save", editBox):SetEnabled(canSave and true or false)
+	XPerl_Options_GetSibling("Load", editBox):SetEnabled(set and true or false)
+	XPerl_Options_GetSibling("Delete", editBox):SetEnabled(set and set.named and true or false)
+end
 
 -- XPerl_Options_SaveFrameLayout
 function XPerl_Options_SaveFrameLayout(name)
-	if (not XPerlConfigNew.savedPositions) then
-		XPerlConfigNew.savedPositions = {}
+	local set = name and name ~= "" and XPerl_Options_GetLayout(nil, name)
+	if (name and name ~= "" and (not set or set.named)) then
+		XPerl_EditMode_SaveNamedPositions(name)
+		return true
 	end
-	if (not XPerlConfigNew.savedPositions.saved) then
-		XPerlConfigNew.savedPositions.saved = {}
-	end
-	XPerlConfigNew.savedPositions.saved[name] = XPerl_CopyTable(XPerl_GetSavePositionTable())
 end
 
 -- XPerl_Options_LoadFrameLayout
 function XPerl_Options_LoadFrameLayout(name)
-	local layout = XPerl_Options_GetLayout(self, name)
-
-	if (layout) then
-		local name = UnitName("player")
-		local realm = GetRealmName()
-
-		if (not XPerlConfigNew.savedPositions) then
-			if (not create) then
-				return
-			end
-			XPerlConfigNew.savedPositions = {}
-		end
-		local c = XPerlConfigNew.savedPositions
-		if (not c[realm]) then
-			if (not create) then
-				return
-			end
-			c[realm] = {}
-		end
-		if (not c[realm][name]) then
-			if (not create) then
-				return
-			end
-			c[realm][name] = {}
-		end
-
-		c[realm][name] = XPerl_CopyTable(layout)
-
-		--XPerlConfigNew.savedPositions.current = XPerl_CopyTable(layout)
-
-		XPerl_RestoreAllPositions()
+	local set = XPerl_Options_GetLayout(nil, name)
+	if (set) then
+		XPerl_EditMode_SetPositions(set.positions)
 	end
 end
 
 -- XPerl_Options_DeleteFrameLayout
 function XPerl_Options_DeleteFrameLayout(name)
-	local me = format("%s(%s)", GetRealmName(), UnitName("player"))
-
-	if (XPerlConfigNew.savedPositions) then
-		for realmName,realmList in pairs(XPerlConfigNew.savedPositions) do
-			for playerName,frames in pairs(realmList) do
-				local find
-				if (realmName == "saved") then
-					find = playerName
-				else
-					find = format("%s(%s)", realmName, playerName)
-				end
-
-				if (name ~= me and name == find) then
-					realmList[playerName] = nil
-					return true
-				end
-			end
-		end
+	local set = XPerl_Options_GetLayout(nil, name)
+	if (set and set.named) then
+		XPerl_EditMode_DeleteNamedPositions(name)
+		return true
 	end
 end
 
@@ -1499,12 +1426,13 @@ function XPerl_Options_LayoutFill(self, setName)
 			break
 		end
 
-		self.line[line].raw = list[i]
+		local set = list[i]
+		self.line[line].raw = set.label
 
-		if (strsub(list[i], strlen(list[i])) == ")") then
-			self.line[line]:SetText("|cFF6060A0"..list[i])
+		if (set.named) then
+			self.line[line]:SetText(set.label)
 		else
-			self.line[line]:SetText(list[i])
+			self.line[line]:SetText("|cFF6060A0"..set.label)
 		end
 
 		self.line[line]:Show()
@@ -1513,7 +1441,7 @@ function XPerl_Options_LayoutFill(self, setName)
 			self.line[line]:LockHighlight()
 
 			if (setName) then
-				newName = list[i]
+				newName = set.label
 			end
 		end
 
@@ -1528,10 +1456,6 @@ function XPerl_Options_LayoutFill(self, setName)
 		end
 	end
 
-	local offset = self.scrollBar.bar:GetValue()
-
-	--frame, numItems, numToDisplay, valueStep, button, smallWidth, bigWidth, highlightFrame, smallHighlightWidth, bigHighlightWidth, alwaysShowScrollBar )
-
 	if (FauxScrollFrame_Update(self.scrollBar, #list, 16, 1)) then
 		self.scrollBar:Show()
 	else
@@ -1542,7 +1466,9 @@ end
 ---------------------------------------------------------------------
 -------------------------- CONFIG IMPORT ----------------------------
 ---------------------------------------------------------------------
-if (XPerlConfig or XPerlConfig_Global) then
+-- Saved variables are not loaded yet while this file runs; the core's ADDON_LOADED settings setup calls the importer
+-- when XPerlConfig/XPerlConfig_Global exist, then drops it
+do
 
 -- Convert		-- Convert old options (we have 1 or nil now instead of 1 or 0)
 local function Convert(opt)
@@ -1563,8 +1489,6 @@ function XPerl_Options_ImportOldConfig(old)
 		bar = {
 			texture		= old.BarTexture,
 			background	= Convert(old.BackgroundTextures),
-			fading		= Convert(old.FadingBars),				-- 1.8.9
-			fadeTime	= old.FadingBarsTime			or 0.5,		-- 1.9.1
 			fat		= Convert(old.FatHealthBars),
 			inverse		= Convert(old.InverseBars),				-- 1.8.6
 		},
@@ -1603,17 +1527,6 @@ function XPerl_Options_ImportOldConfig(old)
 			pos		= old.MinimapButtonPosition	or 186,
 		},
 		combatFlash		= Convert(old.PerlCombatFlash),
-		highlightDebuffs = {
-			enable		= Convert(old.HighlightDebuffs),
-			border		= 1,
-			frame		= 1,
-			class		= Convert(old.HighlightDebuffsClass),
-		},
-		buffHelper = {
-			enable		= Convert(old.BuffTooltipHelper),
-			sort		= old.BuffTooltipHelperSort	or "group",		-- 2.2.5
-			visible		= Convert(old.BuffTooltipHelperVisible or 1),		-- 2.2.9
-		},
 		tooltip = {
 			enable		= Convert(old.UnitTooltips),				-- 2.0.5
 			enableBuffs	= 1,							-- 2.3.4a
@@ -1633,7 +1546,6 @@ function XPerl_Options_ImportOldConfig(old)
 		highlight = {
 			enable			= Convert(old.RaidHighlights),
 			HOT			= Convert(old.RaidHighlightHoTs),
-			SHIELD			= Convert(old.RaidHighlightShields),
 			AGGRO			= Convert(old.RaidHighlightAggro),
 			MISSING			= Convert(old.RaidHighlightMissing),
 			all			= Convert(old.RaidHighlightMissingAll),
@@ -1664,8 +1576,6 @@ function XPerl_Options_ImportOldConfig(old)
 
 			fullScreen = {
 				enable		= Convert(old.FullScreenStatus),
-				lowHP		= old.FullScreenStatusWarn	or 30,
-				highHP		= old.FullScreenStatusOK	or 40,
 			},
 
 			healerMode = {
@@ -1680,7 +1590,6 @@ function XPerl_Options_ImportOldConfig(old)
 				hideBlizzard	= Convert(old.HideBlizzardBuffBar),
 				count		= old.PlayerBuffMaxDisplay	or 40,
 				cooldown	= Convert(old.PlayerBuffsCooldown),
-				flash		= Convert(old.PlayerBuffsFlash),
 				wrap		= 1,			-- 2.3.5
 				rows		= 2,			-- 2.3.5
 			},
@@ -1745,7 +1654,6 @@ function XPerl_Options_ImportOldConfig(old)
 			},
 			pvpIcon			= Convert(old.ShowTargetPVP),			-- 1.8.3
 			scale			= old.Scale_TargetFrame		or 0.8,
-			raidIconAlternate	= Convert(old.AlternateRaidIcon),
 			buffs = {
 				enable		= 1,
 				wrap		= 1,
@@ -1766,10 +1674,6 @@ function XPerl_Options_ImportOldConfig(old)
 				type		= old.HealerModeTargetType	or 1,		-- 1.9.1
 			},
 			defer			= Convert(old.TargetChangeDefer),			-- 1.9.5
-			highlightDebuffs = {
-				enable		= Convert(old.TargetDebuffHighlight),
-				who		= old.TargetDebuffHighlightWho	or 1			-- 2.2.0
-			},
 			size = {
 				width		= old.TargetWidthBonus		or 0,
 			},
@@ -1794,7 +1698,6 @@ function XPerl_Options_ImportOldConfig(old)
 			values			= Convert(old.ShowFocusValues),
 			pvpIcon			= Convert(old.ShowFocusPVP),			-- 1.8.3
 			scale			= old.Scale_FocusFrame		or 0.8,
-			raidIconAlternate	= Convert(old.AlternateRaidIcon),
 			buffs = {
 				enable		= 1,
 				wrap		= 1,
@@ -1815,10 +1718,6 @@ function XPerl_Options_ImportOldConfig(old)
 				type		= old.HealerModeFocusType	or 1,			-- 1.9.1
 			},
 			defer			= Convert(old.TargetChangeDefer),			-- 1.9.5
-			highlightDebuffs = {
-				enable		= Convert(old.FocusDebuffHighlight),
-				who		= old.FocusDebuffHighlightWho	or 1,			-- 2.2.0
-			},
 			size = {
 				width		= old.FocusWidthBonus		or 0,
 			},
@@ -1922,7 +1821,6 @@ function XPerl_Options_ImportOldConfig(old)
 			enable			= 1,
 			castBar = {
 				enable		= Convert(old.ArcaneBarParty),
-				castTime	= Convert(old.CastTime),
 			},
 			spacing			= old.PartySpacing		or 23,
 			anchor			= old.PartyAnchor		or "TOP",
@@ -1977,10 +1875,6 @@ function XPerl_Options_ImportOldConfig(old)
 			debuffs = {
 				enable		= Convert(old.ShowPartyPetBuffs),
 				curable		= old.PartyCurableDebuffs	or 0,
-			},
-			healerMode = {
---				enable		= nil,
-				type		= 1,
 			},
 			mana			= Convert(old.ShowPartyPetMana),			-- 1.9.1
 			level			= Convert(old.ShowPartyPetLevel),			-- 1.9.1
@@ -2101,19 +1995,6 @@ local function XPerl_Global_ConfigDefault(default)
 		enable		= 1,
 	}
 
-	default.highlightDebuffs = {
-		enable		= 1,
-		border		= 1,
-		frame		= 1,
-		class		= 1,
-	}
-
-	default.buffHelper = {
-		enable		= 1,
-		sort		= "group",		-- 2.2.5
-		visible		= 1,			-- 2.2.9
-	}
-
 	default.buffs = {
 		cooldown	= 1,			-- 2.2.3
 		countdown	= 1,			-- 2.2.2
@@ -2144,8 +2025,6 @@ local function XPerl_Global_ConfigDefault(default)
 	default.bar = {
 		texture		= {"Perl v2", "Interface\\Addons\\XPerl\\Images\\XPerl_StatusBar"},
 		background	= 1,
---		fading		= nil,		-- 1.8.9
-		fadeTime	= 0.5,		-- 1.9.1
 		fat		= 1,
 --		inverse		= nil,		-- 1.8.6
 	}
@@ -2153,7 +2032,6 @@ local function XPerl_Global_ConfigDefault(default)
 	default.highlight = {
 		enable			= 1,
 		HOT			= 1,
-		SHIELD			= 1,
 		AGGRO			= 1,
 --		MISSING			= nil,
 --		all			= nil,
@@ -2163,16 +2041,10 @@ end
 
 -- XPerl_Target_ConfigDefault
 local function XPerl_Target_ConfigDefault(default, section)
-	local defaultHD
-	local class = select(2, UnitClass("player"))
-	if (section == "target" and class == "ROGUE") then
-		defaultHD = 1
-		defaultHDwho = 3
-	else
-		defaultHDwho = 2
-	end
 	default[section] = {
 		enable			= 1,
+		healPrediction	= 1,
+		icons			= XPerl_DefaultStatusIcons(section),
 		portrait		= 1,
 		portrait3D		= 1,
 		castBar = {
@@ -2197,7 +2069,6 @@ local function XPerl_Target_ConfigDefault(default, section)
 		},
 		pvpIcon			= 1,			-- 1.8.3
 		scale			= 0.8,
-		raidIconAlternate	= 1,
 		buffs = {
 			enable		= 1,
 			wrap		= 1,
@@ -2218,10 +2089,6 @@ local function XPerl_Target_ConfigDefault(default, section)
 			type		= 1,			-- 1.9.1
 		},
 --		defer			= nil,			-- 1.9.5
-		highlightDebuffs = {
-			enable		= defaultHD,
-			who		= defaultHDwho		-- 2.2.0
-		},
 		size = {
 			width		= 0,
 		},
@@ -2232,9 +2099,11 @@ end
 -- XPerl_Party_ConfigDefault
 local function XPerl_Party_ConfigDefault(default)
 	default.party = {
+		enable			= 1,
+		healPrediction	= 1,
+		icons			= XPerl_DefaultStatusIcons("party"),
 		castBar = {
 			enable		= 1,
-			castTime	= 1,
 		},
 		spacing			= 23,
 		anchor			= "TOP",
@@ -2247,6 +2116,7 @@ local function XPerl_Party_ConfigDefault(default)
 			enable		= 1,
 			large		= 1,
 			size		= 120,			-- 2.0.9
+			icons		= XPerl_DefaultStatusIcons("partytarget"),
 		},
 		level			= 1,
 		name			= 1,
@@ -2285,6 +2155,8 @@ end
 local function XPerl_PartyPet_ConfigDefault(default)
 	default.partypet = {
 		enable			= 1,
+		healPrediction	= 1,
+		icons			= XPerl_DefaultStatusIcons("partypet"),
 		scale			= 0.7,
 		name			= 1,
 		buffs = {
@@ -2295,10 +2167,7 @@ local function XPerl_PartyPet_ConfigDefault(default)
 		debuffs = {
 			enable		= 1,
 			curable		= 0,
-		},
-		healerMode = {
---			enable		= nil,
-			type		= 1,
+			size		= 12,
 		},
 --		mana			= nil,			-- 1.9.1
 --		level			= nil,			-- 1.9.1
@@ -2308,6 +2177,11 @@ end
 -- XPerl_Player_ConfigDefault
 local function XPerl_Player_ConfigDefault(default)
 	default.player = {
+		enable			= 1,
+		healPrediction	= 1,
+		icons			= XPerl_DefaultStatusIcons("player"),
+		targetCounter	= 1,
+		targetCounterHealers = 1,
 		castBar = {
 			enable		= 1,
 --			original	= nil,
@@ -2333,8 +2207,6 @@ local function XPerl_Player_ConfigDefault(default)
 
 		fullScreen = {
 			enable		= 1,
-			lowHP		= 30,
-			highHP		= 40,
 		},
 
 		healerMode = {
@@ -2351,7 +2223,6 @@ local function XPerl_Player_ConfigDefault(default)
 			hideBlizzard	= 1,
 			count		= 40,
 			cooldown	= 1,
-			flash		= 1,
 		},
 		debuffs = {
 			enable		= 1,
@@ -2366,6 +2237,9 @@ end
 -- XPerl_Pet_ConfigDefault
 local function XPerl_Pet_ConfigDefault(default)
 	default.pet = {
+		enable			= 1,
+		healPrediction	= 1,
+		icons			= XPerl_DefaultStatusIcons("pet"),
 		castBar = {
 			enable		= 1,
 		},
@@ -2376,11 +2250,15 @@ local function XPerl_Pet_ConfigDefault(default)
 		threatMode		= "portraitFrame",
 		level			= 1,
 		scale			= 0.7,
---		xpBar			= nil,
 		name			= 1,
 		buffs = {
 			enable		= 1,
 			size		= 18,
+			rows		= 2,
+		},
+		debuffs = {
+			enable		= 1,
+			size		= 20,
 		},
 		values			= 1,
 		healerMode = {
@@ -2404,6 +2282,8 @@ local function XPerl_TargetTarget_ConfigDefault(default, section)
 
 	default[section] = {
 		enable			= e,
+		healPrediction	= 1,
+		icons			= XPerl_DefaultStatusIcons(section),
 		buffs = {
 			enable		= 1,
 --			above		= nil,
@@ -2437,23 +2317,13 @@ end
 local function XPerl_Raid_ConfigDefault(default)
 	default.raid = {
 		enable			= 1,
+		healPrediction	= 1,
+		icons			= XPerl_DefaultStatusIcons("raid"),
 --		sortByClass		= nil,
-		sortByRole 		= 0,
+		sortByRole 		= 1,			-- 3.7.1 (stored as 0 before, which Lua counts as on too)
 --		sortAlpha		= nil,
 		group = {1, 1, 1, 1, 1, 1, 1, 1, 1,1},
-		class = {
-			{enable = 1, name = "WARRIOR"},
-			{enable = 1, name = "ROGUE"},
-			{enable = 1, name = "HUNTER"},
-			{enable = 1, name = "MAGE"},
-			{enable = 1, name = "WARLOCK"},
-			{enable = 1, name = "PRIEST"},
-			{enable = 1, name = "DRUID"},
-			{enable = 1, name = "SHAMAN"},
-			{enable = 1, name = "PALADIN"},
-			{enable = 1, name = "DEATHKNIGHT"},
-			{enable = 1, name = "MONK"},
-		},
+		class = XPerl_DefaultRaidClasses(),
 		titles			= 1,
 		percent			= 1,
 		precisionPercent = 1,
@@ -2483,9 +2353,110 @@ end
 local function XPerl_RaidPet_ConfigDefault(default, section)
 	default.raidpet = {
 		enable			= 1,			-- 2.1.3
+		healPrediction	= 1,
+		icons			= XPerl_DefaultStatusIcons("raidpet"),
 		hunter			= 1,			-- 2.1.3
 		warlock			= 1,			-- 2.1.3
 	}
+end
+
+-- Boss and arena frames (Units/Boss.lua, Units/Arena.lua): five frames each in a stack, spacing and growth
+-- ("down" or "up") placing them below or above the first. The aura rows default to one row each so the
+-- stack's spacing holds them.
+local frameDefaults = {
+	boss = function()
+		return {
+			enable			= 1,
+			healPrediction	= 1,
+			scale			= 0.8,
+			spacing			= 46,
+			growth			= "down",
+			portrait		= 1,
+--			portrait3D		= nil,
+			castBar = {
+				enable		= 1,
+			},
+			hitIndicator	= 1,
+			level			= 1,
+			elite			= 1,
+--			eliteGfx		= nil,
+--			mobType			= nil,
+			mana			= 1,
+			percent			= 1,
+			values			= 1,
+			icons			= XPerl_DefaultStatusIcons("boss"),
+			buffs = {
+				enable		= 1,
+				wrap		= 1,
+				size		= 18,
+				rows		= 1,
+				castable	= 0,
+			},
+			debuffs = {
+				enable		= 1,
+				size		= 22,
+				curable		= 0,
+				onlyMine	= 1,
+			},
+			healerMode = {
+				type		= 1,
+			},
+			size = {
+				width		= 0,
+			},
+		}
+	end,
+	arena = function()
+		return {
+			enable			= 1,
+			healPrediction	= 1,
+			icons			= XPerl_DefaultStatusIcons("arena"),
+			scale			= 0.8,
+			spacing			= 46,
+			growth			= "down",
+--			portrait		= nil,
+			classIcon		= 1,			-- the specialization icon
+			trinket			= 1,
+			castBar = {
+				enable		= 1,
+			},
+			hitIndicator	= 1,
+			mana			= 1,
+			percent			= 1,
+			values			= 1,
+			buffs = {
+				enable		= 1,
+				wrap		= 1,
+				size		= 18,
+				rows		= 1,
+				bigStealable	= 1,
+				castable	= 0,
+			},
+			debuffs = {
+				enable		= 1,
+				size		= 22,
+				curable		= 0,
+			},
+			healerMode = {
+				type		= 1,
+			},
+			size = {
+				width		= 0,
+			},
+		}
+	end,
+}
+
+-- XPerl_Options_FrameDefaults(key)
+-- Fresh default settings of the boss or arena section (XPerl_ValidateSettings completes older sections)
+function XPerl_Options_FrameDefaults(key)
+	return frameDefaults[key]()
+end
+
+-- XPerl_BossArena_ConfigDefault
+local function XPerl_BossArena_ConfigDefault(default)
+	default.boss = frameDefaults.boss()
+	default.arena = frameDefaults.arena()
 end
 
 XPerl_RegisterConfigDefault(XPerl_Global_ConfigDefault)
@@ -2501,6 +2472,7 @@ XPerl_RegisterConfigDefault(XPerl_TargetTarget_ConfigDefault, "focustarget")
 XPerl_RegisterConfigDefault(XPerl_TargetTarget_ConfigDefault, "pettarget")
 XPerl_RegisterConfigDefault(XPerl_Raid_ConfigDefault)
 XPerl_RegisterConfigDefault(XPerl_RaidPet_ConfigDefault)
+XPerl_RegisterConfigDefault(XPerl_BossArena_ConfigDefault)
 
 
 -- XPerl_DefaultGradientColours
@@ -2550,440 +2522,10 @@ end
 function XPerl_DefaultRangeFinder()
 	return {						-- 2.1.7
 --		enabled		= e,	-- 2.3.4a Defaulting to OFF now, because of so many confused users complaining about faded frames. RTFM... (TODO: Write a manual)
-		Main		= {enabled = true, FadeAmount = 0.5, HealthLowPoint = 0.85},		-- PlusHealth = false,
-		NameFrame	= {FadeAmount = 0.5, HealthLowPoint = 0.85},
-		StatsFrame	= {FadeAmount = 0.5, HealthLowPoint = 0.85},
+		Main		= {enabled = true, FadeAmount = 0.5},
+		NameFrame	= {FadeAmount = 0.5},
+		StatsFrame	= {FadeAmount = 0.5},
 	}
-end
-
--- XPerl_Custom_Config_OnShow
-function XPerl_Custom_Config_OnShow(self)
-	if (not XPerlDB.custom) then
-		XPerlDB.custom = {
-			enable = true,
-			alpha = 0.5,
-			blend = "ADD"
-		}
-	end
-	if (not XPerlDB.custom.zones) then
-		if (not XPerl_Custom) then
-			LoadAddOn("XPerl_CustomHighlight")
-		end
-		if (XPerl_Custom) then
-			XPerl_Custom:SetDefaultZoneData()
-		end
-	end
-
-	self:SetScale(1.1)
-	XPerl_Custom_ConfigNew:Hide()
-	self:Setup()
-	XPerl_Options_Mask:Show()
-	XPerl_Options_Custom_StartIconDB(self)
-end
-
--- XPerl_Options_Custom_FillList
-function XPerl_Options_Custom_FillList(self)
-	if (not XPerlDB) then
-		return
-	end
-
-	self.start = self.scrollBar.bar:GetValue() + 1
-
-	local typ = self.type
-	local list, source
-	if (typ == "zone") then
-		source = XPerlDB.custom and XPerlDB.custom.zones
-	elseif (typ == "debuff") then
-		local zone = XPerl_Options_Custom_SelectedZone(XPerl_Custom_Config)
-		if (zone) then
-			source = XPerlDB.custom and XPerlDB.custom.zones and XPerlDB.custom.zones[zone]
-		end
-	end
-
-	if (source) then
-		for name,key in pairs(source) do
-			if (not list) then
-				list = {}
-			end
-			tinsert(list, name)
-		end
-		if (list) then
-			if (typ == "zone") then
-				sort(list)
-			elseif (typ == "debuff") then
-				sort(list,
-					function(a, b)
-						local nameA = GetSpellInfo(a)
-						local nameB = GetSpellInfo(b)
-						return nameA < nameB
-					end)
-			end
-		end
-	end
-
-	if (not self.selection or not list) then
-		self.selection = 1
-	else
-		if (self.selection < 1) then
-			self.selection = 1
-		elseif (self.selection > #list) then
-			self.selection = #list
-		end
-	end
-
-	for i = 1,#self.line do
-		local row = self.line[i]
-		row:SetText("")
-		row:UnlockHighlight()
-		row:Hide()
-		row.spellid = nil
-	end
-
-	local db = XPerl_Custom_Config.iconDB
-	if (list) then
-		local newName
-		local line = 1
-		for i = self.start,self.start+#self.line-1 do
-			if (i > #list) then
-				break
-			end
-			local row = self.line[line]
-
-			if (typ == "debuff") then
-				local spellid = list[i]
-				local name, rank, icon = GetSpellInfo(spellid)
-				if (name and icon) then
-					row:SetText(format("|T%s:0|t%s", icon, name))
-					row.spellid = spellid
-				end
-			else
-				row:SetText(list[i])
-			end
-			row:Show()
-
-			if (i == self.selection) then
-				self.line[line]:LockHighlight()
-
-				if (setName) then
-					newName = list[i]
-				end
-			end
-
-			line = line + 1
-		end
-
-		local offset = self.scrollBar.bar:GetValue()
-		if (FauxScrollFrame_Update(self.scrollBar, #list, 12, 1)) then
-			self.scrollBar:Show()
-		else
-			self.scrollBar:Hide()
-		end
-	else
-		self.scrollBar:Hide()
-	end
-end
-
--- XPerl_Options_Custom_OnClick
-function XPerl_Options_Custom_OnClick(self, line)
-	if (self.type == "zone") then
-		XPerl_Options_Custom_FillList(XPerl_Custom_Configdebuffs)
-		if (XPerl_Custom_ConfigNew:IsShown()) then
-			local zone = XPerl_Options_Custom_SelectedZone(XPerl_Custom_Config)
-			if (zone) then
-				XPerl_Custom_ConfigNew_Zone:SetText(zone)
-			end
-		end
-
-	elseif (self.type == "debuff") then
-		XPerl_Options_Custom_SetIcon()
-	end
-
-	XPerl_Options_Custom_Buttons(XPerl_Custom_Config)
-end
-
--- XPerl_Options_Custom_SetIcon
-function XPerl_Options_Custom_SetIcon()
-	self = XPerl_Custom_Config
-	local name = XPerl_Custom_Configdebuffs.debuff
-	local db = self.iconDB
-	if (db and name) then
-		local spellid = db and db[name]
-		if (spellid) then
-			local spellname, rank, icon = GetSpellInfo(spellid)
-			if (icon) then
-				XPerl_Custom_Config.icon:SetTexture(icon)
-				XPerl_Custom_Config.icon:Show()
-				return
-			end
-		end
-	end
-end
-
--- XPerl_Options_Custom_InitList
-function XPerl_Options_Custom_InitList(self, type)
-	self:GetParent()["list"..type] = self
-	self.type = type
-	self.start = 1
-	self.selection = 1
-	self.scrollBar = _G[self:GetName().."scrollBar"]
-	self.scrollBar.bar = _G[self:GetName().."scrollBarScrollBar"]
-	self.FillList = XPerl_Options_Custom_FillList
-	self.OnClick = XPerl_Options_Custom_OnClick
-	self:FillList()
-
-	if (type == "debuff") then
-		self.debuff = nil
-		if (self.line[1]:IsShown()) then
-			self.debuff = self.line[1]:GetText()
-			XPerl_Options_Custom_SetIcon()
-		end
-	end
-end
-
--- customOnUpdate
-local ICON_STEP_SIZE	= 500
-local ICON_STOP_SCAN	= 120000
-local function customOnUpdate(self, elspsed)
-	local db = self.iconDB
-	local ind = self.iconIndex
-	local stop
-	for i = ind,ind + ICON_STEP_SIZE - 1 do
-		if GetSpellLink(i) then										-- Filter out talents
-			local name, rank, icon = GetSpellInfo(i)
-			if name then
-				if icon ~= "Interface\\Icons\\Temp" then			-- Filter out silly test ones
-					name = strlower(name)
-					local old = db[name]
-					if old then										-- Only keep highest of ranked spells
-						local name2, rank2, icon2 = GetSpellInfo(old)
-						local num1 = strmatch("(%d+)", rank) or 0
-						local num2 = strmatch("(%d+)", rank2) or 0
-						num1 = num1 == "" and 0 or num1+0
-						num2 = num2 == "" and 0 or num2+0
-						if num2 > num1 then
-							db[name] = i
-						end
-					else
-						db[name] = i
-					end
-				end
-			end
-			self.missing = 0
-		else
-			self.missing = (self.missing or 0) + 1
-			if self.missing > 1000 then
-				stop = true
-				break
-			end
-		end
-	end
-
-	self.iconIndex = self.iconIndex + ICON_STEP_SIZE
-	self.progress:SetValue(self.iconIndex)
-	if stop then
-		self:SetScript("OnUpdate", nil)
-		self.progress:SetValue(0)
-		self.missing = nil
-		XPerl_Options_Custom_FillList(XPerl_Custom_Configdebuffs)
-	end
-
-	local search = XPerl_Custom_ConfigNew_Search:GetText()
-	if (search and strlen(search) > 2) then
-		XPerl_Options_Custom_ScanForIcons(XPerl_Custom_Config)
-	end
-end
-
--- XPerl_Options_Custom_StartIconDB
-function XPerl_Options_Custom_StartIconDB(self)
-	self:SetScript("OnUpdate", customOnUpdate)
-	local db = XPerl_GetReusableTable()
-	self.iconDB = db
-	self.iconIndex = 0
-	self.progress:SetMinMaxValues(0, ICON_STOP_SCAN)
-	self.progress:SetValue(0)
-end
-
--- XPerl_Options_Custom_CleanupIconDB
-function XPerl_Options_Custom_CleanupIconDB(self)
-	XPerl_FreeTable(self.iconDB, true)
-end
-
--- XPerl_Options_Custom_StartIconDB
-function XPerl_Options_Custom_ScanForIcons(self)
-	local search = XPerl_Custom_ConfigNew_Search:GetText()
-	if (search and strlen(search) > 2) then
-		search = strlower(search)
-		local dbname = self.iconDB and self.iconDB
-		if (dbname) then
-			local list = XPerl_GetReusableTable()
-			for name,id in pairs(dbname) do
-				local success, ret = pcall(strfind, name, search)
-				if (success and ret) then
-					tinsert(list, id)
-					if (#list > 50) then
-						break
-					end
-				end
-			end
-
-			if (not self.icons.icon) then
-				self.icons.icon = {}
-			end
-
-			local count = min(#list, 18)
-			local iconNum = 1
-			for i,spellid in ipairs(list) do
-				local spellid = list[i]
-				local icon = self.icons.icon[iconNum]
-				if (not icon) then
-					icon = CreateFrame("Button", "XPerlOptionsCustomIcon"..iconNum, XPerl_Custom_ConfigNew_Icons, "ActionButtonTemplate")
-					self.icons.icon[iconNum] = icon
-					icon.tex = _G[icon:GetName().."Icon"]
-
-					icon:SetScript("OnClick",
-						function(self)
-							if (IsModifiedClick("CHATLINK")) then
-								local link = GetSpellLink(self.spellid)
-								if (link) then
-									ChatEdit_InsertLink(link)
-								end
-							else
-								local zone = XPerl_Custom_ConfigNew_Zone:GetText()
-								if (zone and zone ~= "") then
-									local zones = XPerlDB.custom.zones
-									if (not zones[zone]) then
-										zones[zone] = {}
-									end
-									zones[zone][self.spellid] = true
-									XPerl_Custom_ConfigNew:Hide()
-									XPerl_Custom_Config.listzone:FillList()
-									XPerl_Custom_Config.listdebuff:FillList()
-
-									if (XPerl_Custom) then
-										XPerl_Custom:PLAYER_ENTERING_WORLD()
-									end
-								end
-							end
-						end)
-					icon:SetScript("OnEnter",
-						function(self)
-							GameTooltip:SetOwner(self, "ANCHOR_TOP")
-							local link = GetSpellLink(self.spellid)
-							local name, rank, icon = GetSpellInfo(self.spellid)
-							if (link) then
-								GameTooltip:SetHyperlink(link)
-							else
-								GameTooltip:SetText(name, 1, 1, 1)
-							end
-
-							if (rank and rank ~= "") then
-								GameTooltipTextRight1:SetText(rank)
-								GameTooltipTextRight1:SetTextColor(0.5, 0.5, 0.5)
-								GameTooltipTextRight1:Show()
-								GameTooltip:Show()
-							end
-						end)
-					icon:SetScript("OnLeave",
-						function(self)
-							GameTooltip:Hide()
-						end)
-
-					if (iconNum == 1) then
-						icon:SetPoint("TOPLEFT")
-					elseif (iconNum == 10) then
-						icon:SetPoint("TOPLEFT", self.icons.icon[1], "BOTTOMLEFT", 0, -9)
-					else
-						icon:SetPoint("TOPLEFT", self.icons.icon[iconNum - 1], "TOPRIGHT", 9, 0)
-					end
-				end
-
-				local name, rank, tex = GetSpellInfo(spellid)
-				if (tex) then
-					icon.spellid = spellid
-					icon.tex:SetTexture(tex)
-					icon:Show()
-					if (GameTooltip:IsOwned(icon)) then
-						icon:GetScript("OnEnter")(icon)
-					end
-					iconNum = iconNum + 1
-				end
-
-				if (iconNum > 18) then
-					break
-				end
-			end
-
-			for i = #list + 1,18 do
-				local icon = self.icons.icon[i]
-				if (icon) then
-					icon:Hide()
-				end
-			end
-
-			self.icons:Show()
-
-			XPerl_FreeTable(list)
-			return
-		end
-	end
-
-	self.icons:Hide()
-end
-
--- XPerl_Options_Custom_OnDelete
-function XPerl_Options_Custom_OnDelete(self)
-	local zone = XPerl_Options_Custom_SelectedZone(self)
-	local spellid = XPerl_Options_Custom_SelectedDebuff(self)
-	if (zone and spellid) then
-		zones = XPerlDB.custom.zones
-		if (zones and zones[zone]) then
-			zones[zone][spellid] = nil
-
-			if (not next(zones[zone])) then
-				zones[zone] = nil
-			end
-
-			XPerl_Custom_Config.listzone:FillList()
-			XPerl_Custom_Config.listdebuff:FillList()
-
-			XPerl_Options_Custom_Buttons(XPerl_Custom_Config)
-		end
-	end
-end
-
--- XPerl_Options_Custom_SelectedZone
-function XPerl_Options_Custom_SelectedZone(self)
-	local sel = self.listzone.selection
-	if (sel) then
-		local row = self.listzone.line[sel]
-		if (row) then
-			return row:GetText()
-		end
-	end
-end
-
--- XPerl_Options_Custom_SelectedDebuff
-function XPerl_Options_Custom_SelectedDebuff(self)
-	if (XPerl_Options_Custom_SelectedZone(self)) then
-		local sel = self.listdebuff.selection
-		if (sel) then
-			local row = self.listdebuff.line[sel]
-			if (row) then
-				return row.spellid
-			end
-		end
-	end
-end
-
--- XPerl_Options_Custom_Buttons
-function XPerl_Options_Custom_Buttons(self)
-	local zone = XPerl_Options_Custom_SelectedZone(self)
-	local spellid = XPerl_Options_Custom_SelectedDebuff(self)
-	if (zone and spellid) then
-		XPerl_Custom_ConfigEdit_Delete:Enable()
-	else
-		XPerl_Custom_ConfigEdit_Delete:Disable()
-	end
 end
 
 
@@ -2991,7 +2533,8 @@ end
 -------------- UPGRADE SETTINGS --------------
 ----------------------------------------------
 
-if (XPerl_UpgradeSettings) then
+-- Run once by the core's ADDON_LOADED settings setup, which then drops XPerl_Options_UpgradeSettings
+do
 	local flist = {"player", "pet", "target", "targettarget", "pettarget", "focus", "focustarget", "targettargettarget", "party", "partypet"}
 	-- UpgradeSettings
 	-- For future upgrade of settings from old versions
@@ -3009,12 +2552,12 @@ if (XPerl_UpgradeSettings) then
 			for k,v in pairs(flist) do
 				if (old[v]) then
 					if (not old[v].buffs) then
-						old[v].buffs = {enable = 1, size = 20, bigpet = 1, wrap = 1}
+						old[v].buffs = {enable = 1, size = 20, wrap = 1}
 					elseif (not old[v].buffs.size) then
 						old[v].buffs.size = 20
 					end
 					if (not old[v].debuffs) then
-						old[v].debuffs = {enable = 1, size = 20, bigpet = 1, wrap = 1}
+						old[v].debuffs = {enable = 1, size = 20, wrap = 1}
 					elseif (not old[v].debuffs.size) then
 						old[v].debuffs.size = 20
 					end
@@ -3029,25 +2572,12 @@ if (XPerl_UpgradeSettings) then
 				end
 			end
 
-			ValidateClassNames(old.raid)
+			if (old.raid) then
+				XPerl_ValidateRaidClasses(old.raid)
+			end
 
 			if (old.bar and old.bar.texture and old.bar.texture[1] == "X-Perl 2") then
 				old.bar.texture[1] = "BantoBar"
-			end
-
-			if (oldVersion < "3.0.3b") then
-				old.buffs.names = true
-			end
-
-			if (oldVersion < "3.0.3a") then
-				old.target.buffs.bigpet = 1
-				old.targettarget.buffs.bigpet = 1
-				old.targettargettarget.buffs.bigpet = 1
-				old.focus.buffs.bigpet = 1
-				old.focustarget.buffs.bigpet = 1
-				old.pet.buffs.bigpet = 1
-				old.pettarget.buffs.bigpet = 1
-				old.party.buffs.bigpet = 1
 			end
 
 			if (oldVersion < "3.0.2") then
@@ -3075,27 +2605,6 @@ if (XPerl_UpgradeSettings) then
 
 			if (oldVersion < "2.4.2c") then
 				old.highlight.sparkles = 1
-				old.highlight.POM = old.highlight.HOT
-			end
-
-			if (oldVersion <= "2.4.2") then
-				if (old.custom) then
-					old.custom.alpha = 0.5
-					old.custom.blend = "ADD"
-				end
-			end
-
-			if (not old.custom) then
-				old.custom = {
-					enable = true,
-					alpha = 0.5,
-					blend = "ADD"
-				}
-			end
-
-			if (oldVersion <= "2.4.0c") then
-				old.target.ownDamageOnly = true
-				old.focus.ownDamageOnly = true
 			end
 
 			if (oldVersion <= "2.3.9a") then
@@ -3131,7 +2640,6 @@ if (XPerl_UpgradeSettings) then
 			if (oldVersion < "2.3.5") then
 				old.target.range30yard	= nil
 				old.focus.range30yard	= nil
-				old.party.range30yard	= nil
 				old.raid.manaPercent = 1
 
 				old.highlight.MISSING = nil
@@ -3154,7 +2662,7 @@ if (XPerl_UpgradeSettings) then
 			end
 			
 			if (oldVersion < "3.7.1") then
-				old.raid.sortByRole = 0
+				old.raid.sortByRole = 1
 			end
 			
 			if (oldVersion < "3.7.3") then
@@ -3197,7 +2705,7 @@ if (XPerl_UpgradeSettings) then
 		end
 
 		for realmName,realmList in pairs(XPerlConfigNew) do
-			if (type(realmList) == "table" and realmName ~= "global" and realmName ~= "savedPositions") then
+			if (type(realmList) == "table" and not XPerl_ConfigReservedKeys[realmName]) then
 				for playerName,settings in pairs(realmList) do
 					if (playerName == "global") then
 						-- Fix global settings being put in with realms

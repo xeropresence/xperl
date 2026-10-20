@@ -1,0 +1,18 @@
+# Keep the add-on sources byte-identical on every platform. The WoW client
+# reads Lua/XML/TOC directly out of the repo when it is symlinked into
+# Interface\AddOns, so the working tree must match what gets packaged.
+* text=auto eol=lf
+
+*.lua   text eol=lf
+*.xml   text eol=lf
+*.toc   text eol=lf
+*.txt   text eol=lf
+*.md    text eol=lf
+*.yml   text eol=lf
+.pkgmeta text eol=lf
+
+# Art assets are BLP; never let them near line-ending or diff machinery.
+*.blp   binary
+*.tga   binary
+*.ogg   binary
+*.mp3   binary

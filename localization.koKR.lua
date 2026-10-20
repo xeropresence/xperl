@@ -11,12 +11,7 @@ if (GetLocale() == "koKR") then
 	XPERL_MINIMAP_HELP6	= "|c00FFFFFF+SHIFT|r : 접속 후 X-Perl 메모리 사용량"
 
 	XPERL_MINIMENU_OPTIONS	= "설정"
-	XPERL_MINIMENU_ASSIST	= "어시스트 창 표시"
-	XPERL_MINIMENU_CASTMON	= "시전 현황 표시"
-	XPERL_MINIMENU_RAIDAD	= "공격대 관리 표시"
-	XPERL_MINIMENU_ITEMCHK	= "아이템 체커 표시"
 	XPERL_MINIMENU_RAIDBUFF = "공격대 버프"
-	XPERL_MINIMENU_ROSTERTEXT="명부 글자"
 	XPERL_MINIMENU_RAIDSORT = "공격대 정렬"
 	XPERL_MINIMENU_RAIDSORT_GROUP = "파티별 정렬"
 	XPERL_MINIMENU_RAIDSORT_CLASS = "직업별 정렬"
@@ -27,24 +22,20 @@ if (GetLocale() == "koKR") then
 	XPERL_TYPE_ELITE	= "정예"
 	XPERL_TYPE_RARE		= "희귀"
 
-	XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "불뱀 제단"
-	XPERL_LOC_ZONE_BLACK_TEMPLE = "검은 사원"
-	XPERL_LOC_ZONE_HYJAL_SUMMIT = "하이잘 정상"
-	XPERL_LOC_ZONE_KARAZHAN = "카라잔"
-	XPERL_LOC_ZONE_SUNWELL_PLATEAU = "태양샘 고원"
-	XPERL_LOC_ZONE_ULDUAR = "울두아르"
-	XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "십자군의 시험장"
-	XPERL_LOC_ZONE_ICECROWN_CITADEL = "얼음왕관 성채"
-	XPERL_LOC_ZONE_RUBY_SANCTUM = "루비 성소"
 
 	XPERL_LOC_GHOST		= "유령"
 	XPERL_LOC_FEIGNDEATH	= "죽은척하기"
 	XPERL_LOC_RESURRECTED	= "부활"
-	XPERL_LOC_SS_AVAILABLE	= "영혼석 있음"
 	XPERL_LOC_UPDATING	= "업데이트"
-	XPERL_LOC_ACCEPTEDRES	= "수락됨"
 	XPERL_RAID_GROUP	= "%d 파티"
 	XPERL_RAID_GROUPSHORT	= "%d파"
+	XPERL_RAID_TOOLTIP_OFFLINE	= "%s 오프라인"
+	XPERL_RAID_TOOLTIP_AFK		= "%s 자리비움"
+	XPERL_RAID_TOOLTIP_DND		= "%s 다른용무중"
+	XPERL_RAID_TOOLTIP_DYING	= "사망한 지 %s"
+	XPERL_RAID_RESSING		= " 잃어버림"
+	XPERL_RAID_AFK			= "자리비움"
+	XPERL_RAID_RESSER_AVAIL		= "부활 가능: "
 
 	XPERL_LOC_NONEWATCHED	= "발견된 사항 없음"
 
@@ -53,8 +44,6 @@ if (GetLocale() == "koKR") then
 		HOT = "주기적인 치유",
 		AGGRO = "어그로",
 		MISSING = "당신의 직업 버프 누락",
-		HEAL = "치유 중",
-		SHIELD = "보호막"
 	}
 
 	XPERL_OK		= "확인"
@@ -85,7 +74,7 @@ if (GetLocale() == "koKR") then
 	XPERL_DRAGHINT2		= "창 크기를 조절하려면 |c00FFFFFFSHIFT+클릭|r하세요."
 
 -- 사용법
-	XPerlUsageNameList	= {XPerl = "코어", XPerl_Player = "플레이어", XPerl_PlayerPet = "소환수", XPerl_Target = "대상", XPerl_TargetTarget = "대상의 대상", XPerl_Party = "파티", XPerl_PartyPet = "파티 소환수", XPerl_RaidFrames = "공격대 창", XPerl_RaidHelper = "공격대 도우미", XPerl_RaidAdmin = "공격대 관리", XPerl_TeamSpeak = "음성대화 현황", XPerl_RaidMonitor = "공격대 현황", XPerl_RaidPets = "공격대 소환수", XPerl_ArcaneBar = "아케인 바", XPerl_PlayerBuffs = "플레이어 버프", XPerl_GrimReaper = "Grim Reaper"}
+	XPerlUsageNameList	= {XPerl = "코어", XPerl_Player = "플레이어", XPerl_PlayerPet = "소환수", XPerl_Target = "대상", XPerl_TargetTarget = "대상의 대상", XPerl_Party = "파티", XPerl_PartyPet = "파티 소환수", XPerl_RaidFrames = "공격대 창", XPerl_RaidPets = "공격대 소환수", XPerl_ArcaneBar = "아케인 바", XPerl_PlayerBuffs = "플레이어 버프"}
 	XPERL_USAGE_MEMMAX	= "UI 메모리 최대값 : %d"
 	XPERL_USAGE_MODULES	= "모듈: "
 	XPERL_USAGE_NEWVERSION	= "*새로운 버전"
@@ -100,10 +89,5 @@ if (GetLocale() == "koKR") then
 	XPERL_CONFIG_LIST		= "설정 목록:"
 	XPERL_CONFIG_CURRENT		= " (현재)"
 
-	XPERL_RAID_TOOLTIP_WITHBUFF	= "버프있음: (%s)"
-	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "버프없음: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s의 %s %s 이내 사라짐"	-- Name, buff name, time to expire
 	
-	XPerl_DefaultRangeSpells.ANY = {item = "두꺼운 황천매듭 붕대"}
-
 end

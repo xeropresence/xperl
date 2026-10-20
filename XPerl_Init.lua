@@ -6,13 +6,6 @@ local init_done, gradient, conf, doneOptions
 local errorCount = 0
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
-local GetNumSubgroupMembers = GetNumSubgroupMembers
-local GetNumGroupMembers = GetNumGroupMembers
-
-local UnitIsGroupAssistant = UnitIsGroupAssistant;
-
-local classOrder = {"WARRIOR", "DEATHKNIGHT", "ROGUE", "HUNTER", "DRUID", "SHAMAN", "PALADIN", "PRIEST", "MAGE", "WARLOCK", "MONK"}
-
 -- SetTex
 local highlightPositions = {	{0, 0.25, 0, 0.5},
 				{0.25, 0.75, 0, 0.5},
@@ -27,7 +20,7 @@ local function SetTex(self, num)
 			tex:SetTexCoord(unpack(p))
 			tex:SetVertexColor(0.86, 0.82, 0.41)
 		else
-			self:SetHighlightTexture("")
+			self:ClearHighlightTexture()
 		end
 
 	elseif ((self.GetFrameType or self.GetObjectType)(self) == "Frame") then
@@ -35,7 +28,7 @@ local function SetTex(self, num)
 			self.tex:SetTexture("Interface\\Addons\\XPerl\\images\\XPerl_Highlight", "ADD")
 			self.tex:SetTexCoord(unpack(p))
 			self.tex:SetVertexColor(0.86, 0.82, 0.41)
-			XPerl_Highlight:SetHighlight(self:GetParent())
+			XPerl_Highlight:UnitFrameChanged(self:GetParent())
 		end
 	end
 end
@@ -79,7 +72,7 @@ function XPerl_DoGradient(self, force)
 			end
 			if (self.gradient) then
 				self.gradient:Show()
-				self.gradient:SetGradientAlpha(unpack(gradient))
+				self.gradient:SetGradient(unpack(gradient))
 			end
 			return true
 		end
@@ -108,8 +101,8 @@ local function SetupUnitFrameList(frame, subList)
 			o = "VERTICAL"
 		end
 
-		gradient = {o, conf.colour.gradient.e.r, conf.colour.gradient.e.g, conf.colour.gradient.e.b, conf.colour.gradient.e.a,
-				conf.colour.gradient.s.r, conf.colour.gradient.s.g, conf.colour.gradient.s.b, conf.colour.gradient.s.a}
+		local e, s = conf.colour.gradient.e, conf.colour.gradient.s
+		gradient = {o, CreateColor(e.r, e.g, e.b, e.a), CreateColor(s.r, s.g, s.b, s.a)}
 	end
 
 	if (type(subList) == "table") then
@@ -160,257 +153,11 @@ function XPerl_pcall(...)
 	end
 end
 
--- GetNamesWithoutBuff
-local matches = {
-		{GetSpellInfo(21562)},				-- Fortitude
-		{GetSpellInfo(1459)},				-- Intellect
-		{GetSpellInfo(1126)},				-- Mark of the Wild
-		--{GetSpellInfo(27683)},				-- Shadow Protection
-		{GetSpellInfo(19740)},				-- Blessing of Might
-		{GetSpellInfo(20217)},				-- Blessing of Kings
-	}
-
-local checkExpiring
-local function GetNamesWithoutBuff(spellName, with, filter)
-	if (spellName == lastName and with == lastWith and lastNamesList) then
-		return lastNamesList, lastNamesCount
-	end
-
-	local count = 0
-	local names
-	local unitName
-
-	local class = select(2, UnitClass("player"))
-
-	if (not checkExpiring) then
-		local cet = {}
-
-		if (class == "PRIEST" or UnitIsGroupAssistant("player")) then
-			cet[GetSpellInfo(21562)] = 2			-- Sta
-			--cet[GetSpellInfo(27683)] = 2			-- Shadow Prot
-		end
-		
-		if (class == "DRUID" or UnitIsGroupAssistant("player")) then
-			cet[GetSpellInfo(1126)] = 2			-- Mark
-			--cet[GetSpellInfo(467)] = 1			-- Thorns
-		end
-		
-		if (class == "MAGE" or UnitIsGroupAssistant("player")) then
-			cet[GetSpellInfo(1459)] = 2			-- Int
-		end
-
-		if (class == "PALADIN" or UnitIsGroupAssistant("player")) then
-			cet[GetSpellInfo(19740)] = 2			-- Blessing of Might
-			cet[GetSpellInfo(20217)] = 2			-- Blessing of Kings
-		end
-
-		checkExpiring = cet
-	end
-
-	local withList = XPerl_GetReusableTable()
-	for unitid, unitName, unitClass, group, zone, online, dead in XPerl_NextMember do
-		local use
-
-		if (not conf.buffHelper.visible) then
-			use = true
-		else
-			if (conf.raid.sortByClass) then
-				if (conf.raid.class[group].enable) then
-					use = unitClass == conf.raid.class[group].name
-				end
-			else
-				use = conf.raid.group[group]
-			end
-		end
-
-		if (unitName and use and online and not dead) then
-			local hasBuff
-			for num = 1,25 do
-			local name, rank, buffTexture, count, _, fullDuration, endTime, isMine, isStealable = UnitAura(unitid, num, filter)
-				if (not name) then
-					break
-				end
-
-				if (name == spellName) then
-					hasBuff = true
-				else
-					for dups,pair in pairs(matches) do
-						if (name == pair[1] or name == pair[2]) then
-							if (spellName == pair[1] or spellName == pair[2]) then
-								hasBuff = true
-								break
-							end
-						end
-					end
-				end
-				if (hasBuff) then
-					if (without and checkExpiring) then
-						local found = checkExpiring[buffTextureNoPath]
-
-						if (found) then
-							if (endTime and endTime > 0 and endTime <= GetTime() + (found * 60)) then
-								GameTooltip:AddLine(format(XPERL_RAID_TOOLTIP_BUFFEXPIRING, XPerlColourTable[unitClass]..name.."|c", buffName, SecondsToTime(endTime - GetTime())), 1, 0.2, 0)
-							end
-						end
-					end
-					break
-				end
-			end
-
-			if ((with and hasBuff) or (not with and not hasBuff)) then
-				count = count + 1
-
-				if (conf.buffHelper.sort == "group") then
-					if (not withList[group]) then
-						withList[group] = XPerl_GetReusableTable()
-					end
-					tinsert(withList[group], {class = unitClass, ["name"] = unitName})
-				elseif (conf.buffHelper.sort == "class") then
-					if (not withList[unitClass]) then
-						withList[unitClass] = XPerl_GetReusableTable()
-					end
-					tinsert(withList[unitClass], unitName)
-				else
-					local n = XPerl_GetReusableTable()
-					tinsert(withList, n)
-					n.class = unitClass
-					n.name = unitName
-				end
-			end
-		end
-	end
-
-	if (conf.buffHelper.sort == "group") then
-		for i = 1,8 do
-			local list = withList[i]
-			if (list) then
-				sort(list, function(a,b) return a.name < b.name end)
-
-				names = (names or "").."|r"..i..": "
-				for i,item in ipairs(list) do
-					names = names..XPerlColourTable[item.class]..item.name.." "
-				end
-				names = names.."|r\r"
-			end
-			XPerl_FreeTable(list)
-		end
-	elseif (conf.buffHelper.sort == "class") then
-		for j,class in ipairs(classOrder) do
-			local list = withList[class]
-			if (list) then
-				sort(list)
-
-				for i,name in ipairs(list) do
-					if (i == 1) then
-						names = (names or "")..XPerlColourTable[class]
-					end
-					names = (names or "")..name.." "
-				end
-
-				names = (names or "").."|r\r"
-			end
-			XPerl_FreeTable(list)
-		end
-	else
-		sort(withList, function(a,b) return a.name < b.name end)
-		for i,item in ipairs(withList) do
-			names = (names or "")..XPerlColourTable[item.class]..item.name.." "
-			XPerl_FreeTable(item)
-		end
-
-		names = (names or "").."\r"
-	end
-
-	XPerl_FreeTable(withList)
-
-	lastNamesList = names
-	lastName = spellName
-	lastWith = with
-	lastNamesCount = count
-
-	return names, count
-end
-
-local function UnitFullName(unit)
-    local name, realm = UnitName(unit)
-    if (name) then
-		if (realm and realm ~= "") then
-	        return name .. "-" .. realm
-		else
-    		return name
-		end
-	end
-end
-
--- XPerl_ToolTip_AddBuffDuration
-local function XPerl_ToolTip_AddBuffDuration(self, partyid, buffID, filter)
-	local name, rank, buff, count, _, dur, max, caster, isStealable = UnitAura(partyid, buffID, filter)
-
-	if (IsInRaid() or UnitInParty("player")) then
-		if (conf.buffHelper.enable and partyid and (UnitInParty(partyid) or UnitInRaid(partyid))) then
-			if (name) then
-				local names, count = GetNamesWithoutBuff(name, IsAltKeyDown(), filter)
-				if (names) then
-					if (IsAltKeyDown()) then
-						self:AddLine(format(XPERL_RAID_TOOLTIP_WITHBUFF, count), 0.3, 1, 0.2)
-					else
-						self:AddLine(format(XPERL_RAID_TOOLTIP_WITHOUTBUFF, count), 1, 0.3, 0.1)
-					end
-
-					if (conf.buffHelper.sort) then
-						self:AddLine(names, 0.5, 0.5, 0.5)
-					else
-						self:AddLine(names, 0.5, 0.5, 0.5, 1)
-					end
-				end
-			end
-		end
-	end
-
-	if (caster and conf.buffs.names) then
-		local casterName = UnitFullName(caster)
-		if (casterName) then
-			local c
-			if (UnitIsPlayer(caster)) then
-				local _, class = UnitClass(caster)
-				c = class and (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
-			else
-				c = XPerl_ReactionColour(caster)
-			end
-			if (c) then
-				self:AddLine(casterName, c.r, c.g, c.b)
-			else				
-				self:AddLine(casterName)
-			end
-		end
-	end
-
-	GameTooltip:Show()
-end
-
--- Buff Tooltip Hook
-local function XPerl_GameTooltipSetUnitAura(self, unitId, buffId, filter)
-	XPerl_ToolTip_AddBuffDuration(self, unitId, buffId, filter)
-end
-
-local function XPerl_GameTooltipSetUnitBuff(self, unitId, buffId)
-	XPerl_ToolTip_AddBuffDuration(self, unitId, buffId, "HELPFUL")
-end
-
-local function XPerl_GameTooltipSetUnitDebuff(self, unitId, buffId)
-	XPerl_ToolTip_AddBuffDuration(self, unitId, buffId, "HARMFUL")
-end
-
 -- XPerl_Init()
 function XPerl_Init()
 	init_done = true
-	if (GameTooltip.SetUnitAura) then
-		hooksecurefunc(GameTooltip, "SetUnitAura", XPerl_GameTooltipSetUnitAura)
-		hooksecurefunc(GameTooltip, "SetUnitBuff", XPerl_GameTooltipSetUnitBuff)
-		hooksecurefunc(GameTooltip, "SetUnitDebuff", XPerl_GameTooltipSetUnitDebuff)
-	end
 
-	DisableAddOn("XPerl_TeamSpeak")
+	C_AddOns.DisableAddOn("XPerl_TeamSpeak")
 
 	-- Check for eCastbar and disable old frame if used.
 	if (eCastingBar_Saved and eCastingBar_Player and eCastingBar_Saved[eCastingBar_Player].Enabled == 1) then
@@ -450,28 +197,26 @@ function XPerl_Init()
 		end
 	end
 
-	local name, title, notes, enabled = GetAddOnInfo("SupportFuncs")
-	if (name and enabled) then
-		local ver = GetAddOnMetadata(name, "Version")
-		if (tonumber(ver) < 20000.2) then
-			XPerl_Notice("Out-dated version of SupportFuncs detected. This will break the X-Perl Range Finder by replacing standard Blizzard API functions.")
+	local function EnabledAddOnVersion(addon)
+		if (not C_AddOns.DoesAddOnExist(addon) or not XPerlAPI.IsAddOnEnabled(addon)) then
+			return
 		end
+		return C_AddOns.GetAddOnMetadata(addon, "Version")
 	end
 
-	name, title, notes, enabled = GetAddOnInfo("AutoBar")
-	if (name and enabled) then
-		local ver = GetAddOnMetadata(name, "Version")
-		if (ver < "2.01.00.02 beta") then
-			XPerl_Notice("Out-dated version of AutoBar detected. This will taint the Targetting system for all mods that use them, including X-Perl.")
-		end
+	local ver = EnabledAddOnVersion("SupportFuncs")
+	if (ver and tonumber(ver) and tonumber(ver) < 20000.2) then
+		XPerl_Notice("Out-dated version of SupportFuncs detected. This will break the X-Perl Range Finder by replacing standard Blizzard API functions.")
 	end
 
-	name, title, notes, enabled = GetAddOnInfo("TrinityBars")
-	if (name and enabled) then
-		local ver = GetAddOnMetadata(name, "Version")
-		if (ver <= "20003.14") then
-			XPerl_Notice("Out-dated version of TrinityBars detected. This will taint the Targetting system for all mods that use them, including X-Perl.")
-		end
+	ver = EnabledAddOnVersion("AutoBar")
+	if (ver and ver < "2.01.00.02 beta") then
+		XPerl_Notice("Out-dated version of AutoBar detected. This will taint the Targetting system for all mods that use them, including X-Perl.")
+	end
+
+	ver = EnabledAddOnVersion("TrinityBars")
+	if (ver and ver <= "20003.14") then
+		XPerl_Notice("Out-dated version of TrinityBars detected. This will taint the Targetting system for all mods that use them, including X-Perl.")
 	end
 
 	if (EarthFeature_AddButton) then
@@ -502,8 +247,6 @@ function XPerl_Init()
 	--if (not strfind("Zek Zali Hek Zeks Zekked Zekstuff Pooksie Wazek", UnitName("player")) or GetRealmName() ~= "Bloodhoof") then
 	--	XPerl_ShowMessage = function() end
 	--end
-
-	XPerl_pcall(XPerl_DebufHighlightInit)
 
 	XPerl_Init = nil
 end
@@ -686,10 +429,8 @@ function XPerl_OptionActions(which)
 	XPerl_pcall(XPerl_SetAllFrames)
 
 	for k,v in pairs(optionFuncs) do
-		XPerl_NoFadeBars(true)
 		XPerl_pcall(v.func, v.slf, which)
 	end
-	XPerl_NoFadeBars()
 
 	XPerl_pcall(XPerl_SetTextTransparency)
 	doneOptions = true

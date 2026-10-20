@@ -3,21 +3,16 @@
 		if (not XPerl_Options or not XPerl_Options:IsShown()) then
 			if (not InCombatLockdown()) then
 				if (XPerlDB.raid.enable) then
-					XPerlDB.raid.enable = nil
+					XPerlDB.raid.enable = false
 				else
 					XPerlDB.raid.enable = 1
 				end
-				if (XPerl_Raid_HideShowRaid) then
-					XPerl_Raid_HideShowRaid()
-					XPerl_RaidTitles()
-				end
+				XPerl_Raid_OptionActions()
 			end
 		end
 	</Binding>
 	<Binding name="TOGGLERAIDSORT">
-		if (XPerl_ToggleRaidSort) then
-			XPerl_ToggleRaidSort()
-		end
+		XPerl_ToggleRaidSort()
 	</Binding>
 	<Binding name="TOGGLERAIDPETS">
 		if (not XPerl_Options or not XPerl_Options:IsShown()) then
@@ -30,16 +25,14 @@
 						XPerlDB.raidpet.warlock = 1
 						XPerlDB.raidpet.hunter = nil
 					else
-						XPerlDB.raidpet.enable = nil
+						XPerlDB.raidpet.enable = false
 					end
 				else
 					XPerlDB.raidpet.enable = 1
 					XPerlDB.raidpet.warlock = 1
 					XPerlDB.raidpet.hunter = 1
 				end
-				if (XPerl_RaidPets_OptionActions) then
-					XPerl_RaidPets_OptionActions()
-				end
+				XPerl_Raid_OptionActions()
 			end
 		end
 	</Binding>
@@ -56,13 +49,9 @@
 		XPerl_Toggle()
 	</Binding>
 	<Binding name="TOGGLEBUFFTYPE">
-		if (XPerl_ToggleRaidBuffs) then
-			XPerl_ToggleRaidBuffs()
-		end
+		XPerl_ToggleRaidBuffs()
 	</Binding>
 	<Binding name="TOGGLEBUFFCASTABLE">
-		if (XPerl_ToggleRaidBuffs) then
-			XPerl_ToggleRaidBuffs(1)
-		end
+		XPerl_ToggleRaidBuffs(1)
 	</Binding>
 </Bindings>

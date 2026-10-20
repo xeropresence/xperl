@@ -17,12 +17,7 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Shift|r для просмотра потребления памяти X-Perl'ом после запуска"
 
 	XPERL_MINIMENU_OPTIONS		= "Опции"
-	XPERL_MINIMENU_ASSIST		= "Показ Фрейма Поддержки"
-	XPERL_MINIMENU_CASTMON		= "Показ Монитора применений"
-	XPERL_MINIMENU_RAIDAD		= "Показ Рейд Админа"
-	XPERL_MINIMENU_ITEMCHK		= "Показ проверку вещей"
 	XPERL_MINIMENU_RAIDBUFF		= "Баффы Рейда"
-	XPERL_MINIMENU_ROSTERTEXT	="Список-Текст"
 	XPERL_MINIMENU_RAIDSORT		= "Сортировка рейда"
 	XPERL_MINIMENU_RAIDSORT_GROUP	= "Сортировать по группам"
 	XPERL_MINIMENU_RAIDSORT_CLASS	= "Сортировать по классам"
@@ -35,18 +30,6 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_TYPE_RARE				= "Редкий"
 	
 -- Zones
-XPERL_LOC_ZONE_SERPENTSHRINE_CAVERN = "Змеиное святилище"
-XPERL_LOC_ZONE_BLACK_TEMPLE = "Черный храм"
-XPERL_LOC_ZONE_HYJAL_SUMMIT = "Вершина Хиджала"
-XPERL_LOC_ZONE_KARAZHAN = "Каражан"
-XPERL_LOC_ZONE_SUNWELL_PLATEAU = "Плато Солнечного Колодца"
-XPERL_LOC_ZONE_NAXXRAMAS = "Наксрамас"
-XPERL_LOC_ZONE_OBSIDIAN_SANCTUM = "Обсидиановое святилище"
-XPERL_LOC_ZONE_EYE_OF_ETERNITY = "Око Вечности"
-XPERL_LOC_ZONE_ULDUAR = "Ульдуар"
-XPERL_LOC_ZONE_TRIAL_OF_THE_CRUSADER = "Испытание крестоносца"
-XPERL_LOC_ZONE_ICECROWN_CITADEL = "Цитадель Ледяной Короны"
-XPERL_LOC_ZONE_RUBY_SANCTUM = "Рубиновое святилище"
 
 -- Status
 	XPERL_LOC_DEAD			= DEAD		-- "Dead"
@@ -54,11 +37,16 @@ XPERL_LOC_ZONE_RUBY_SANCTUM = "Рубиновое святилище"
 	XPERL_LOC_FEIGNDEATH	= "Притворяется мертвым"
 	XPERL_LOC_OFFLINE		= PLAYER_OFFLINE	-- "Офлайн"
 	XPERL_LOC_RESURRECTED	= "Воскрешаемый"
-	XPERL_LOC_SS_AVAILABLE	= "Камень души доступен"
 	XPERL_LOC_UPDATING		= "Обновляется"
-	XPERL_LOC_ACCEPTEDRES	= "Принято"	-- Res accepted
 	XPERL_RAID_GROUP		= "Группа %d"
 	XPERL_RAID_GROUPSHORT	= "Г%d"
+	XPERL_RAID_TOOLTIP_OFFLINE		= "В не сети: %s"
+	XPERL_RAID_TOOLTIP_AFK			= "Отсутствует: %s"
+	XPERL_RAID_TOOLTIP_DND			= "Не беспокоить: %s"
+	XPERL_RAID_TOOLTIP_DYING		= "Мёртв: %s"
+	XPERL_RAID_RESSING				= " возраждается"
+	XPERL_RAID_AFK					= "Отсутствует"
+	XPERL_RAID_RESSER_AVAIL			= "Доступно воскресителей: "
 
 	XPERL_LOC_NONEWATCHED	= "не наблюдался"
 
@@ -67,8 +55,6 @@ XPERL_LOC_ZONE_RUBY_SANCTUM = "Рубиновое святилище"
 	HOT = "Исцеления за Время",
 	AGGRO = "Аггро",
 	MISSING = "Отсутствие классового' баффа",
-	HEAL = "Излечен",
-	SHIELD = "Защищенный"
 }
 
 	XPERL_OK	= "OK"
@@ -99,7 +85,7 @@ XPERL_LOC_ZONE_RUBY_SANCTUM = "Рубиновое святилище"
 	XPERL_DRAGHINT2	= "|c00FFFFFFShift+Клик|r для изменения размера окна"
 
 -- Usage
-	XPerlUsageNameList	= {XPerl = "Основной", 	XPERL_Player = "Игрок", 	XPERL_PlayerPet = "Питомец", 	XPERL_Target = "Цель", 	XPERL_TargetTarget = "Цель цели", 	XPERL_Party = "Группа", 	XPERL_PartyPet = "Питомцы группы", 	XPERL_RaidFrames = "Фреймы рейда", 	XPERL_RaidHelper = "Помощник рейда", 	XPERL_RaidAdmin = "Рейд-админ", 	XPERL_TeamSpeak = "Монитор TS", 	XPERL_RaidMonitor = "Рейд-монитор", 	XPERL_RaidPets = "Питомцы рейда", 	XPERL_ArcaneBar = "Индикатор заклинаний", 	XPERL_PlayerBuffs = "Баффы игрока", 	XPERL_GrimReaper = "Grim Reaper"}
+	XPerlUsageNameList	= {XPerl = "Основной", 	XPERL_Player = "Игрок", 	XPERL_PlayerPet = "Питомец", 	XPERL_Target = "Цель", 	XPERL_TargetTarget = "Цель цели", 	XPERL_Party = "Группа", 	XPERL_PartyPet = "Питомцы группы", 	XPERL_RaidFrames = "Фреймы рейда", 	XPERL_RaidPets = "Питомцы рейда", 	XPERL_ArcaneBar = "Индикатор заклинаний", 	XPERL_PlayerBuffs = "Баффы игрока"}
 	XPERL_USAGE_MEMMAX	= "UI Макс Пам: %d"
 	XPERL_USAGE_MODULES = "Модули: "
 	XPERL_USAGE_NEWVERSION	= "*Новейшая версия"
@@ -113,8 +99,5 @@ XPERL_LOC_ZONE_RUBY_SANCTUM = "Рубиновое святилище"
 	XPERL_CONFIG_LIST	= "Список настроек:"
 	XPERL_CONFIG_CURRENT	= " (текущий)"
 
-	XPERL_RAID_TOOLTIP_WITHBUFF		= "С баффом: (%s)"
-	XPERL_RAID_TOOLTIP_WITHOUTBUFF	= "Без баффа: (%s)"
-	XPERL_RAID_TOOLTIP_BUFFEXPIRING	= "%s'а %s заканчивается через %s"	-- Name, buff name, time to expire
 
 end

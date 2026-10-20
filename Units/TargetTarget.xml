@@ -1,0 +1,100 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<Script file="TargetTarget.lua"/>
+
+	<!-- Target's target, its target, focus target and pet target (Units/TargetTarget.lua). Each instance sets
+	     the KeyValue `watch`: the unit whose target it shows (target, focus or pet). Each is placed on its own
+	     in Edit Mode; the default spots are where the old frames sat beside the target, focus and pet frames. -->
+	<Button name="XPerl_TargetTarget_Template" inherits="XPerl_UnitButtonTemplate" virtual="true">
+		<!-- The size of this frame determines what can be clicked for the menu and moving, hence it is the same size as the name frame. -->
+		<Size x="160" y="60"/>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_TargetTargetFrameMixin" type="global"/>
+		</KeyValues>
+		<Frames>
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+			</Button>
+
+			<Frame name="$parentlevelFrame" parentKey="levelFrame" inherits="XPerl_UnitLevelFrameTemplate">
+				<Size x="27" y="24"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame" relativePoint="TOPRIGHT" x="-3" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" inherits="XPerl_Stats_Template">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame" relativePoint="BOTTOMLEFT" x="0" y="2"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentstatsFrame"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentbuffFrame" parentKey="buffFrame">
+				<Size x="100" y="50"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentstatsFrame" relativePoint="BOTTOMLEFT" x="2" y="0"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Button>
+
+	<Button name="XPerl_TargetTarget" inherits="XPerl_TargetTarget_Template" parent="UIParent">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="590" y="-12"/>
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="frameKey" value="targettarget"/>
+			<KeyValue key="initialUnit" value="targettarget"/>
+			<KeyValue key="watch" value="target"/>
+			<KeyValue key="editModeLabel" value="XPERL_EDITMODE_FRAME_TARGETTARGET" type="global"/>
+		</KeyValues>
+	</Button>
+
+	<!-- Formerly attached to the right of the target's target -->
+	<Button name="XPerl_TargetTargetTarget" inherits="XPerl_TargetTarget_Template" parent="UIParent">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="755" y="-34"/>
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="frameKey" value="targettargettarget"/>
+			<KeyValue key="initialUnit" value="targettargettarget"/>
+			<KeyValue key="watch" value="target"/>
+			<KeyValue key="editModeLabel" value="XPERL_EDITMODE_FRAME_TARGETTARGETTARGET" type="global"/>
+		</KeyValues>
+	</Button>
+
+	<!-- Formerly attached to the right of the focus frame's level box -->
+	<Button name="XPerl_FocusTarget" inherits="XPerl_TargetTarget_Template" parent="UIParent">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="592" y="-229"/>
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="frameKey" value="focustarget"/>
+			<KeyValue key="initialUnit" value="focustarget"/>
+			<KeyValue key="watch" value="focus"/>
+			<KeyValue key="editModeLabel" value="XPERL_EDITMODE_FRAME_FOCUSTARGET" type="global"/>
+		</KeyValues>
+	</Button>
+
+	<!-- Formerly a child of the pet frame, right of its stats -->
+	<Button name="XPerl_PetTarget" inherits="XPerl_TargetTarget_Template" parent="UIParent">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="238" y="-85"/>
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="frameKey" value="pettarget"/>
+			<KeyValue key="initialUnit" value="pettarget"/>
+			<KeyValue key="watch" value="pet"/>
+			<KeyValue key="editModeLabel" value="XPERL_EDITMODE_FRAME_PETTARGET" type="global"/>
+		</KeyValues>
+	</Button>
+</Ui>

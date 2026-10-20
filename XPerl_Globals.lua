@@ -2,6 +2,8 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
+local addonName = ...		-- folder name; ADDON_LOADED reports this, not the TOC title
+
 XPerlLocked		= 1
 local conf
 local ConfigRequesters = {}
@@ -39,9 +41,8 @@ end
 
 do
 	local function DisableOther(modName, issues)
-		local name, title, notes, enabled = GetAddOnInfo(modName)
-		if (name and enabled) then
-			DisableAddOn(modName)
+		if (C_AddOns.DoesAddOnExist(modName) and XPerlAPI.IsAddOnEnabled(modName)) then
+			C_AddOns.DisableAddOn(modName)
 			local notice = "Disabled '"..modName.."' addon. It is not compatible or needed with X-Perl"
 			if (issues) then
 				notice = notice..", and creates display issues."
@@ -53,17 +54,21 @@ do
 	DisableOther("PerlButton")		-- PerlButton was made for Nymbia's Perl UnitFrames. We have our own minimap button
 	DisableOther("WT_ZoningTimeFix", true)
 
-	local name,_,_,enabled,loadable = GetAddOnInfo("XPerl_Party")
-	if (enabled) then
-		DisableOther("CT_PartyBuffs", true)
-	end
+	DisableOther("CT_PartyBuffs", true)
 
-	local name,_,_,enabled,loadable = GetAddOnInfo("XPerl_GrimReaper")
-	if (enabled) then
-		DisableAddOn("XPerl_GrimReaper")
+	if (XPerlAPI.IsAddOnEnabled("XPerl_GrimReaper")) then
+		C_AddOns.DisableAddOn("XPerl_GrimReaper")
 		XPerl_Notice("Disabled XPerl_GrimReaper. This has been replaced by a standalone version 'GrimReaper' available on the WoW Ace Updater or from files.wowace.com")
 	end
 end
+
+-- Settings sections that belong to a unit frame type. They follow the active Edit Mode layout
+-- (XPerl_EditMode.lua); every other section of XPerlDB is account-wide in the profile slot.
+XPerl_FrameConfigKeys = {"player", "pet", "target", "focus", "targettarget", "focustarget", "targettargettarget",
+	"pettarget", "party", "partypet", "raid", "raidpet", "boss", "arena"}
+
+-- Top-level XPerlConfigNew keys that are not realm tables of per-character settings slots
+XPerl_ConfigReservedKeys = {global = true, savedPositions = true, editMode = true}
 
 -- XPerl_RequestConfig
 -- Setup a callback to give config around to local variables
@@ -75,63 +80,82 @@ function XPerl_RequestConfig(getConfig, rev)
 	AddRevision(rev)
 end
 
--- CurrentConfig()
-local function CurrentConfig()
-	local ret
-
-	local function QuickValidate(set)
-		return set.player and set.pet and set.colour and set.target and set.targettarget and set.focus and set.party and set.partypet and set.raid and set.rangeFinder and set.highlight and set.highlightDebuffs and set.buffs and set.buffHelper and set.bar
+-- XPerl_NotifyConfig
+-- Hands XPerlDB to every XPerl_RequestConfig callback again, e.g. after its frame sections were switched to
+-- another Edit Mode layout. Changes no settings.
+function XPerl_NotifyConfig()
+	for k,v in pairs(ConfigRequesters) do
+		v(XPerlDB)
 	end
+end
+
+-- XPerl_IsValidConfig
+-- Cheap structural check that a settings table has every top-level section.
+function XPerl_IsValidConfig(set)
+	return type(set) == "table" and set.player and set.pet and set.colour and set.target and set.targettarget and set.focus and set.party and set.partypet and set.raid and set.rangeFinder and set.highlight and set.buffs and set.bar and true
+end
+local QuickValidate = XPerl_IsValidConfig
+
+-- CurrentConfig()
+-- The settings slot in use. "Save per character" is account-wide, so a character can find itself in a mode
+-- it has no slot for yet; it then starts from a copy of the other mode's settings (or defaults).
+local function CurrentConfig()
+	local realm = GetRealmName()
+	local mine = XPerlConfigNew[realm] and XPerlConfigNew[realm][playerName]
+	local global = XPerlConfigNew.global
 
 	if (XPerlConfigSavePerCharacter) then
-		if (not XPerlConfigNew[GetRealmName()]) then
-			XPerlConfigNew[GetRealmName()] = {}
+		if (not mine or not QuickValidate(mine)) then
+			if (QuickValidate(global)) then
+				mine = XPerl_CopyTable(global)
+			else
+				mine = {}
+				XPerl_Options_Defaults(mine)
+			end
+			if (not XPerlConfigNew[realm]) then
+				XPerlConfigNew[realm] = {}
+			end
+			XPerlConfigNew[realm][playerName] = mine
 		end
-
-		if (not XPerlConfigNew[GetRealmName()][playerName] or not QuickValidate(XPerlConfigNew[GetRealmName()][playerName])) then
-			local new = {}
-			XPerl_Defaults(new)
-			XPerlConfigNew[GetRealmName()][playerName] = new		-- TODO use last used config
-		end
-
-		ret = XPerlConfigNew[GetRealmName()][playerName]
-	else
-		if (not XPerlConfigNew.global or not QuickValidate(XPerlConfigNew.global)) then
-			local new = {}
-			XPerl_Defaults(new)
-			XPerlConfigNew.global = new					-- TODO use last used config
-		end
-
-		ret = XPerlConfigNew.global
+		return mine
 	end
 
-	return ret
+	if (not global or not QuickValidate(global)) then
+		if (QuickValidate(mine)) then
+			global = XPerl_CopyTable(mine)
+		else
+			global = {}
+			XPerl_Options_Defaults(global)
+		end
+		XPerlConfigNew.global = global
+	end
+	return global
 end
 
 -- GiveConfig
+-- (Re)selects the profile slot and attaches the active Edit Mode layout's frame sections to it
 local function GiveConfig()
+	XPerl_EditMode_DetachConfig()
 	conf = CurrentConfig()
 	XPerlDB = conf
-
-	for k,v in pairs(ConfigRequesters) do
-		v(conf)
-	end
+	XPerl_EditMode_AttachConfig(conf)
+	XPerl_NotifyConfig()
 end
 
 XPerl_GiveConfig = GiveConfig
 
--- XPerl_ResetDefaults
-function XPerl_ResetDefaults()
-
-	local conf = {}
-
-	XPerl_Defaults(conf)
+-- XPerl_SetCurrentConfig
+-- Replace the active settings (per-character or global, whichever is in use) and the active Edit Mode
+-- layout's frame sections with `new`, and push them to every module.
+function XPerl_SetCurrentConfig(new)
+	XPerl_EditMode_DetachConfig()
 
 	if (XPerlConfigSavePerCharacter) then
-		XPerlConfigNew[GetRealmName()][playerName] = conf
+		XPerlConfigNew[GetRealmName()][playerName] = new
 	else
-		XPerlConfigNew.global = conf
+		XPerlConfigNew.global = new
 	end
+	XPerl_EditMode_SetActiveFrames(new)
 
 	GiveConfig()
 
@@ -141,6 +165,13 @@ function XPerl_ResetDefaults()
 		XPerl_Options:Hide()
 		XPerl_Options:Show()
 	end
+end
+
+-- XPerl_ResetDefaults
+function XPerl_ResetDefaults()
+	local conf = {}
+	XPerl_Options_Defaults(conf)
+	XPerl_SetCurrentConfig(conf)
 end
 
 -- CopyTable
@@ -171,7 +202,7 @@ local function ImportOldConfigs()
 		for realm,realmList in pairs(XPerlConfig_Global) do
 			XPerlConfigNew[realm] = {}
 			for player,settings in pairs(realmList) do
-				XPerlConfigNew[realm][player] = XPerl_ImportOldConfig(settings)
+				XPerlConfigNew[realm][player] = XPerl_Options_ImportOldConfig(settings)
 			end
 		end
 
@@ -184,7 +215,7 @@ local function ImportOldConfigs()
 		end
 
 		if (XPerlConfig) then
-			XPerlConfigNew.global = XPerl_ImportOldConfig(XPerlConfig)
+			XPerlConfigNew.global = XPerl_Options_ImportOldConfig(XPerlConfig)
 			XPerlConfig = nil
 		end
 	end
@@ -250,10 +281,10 @@ function XPerl_RegisterBasics(self, eventArray)
         --        tinsert(events, "UNIT_POWER")
         --end
    
-	local events = { "UNIT_POWER", "UNIT_MAXPOWER", "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
+	local events = { "UNIT_POWER_UPDATE", "UNIT_MAXPOWER", "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
 
         if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
-                tinsert(events, "UNIT_POWER")
+                tinsert(events, "UNIT_POWER_UPDATE")
         end
                
 	XPerl_UnitEvents(self, eventArray, events)
@@ -364,8 +395,6 @@ local function settingspart1(self,event)
 	playerName = UnitName("player")
 	self:UnregisterEvent(event)
 
-	local newUser = not XPerlConfigNew and not XPerlConfig
-
 	if (not XPerlConfigNew) then
 		if (XPerlConfig_Global or XPerlConfig) then
 			XPerl_pcall(ImportOldConfigs)
@@ -374,19 +403,20 @@ local function settingspart1(self,event)
 		end
 	end
 
-	GiveConfig()
-
-	-- Variable checking only occurs for new install and version number change
+	-- Variable checking only occurs for new install and version number change. Runs on the stored slots,
+	-- before XPerl_EditMode_AttachConfig moves the old position data into the Edit Mode store.
 	if (not XPerlConfigNew.ConfigVersion or XPerlConfigNew.ConfigVersion ~= XPerl_VersionNumber) then
-		XPerl_pcall(XPerl_UpgradeSettings)
+		XPerl_pcall(XPerl_Options_UpgradeSettings)
 		XPerlConfigNew.ConfigVersion = XPerl_VersionNumber
 	end
 
+	-- One-shot setup code; nothing calls these after the settings are in place
 	ImportOldConfigs = nil
-	XPerl_ImportOldConfig = nil
-	XPerl_UpgradeSettings = nil
+	XPerl_Options_ImportOldConfig = nil
+	XPerl_Options_UpgradeSettings = nil
 
-	XPerl_pcall(XPerl_ValidateSettings)
+	-- Also validates the settings (XPerl_ValidateSettings, from XPerl_EditMode_AttachConfig)
+	GiveConfig()
 end
 	
 
@@ -395,6 +425,7 @@ local function startupCheckSettings(self,event)
 
 
 	XPerl_Init()
+	XPerl_EditMode_OnLogin()
 	XPerl_BlizzFrameDisable = nil
 	XPerl_RegisterLDB()
 
@@ -406,7 +437,7 @@ end
 function XPerl_Globals_OnEvent(self, event, arg1, ...)
 
 	--if (event == "VARIABLES_LOADED") then
-	if (event == "ADDON_LOADED" and arg1 == "XPerl") then
+	if (event == "ADDON_LOADED" and arg1 == addonName) then
 		self:UnregisterEvent(event)
 		settingspart1(self,event)
 		-- Tell DHUD to hide Blizzard default Player and Target frames
@@ -442,6 +473,9 @@ end
 function XPerl_SetMyGlobal()
 	local realm = GetRealmName()
 
+	-- Copy the slot with its own frame sections, not the Edit Mode layout's
+	XPerl_EditMode_DetachConfig()
+
 	if (not lastConfigMode and XPerlConfigSavePerCharacter) then
 		if (not XPerlConfigNew[realm]) then
 			XPerlConfigNew[realm] = {}
@@ -449,7 +483,6 @@ function XPerl_SetMyGlobal()
 		if (XPerlConfigNew.global) then
 			XPerlConfigNew[realm][playerName] = XPerl_CopyTable(XPerlConfigNew.global)
 		else
-			XPerl_LoadOptions()
 			XPerlConfigNew[realm][playerName] = {}
 			XPerl_Options_Defaults(XPerlConfigNew[realm][playerName])
 		end
@@ -458,7 +491,6 @@ function XPerl_SetMyGlobal()
 		if (XPerlConfigNew[realm] and XPerlConfigNew[realm][playerName]) then
 			XPerlConfigNew.global = XPerl_CopyTable(XPerlConfigNew[realm][playerName])
 		else
-			XPerl_LoadOptions()
 			XPerlConfigNew.global = {}
 			XPerl_Options_Defaults(XPerlConfigNew.global)
 		end
@@ -469,46 +501,9 @@ function XPerl_SetMyGlobal()
 	GiveConfig()
 end
 
--- XPerl_LoadOptions
-function XPerl_LoadOptions()
-	if (not IsAddOnLoaded("XPerl_Options")) then
-		EnableAddOn("XPerl_Options")
-		local ok, reason = LoadAddOn("XPerl_Options")
-
-		if (not ok) then
-			XPerl_Notice("Failed to load X-Perl Options ("..tostring(reason)..")")
-		else
-			collectgarbage()			-- Reclaims about 1.4Mb from loading options
-		end
-	end
-
-	return XPerl_Options_Defaults
-end
-
--- XPerl_ImportOldConfig
-function XPerl_ImportOldConfig(old)
-	if (XPerl_LoadOptions()) then
-		return XPerl_Options_ImportOldConfig(old)
-	end
-
-	return {}
-end
-
--- XPerl_Defaults()
-function XPerl_Defaults(new)
-	if (XPerl_LoadOptions()) then
-		XPerl_Options_Defaults(new)
-	end
-end
-
--- XPerl_UpgradeSettings
-function XPerl_UpgradeSettings()
-	if (XPerl_LoadOptions()) then
-		XPerl_Options_UpgradeSettings()
-	end
-end
-
 -- XPerl_ValidateSettings()
+-- Runs whenever a profile slot or an Edit Mode layout is attached (XPerl_EditMode.lua), before the
+-- XPerl_RequestConfig callbacks.
 function XPerl_ValidateSettings()
 
 	local function validate(set)
@@ -538,7 +533,22 @@ function XPerl_ValidateSettings()
 		end
 	end
 
-	local list = {"player", "pet", "party", "partypet", "target", "focus", "targettarget", "targettargettarget", "focustarget", "pettarget", "raid"}
+	-- Boss and arena sections from before those frames existed hold no more than their enable flag; they get
+	-- every missing default (a section with its size table is complete: the options keep "off" flags as nil)
+	for _, key in ipairs({"boss", "arena"}) do
+		local set = conf[key]
+		if (not set or not set.size) then
+			set = set or {}
+			for k, v in pairs(XPerl_Options_FrameDefaults(key)) do
+				if (set[k] == nil) then
+					set[k] = v
+				end
+			end
+			conf[key] = set
+		end
+	end
+
+	local list = {"player", "pet", "party", "partypet", "target", "focus", "targettarget", "targettargettarget", "focustarget", "pettarget", "raid", "boss", "arena"}
 
 	for k,v in pairs(list) do
 		validate(conf[v])
@@ -551,6 +561,63 @@ function XPerl_ValidateSettings()
 		conf.pet.castBar = {enable = 1}
 	end
 
+	-- Frame enable flags that older settings don't have yet; a disabled type stores false, so only a
+	-- missing flag becomes 1 (the other types' flags already existed, with nil meaning off)
+	for _, key in ipairs({"player", "pet", "party", "boss", "arena"}) do
+		if (not conf[key]) then
+			conf[key] = {}
+		end
+		if (conf[key].enable == nil) then
+			conf[key].enable = 1
+		end
+	end
+
+	-- Settings from before heal prediction get it switched on; switching it off stores false
+	for _, key in ipairs({"player", "pet", "pettarget", "target", "targettarget", "targettargettarget", "focus", "focustarget", "party", "partypet", "raid", "raidpet", "boss", "arena"}) do
+		local set = conf[key]
+		if (set and set.healPrediction == nil) then
+			set.healPrediction = 1
+		end
+	end
+
+	-- The player frame's targeting counter came back on by default; switching it off stores false
+	if (conf.player) then
+		if (conf.player.targetCounter == nil) then
+			conf.player.targetCounter = 1
+		end
+		if (conf.player.targetCounterHealers == nil) then
+			conf.player.targetCounterHealers = 1
+		end
+	end
+
+	-- Status icon spots that older settings don't have come from the defaults; the alternate raid icon
+	-- placement they replace goes
+	local function completeIcons(set, section)
+		if (type(set.icons) ~= "table") then
+			set.icons = {}
+		end
+		for key, spot in pairs(XPerl_DefaultStatusIcons(section)) do
+			if (set.icons[key] == nil) then
+				set.icons[key] = spot
+			end
+		end
+	end
+	for _, key in ipairs(XPerl_StatusIconSections) do
+		local set = conf[key]
+		if (set) then
+			completeIcons(set, key)
+			set.raidIconAlternate = nil
+		end
+	end
+	if (conf.party and type(conf.party.target) == "table") then
+		completeIcons(conf.party.target, "partytarget")
+	end
+
+	-- Raid role sorting was stored as 0 (3.7.1), on for Lua but off for anything comparing with 1
+	if (conf.raid and conf.raid.sortByRole == 0) then
+		conf.raid.sortByRole = 1
+	end
+
 	if (conf.colour and not conf.colour.gradient) then
 		conf.colour.gradient = {
 			enable	= 1,
@@ -559,5 +626,10 @@ function XPerl_ValidateSettings()
 		}
 	end
 
-	XPerl_ValidateSettings = nil
+	conf.custom = nil		-- settings of the removed custom highlight module
+	conf.highlightDebuffs = nil	-- removed debuff highlighting
+	conf.buffHelper = nil		-- removed tooltip buff helper
+	if (type(conf.targetCounters) == "table") then
+		conf.targetCounters.assisting = nil	-- removed target frame counter's list
+	end
 end

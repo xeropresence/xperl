@@ -1,0 +1,20 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+	<!-- Every unit frame type loads from here: the shared templates, the framework, the cast bar and the
+	     targeting counters first, then one include per unit type (each type's XML loads its own Lua), and
+	     Startup.lua last. -->
+	<Include file="Templates.xml"/>
+	<Script file="UnitFrame.lua"/>
+	<Script file="CastBar.lua"/>
+	<Script file="TargetCounters.lua"/>
+	<Include file="Player.xml"/>
+	<Include file="Target.xml"/>
+	<Include file="Pet.xml"/>
+	<Include file="TargetTarget.xml"/>
+	<Include file="Party.xml"/>
+	<Include file="Raid.xml"/>
+	<Include file="RaidPets.xml"/>
+	<Script file="UnitStack.lua"/>
+	<Include file="Boss.xml"/>
+	<Include file="Arena.xml"/>
+	<Script file="Startup.lua"/>
+</Ui>

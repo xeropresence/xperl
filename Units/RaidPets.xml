@@ -1,0 +1,69 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<Script file="RaidPets.lua"/>
+
+	<!-- Raid pet button (Units/RaidPets.lua), made by XPerl_Raid_GrpPets: the name frame carries the border and
+	     the name, the stats frame the health bar below the name. Clicks are declared here (see the raid button). -->
+	<Button name="XPerl_RaidPet_FrameTemplate" inherits="XPerl_UnitButtonTemplate" registerForClicks="AnyUp" virtual="true">
+		<Size x="80" y="30"/>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_RaidPetFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="raidpet"/>
+			<KeyValue key="headerChild" value="true" type="boolean"/>
+		</KeyValues>
+		<Attributes>
+			<Attribute name="*type1" type="string" value="target"/>
+			<Attribute name="type2" type="string" value="togglemenu"/>
+		</Attributes>
+		<Frames>
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate" registerForClicks="AnyUp" setAllPoints="true">
+				<KeyValues>
+					<KeyValue key="backdropInfo" value="XPERL_BACKDROP_RAID" type="global"/>
+				</KeyValues>
+				<Attributes>
+					<Attribute name="useparent-unit" type="boolean" value="true"/>
+					<Attribute name="*type1" type="string" value="target"/>
+					<Attribute name="type2" type="string" value="togglemenu"/>
+				</Attributes>
+			</Button>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" setAllPoints="true">
+				<Frames>
+					<StatusBar name="$parenthealthBar" parentKey="healthBar" inherits="XPerlRaidStatusBar">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="3" y="-12"/>
+							<Anchor point="BOTTOMRIGHT" x="-3" y="3"/>
+						</Anchors>
+						<BarColor r="0" g="0.8" b="0"/>
+					</StatusBar>
+				</Frames>
+				<Scripts>
+					<OnLoad function="XPerl_StatsFrame_Setup"/>
+				</Scripts>
+			</Frame>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate" setAllPoints="true"/>
+		</Frames>
+	</Button>
+
+	<Frame name="XPerl_Raid_TitlePets" inherits="XPerl_Raid_TitleTemplate" id="99">
+		<Anchors>
+			<Anchor point="TOPLEFT" x="720" y="-465"/>
+		</Anchors>
+		<Frames>
+			<Frame name="XPerl_Raid_GrpPets" parentKey="header" inherits="SecureRaidPetHeaderTemplate" clampedToScreen="true" frameStrata="LOW" hidden="true">
+				<Size x="80" y="10"/>
+				<Attributes>
+					<Attribute name="template" type="string" value="XPerl_RaidPet_FrameTemplate"/>
+					<Attribute name="templateType" type="string" value="Button"/>
+					<Attribute name="filterOnPet" type="boolean" value="true"/>
+					<Attribute name="unitsPerColumn" type="number" value="6"/>
+					<Attribute name="maxColumns" type="number" value="7"/>
+					<Attribute name="columnAnchorPoint" type="string" value="LEFT"/>
+					<Attribute name="minWidth" type="number" value="80"/>
+					<Attribute name="minHeight" type="number" value="10"/>
+				</Attributes>
+			</Frame>
+		</Frames>
+	</Frame>
+</Ui>

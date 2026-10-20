@@ -1,0 +1,64 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<Script file="Pet.lua"/>
+
+	<!-- Pet (Units/Pet.lua) -->
+	<Button name="XPerl_Player_Pet" inherits="XPerl_UnitButtonTemplate" parent="UIParent">
+		<Size x="127" y="56"/>
+		<Anchors>
+			<Anchor point="TOPLEFT" x="103" y="-89"/>
+		</Anchors>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_PetFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="pet"/>
+			<KeyValue key="initialUnit" value="pet"/>
+			<KeyValue key="blizzardFrame" value="PetFrame"/>
+			<KeyValue key="editModeLabel" value="PET" type="global"/>
+		</KeyValues>
+		<Frames>
+			<Frame name="$parentportraitFrame" parentKey="portraitFrame" inherits="XPerl_Portrait_Template">
+				<Size x="50" y="56"/>
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+			</Frame>
+
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
+				<Size x="80" y="24"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentportraitFrame" relativePoint="TOPRIGHT" x="-3" y="0"/>
+				</Anchors>
+			</Button>
+
+			<Frame name="$parentlevelFrame" parentKey="levelFrame" inherits="XPerl_UnitLevelFrameTemplate">
+				<Size x="27" y="24"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="$parentportraitFrame" relativePoint="TOPLEFT" x="2" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" inherits="XPerl_Stats_Template">
+				<Size x="80" y="34"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame" relativePoint="BOTTOMLEFT" x="0" y="2"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parenthitIndicator" parentKey="hitIndicator" inherits="XPerl_UnitHitIndicatorTemplate"/>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentportraitFrame"/>
+					<Anchor point="TOPRIGHT" relativeTo="$parentnameFrame"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentbuffFrame" parentKey="buffFrame">
+				<Size x="100" y="34"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentportraitFrame" relativePoint="BOTTOMLEFT" x="3" y="0"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Button>
+</Ui>

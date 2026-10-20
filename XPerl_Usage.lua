@@ -2,8 +2,6 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 
-if (not XPerl_GetUsage) then
-
 local conf
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
@@ -18,9 +16,7 @@ mod:RegisterEvent("PLAYER_ENTERING_WORLD")
 mod:RegisterEvent("CHAT_MSG_ADDON")
 mod:RegisterEvent("GROUP_ROSTER_UPDATE")
 
-if type(RegisterAddonMessagePrefix) == "function" then
-	RegisterAddonMessagePrefix(XPERL_COMMS_PREFIX)
-end
+C_ChatInfo.RegisterAddonMessagePrefix(XPERL_COMMS_PREFIX)
 
 local function modOnEvent(self, event, ...)
 	local f = mod[event]
@@ -32,8 +28,12 @@ end
 mod:SetScript("OnEvent", modOnEvent)
 mod.notifiedVersion = nil
 
-GameTooltip:HookScript("OnTooltipSetUnit",
+-- OnTooltipSetUnit is gone since 10.0.2; unit tooltips are post-processed through TooltipDataProcessor
+TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit,
 	function(self)
+		if (self ~= GameTooltip) then
+			return
+		end
 		local name, unitid = self:GetUnit()
 		if (not unitid) then
 			unitid = "mouseover"
@@ -51,6 +51,10 @@ local function UnitFullName(unit)
 end
 
 function mod:TooltipInfo(tooltip, unitid)
+	-- The tooltip's unit token is secret for identity-restricted units, and add-on code can't pass that to UnitIsPlayer
+	if (issecretvalue(unitid)) then
+		return
+	end
 	if (unitid and conf and conf.tooltip.xperlInfo and UnitIsPlayer(unitid) and UnitIsFriend(unitid, "player")) then
 		local xpUsage = XPerl_GetUsage(UnitFullName(unitid), unitid)
 		if (xpUsage) then
@@ -85,7 +89,6 @@ function mod:CheckForNewerVersion(ver)
 
 				--if (not conf or conf.tooltip.xperlInfo) then
 					DEFAULT_CHAT_FRAME:AddMessage(format(XPERL_USAGE_AVAILABLE, XPerl_ProductName, ver))
-					print("|cFFD00000X-Perl|r has been abandoned, for more information and the updated version of the addon please visit: |cFF80FF80http://www.curse.com/addons/wow/zperl|r")
 				--end
 			end
 			return true
@@ -137,7 +140,7 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 	elseif (msg == "S") then
 		if (channel == "WHISPER") then
 			-- Version only sent, so ask for rest
-			SendAddonMessage(XPERL_COMMS_PREFIX, "ASK", channel, sender)
+			C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, "ASK", channel, sender)
 		end
 
 	elseif (msg == "ASK") then
@@ -236,8 +239,8 @@ local function XPerl_FriendTooltip(self)
 		return
 	end
 
-	local name, level, class, area, connected, status = GetFriendInfo(self:GetID())
-	mod:GeneralTooltip(name, self)
+	local info = C_FriendList.GetFriendInfoByIndex(self:GetID())
+	mod:GeneralTooltip(info and info.name, self)
 end
 
 -- XPerl_WhoTooltip
@@ -246,8 +249,8 @@ local function XPerl_WhoTooltip(self)
 		return
 	end
 
-	local name, guild, level, race, class, zone = GetWhoInfo(self.whoIndex)
-	mod:GeneralTooltip(name, self)
+	local info = C_FriendList.GetWhoInfo(self.whoIndex)
+	mod:GeneralTooltip(info and info.fullName, self)
 end
 
 -- XPerl_UsageStartup
@@ -333,7 +336,10 @@ function mod:ParseCTRA(sender, msg, channel)
 end
 
 -- !!!!! Don't change the order of this list - EVER!!!!!
-local xpModList = {"XPerl", "XPerl_Player", "XPerl_PlayerPet", "XPerl_Target", "XPerl_TargetTarget", "XPerl_Party", "XPerl_PartyPet", "XPerl_RaidFrames", "XPerl_RaidHelper", "XPerl_RaidAdmin", "XPerl_TeamSpeak", "XPerl_RaidMonitor", "XPerl_RaidPets", "XPerl_ArcaneBar", "XPerl_PlayerBuffs", "XPerl_GrimReaper"}
+-- The position of each entry is its bit in the "MOD" field other clients decode. Every listed module is part of
+-- this addon now, so all named slots are always loaded. false marks the slots of retired modules and of separate
+-- addons that X-Perl disables at load; they are always sent as not loaded and skipped when decoding.
+local xpModList = {"XPerl", "XPerl_Player", "XPerl_PlayerPet", "XPerl_Target", "XPerl_TargetTarget", "XPerl_Party", "XPerl_PartyPet", "XPerl_RaidFrames", false, false, false, false, "XPerl_RaidPets", "XPerl_ArcaneBar", "XPerl_PlayerBuffs", false}
 --------------------------------------------------------
 
 -- XPerl_SendModules
@@ -369,7 +375,7 @@ function mod:SendModules(chan, target)
 		end
 
 		local packet = self:MakePacket(chan == "WHISPER")
-		SendAddonMessage(XPERL_COMMS_PREFIX, packet, chan, target)
+		C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, packet, chan, target)
 	end
 end
 
@@ -382,8 +388,8 @@ function mod:MakePacket(response, versionOnly)
 		return format("%sVER %s#REV %s", resp, XPerl_VersionNumber, XPerl_GetRevision())
 	else
 		local modules = ""
-		for k,v in pairs(xpModList) do
-			modules = modules..(tostring(IsAddOnLoaded(v) or 0))
+		for k,v in ipairs(xpModList) do
+			modules = modules..(v and "1" or "0")
 		end
 		local gc = floor(collectgarbage("count"))
 
@@ -398,8 +404,8 @@ end
 -- XPerl_DecodeModuleList
 function mod:DecodeModuleList(modList)
 	local ret = new()
-	for k,v in pairs(xpModList) do
-		if (strsub(modList, k, k) == "1") then
+	for k,v in ipairs(xpModList) do
+		if (v and strsub(modList, k, k) == "1") then
 			if (XPerlUsageNameList[v]) then
 				tinsert(ret, XPerlUsageNameList[v])
 			else
@@ -422,13 +428,10 @@ function XPerl_GetUsage(unitName, unitID)
 			end
 			if (not mod.directQueries[unitName]) then
 				mod.directQueries[unitName] = true
-				SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true), "WHISPER", unitName)
+				C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true), "WHISPER", unitName)
 			end
 		end
 	end
 
 	return ver
-end
-
-
 end

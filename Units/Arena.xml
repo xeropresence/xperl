@@ -1,0 +1,132 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\..\FrameXML\UI.xsd">
+
+	<!-- Arena enemy frames XPerl_Arena1..5 (arena1-5). Units/Arena.lua creates them from these templates, so it
+	     loads after them. Name and stats with the optional portrait beside them, then a column with the
+	     specialization icon over the PvP trinket. -->
+	<Button name="XPerl_ArenaFrameTemplate" inherits="XPerl_UnitButtonTemplate" virtual="true">
+		<Size x="192" y="62"/>
+		<KeyValues>
+			<KeyValue key="typeMixin" value="XPerl_ArenaFrameMixin" type="global"/>
+			<KeyValue key="frameKey" value="arena"/>
+		</KeyValues>
+		<Frames>
+			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"/>
+				</Anchors>
+			</Button>
+
+			<Frame name="$parentportraitFrame" parentKey="portraitFrame" inherits="XPerl_Portrait_Template">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame" relativePoint="TOPRIGHT" x="-2" y="0"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parentspecFrame" parentKey="specFrame" inherits="XPerl_BorderStyleTemplate">
+				<Size x="34" y="34"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentportraitFrame" relativePoint="TOPRIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parenticon" parentKey="icon">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="5" y="-5"/>
+								<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+
+			<Frame name="$parenttrinketFrame" parentKey="trinketFrame" inherits="XPerl_BorderStyleTemplate">
+				<Size x="34" y="30"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativeTo="$parentportraitFrame" relativePoint="BOTTOMRIGHT" x="-2" y="0"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture name="$parenticon" parentKey="icon">
+							<Anchors>
+								<Anchor point="TOPLEFT" x="5" y="-5"/>
+								<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+							</Anchors>
+							<TexCoords left="0.08" right="0.92" top="0.12" bottom="0.88"/>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Cooldown name="$parentcooldown" parentKey="cooldown" inherits="CooldownFrameTemplate" drawEdge="true">
+						<Anchors>
+							<Anchor point="TOPLEFT" x="5" y="-5"/>
+							<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+						</Anchors>
+					</Cooldown>
+				</Frames>
+			</Frame>
+
+			<Frame name="$parentstatsFrame" parentKey="statsFrame" inherits="XPerl_Stats_Template">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="$parentnameFrame" relativePoint="BOTTOM" x="0" y="2"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parenthighlight" inherits="XPerl_HighlightTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentnameFrame"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="$parentstatsFrame"/>
+				</Anchors>
+			</Frame>
+
+			<Frame name="$parenthitIndicator" parentKey="hitIndicator" inherits="XPerl_UnitHitIndicatorTemplate"/>
+
+			<Frame name="$parentbuffFrame" parentKey="buffFrame">
+				<Size x="100" y="50"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentstatsFrame" relativePoint="BOTTOMLEFT" x="2" y="0"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Button>
+
+	<!-- Arena preparation placeholder: what is known of an opponent before the gates open (specialization icon
+	     and name, class name, a bar in the class colour). Not protected, laid over the opponent's frame. -->
+	<Frame name="XPerl_ArenaPrepTemplate" inherits="XPerl_BorderStyleTemplate" hidden="true" virtual="true">
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentspecIcon" parentKey="specIcon">
+					<Size x="50" y="50"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="-6" y="0"/>
+					</Anchors>
+					<TexCoords left="0.08" right="0.92" top="0.08" bottom="0.92"/>
+				</Texture>
+				<Texture name="$parentbar" parentKey="bar" file="Interface\TargetingFrame\UI-StatusBar">
+					<Size y="10"/>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT" x="8" y="9"/>
+						<Anchor point="BOTTOMRIGHT" relativeTo="$parentspecIcon" relativePoint="BOTTOMLEFT" x="-6" y="0"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="OVERLAY">
+				<FontString name="$parentspecName" parentKey="specName" inherits="GameFontNormal" justifyH="LEFT">
+					<Size y="16"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" x="8" y="-6"/>
+						<Anchor point="RIGHT" relativeTo="$parentspecIcon" relativePoint="LEFT" x="-6" y="0"/>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentclassName" parentKey="className" inherits="GameFontHighlightSmall" justifyH="LEFT">
+					<Size y="14"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeTo="$parentspecName" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+						<Anchor point="RIGHT" relativeTo="$parentspecIcon" relativePoint="LEFT" x="-6" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+
+	<Script file="Arena.lua"/>
+</Ui>

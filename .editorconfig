@@ -1,0 +1,26 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# The whole add-on is hard tabs at width 4; keep it that way so diffs stay
+# readable against the original svn history.
+[*.{lua,xml}]
+indent_style = tab
+indent_size = 4
+
+[*.toc]
+indent_style = tab
+indent_size = 4
+# TOC files are UTF-8 with a BOM; the client needs it for localised titles.
+charset = utf-8-bom
+
+[*.{yml,yaml,json}]
+indent_style = space
+indent_size = 2
+
+[*.md]
+trim_trailing_whitespace = false
