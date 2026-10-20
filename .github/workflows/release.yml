@@ -31,4 +31,6 @@ jobs:
       - name: Package and publish
         uses: BigWigsMods/packager@v2
         env:
-          GH_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # packager@v2 reads GITHUB_API_TOKEN (or GITHUB_OAUTH); without a token it
+          # skips the GitHub release and still exits successfully
+          GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
