@@ -49,7 +49,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 
 	XPERL_LOC_STATUSTIP = "Condici\195\179n Destacados: " 	-- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
-		HOT = "Sanaci\195\179n en el Tiempo",
 		AGGRO = "Agresivo",
 		MISSING = "Perdiendo tus buffs de clase",
 	}

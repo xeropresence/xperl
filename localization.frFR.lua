@@ -38,7 +38,6 @@ if (GetLocale() == "frFR") then
 
 	XPERL_LOC_STATUSTIP = "Statuts accentu\195\169s: " -- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
-		HOT = "Soins sur la dur\195\169e",
 		AGGRO = "Aggro",
 		MISSING = "Manque votre buff de classe",
 	}

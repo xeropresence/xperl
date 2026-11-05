@@ -444,7 +444,6 @@ if (GetLocale() == "frFR") then
 	XPERL_CONF_RAID_ALPHABETICAL_DESC		= "Classe alphab\195\169tiquement les membres de groupe"
 	XPERL_CONF_RAID_HIGHLIGHTS			= "Accentuation des status"
 	XPERL_CONF_RAID_HIGHLIGHTS_DESC			= "Permettre l'accentuation des status "
-	XPERL_CONF_RAID_HIGHLIGHTS_HOTS			= "HoTs"
 	XPERL_CONF_RAID_HIGHLIGHTS_AGGRO		= "Aggro"
 	XPERL_CONF_RAID_HIGHLIGHTS_AGGRO_DESC		= "Accentuera des unit\195\169s avec une frontière rouge si elles ont l'aggro"
 	XPERL_CONF_RAID_SPACING				= "Espacement"

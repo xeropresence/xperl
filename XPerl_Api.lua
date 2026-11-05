@@ -90,6 +90,9 @@ local issecretvalue = issecretvalue
 local SECRET_AURA = setmetatable({}, {__newindex = function() end})
 API.SECRET_AURA = SECRET_AURA
 
+-- C_Secrets answers for any index, filled or not: while auras are restricted every index up to 40 "is
+-- secret", so a loop sees 40 SECRET_AURA entries whatever the unit has. Hidden auras can't be counted.
+
 local function auraIndexSecret(unit, index, filter)
 	return C_Secrets and C_Secrets.ShouldUnitAuraIndexBeSecret(unit, index, filter)
 end

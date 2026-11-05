@@ -2,7 +2,7 @@
 
 A complete replacement for Blizzard's unit frames: player, pet, target, focus, the
 target-of frames, party, raid, raid pets, boss and arena. Portraits, cast bars, heal
-prediction, range fading, HoT and aggro highlights, all configurable from one options
+prediction, range fading, aggro highlights, all configurable from one options
 window and from Edit Mode.
 
 X-Perl began as Zek's extended version of Nymbia's Perl UnitFrames. The original project
@@ -57,9 +57,7 @@ One download covers both clients; each client loads its own TOC.
 
 - Buffs and debuffs are drawn by the game's own aura containers, so they stay
   visible in combat, encounters, keystones and PvP.
-- HoT monitor: your own HoTs get a border or a timer bar (the timer runs out of combat),
-  and an optional count shows how many HoTs a unit has. Aggro and your target are
-  highlighted too.
+- Aggro and your target are highlighted on the frames.
 - Player buff row with weapon enchants first; right-click a buff to cancel it.
 
 ### Range finder
@@ -192,6 +190,8 @@ information they need:
     checks
   - the 30 yard indicator on party frames
   - the low-health screen flash (the out-of-control flash stays)
+  - the HoT monitor (HoT borders, timer bars, the HoT counter and sparkles): in combat
+    every aura slot reads as hidden, even empty ones, so add-ons can't tell your HoTs
   - threat on boss frames
   - the death knight rune flash
   - Spirit of Redemption shown as dead

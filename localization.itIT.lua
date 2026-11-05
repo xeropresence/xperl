@@ -56,7 +56,6 @@ XPERL_LOC_NONEWATCHED	= "none watched"
 
 XPERL_LOC_STATUSTIP = "Evidenziaziazione stato: " 	-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
-	HOT = "Cure nel Tempo (HOT)",
 	AGGRO = "Aggressione",
 	MISSING = "Missing your class' buff",
 }

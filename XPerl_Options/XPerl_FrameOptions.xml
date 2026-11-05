@@ -3252,50 +3252,9 @@
 								self.configBase = "XPerlDB.highlight"
 								self.configIndex = "enable"
 								self.Validate = function()
-									XPerl_Options_EnableSibling(self,"HighlightHoTs")
 									XPerl_Options_EnableSibling(self,"HighlightAggro")
-									XPerl_Options_EnableSibling(self,"HighlightHotcount")
 									XPerl_Options_EnableSibling(self,"HighlightTarget")
-									XPerl_Options_EnableSibling(self,"HighlightSparkles")
-									XPerl_Options_EnableSibling(self,"ExtraSparkles")
-
-									local _, class = UnitClass("player")
-									if (class ~= "DRUID" and class ~= "PRIEST" and class ~= "SHAMAN" and class ~= "MONK" and class ~= "PALADIN" and class ~= "EVOKER") then
-										XPerl_Options_EnableCheck(XPerl_Options_GetSibling("HighlightHoTs",self), false)
-									end
 								end
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_HighlightHoTs" inherits="XPerlCheckButtonTemplate">
-						<Size><AbsDimension x="26" y="26"/></Size>
-						<Anchors>
-							<Anchor point="TOP" relativeTo="$parent_Highlights" relativePoint="BOTTOMRIGHT">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_HOTS")
-								self.configBase = "XPerlDB.highlight"
-								self.configIndex = "HOT"
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_HighlightHotcount" inherits="XPerlCheckButtonTemplate">
-						<Size><AbsDimension x="26" y="26"/></Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightHoTs" relativePoint="TOPRIGHT">
-								<Offset><AbsDimension x="100" y="0"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_HOTCOUNT")
-								self.configBase = "XPerlDB.highlight"
-								self.configIndex = "HOTCOUNT"
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -3303,7 +3262,7 @@
 					<CheckButton name="$parent_HighlightAggro" inherits="XPerlCheckButtonTemplate">
 						<Size><AbsDimension x="26" y="26"/></Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightHoTs" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOP" relativeTo="$parent_Highlights" relativePoint="BOTTOMRIGHT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -3319,7 +3278,7 @@
 					<CheckButton name="$parent_HighlightTarget" inherits="XPerlCheckButtonTemplate">
 						<Size><AbsDimension x="26" y="26"/></Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightHotcount" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightAggro" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -3328,38 +3287,6 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_TARGET")
 								self.configBase = "XPerlDB.highlight"
 								self.configIndex = "TARGET"
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_HighlightSparkles" inherits="XPerlCheckButtonTemplate">
-						<Size><AbsDimension x="26" y="26"/></Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightAggro" relativePoint="BOTTOMLEFT">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_SPARKLES")
-								self.configBase = "XPerlDB.highlight"
-								self.configIndex = "sparkles"
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_ExtraSparkles" inherits="XPerlCheckButtonTemplate">
-						<Size><AbsDimension x="26" y="26"/></Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightSparkles" relativePoint="TOPRIGHT">
-								<Offset><AbsDimension x="100" y="0"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_EXTRA")
-								self.configBase = "XPerlDB.highlight"
-								self.configIndex = "extraSparkles"
 							</OnLoad>
 						</Scripts>
 					</CheckButton>

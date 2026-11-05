@@ -48,7 +48,6 @@ if (GetLocale() == "deDE") then
 
 	XPERL_LOC_STATUSTIP 	= "Status Hervorhebungen: " 	-- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
-		HOT = "Heilung \195\188ber Zeit",
 		AGGRO = "Aggro",
 		MISSING = "Dein Klassenbuff fehlt",
 	}

@@ -52,7 +52,6 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 
 	XPERL_LOC_STATUSTIP = "Статус подсвечивания: " 	-- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
-	HOT = "Исцеления за Время",
 	AGGRO = "Аггро",
 	MISSING = "Отсутствие классового' баффа",
 }

@@ -63,7 +63,6 @@ XPERL_TARGETCOUNTER_CLICK		= "Click to show or hide this list in the targeting w
 
 XPERL_LOC_STATUSTIP = "Status Highlights: " 	-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
-	HOT = "Heal over Time",
 	AGGRO = "Aggro",
 	MISSING = "Missing your class' buff",
 }
@@ -207,26 +206,6 @@ XPERL_EDITMODE_SPOT_RIGHT			= "Right"
 XPERL_EDITMODE_SPOT_BOTTOMLEFT		= "Bottom Left"
 XPERL_EDITMODE_SPOT_BOTTOM			= "Bottom"
 XPERL_EDITMODE_SPOT_BOTTOMRIGHT	= "Bottom Right"
-
-
--- Status highlight spells
-XPERL_HIGHLIGHT_SPELLS = {
-	hotSpells  = XPerlAPI.SpellNameMap({
-		[774] = 12,			-- Rejuvenation (old id 26982)
-		[8936] = 6,			-- Regrowth (old id 26980)
-		[139] = 12,			-- Renew (old id 25222)
-	    [48438] = 7,			-- Wild Growth 
-		[33763] = 8,			-- Lifebloom
-		[28880] = 15,			-- Gift of the Naaru (Racial)
-		[61295] = 15,			-- Riptide
-		[115151] = 18,		-- Renewing Mist
-		[119611] = 18,		-- Renewing Mist - furtherst instead of nearest
-		[115175] = 8,			-- Soothing Mist
-		[124682] = 6,			-- Enveloping Mist
-		[114163] = 30,		-- Eternal Flame
-	}),
-}
-
 
 -- Default spells for range checking in the healer visual out-of-range cues.
 XPerl_DefaultRangeSpells = {

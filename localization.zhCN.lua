@@ -49,7 +49,6 @@ XPERL_LOC_NONEWATCHED	= "无监控"
 
 XPERL_LOC_STATUSTIP	= "状态提示: "		-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
-	HOT = "持续治疗",
 	AGGRO = "你仇恨过高了",
 	MISSING = "你的职业 buff 消失",
 }

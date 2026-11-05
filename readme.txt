@@ -2,8 +2,6 @@ A much enchanced version of Nymbia's Perl UnitFrames, and a complete replacement
 
 Range Finder (combined with an optional debuff check) for all frames based on a spell range test or a fixed 40 yard check.
 
-HoT Monitor will highlight units clearly that have your own active Heal over Time spells. Regardless of how many other heal over time buffs are on the raid members, you can keep track of your own ones and when they expire.
-
 Raid Frames, buff icons and some other portions or X-Perl are Created on demand. Saving a lot of time and memory at system startup. Defering the creation of many parts of X-Perl to when they are actually required. And of course, most often outside of raids they are never required and are never created.
 
 Raid Target icon support for Target, Target's Target.

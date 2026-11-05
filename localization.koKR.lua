@@ -41,7 +41,6 @@ if (GetLocale() == "koKR") then
 
 	XPERL_LOC_STATUSTIP	= "상태 강조: "		-- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
-		HOT = "주기적인 치유",
 		AGGRO = "어그로",
 		MISSING = "당신의 직업 버프 누락",
 	}

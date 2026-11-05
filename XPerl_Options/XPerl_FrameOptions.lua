@@ -1545,7 +1545,6 @@ function XPerl_Options_ImportOldConfig(old)
 		rangeFinder = old.RangeFinder or XPerl_DefaultRangeFinder(),
 		highlight = {
 			enable			= Convert(old.RaidHighlights),
-			HOT			= Convert(old.RaidHighlightHoTs),
 			AGGRO			= Convert(old.RaidHighlightAggro),
 			MISSING			= Convert(old.RaidHighlightMissing),
 			all			= Convert(old.RaidHighlightMissingAll),
@@ -2031,7 +2030,6 @@ local function XPerl_Global_ConfigDefault(default)
 
 	default.highlight = {
 		enable			= 1,
-		HOT			= 1,
 		AGGRO			= 1,
 --		MISSING			= nil,
 --		all			= nil,
@@ -2603,10 +2601,6 @@ do
 				old.player.dockRunes = 1
 			end
 
-			if (oldVersion < "2.4.2c") then
-				old.highlight.sparkles = 1
-			end
-
 			if (oldVersion <= "2.3.9a") then
 				old.player.debuffs.enable = old.player.buffs.enable
 			end
@@ -2643,9 +2637,6 @@ do
 				old.raid.manaPercent = 1
 
 				old.highlight.MISSING = nil
-				if (playerClass == "PRIEST" or playerClass == "DRUID" or playerClass == "PALADIN" or playerClass == "SHAMAN") then
-					old.highlight.HOTCOUNT = 1
-				end
 			end
 
 			if (oldVersion < "2.3.4a") then

@@ -53,7 +53,6 @@ XPERL_LOC_NONEWATCHED	= "無監看"
 
 XPERL_LOC_STATUSTIP	= "狀態提示："		-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
-	HOT = "持續治療",
 	AGGRO = "敵方目標",
 	MISSING = "你職業的 buff 被遺漏",
 }
