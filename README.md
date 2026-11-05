@@ -248,16 +248,18 @@ Pushing a tag to GitHub publishes the release in two places:
 Both read `.pkgmeta`: the zip holds one `XPerl` folder with both TOCs, so one file
 covers Retail and WoW: Forever. Dotfiles and `.github/` are left out.
 
-1. Set the new version in `XPerl.toc` and `XPerl_Camelot.toc` (`## Version:`) and in
-   `localization.lua` (`XPerl_VersionNumber`), and commit.
-2. Tag that commit with the same version and push the tag:
+The version comes from the tag: both TOCs say `## Version: @project-version@`, which the
+packager replaces with the tag name, and `XPerl_VersionNumber` reads it back from the TOC.
+A git checkout shows `@project-version@` as its version.
+
+1. Tag the commit to release and push the tag:
 
    ```sh
-   git tag -a 4.0.1 -m "4.0.1"
-   git push origin 4.0.1
+   git tag -a 4.0.2 -m "4.0.2"
+   git push origin 4.0.2
    ```
 
-3. A tag containing `alpha` or `beta` (e.g. `4.1.0-beta1`) becomes an alpha or beta
+2. A tag containing `alpha` or `beta` (e.g. `4.1.0-beta1`) becomes an alpha or beta
    file on CurseForge and a pre-release on GitHub; any other tag is a release.
 
 If the GitHub release is missing for a tag (its run failed, or the tag predates the
