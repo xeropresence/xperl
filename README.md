@@ -105,6 +105,13 @@ character-specific layouts can each arrange the frames differently. Switching
 layouts, including through a specialization change, switches the frames with them.
 Copying a layout copies its X-Perl setup, and renaming or deleting a layout carries over.
 
+Frames you haven't moved in a layout sit where that layout puts Blizzard's own frames.
+The player, target and focus frames, with their pet, pet target, target-of-target and
+focus-target frames, are at the top left in Classic and above the action bars in
+Modern and Gamepad (and in layouts copied from those). Party, raid, boss and arena
+frames keep the same default spot in every layout, as Blizzard's do. Edit Mode's
+"Reset Position" puts a frame back on its default for the active layout.
+
 Colours, bar textures, tooltips, highlights, the range finder and the other global
 options are the same in every layout. "Save Settings Per Character" applies to these
 global options only.

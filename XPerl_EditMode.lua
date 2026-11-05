@@ -16,7 +16,8 @@
 -- layoutKey: "preset:<n>", "account:<name>" or "character:<realm>/<character>/<name>" (character layouts of
 -- different characters can share a name). posKey: the frame key, plus the index for several frames of one key.
 -- <position> = {point =, relativePoint = (defaults to point), x =, y =}, relative to UIParent, in the frame's
--- own (scaled) units like SetPoint offsets.
+-- own (scaled) units like SetPoint offsets. A frame its layout stores no position for sits at its default: the
+-- XML anchor, moved along with the Blizzard frame it replaces where the layout moves that one (see MIRRORED).
 --
 -- While a layout is active its frame sections are swapped into the profile slot (XPerlDB.player is that
 -- layout's table); the slot's own sections are put back before the slot is switched or saved.
@@ -244,9 +245,17 @@ end
 -- Positions
 ------------------------------------------------------------------------------
 
-local function Position(reg)
-	return CurrentPositions()[reg.posKey] or reg.info.default
-end
+-- Default positions that follow Blizzard's frames between layouts. The XML anchors place X-Perl's player,
+-- target and focus groups where Blizzard's Classic preset has its frames (top left); in another layout these
+-- X-Perl frames move as far as the Blizzard frame they replace does (Modern, Gamepad: above the action bars).
+-- Blizzard's party, raid, boss and arena frames sit the same in every preset, so those keys keep the XML anchor.
+local MIRRORED = {
+	player = "Player", pet = "Player", pettarget = "Player",
+	target = "Target", targettarget = "Target", targettargettarget = "Target",
+	focus = "Focus", focustarget = "Focus",
+}
+local BLIZZARD_FRAMES = {Player = "PlayerFrame", Target = "TargetFrame", Focus = "FocusFrame"}
+local classicAnchors = {}		-- [system index name] = anchor of that Blizzard frame in the Classic preset, or false
 
 -- Where an anchor point lies across a region: 0 left / bottom, 0.5 middle, 1 right / top
 local function PointFractions(point)
@@ -263,6 +272,60 @@ local function TopLeftOffset(frame, pos)
 	local rx, ry = PointFractions(pos.relativePoint or pos.point)
 	return UIParent:GetWidth() / scale * rx + pos.x - width * px,
 		UIParent:GetHeight() / scale * (ry - 1) + pos.y + height * (1 - py)
+end
+
+-- Top left corner of Blizzard's frame `blizz` placed by the Edit Mode anchor `anchor`, as an offset from the
+-- anchor's relative point (UIParent units, like Edit Mode offsets)
+local function AnchorTopLeft(anchor, blizz)
+	local scale = blizz:GetScale()
+	local px, py = PointFractions(anchor.point)
+	return anchor.offsetX - blizz:GetWidth() * scale * px, anchor.offsetY + blizz:GetHeight() * scale * (1 - py)
+end
+
+local function ClassicAnchor(index)
+	local anchor = classicAnchors[index]
+	if (anchor == nil) then
+		anchor = EditModePresetLayoutManager:GetPresetLayoutSystemAnchorInfo(Enum.EditModePresetLayouts.Classic,
+			Enum.EditModeSystem.UnitFrame, Enum.EditModeUnitFrameSystemIndices[index]) or false
+		classicAnchors[index] = anchor
+	end
+	return anchor or nil
+end
+
+-- The frame's default position (reg.default, which is also LibEditMode's "Reset Position" target): the XML
+-- anchor, shifted by how far the client's active layout moves the mirrored Blizzard frame from its Classic
+-- spot. Anchored at the point the Blizzard frame is anchored to, so it follows a resized screen the same way.
+-- Until the client has reported its layouts (or for a Blizzard frame snapped to another frame) it is the XML
+-- anchor.
+local function DefaultPosition(reg)
+	local default, xml = reg.default, reg.info.default
+	local index = MIRRORED[reg.frameKey]
+	local blizz = index and _G[BLIZZARD_FRAMES[index]]
+	local info = blizz and EditModeManagerFrame:GetActiveLayoutSystemInfo(Enum.EditModeSystem.UnitFrame, Enum.EditModeUnitFrameSystemIndices[index])
+	local active = info and info.anchorInfo
+	local classic = active and ClassicAnchor(index)
+	if (not (classic and active.relativeTo == "UIParent" and classic.relativeTo == "UIParent")) then
+		default.point, default.x, default.y = xml.point, xml.x, xml.y
+		return default
+	end
+
+	local frame = reg.frame
+	local scale = frame:GetScale()
+	local width, height = frame:GetSize()
+	local x, y = TopLeftOffset(frame, xml)
+	local ax, ay = AnchorTopLeft(active, blizz)
+	local cx, cy = AnchorTopLeft(classic, blizz)
+	local cfx, cfy = PointFractions(classic.relativePoint)
+	cx, cy = cx + UIParent:GetWidth() * cfx, cy + UIParent:GetHeight() * (cfy - 1)
+	local rx, ry = PointFractions(active.relativePoint)
+	default.point = active.relativePoint
+	default.x = x + (ax - cx) / scale + width * rx
+	default.y = y + (ay - cy) / scale - height * (1 - ry)
+	return default
+end
+
+local function Position(reg)
+	return CurrentPositions()[reg.posKey] or DefaultPosition(reg)
 end
 
 -- Whether a leader's followers move with it
@@ -291,7 +354,8 @@ local function Place(frame, reg)
 		frame:SetUserPlaced(false)
 	end
 
-	local pos = Position(reg)
+	local default = DefaultPosition(reg)		-- kept current for LibEditMode's reset while a position is stored
+	local pos = CurrentPositions()[reg.posKey] or default
 	frame:ClearAllPoints()
 	local leaderReg = LinkedLeader(reg)
 	if (leaderReg) then
@@ -321,6 +385,10 @@ local function ApplyAllPositions()
 		end
 	end
 end
+
+-- Edit Mode moves Blizzard's frames when the client's layout data changes, which can come after X-Perl's own
+-- layout switch (at login the last layout is active already): the defaults that mirror them are read again
+hooksecurefunc(EditModeManagerFrame, "UpdateLayoutInfo", ApplyAllPositions)
 
 -- Stores where the frame is now, as TOPLEFT of UIParent so frames keep growing right and down. Returns the
 -- stored position.
@@ -527,11 +595,13 @@ function XPerl_EditMode_Register(frame, frameKey, info)
 		return
 	end
 
-	local reg = {frameKey = frameKey, posKey = PosKey(frameKey, info.index), info = info, leader = info.leader}
+	local default = info.default
+	local reg = {frame = frame, frameKey = frameKey, posKey = PosKey(frameKey, info.index), info = info, leader = info.leader,
+		default = {point = default.point, x = default.x, y = default.y}}
 	registered[frame] = reg
 	tinsert(order, frame)
 
-	LEM:AddFrame(frame, OnMoved, info.default, format(XPERL_EDITMODE_LABEL, info.label))
+	LEM:AddFrame(frame, OnMoved, reg.default, format(XPERL_EDITMODE_LABEL, info.label))
 	LEM.frameSelections[frame]:HookScript("OnShow", SelectionOnShow)
 
 	if (loggedIn) then
