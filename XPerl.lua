@@ -1090,6 +1090,8 @@ function XPerl_MinimapButton_Init(self)
 	xpStartupMemory = GetAddOnMemoryUsage(addonName) or 0
 
 	XPerl_MinimapButton_UpdatePosition(self)
+	-- Edit Mode's minimap size setting changes the orbit
+	Minimap:HookScript("OnSizeChanged", function() XPerl_MinimapButton_UpdatePosition(self) end)
 
 	if (conf.minimap.enable) then
 		self:Show()
@@ -1102,40 +1104,35 @@ function XPerl_MinimapButton_Init(self)
 	XPerl_MinimapButton_Init = nil
 end
 
+-- Minimap button orbit: conf.minimap.pos is the angle in degrees, counted from the left going clockwise over the
+-- top (180 = right), conf.minimap.distance how far past the minimap's edge the button sits (Alt-drag sets it).
+-- The radius follows the minimap's current size, which differs between clients and Edit Mode settings.
+local MINIMAP_EDGE, MINIMAP_MAX_DISTANCE = 10, 70
+
+local function MinimapRadius()
+	return Minimap:GetWidth() / 2 + MINIMAP_EDGE + (conf.minimap.distance or 0)
+end
+
 -- XPerl_MinimapButton_UpdatePosition
 function XPerl_MinimapButton_UpdatePosition(self)
-	if (not conf.minimap.radius) then
-		conf.minimap.radius = 78
-	end
-	self:SetPoint(
-		"TOPLEFT",
-		"Minimap",
-		"TOPLEFT",
-		54 - (conf.minimap.radius * cos(conf.minimap.pos)),
-		(conf.minimap.radius * sin(conf.minimap.pos)) - 55
-	)
+	local angle, radius = math.rad(conf.minimap.pos or 186), MinimapRadius()
+	self:ClearAllPoints()
+	self:SetPoint("CENTER", Minimap, "CENTER", -radius * math.cos(angle), radius * math.sin(angle))
 end
 
 -- XPerl_MinimapButton_Dragging
 function XPerl_MinimapButton_Dragging(self, elapsed)
-	local xpos,ypos = GetCursorPosition()
-	local xmin,ymin = Minimap:GetLeft(), Minimap:GetBottom()
-
-	xpos = xmin-xpos/UIParent:GetScale()+70
-	ypos = ypos/UIParent:GetScale()-ymin-70
+	local scale = Minimap:GetEffectiveScale()
+	local cx, cy = GetCursorPosition()
+	local mx, my = Minimap:GetCenter()
+	local dx, dy = cx / scale - mx, cy / scale - my
 
 	if (IsAltKeyDown()) then
-		local radius = (xpos^2 + ypos^2)^0.5
-		if (radius < 78) then
-			radius = 78
-		end
-		if (radius > 148) then
-			radius = 148
-		end
-		conf.minimap.radius = radius
-		end
+		local beyond = (dx * dx + dy * dy) ^ 0.5 - Minimap:GetWidth() / 2 - MINIMAP_EDGE
+		conf.minimap.distance = max(0, min(MINIMAP_MAX_DISTANCE, beyond))
+	end
 
-	local angle = math.deg(math.atan2(ypos,xpos))
+	local angle = math.deg(math.atan2(dy, -dx))
 	if (angle < 0) then
 		angle = angle + 360
 	end
