@@ -673,12 +673,13 @@ end
 XPerl_RegisterOptionChanger(BuildHealthColourCurve)
 
 -- XPerl_SetSmoothBarColorFromUnit(bar, unit)
--- XPerl_SetSmoothBarColor by the unit's own health, which may be restricted (secret)
+-- XPerl_SetSmoothBarColor by the unit's own health, which may be restricted (secret). Predicted like UnitHealth,
+-- so the colour changes with the bar's fill.
 function XPerl_SetSmoothBarColorFromUnit(bar, unit)
 	if (not healthColourCurve) then
 		BuildHealthColourCurve()
 	end
-	local r, g, b = UnitHealthPercent(unit, false, healthColourCurve):GetRGB()
+	local r, g, b = UnitHealthPercent(unit, true, healthColourCurve):GetRGB()
 	bar:SetStatusBarColor(r, g, b)
 	if (bar.bg) then
 		bar.bg:SetVertexColor(r, g, b, 0.25)
