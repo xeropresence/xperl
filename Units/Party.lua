@@ -415,13 +415,15 @@ function P:ApplyTypeSettings()
 	end
 end
 
--- UpdateName: names too long for the bar get the small font
+-- UpdateName: names too long for the bar get the small font. A fontstring that was once given a secret text
+-- measures as secret from then on; the name keeps the normal font then.
 function P:UpdateName(event)
 	local text = self.nameFrame.text
 	local name = XPerlAPI.UnitDisplayName(self.partyid)
 	text:SetFontObject(GameFontNormal)
 	text:SetText(name)
-	if (not issecretvalue(name) and text:GetStringWidth() > self.nameFrame:GetWidth() - 4) then
+	local width = text:GetStringWidth()
+	if (not issecretvalue(width) and width > self.nameFrame:GetWidth() - 4) then
 		text:SetFontObject(GameFontNormalSmall)
 	end
 	self:UpdateNameColour()
@@ -466,17 +468,21 @@ function P:GetHealthStatus()
 end
 
 -- UpdateHealth: a status too wide for the percent column goes in the health text; level and class may only
--- be known once the maximum health arrives
+-- be known once the maximum health arrives. Once the percent text has shown a secret health percentage it
+-- measures as secret, and the status stays in the percent column.
 function P:UpdateHealth(event, ...)
 	local hp, hpMax = UF.UpdateHealth(self, event, ...)
 	local sf = self.statsFrame
 	local hb = sf.healthBar
 	if (self.conf.percent) then
 		local status = self:GetHealthStatus()
-		if (status and hb.percent:GetStringWidth() > sf:GetWidth() - hb:GetWidth() - 8) then
-			hb.percent:SetText("")
-			hb.text:SetText(status)
-			hb.text:Show()
+		if (status) then
+			local width = hb.percent:GetStringWidth()
+			if (not issecretvalue(width) and width > sf:GetWidth() - hb:GetWidth() - 8) then
+				hb.percent:SetText("")
+				hb.text:SetText(status)
+				hb.text:Show()
+			end
 		end
 	end
 	if (event == "UNIT_MAXHEALTH") then
