@@ -250,7 +250,7 @@ covers Retail and WoW: Forever. Dotfiles and `.github/` are left out.
 
 The version comes from the tag: both TOCs say `## Version: @project-version@`, which the
 packager replaces with the tag name, and `XPerl_VersionNumber` reads it back from the TOC.
-A git checkout shows `@project-version@` as its version.
+A git checkout, where the token is still in the TOCs, calls itself `dev`.
 
 1. Tag the commit to release and push the tag:
 

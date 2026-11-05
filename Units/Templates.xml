@@ -118,6 +118,10 @@
 			<Layer level="OVERLAY">
 				<Texture name="$parentbarSpark" parentKey="spark" file="Interface\Addons\XPerl\Images\XPerl_ArcaneBarSpark" hidden="true" alphaMode="ADD">
 					<Size x="28" y="56"/>
+					<!-- Without an anchor the client fills the bar with it; OnUpdate moves this point -->
+					<Anchors>
+						<Anchor point="CENTER" relativePoint="LEFT"/>
+					</Anchors>
 				</Texture>
 				<Texture name="$parentshield" parentKey="shield" file="Interface\GroupFrame\UI-Group-MainTankIcon" alpha="0">
 					<Size x="14" y="14"/>

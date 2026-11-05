@@ -6,8 +6,12 @@ XPerl_ProductName		= "|cFFD00000X-Perl|r UnitFrames"
 XPerl_ShortProductName	= "|cFFD00000X-Perl|r"
 XPerl_Author			= "|cFFFF8080Zek|r"
 XPerl_Description		= XPerl_ProductName.." by "..XPerl_Author
--- The packager writes the release tag into the TOCs (@project-version@); a git checkout shows the token itself
+-- The packager writes the release tag into the TOCs; a git checkout still has the token there and calls
+-- itself "dev" (which also sorts after every release number, so it never asks to be updated)
 XPerl_VersionNumber 	= C_AddOns.GetAddOnMetadata((...), "Version")
+if (strsub(XPerl_VersionNumber, 1, 1) == "@") then
+	XPerl_VersionNumber = "dev"
+end
 XPerl_Version			= XPerl_Description.." - "..XPerl_VersionNumber
 XPerl_LongDescription	= "UnitFrame replacement for new look Player, Pet, Party, Target, Target's Target, Focus, Raid"
 XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"

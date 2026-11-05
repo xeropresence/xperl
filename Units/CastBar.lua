@@ -8,10 +8,10 @@
 -- Cast information of units other than the player and their pet is secret while spell casts are
 -- restricted: no comparisons or arithmetic on names, times, spell IDs or the interruptible flag. The bar
 -- therefore runs on the client's duration objects (UnitCastingDuration/UnitChannelDuration ->
--- StatusBar:SetTimerDuration), the cast time text on a DurationTextBinding, the spark on the bar texture's
--- edge and the "can't interrupt" shield on SetAlphaFromBoolean. Names go straight to SetText. Only the
--- player's own casts (never secret) are used for the latency (precast) mark. Clients without duration
--- objects fall back to plain timing, where values are never secret.
+-- StatusBar:SetTimerDuration), the cast time text on a DurationTextBinding and the "can't interrupt" shield
+-- on SetAlphaFromBoolean. Names go straight to SetText. Only non-secret cast times (the player's own casts)
+-- place the spark and the latency (precast) mark; the timer doesn't move the bar texture's edge. Clients
+-- without duration objects fall back to plain timing, where values are never secret.
 --
 -- Blizzard's CastingBarMixin isn't reused: it does arithmetic on the cast times, which only untainted code
 -- may do with secret values.
@@ -93,7 +93,7 @@ function XPerl_CastBar_Create(owner)
 	bar.tex:SetTexture("Interface\\AddOns\\XPerl\\Images\\XPerl_StatusBar")
 	bar.tex:SetHorizTile(false)
 	bar.tex:SetVertTile(false)
-	bar.spark:SetPoint("CENTER", bar.tex, "RIGHT", 0, 1)
+	-- The spark is placed by OnUpdate: a timer-driven bar (SetTimerDuration) doesn't move its texture's edge
 	XPerl_RegisterBar(bar)
 
 	if (owner.frameKey == "player") then
@@ -240,22 +240,25 @@ end
 
 -- SetTiming(kind, duration, startTime, endTime)
 function CB:SetTiming(kind, duration, startTime, endTime)
-	self.endTime = nil
+	-- Plain times (never secret for the player) also place the spark; without them it stays hidden
+	local known = not issecretvalue(startTime) and not issecretvalue(endTime) and endTime > startTime
+	self.startTime = known and startTime / 1000 or nil
+	self.endTime = known and endTime / 1000 or nil
+	self.timed = duration and true or nil
 	if (duration) then
 		local direction = kind == "channel" and Enum.StatusBarTimerDirection.RemainingTime or Enum.StatusBarTimerDirection.ElapsedTime
 		self:SetTimerDuration(duration, Enum.StatusBarInterpolation.Immediate, direction)
 		self.timeBinding:SetDuration(duration)
 		self.timeBinding:SetEnabled(self.showCastTime and true or false)
-	elseif (not issecretvalue(startTime) and not issecretvalue(endTime)) then
+	elseif (known) then
 		-- No duration objects on this client: plain times, run by OnUpdate
-		self.startTime = startTime / 1000
-		self.endTime = endTime / 1000
 		self:SetMinMaxValues(self.startTime, self.endTime)
 	else
 		-- Secret times and no duration object: a full bar, so the cast still shows
 		self:SetMinMaxValues(0, 1)
 		self:SetValue(1)
 	end
+	self.spark:SetShown(known)
 end
 
 -- Start: begins showing the current cast; false if there is none
@@ -280,7 +283,6 @@ function CB:Start()
 	self:ShowPrecast(startTime, endTime)
 
 	self.flashFrame:Hide()
-	self.spark:Show()
 	self:SetAlpha(1)
 	self.castTimeText:SetShown(self.showCastTime and true or false)
 	self.nameText:Hide()
@@ -390,12 +392,15 @@ function CB:OnUpdate(elapsed)
 	if (self.casting or self.channeling) then
 		if (self.endTime) then
 			local remaining = max(0, self.endTime - now)
+			local fill = 1 - remaining / (self.endTime - self.startTime)
 			if (self.channeling) then
-				self:SetValue(self.startTime + remaining)
-			else
-				self:SetValue(min(self.endTime, now))
+				fill = 1 - fill
 			end
-			self.castTimeText:SetFormattedText("%.1f", remaining)
+			self.spark:SetPoint("CENTER", self, "LEFT", fill * self:GetWidth(), 1)
+			if (not self.timed) then
+				self:SetValue(self.startTime + fill * (self.endTime - self.startTime))
+				self.castTimeText:SetFormattedText("%.1f", remaining)
+			end
 		end
 		return
 	end
