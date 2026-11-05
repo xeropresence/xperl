@@ -418,7 +418,7 @@ end
 -- UpdateName: names too long for the bar get the small font
 function P:UpdateName(event)
 	local text = self.nameFrame.text
-	local name = UnitName(self.partyid)
+	local name = XPerlAPI.UnitDisplayName(self.partyid)
 	text:SetFontObject(GameFontNormal)
 	text:SetText(name)
 	if (not issecretvalue(name) and text:GetStringWidth() > self.nameFrame:GetWidth() - 4) then

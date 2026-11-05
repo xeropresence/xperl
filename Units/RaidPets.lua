@@ -240,7 +240,7 @@ function P:UpdateName()
 	end
 	local ownerName
 	if (owner and ((UnitInVehicle and Plain(UnitInVehicle(owner))) or (UnitHasVehicleUI and Plain(UnitHasVehicleUI(owner))))) then
-		ownerName = Plain(UnitName(owner))
+		ownerName = Plain(XPerlAPI.UnitDisplayName(owner))
 	end
 	if (ownerName) then
 		text:SetFormattedText("<%s>", ownerName)

@@ -876,7 +876,7 @@ end
 -- UpdateName: class coloured (reaction coloured when duelling)
 function R:UpdateName()
 	local unit, text = self.partyid, self.nameFrame.text
-	text:SetText(UnitName(unit))
+	text:SetText(XPerlAPI.UnitDisplayName(unit))
 	XPerl_ColourFriendlyUnit(text, unit)
 end
 

@@ -143,3 +143,16 @@ end
 API.UnitIsPVP = Plain(UnitIsPVP)
 API.UnitIsAFK = Plain(UnitIsAFK)
 API.UnitIsDND = Plain(UnitIsDND)
+
+-- API.UnitDisplayName(unit)
+-- The name a unit frame shows. WoW: Forever characters have a surname, which UnitName returns second (where
+-- Mainline returns the realm), and Forever's own frames show both parts. A restricted (secret) part leaves
+-- the first name alone, as add-on code can't test or join it.
+local SURNAME_SEPARATOR = API.isForever and Constants.CharacterNameSeparatorConsts.CHARACTERNAME_SURNAME_SEPARATOR
+function API.UnitDisplayName(unit)
+	local name, surname = UnitName(unit)
+	if (SURNAME_SEPARATOR and not issecretvalue(name) and not issecretvalue(surname) and name and surname and surname ~= "") then
+		return name..SURNAME_SEPARATOR..surname
+	end
+	return name
+end

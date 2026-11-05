@@ -83,7 +83,7 @@ local function BuildRoster()
 end
 
 local function Name(unit)
-	local name = UnitName(unit)
+	local name = XPerlAPI.UnitDisplayName(unit)
 	if (issecretvalue(name) or not name) then
 		return UNKNOWN
 	end

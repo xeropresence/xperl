@@ -22,6 +22,7 @@ end
 
 local UnitIsAFK = XPerlAPI.UnitIsAFK			-- secret-safe unit flags, see XPerl_Api.lua
 local UnitIsPVP = XPerlAPI.UnitIsPVP
+local UnitDisplayName = XPerlAPI.UnitDisplayName		-- with the WoW: Forever surname
 local GetDifficultyColor = GetCreatureDifficultyColor or GetQuestDifficultyColor		-- by level (GetDifficultyColor takes a difficulty enum)
 local IsEventValid = C_EventUtils and C_EventUtils.IsEventValid
 
@@ -632,7 +633,7 @@ end
 
 -- UpdateName
 function UF:UpdateName()
-	self.nameFrame.text:SetText(UnitName(self.partyid))
+	self.nameFrame.text:SetText(UnitDisplayName(self.partyid))
 	self:UpdateNameColour()
 end
 

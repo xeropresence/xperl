@@ -52,7 +52,7 @@ read_globals = {
 	"C_PartyInfo", "C_Reputation", "C_Secrets", "C_SpecializationInfo", "C_Spell", "C_SpellBook", "C_StringUtil", "C_Timer", "C_XMLUtil",
 	"C_UnitAuras", "CanInspect", "CheckInteractDistance", "ClearCursor", "ClearFocus",
 	"CloseMenus", "CombatFeedback_Initialize", "CombatFeedback_OnCombatEvent", "CombatFeedback_OnUpdate",
-	"CooldownFrame_Set", "CopyTable",
+	"CooldownFrame_Set", "Constants", "CopyTable",
 	"CreateColor", "CreateFrame", "DEFAULT_CHAT_FRAME", "Enum",
 	"FauxScrollFrame_GetOffset", "FauxScrollFrame_OnVerticalScroll",
 	"FauxScrollFrame_Update", "GameTooltip_Hide", "GameTooltip_SetDefaultAnchor", "GetAddOnCPUUsage",
