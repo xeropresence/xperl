@@ -25,8 +25,9 @@ One download covers both clients; each client loads its own TOC.
 ### Frames
 
 - **Every unit:** player, pet, target, focus, target's target and its target, focus
-  target, pet target, party (with party targets and party pets), raid (up to 40),
-  raid pets, boss 1-5 and arena 1-5 (Retail only).
+  target, pet target, party (with party targets and party pets, and yourself first with
+  Options → Party → "Show Player"), raid (up to 40), raid pets, boss 1-5 and arena 1-5
+  (Retail only).
 - **Pick what you use:** Options → All → "X-Perl Frames" switches each frame type on or
   off. A frame type that is switched off leaves Blizzard's own frame in place.
 - **Portraits:** 2D or 3D, with hit indicators over the portrait and a red or green
@@ -160,7 +161,7 @@ Frame names, for add-ons and macros that need them:
 | Player, pet | `XPerl_Player`, `XPerl_Player_Pet` |
 | Target, focus | `XPerl_Target`, `XPerl_Focus` |
 | Target-of frames | `XPerl_TargetTarget`, `XPerl_TargetTargetTarget`, `XPerl_FocusTarget`, `XPerl_PetTarget` |
-| Party | `XPerl_party1` - `XPerl_party4`, pets `XPerl_partypet1` - `XPerl_partypet4` |
+| Party | `XPerl_party1` - `XPerl_party5`, pets `XPerl_partypet1` - `XPerl_partypet5` (the fifth is used while "Show Player" puts you in `XPerl_party1`) |
 | Raid | group headers `XPerl_Raid_Grp1` - `XPerl_Raid_Grp13`, raid pets `XPerl_Raid_GrpPets` |
 | Boss, arena | `XPerl_Boss1` - `XPerl_Boss5`, `XPerl_Arena1` - `XPerl_Arena5` |
 

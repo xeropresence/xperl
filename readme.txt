@@ -61,8 +61,8 @@ Frame names:
         XPerl_TargetTargetTarget
         XPerl_Focus
         XPerl_FocusTarget
-        XPerl_party1 (&2, 3, 4)
-        XPerl_partypet1 (&2, 3, 4)
+        XPerl_party1 (&2, 3, 4, 5; with Show Player on, XPerl_party1 is you)
+        XPerl_partypet1 (&2, 3, 4, 5)
 
         Raid frames are defined by groups (class columns when sorting by class)
         XPerl_Raid_Grp[1-13], and the raid pets by XPerl_Raid_GrpPets

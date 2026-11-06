@@ -1088,14 +1088,14 @@ end
 -- XPerl_Party_Reset()
 -- Options refresh for the party frames; each also applies its target, its pet and (party 1) the anchor
 function XPerl_Party_Reset()
-	for i = 1, 4 do
+	for i = 1, 5 do
 		_G["XPerl_party"..i]:ApplySettings()
 	end
 end
 
 -- XPerl_PartyPet_Reset()
 function XPerl_PartyPet_Reset()
-	for i = 1, 4 do
+	for i = 1, 5 do
 		_G["XPerl_partypet"..i]:ApplySettings()
 	end
 end
@@ -2123,6 +2123,7 @@ local function XPerl_Party_ConfigDefault(default)
 		classIcon		= 1,
 		pvpIcon			= 1,			-- 1.8.3
 		inRaid			= 1,
+--		showPlayer		= nil,
 		buffs = {
 			enable		= 1,
 			wrap		= 1,			-- 2.3.5

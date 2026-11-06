@@ -2,12 +2,13 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 --
--- Party frames (XPerl_party1..4) under a SecurePartyHeaderTemplate header in XPerl_Party_Anchor, each with
+-- Party frames (XPerl_party1..5) under a SecurePartyHeaderTemplate header in XPerl_Party_Anchor, each with
 -- its in-frame target (XPerl_party<N>targetFrame) and its pet (XPerl_partypet<N>): flip and portrait layouts,
--- phasing, debuffs beside the frame, show in raid / small raid. The rest comes from Units/UnitFrame.lua.
+-- phasing, debuffs beside the frame, show in raid / small raid, and you first with party.showPlayer (the header
+-- then fills five frames). The rest comes from Units/UnitFrame.lua.
 --
 -- Settings: XPerlDB.party for the party frames, their targets (party.target) and the anchor (scale, anchor
--- point, spacing); XPerlDB.partypet for the pets, which follow the party's flip and healer mode.
+-- point, spacing, showPlayer); XPerlDB.partypet for the pets, which follow the party's flip and healer mode.
 
 local UF = XPerl_UnitFrameMixin
 local pconf
@@ -28,6 +29,20 @@ end
 local mirror = {TOPLEFT = "TOPRIGHT", TOPRIGHT = "TOPLEFT", BOTTOMLEFT = "BOTTOMRIGHT", BOTTOMRIGHT = "BOTTOMLEFT", LEFT = "RIGHT", RIGHT = "LEFT"}
 local function M(point, flip)
 	return flip and mirror[point] or point
+end
+
+-- FrameCount(): the party frames the header can fill, you included with party.showPlayer
+local function FrameCount()
+	return pconf.showPlayer and 5 or 4
+end
+
+-- PetUnit(unit): the pet token for a party frame's unit
+local function PetUnit(unit)
+	if (unit == "player") then
+		return "pet"
+	end
+	local index = unit and strmatch(unit, "^party(%d)$")
+	return index and "partypet"..index
 end
 
 -- XPerl_Party_SingleGroup
@@ -115,8 +130,8 @@ function A:UpdateVisibility()
 	self:SetShown((active and not self.petBattle) and true or false)
 end
 
--- ApplySettings: scale, header placement and child offsets, size. Run by XPerl_party1's settings (out of
--- combat), once the party frames have their size.
+-- ApplySettings: scale, header placement, child offsets and whether you are listed, size. Run by XPerl_party1's
+-- settings (out of combat), once the party frames have their size.
 function A:ApplySettings()
 	local header = XPerl_Party_SecureHeader
 	local anchor = headerPoints[pconf.anchor] and pconf.anchor or "TOP"
@@ -127,6 +142,7 @@ function A:ApplySettings()
 	header:ClearAllPoints()
 	header:SetPoint(headerPoints[anchor], self, headerPoints[anchor], 0, 0)
 	header:SetAttribute("point", anchor)
+	header:SetAttribute("showPlayer", pconf.showPlayer and true or false)
 	if (anchor == "TOP") then
 		header:SetAttribute("xOffset", 0)
 		header:SetAttribute("yOffset", -spacing)
@@ -141,12 +157,13 @@ function A:ApplySettings()
 		header:SetAttribute("yOffset", 0)
 	end
 
-	-- The Edit Mode selection covers four party frames
+	-- The Edit Mode selection covers every party frame the header can fill
+	local count = FrameCount()
 	local w, h = XPerl_party1:GetWidth(), XPerl_party1:GetHeight()
 	if (anchor == "TOP" or anchor == "BOTTOM") then
-		self:SetSize(w, max(h, h * 4 + spacing * 3))
+		self:SetSize(w, max(h, h * count + spacing * (count - 1)))
 	else
-		self:SetSize(max(w, w * 4 + spacing * 3), h)
+		self:SetSize(max(w, w * count + spacing * (count - 1)), h)
 	end
 	XPerl_EditMode_ApplyPosition(self)
 
@@ -164,7 +181,8 @@ local function PlaceholderDragStop()
 	XPerl_Party_Anchor:StopDrag()
 end
 
--- Preview(on): placeholders where the four party frames go, for Edit Mode and the options window unlock
+-- Preview(on): placeholders where the party frames go (you first with party.showPlayer), for Edit Mode and the
+-- options window unlock
 function A:Preview(on)
 	self.previewing = on and true or nil
 	local list = self.placeholders
@@ -177,8 +195,9 @@ function A:Preview(on)
 
 	local anchor = headerPoints[pconf.anchor] and pconf.anchor or "TOP"
 	local spacing = tonumber(pconf.spacing) or 0
+	local count = FrameCount()
 	local w, h = XPerl_party1:GetWidth(), XPerl_party1:GetHeight()
-	for i = 1, 4 do
+	for i = 1, count do
 		local p = list[i]
 		if (not p) then
 			p = CreateFrame("Frame", self:GetName().."Placeholder"..i, self, "BackdropTemplate")
@@ -188,12 +207,17 @@ function A:Preview(on)
 			p:SetFrameLevel(self:GetFrameLevel())
 			p.text = p:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 			p.text:SetAllPoints()
-			p.text:SetFormattedText("%s %d", PARTY, i)
 			p:EnableMouse(true)
 			p:RegisterForDrag("LeftButton")
 			p:SetScript("OnDragStart", PlaceholderDragStart)
 			p:SetScript("OnDragStop", PlaceholderDragStop)
 			list[i] = p
+		end
+		local member = pconf.showPlayer and i - 1 or i
+		if (member == 0) then
+			p.text:SetText(PLAYER)
+		else
+			p.text:SetFormattedText("%s %d", PARTY, member)
 		end
 		local step = i - 1
 		p:ClearAllPoints()
@@ -208,6 +232,9 @@ function A:Preview(on)
 			p:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -step * (w + spacing), 0)
 		end
 		p:Show()
+	end
+	for i = count + 1, #list do
+		list[i]:Hide()
 	end
 end
 
@@ -271,9 +298,8 @@ function P:SetUnit(unit)
 	self.targetFrame:SetUnit(unit and unit.."target")
 	local pet = self.petFrame
 	if (pet) then
-		local index = unit and strmatch(unit, "^party(%d)$")
 		pet.ownerid = unit
-		pet:SetUnit(index and "partypet"..index)
+		pet:SetUnit(PetUnit(unit))
 	end
 	UF.SetUnit(self, unit)
 end

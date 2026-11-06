@@ -2,8 +2,8 @@
 
 	<Script file="Party.lua"/>
 
-	<!-- Party member (XPerl_party1..4, children of XPerl_Party_SecureHeader). Anchors and sizes of the parts
-	     follow the portrait and flip settings (Units/Party.lua Layout). -->
+	<!-- Party member (XPerl_party1..5, children of XPerl_Party_SecureHeader; the fifth is used while party.showPlayer
+	     puts you first). Anchors and sizes of the parts follow the portrait and flip settings (Units/Party.lua Layout). -->
 	<Button name="XPerl_Party_FrameTemplate" inherits="XPerl_UnitButtonTemplate" virtual="true">
 		<Size x="160" y="60"/>
 		<KeyValues>
@@ -121,7 +121,7 @@
 		</Frames>
 	</Button>
 
-	<!-- Party member's pet (XPerl_partypet1..4), beside its party frame's stats -->
+	<!-- Party member's pet (XPerl_partypet1..5), beside its party frame's stats -->
 	<Button name="XPerl_Party_PetTemplate" inherits="XPerl_UnitButtonTemplate" virtual="true">
 		<Size x="80" y="50"/>
 		<KeyValues>
@@ -175,7 +175,8 @@
 		</Frames>
 	</Button>
 
-	<!-- Container moved by Edit Mode; carries party.scale and is sized to cover four party frames -->
+	<!-- Container moved by Edit Mode; carries party.scale and is sized to cover the party frames (four, or five
+	     with party.showPlayer) -->
 	<Frame name="XPerl_Party_Anchor" mixin="XPerl_PartyAnchorMixin" frameStrata="LOW" parent="UIParent" clampedToScreen="true" movable="true" hidden="true">
 		<Size x="100" y="60"/>
 		<Anchors>
@@ -208,9 +209,11 @@
 	<Button name="XPerl_party2" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="2"/>
 	<Button name="XPerl_party3" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="3"/>
 	<Button name="XPerl_party4" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="4"/>
+	<Button name="XPerl_party5" inherits="XPerl_Party_FrameTemplate" parent="XPerl_Party_SecureHeader" id="5"/>
 
 	<Button name="XPerl_partypet1" inherits="XPerl_Party_PetTemplate" parent="XPerl_party1" id="1"/>
 	<Button name="XPerl_partypet2" inherits="XPerl_Party_PetTemplate" parent="XPerl_party2" id="2"/>
 	<Button name="XPerl_partypet3" inherits="XPerl_Party_PetTemplate" parent="XPerl_party3" id="3"/>
 	<Button name="XPerl_partypet4" inherits="XPerl_Party_PetTemplate" parent="XPerl_party4" id="4"/>
+	<Button name="XPerl_partypet5" inherits="XPerl_Party_PetTemplate" parent="XPerl_party5" id="5"/>
 </Ui>

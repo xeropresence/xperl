@@ -397,6 +397,8 @@ if (GetLocale() == "frFR") then
 	XPERL_CONF_PARTY_PETMANA_DESC			= "Permettre l'affichage de la mana des familiers du groupe"
 	XPERL_CONF_PARTY_PETLEVEL			= "Niveau des familiers du groupe"
 	XPERL_CONF_PARTY_PETLEVEL_DESC			= "Permettre l'affichage des niveaux des familiers du groupe"
+	XPERL_CONF_PARTY_SHOWPLAYER			= "Afficher le joueur"
+	XPERL_CONF_PARTY_SHOWPLAYER_DESC		= "Vous affiche en premier dans les cadres du groupe quand vous êtes en groupe"
 	XPERL_CONF_PARTY_INRAID                 	= "Montrer le groupe en raid"
 	XPERL_CONF_PARTY_INRAID_DESC            	= "Permettre l'affichage des membres du groupe en raid"
 	XPERL_CONF_PARTY_BUFFS				= "Buffs du groupe"

@@ -8069,7 +8069,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_NAMES")
-								self.flashFrame = {XPerl_party1nameFrame, XPerl_party2nameFrame, XPerl_party3nameFrame, XPerl_party4nameFrame}
+								self.flashFrame = {XPerl_party1nameFrame, XPerl_party2nameFrame, XPerl_party3nameFrame, XPerl_party4nameFrame, XPerl_party5nameFrame}
 								self.configBase = "XPerlDB.party"
 								self.configIndex = "name"
 								self.configClick = XPerl_Party_Reset
@@ -8087,7 +8087,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PORTRAIT")
-								self.flashFrame = {XPerl_party1portraitFrame, XPerl_party2portraitFrame, XPerl_party3portraitFrame, XPerl_party4portraitFrame}
+								self.flashFrame = {XPerl_party1portraitFrame, XPerl_party2portraitFrame, XPerl_party3portraitFrame, XPerl_party4portraitFrame, XPerl_party5portraitFrame}
 								self.configBase = "XPerlDB.party"
 								self.configIndex = "portrait"
 								self.configClick = XPerl_Party_Reset
@@ -8110,7 +8110,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PORTRAIT3D")
-								self.flashFrame = {XPerl_party1portraitFrame, XPerl_party2portraitFrame, XPerl_party3portraitFrame, XPerl_party4portraitFrame}
+								self.flashFrame = {XPerl_party1portraitFrame, XPerl_party2portraitFrame, XPerl_party3portraitFrame, XPerl_party4portraitFrame, XPerl_party5portraitFrame}
 								self.configBase = "XPerlDB.party"
 								self.configIndex = "portrait3D"
 								self.configClick = XPerl_Party_Reset
@@ -8217,7 +8217,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_LEVEL")
-								self.flashFrame = {XPerl_party1levelFrame, XPerl_party2levelFrame, XPerl_party3levelFrame, XPerl_party4levelFrame}
+								self.flashFrame = {XPerl_party1levelFrame, XPerl_party2levelFrame, XPerl_party3levelFrame, XPerl_party4levelFrame, XPerl_party5levelFrame}
 								self.configBase = "XPerlDB.party"
 								self.configIndex = "level"
 								self.configClick = XPerl_Party_Reset
@@ -8235,7 +8235,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_TARGET")
-								self.flashFrame = {XPerl_party1targetFrame, XPerl_party2targetFrame, XPerl_party3targetFrame, XPerl_party4targetFrame}
+								self.flashFrame = {XPerl_party1targetFrame, XPerl_party2targetFrame, XPerl_party3targetFrame, XPerl_party4targetFrame, XPerl_party5targetFrame}
 								self.configBase = "XPerlDB.party.target"
 								self.configIndex = "enable"
 								self.configClick = XPerl_Party_Reset
@@ -8313,7 +8313,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_ICON")
-								self.flashFrame = {XPerl_party1levelFrameclassTexture, XPerl_party2levelFrameclassTexture, XPerl_party3levelFrameclassTexture, XPerl_party4levelFrameclassTexture}
+								self.flashFrame = {XPerl_party1levelFrameclassTexture, XPerl_party2levelFrameclassTexture, XPerl_party3levelFrameclassTexture, XPerl_party4levelFrameclassTexture, XPerl_party5levelFrameclassTexture}
 								self.configBase = "XPerlDB.party"
 								self.configIndex = "classIcon"
 								self.configClick = XPerl_Party_Reset
@@ -8331,8 +8331,8 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_VALUES")
-								self.flashFrame = {XPerl_party1statsFramehealthBartext, XPerl_party2statsFramehealthBartext, XPerl_party3statsFramehealthBartext, XPerl_party4statsFramehealthBartext,
-											XPerl_party1statsFramemanaBartext, XPerl_party2statsFramemanaBartext, XPerl_party3statsFramemanaBartext, XPerl_party4statsFramemanaBartext}
+								self.flashFrame = {XPerl_party1statsFramehealthBartext, XPerl_party2statsFramehealthBartext, XPerl_party3statsFramehealthBartext, XPerl_party4statsFramehealthBartext, XPerl_party5statsFramehealthBartext,
+											XPerl_party1statsFramemanaBartext, XPerl_party2statsFramemanaBartext, XPerl_party3statsFramemanaBartext, XPerl_party4statsFramemanaBartext, XPerl_party5statsFramemanaBartext}
 								self.configBase = "XPerlDB.party"
 								self.configIndex = "values"
 								self.configClick = XPerl_Party_Reset
@@ -8349,8 +8349,8 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PERC")
-								self.flashFrame = {XPerl_party1statsFramehealthBarpercent, XPerl_party2statsFramehealthBarpercent, XPerl_party3statsFramehealthBarpercent, XPerl_party4statsFramehealthBarpercent,
-											XPerl_party1statsFramemanaBarpercent, XPerl_party2statsFramemanaBarpercent, XPerl_party3statsFramemanaBarpercent, XPerl_party4statsFramemanaBarpercent}
+								self.flashFrame = {XPerl_party1statsFramehealthBarpercent, XPerl_party2statsFramehealthBarpercent, XPerl_party3statsFramehealthBarpercent, XPerl_party4statsFramehealthBarpercent, XPerl_party5statsFramehealthBarpercent,
+											XPerl_party1statsFramemanaBarpercent, XPerl_party2statsFramemanaBarpercent, XPerl_party3statsFramemanaBarpercent, XPerl_party4statsFramemanaBarpercent, XPerl_party5statsFramemanaBarpercent}
 								self.configBase = "XPerlDB.party"
 								self.configIndex = "percent"
 								self.configClick = XPerl_Party_Reset
@@ -8368,7 +8368,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PVPICON")
-								self.flashFrame = {XPerl_party1nameFramepvpIcon, XPerl_party2nameFramepvpIcon, XPerl_party3nameFramepvpIcon, XPerl_party4nameFramepvpIcon}
+								self.flashFrame = {XPerl_party1nameFramepvpIcon, XPerl_party2nameFramepvpIcon, XPerl_party3nameFramepvpIcon, XPerl_party4nameFramepvpIcon, XPerl_party5nameFramepvpIcon}
 								self.configBase = "XPerlDB.party"
 								self.configIndex = "pvpIcon"
 								self.configClick = XPerl_Party_Reset
@@ -8376,9 +8376,26 @@
 						</Scripts>
 					</CheckButton>
 
-					<CheckButton name="$parent_InRaid" inherits="XPerlCheckButtonTemplate">
+					<CheckButton name="$parent_ShowPlayer" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_PVPIcon" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_SHOWPLAYER")
+								self.configBase = "XPerlDB.party"
+								self.configIndex = "showPlayer"
+								self.configClick = XPerl_Party_Reset
+								XPerl_Options_RegisterProtected(self)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_InRaid" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_ShowPlayer" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -8473,7 +8490,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_BUFFS")
-								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
+								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame, XPerl_party5buffFrame}
 								self.configBase = "XPerlDB.party.buffs"
 								self.configIndex = "enable"
 								self.configClick = XPerl_Party_Reset
@@ -8537,7 +8554,7 @@
 									XPerl_Options_EnableSibling(self, "HalfSize")
 									XPerl_Options_EnableSibling(self, "DebuffSize")
 								end
-								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
+								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame, XPerl_party5buffFrame}
 								self.configBase = "XPerlDB.party.debuffs"
 								self.configIndex = "enable"
 								self.configClick = XPerl_Party_Reset
@@ -8576,7 +8593,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_DEBUFFSBELOW")
-								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
+								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame, XPerl_party5buffFrame}
 								self.configBase = "XPerlDB.party.debuffs"
 								self.configIndex = "below"
 								self.configClick = XPerl_Party_Reset
@@ -8596,7 +8613,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_DEBUFFSHALFSIZE")
-								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
+								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame, XPerl_party5buffFrame}
 								self.configBase = "XPerlDB.party.debuffs"
 								self.configIndex = "halfSize"
 								self.configClick = XPerl_Party_Reset
@@ -8671,7 +8688,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_WRAPBUFFS")
-								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
+								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame, XPerl_party5buffFrame}
 								self.configBase = "XPerlDB.party.buffs"
 								self.configIndex = "wrap"
 								self.configClick = XPerl_Party_Reset
@@ -8728,7 +8745,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_BIGBUFFS")
-								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame}
+								self.flashFrame = {XPerl_party1buffFrame, XPerl_party2buffFrame, XPerl_party3buffFrame, XPerl_party4buffFrame, XPerl_party5buffFrame}
 								self.configBase = "XPerlDB.party.buffs"
 								self.configIndex = "big"
 								self.configClick = XPerl_Party_Reset
@@ -8779,7 +8796,7 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PETS")
-										self.flashFrame = {XPerl_partypet1, XPerl_partypet2, XPerl_partypet3, XPerl_partypet4}
+										self.flashFrame = {XPerl_partypet1, XPerl_partypet2, XPerl_partypet3, XPerl_partypet4, XPerl_partypet5}
 										self.configBase = "XPerlDB.partypet"
 										self.configIndex = "enable"
 										self.configClick = function()
@@ -8809,7 +8826,7 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PETNAME")
-										self.flashFrame = {XPerl_partypet1nameFrame, XPerl_partypet2nameFrame, XPerl_partypet3nameFrame, XPerl_partypet4nameFrame}
+										self.flashFrame = {XPerl_partypet1nameFrame, XPerl_partypet2nameFrame, XPerl_partypet3nameFrame, XPerl_partypet4nameFrame, XPerl_partypet5nameFrame}
 										self.configBase = "XPerlDB.partypet"
 										self.configIndex = "name"
 										self.configClick = XPerl_PartyPet_Reset
@@ -8831,7 +8848,7 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PETLEVEL")
-										self.flashFrame = {XPerl_partypet1nameFramelevel, XPerl_partypet2nameFramelevel, XPerl_partypet3nameFramelevel, XPerl_partypet4nameFramelevel}
+										self.flashFrame = {XPerl_partypet1nameFramelevel, XPerl_partypet2nameFramelevel, XPerl_partypet3nameFramelevel, XPerl_partypet4nameFramelevel, XPerl_partypet5nameFramelevel}
 										self.configBase = "XPerlDB.partypet"
 										self.configIndex = "level"
 										self.configClick = XPerl_PartyPet_Reset
@@ -8849,7 +8866,7 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PETMANA")
-										self.flashFrame = {XPerl_partypet1statsFramemanaBar, XPerl_partypet2statsFramemanaBar, XPerl_partypet3statsFramemanaBar, XPerl_partypet4statsFramemanaBar}
+										self.flashFrame = {XPerl_partypet1statsFramemanaBar, XPerl_partypet2statsFramemanaBar, XPerl_partypet3statsFramemanaBar, XPerl_partypet4statsFramemanaBar, XPerl_partypet5statsFramemanaBar}
 										self.configBase = "XPerlDB.partypet"
 										self.configIndex = "mana"
 										self.configClick = XPerl_PartyPet_Reset
@@ -8867,7 +8884,7 @@
 								<Scripts>
 									<OnLoad>
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PETBUFFS")
-										self.flashFrame = {XPerl_partypet1nameFrame, XPerl_partypet2nameFrame, XPerl_partypet3nameFrame, XPerl_partypet4nameFrame}
+										self.flashFrame = {XPerl_partypet1nameFrame, XPerl_partypet2nameFrame, XPerl_partypet3nameFrame, XPerl_partypet4nameFrame, XPerl_partypet5nameFrame}
 										self.configBase = "XPerlDB.partypet.buffs"
 										self.configIndex = "enable"
 										self.configClick = XPerl_PartyPet_Reset
@@ -9821,7 +9838,7 @@
 							<OnLoad>
 								XPerl_Options_RegisterProtected(self)
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ALL_PORTRAIT")
-								self.flashFrame = {XPerl_PlayerportraitFrame, XPerl_Player_PetportraitFrame, XPerl_TargetportraitFrame, XPerl_FocusportraitFrame, XPerl_party1portraitFrame, XPerl_party2portraitFrame, XPerl_party3portraitFrame, XPerl_party4portraitFrame}
+								self.flashFrame = {XPerl_PlayerportraitFrame, XPerl_Player_PetportraitFrame, XPerl_TargetportraitFrame, XPerl_FocusportraitFrame, XPerl_party1portraitFrame, XPerl_party2portraitFrame, XPerl_party3portraitFrame, XPerl_party4portraitFrame, XPerl_party5portraitFrame}
 								self.configClick = XPerl_OptionActions
 								self.configSelection = {"XPerlDB.player", "XPerlDB.pet", "XPerlDB.target", "XPerlDB.focus", "XPerlDB.party"}
 								self.configIndex = "portrait"
@@ -9838,7 +9855,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ALL_PORTRAIT3D")
-								self.flashFrame = {XPerl_PlayerportraitFrame, XPerl_Player_PetportraitFrame, XPerl_TargetportraitFrame, XPerl_FocusportraitFrame, XPerl_party1portraitFrame, XPerl_party2portraitFrame, XPerl_party3portraitFrame, XPerl_party4portraitFrame}
+								self.flashFrame = {XPerl_PlayerportraitFrame, XPerl_Player_PetportraitFrame, XPerl_TargetportraitFrame, XPerl_FocusportraitFrame, XPerl_party1portraitFrame, XPerl_party2portraitFrame, XPerl_party3portraitFrame, XPerl_party4portraitFrame, XPerl_party5portraitFrame}
 								self.configClick = XPerl_OptionActions
 								self.configSelection = {"XPerlDB.player", "XPerlDB.pet", "XPerlDB.target", "XPerlDB.focus", "XPerlDB.party"}
 								self.configIndex = "portrait3D"
@@ -9855,7 +9872,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ALL_LEVEL")
-								self.flashFrame = {XPerl_PlayerlevelFrame, XPerl_Player_PetlevelFrame, XPerl_TargetlevelFrame, XPerl_FocuslevelFrame, XPerl_TargetTargetlevelFrame, XPerl_TargetTargetTargetlevelFrame, XPerl_party1levelFrame, XPerl_party2levelFrame, XPerl_party3levelFrame, XPerl_party4levelFrame}
+								self.flashFrame = {XPerl_PlayerlevelFrame, XPerl_Player_PetlevelFrame, XPerl_TargetlevelFrame, XPerl_FocuslevelFrame, XPerl_TargetTargetlevelFrame, XPerl_TargetTargetTargetlevelFrame, XPerl_party1levelFrame, XPerl_party2levelFrame, XPerl_party3levelFrame, XPerl_party4levelFrame, XPerl_party5levelFrame}
 								self.configClick = XPerl_OptionActions
 								self.configSelection = {"XPerlDB.player", "XPerlDB.pet", "XPerlDB.target", "XPerlDB.focus", "XPerlDB.targettarget", "XPerlDB.party", "XPerlDB.pettarget", "XPerlDB.focustarget", "XPerlDB.targettargettarget"}
 								self.configIndex = "level"
@@ -9872,7 +9889,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ALL_ICON")
-								self.flashFrame = {XPerl_PlayerclassFrame, XPerl_TargettypeFramePlayerclassTexture, XPerl_FocustypeFramePlayerclassTexture, XPerl_party1levelFrameclassTexture, XPerl_party2levelFrameclassTexture, XPerl_party3levelFrameclassTexture, XPerl_party4levelFrameclassTexture}
+								self.flashFrame = {XPerl_PlayerclassFrame, XPerl_TargettypeFramePlayerclassTexture, XPerl_FocustypeFramePlayerclassTexture, XPerl_party1levelFrameclassTexture, XPerl_party2levelFrameclassTexture, XPerl_party3levelFrameclassTexture, XPerl_party4levelFrameclassTexture, XPerl_party5levelFrameclassTexture}
 								self.configSelection = {"XPerlDB.player", "XPerlDB.target", "XPerlDB.focus", "XPerlDB.party"}
 								self.configIndex = "classIcon"
 								self.configClick = XPerl_OptionActions
@@ -9889,7 +9906,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ALL_PVPFLAG")
-								self.flashFrame = {XPerl_PlayernameFramepvpIcon, XPerl_TargetnameFramepvpIcon, XPerl_FocusnameFramepvpIcon, XPerl_TargetTargetnameFramepvpIcon, XPerl_TargetTargetTargetnameFramepvpIcon, XPerl_party1nameFramepvpIcon, XPerl_party2nameFramepvpIcon, XPerl_party3nameFramepvpIcon, XPerl_party4nameFramepvpIcon}
+								self.flashFrame = {XPerl_PlayernameFramepvpIcon, XPerl_TargetnameFramepvpIcon, XPerl_FocusnameFramepvpIcon, XPerl_TargetTargetnameFramepvpIcon, XPerl_TargetTargetTargetnameFramepvpIcon, XPerl_party1nameFramepvpIcon, XPerl_party2nameFramepvpIcon, XPerl_party3nameFramepvpIcon, XPerl_party4nameFramepvpIcon, XPerl_party5nameFramepvpIcon}
 								self.configSelection = {"XPerlDB.player", "XPerlDB.target", "XPerlDB.focus", "XPerlDB.party", "XPerlDB.targettarget", "XPerlDB.targettargettarget", "XPerlDB.pettarget", "XPerlDB.focustarget"}
 								self.configIndex = "pvpIcon"
 								self.configClick = XPerl_OptionActions
@@ -9906,7 +9923,7 @@
 						<Scripts>
 							<OnLoad>
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ALL_VALUES")
-								self.flashFrame = {XPerl_PlayerstatsFramehealthBartext, XPerl_PlayerstatsFramemanaBartext, XPerl_PlayerstatsFramexpBartext, XPerl_TargetstatsFramehealthBartext, XPerl_TargetstatsFramemanaBartext, XPerl_FocusstatsFramehealthBartext, XPerl_FocusstatsFramemanaBartext, XPerl_TargetTargetstatsFramehealthBartext, XPerl_TargetTargetstatsFramemanaBartext, XPerl_TargetTargetTargetstatsFramehealthBartext, XPerl_TargetTargetTargetstatsFramemanaBartext, XPerl_party1statsFramehealthBartext, XPerl_party1statsFramemanaBartext, XPerl_party2statsFramehealthBartext, XPerl_party2statsFramemanaBartext, XPerl_party3statsFramehealthBartext, XPerl_party3statsFramemanaBartext, XPerl_party4statsFramehealthBartext, XPerl_party4statsFramemanaBartext}
+								self.flashFrame = {XPerl_PlayerstatsFramehealthBartext, XPerl_PlayerstatsFramemanaBartext, XPerl_PlayerstatsFramexpBartext, XPerl_TargetstatsFramehealthBartext, XPerl_TargetstatsFramemanaBartext, XPerl_FocusstatsFramehealthBartext, XPerl_FocusstatsFramemanaBartext, XPerl_TargetTargetstatsFramehealthBartext, XPerl_TargetTargetstatsFramemanaBartext, XPerl_TargetTargetTargetstatsFramehealthBartext, XPerl_TargetTargetTargetstatsFramemanaBartext, XPerl_party1statsFramehealthBartext, XPerl_party1statsFramemanaBartext, XPerl_party2statsFramehealthBartext, XPerl_party2statsFramemanaBartext, XPerl_party3statsFramehealthBartext, XPerl_party3statsFramemanaBartext, XPerl_party4statsFramehealthBartext, XPerl_party4statsFramemanaBartext, XPerl_party5statsFramehealthBartext, XPerl_party5statsFramemanaBartext}
 								self.configSelection = {"XPerlDB.player", "XPerlDB.target", "XPerlDB.focus", "XPerlDB.party", "XPerlDB.targettarget", "XPerlDB.targettargettarget", "XPerlDB.pettarget", "XPerlDB.focustarget"}
 								self.configIndex = "values"
 								self.configClick = XPerl_OptionActions
@@ -9924,7 +9941,7 @@
 							<OnLoad>
 								XPerl_Options_RegisterProtected(self)
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ALL_PERCENT")
-								self.flashFrame = {XPerl_PlayerstatsFramehealthBarpercent, XPerl_PlayerstatsFramemanaBarpercent, XPerl_PlayerstatsFramexpBarpercent, XPerl_TargetstatsFramehealthBarpercent, XPerl_TargetstatsFramemanaBarpercent, XPerl_FocusstatsFramehealthBarpercent, XPerl_FocusstatsFramemanaBarpercent, XPerl_TargetTargetstatsFramehealthBarpercent, XPerl_TargetTargetTargetstatsFramehealthBarpercent, XPerl_TargetTargetstatsFramemanaBarpercent, XPerl_TargetTargetTargetstatsFramemanaBarpercent, XPerl_party1statsFramehealthBarpercent, XPerl_party1statsFramemanaBarpercent, XPerl_party2statsFramehealthBarpercent, XPerl_party2statsFramemanaBarpercent, XPerl_party3statsFramehealthBarpercent, XPerl_party3statsFramemanaBarpercent, XPerl_party4statsFramehealthBarpercent, XPerl_party1statsFramemanaBarpercent, XPerl_party1statsFramehealthBarpercent, XPerl_party4statsFramemanaBarpercent}
+								self.flashFrame = {XPerl_PlayerstatsFramehealthBarpercent, XPerl_PlayerstatsFramemanaBarpercent, XPerl_PlayerstatsFramexpBarpercent, XPerl_TargetstatsFramehealthBarpercent, XPerl_TargetstatsFramemanaBarpercent, XPerl_FocusstatsFramehealthBarpercent, XPerl_FocusstatsFramemanaBarpercent, XPerl_TargetTargetstatsFramehealthBarpercent, XPerl_TargetTargetTargetstatsFramehealthBarpercent, XPerl_TargetTargetstatsFramemanaBarpercent, XPerl_TargetTargetTargetstatsFramemanaBarpercent, XPerl_party1statsFramehealthBarpercent, XPerl_party1statsFramemanaBarpercent, XPerl_party2statsFramehealthBarpercent, XPerl_party2statsFramemanaBarpercent, XPerl_party3statsFramehealthBarpercent, XPerl_party3statsFramemanaBarpercent, XPerl_party4statsFramehealthBarpercent, XPerl_party1statsFramemanaBarpercent, XPerl_party1statsFramehealthBarpercent, XPerl_party4statsFramemanaBarpercent, XPerl_party5statsFramehealthBarpercent, XPerl_party5statsFramemanaBarpercent}
 								self.configSelection = {"XPerlDB.player", "XPerlDB.target", "XPerlDB.focus", "XPerlDB.party", "XPerlDB.targettarget", "XPerlDB.targettargettarget", "XPerlDB.pettarget", "XPerlDB.focustarget"}
 								self.configIndex = "percent"
 								self.configClick = XPerl_OptionActions

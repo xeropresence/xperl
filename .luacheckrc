@@ -99,7 +99,7 @@ read_globals = {
 	"GameFontNormalSmall", "UNKNOWN",
 	"FOM_FeedButton", "Set_FOM_FeedButton",	-- Feed-O-Matic (optional)
 	-- Units/Party.lua
-	"GameFontNormal", "PARTY",
+	"GameFontNormal", "PARTY", "PLAYER",
 	-- Units/Boss.lua, Units/Arena.lua (checked against the 12.1 FrameXML / API documentation)
 	"Boss1TargetFrame", "BossTargetFrameContainer", "CompactArenaFrame", "CompactArenaFrame_Generate",
 	"CreateFromMixins", "C_PvP", "GetArenaOpponentSpec", "GetNumArenaOpponentSpecs", "UnitFrameUtil",
