@@ -1758,6 +1758,11 @@ end
 -- is the other container (both carry the "no untrusted layout scripts" aspect that makes this legal).
 -- Add-on code can't touch the icons while auras are secret either, so restyling existing icons (double
 -- size, cooldown swipe, countdown text) waits until they aren't.
+--
+-- A unit out of sight (in another zone, or beyond the client's view range) is the exception: the client
+-- doesn't know who cast its auras, and the PLAYER filter then matches every one of them, negated or not, so
+-- the own auras group and everybody else's would each show them all. Such a unit's rows don't split by
+-- caster (Auras_OutOfSight).
 
 local AURA_ICON = 32
 local AURA_ICON_CROP = 0.078125
@@ -1985,12 +1990,23 @@ local function Auras_ConfigureRow(self, kind)
 	end
 end
 
+-- Auras_OutOfSight(auras, unit)
+-- Whether the rows can't tell the unit's own auras from everybody else's (see the top of this section).
+-- Raid rows don't split by caster in the first place.
+local function Auras_OutOfSight(auras, unit)
+	return not auras.setup.single and UnitExists(unit) and not UnitIsVisible(unit)
+end
+
 -- Auras_ApplyFilters
--- Filters and limits that depend on whether the unit is hostile
+-- Filters and limits that depend on the unit: whether it's hostile, and whether it's out of sight. Out of
+-- sight the own auras group stays empty and the others' groups drop the !PLAYER filter, so every aura shows
+-- once at normal size (and none with own-only on, as none can be told to be ours).
 local function Auras_ApplyFilters(self)
 	local auras = self.auras
 	local opts = auras.opts
 	local hostile = auras.hostile
+	local outOfSight = auras.outOfSight
+	local others = outOfSight and "" or "|!PLAYER"
 
 	for _, kind in ipairs({"buffs", "debuffs"}) do
 		local row = opts[kind]
@@ -2022,12 +2038,12 @@ local function Auras_ApplyFilters(self)
 					container:SetAuraGroupMaxFrameCount(key, maxCount)
 				elseif (key == "mine") then
 					container:SetAuraGroupFilterString(key, base.."|PLAYER"..suffix)
-					container:SetAuraGroupMaxFrameCount(key, maxCount)
+					container:SetAuraGroupMaxFrameCount(key, outOfSight and 0 or maxCount)
 				elseif (key == "steal") then
-					container:SetAuraGroupFilterString(key, base.."|!PLAYER"..suffix)
+					container:SetAuraGroupFilterString(key, base..others..suffix)
 					container:SetAuraGroupMaxFrameCount(key, maxCount)
 				else
-					container:SetAuraGroupFilterString(key, base.."|!PLAYER"..suffix)
+					container:SetAuraGroupFilterString(key, base..others..suffix)
 					container:SetAuraGroupMaxFrameCount(key, onlyMine and 0 or maxCount)
 				end
 
@@ -2083,7 +2099,8 @@ end
 --	tooltipAnchor	GameTooltip anchor for the icons (default ANCHOR_BOTTOMRIGHT)
 function XPerl_Auras_Init(self, setup)
 	setup = setup or {}
-	local auras = {setup = setup, style = {}, maxCount = {}, exclude = {}, enchants = {}, hostile = false}
+	local auras = {setup = setup, style = {}, maxCount = {}, exclude = {}, enchants = {}, hostile = false,
+		outOfSight = false, unit = "none"}
 	self.auras = auras
 	auras.buffs, auras.style.buffs = Auras_CreateContainer(self, "buffs", setup)
 	auras.debuffs, auras.style.debuffs = Auras_CreateContainer(self, "debuffs", setup)
@@ -2150,9 +2167,12 @@ function XPerl_Auras_SetUnit(self, unit)
 	end
 
 	unit = unit or "none"
+	auras.unit = unit
 	local hostile = UnitCanAttack("player", unit) and true or false
-	if (hostile ~= auras.hostile) then
+	local outOfSight = Auras_OutOfSight(auras, unit)
+	if (hostile ~= auras.hostile or outOfSight ~= auras.outOfSight) then
 		auras.hostile = hostile
+		auras.outOfSight = outOfSight
 		if (auras.opts) then
 			Auras_ApplyFilters(self)
 			XPerl_Auras_Arrange(self)
@@ -2163,6 +2183,20 @@ function XPerl_Auras_SetUnit(self, unit)
 	auras.debuffs:SetUnit(unit)
 	auras.buffs:UpdateAllAuras()
 	auras.debuffs:UpdateAllAuras()
+end
+
+-- XPerl_Auras_CheckSight(self)
+-- Regroups the rows when their unit came into or went out of sight, which no event reports. Unit frames call
+-- it on their tick.
+function XPerl_Auras_CheckSight(self)
+	local auras = self.auras
+	local outOfSight = Auras_OutOfSight(auras, auras.unit)
+	if (outOfSight ~= auras.outOfSight) then
+		auras.outOfSight = outOfSight
+		if (auras.opts) then
+			Auras_ApplyFilters(self)
+		end
+	end
 end
 
 ------------------------------------------------------------------------------

@@ -60,6 +60,9 @@ One download covers both clients; each client loads its own TOC.
 
 - Buffs and debuffs are drawn by the game's own aura containers, so they stay
   visible in combat, encounters, keystones and PvP.
+- For a unit out of sight (in another zone, or beyond your view range) the game can't
+  tell who cast an aura, so its auras aren't split into yours and everybody else's: each
+  shows once at normal size, and a row set to show only your own auras stays empty.
 - Aggro and your target are highlighted on the frames.
 - **Aggro warning:** in a group, "- AGGRO -" shows in the middle of the screen while a mob
   is attacking you, and "- PET AGGRO -" while one is attacking your pet. Move it in Edit

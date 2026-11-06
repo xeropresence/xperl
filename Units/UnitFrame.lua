@@ -362,6 +362,9 @@ function UF:OnTick()
 	if (self.rangeFade) then
 		self:UpdateRange()
 	end
+	if (self.auras) then
+		XPerl_Auras_CheckSight(self)
+	end
 end
 
 -- OnShow
