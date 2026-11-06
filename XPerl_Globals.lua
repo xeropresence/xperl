@@ -355,7 +355,7 @@ local function onEventPostSetup(self, event, unit, ...)
 		end
 		for func,arg in pairs(XPerl_OutOfCombatQueue) do
 			assert(type(func) == "function")
-			func(arg)
+			func(arg or nil)
 			--print("out of combat magiczzz:" .. tostring(arg))
 			--if (type(v) == "function") then
 			--	v()

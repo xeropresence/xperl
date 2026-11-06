@@ -2254,11 +2254,13 @@ function XPerl_FrameFlashStop(self, method)
 	end
 end
 
--- XPerl_ProtectedCall
+-- XPerl_ProtectedCall(func, self)
+-- Runs func(self) now, or once combat ends. Queued without an argument it's kept as false, because a nil
+-- value would leave it out of the queue.
 function XPerl_ProtectedCall(func, self)
 	if (func) then
 		if (InCombatLockdown()) then
-			XPerl_OutOfCombatQueue[func] = self == nil and false or self
+			XPerl_OutOfCombatQueue[func] = self or false
 			--if (self) then
 			--	tinsert(XPerl_OutOfCombatQueue, {func, self})
 			--else

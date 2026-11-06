@@ -106,6 +106,18 @@ function P:ExtraBarCount()
 	return ((druidBar and druidBar:IsShown()) and 1 or 0) + (pconf.repBar and 1 or 0) + (pconf.xpBar and 1 or 0)
 end
 
+-- ApplyStatsHeight: the health and mana bars, and a row per extra bar
+function P:ApplyStatsHeight()
+	self.statsFrame:SetHeight(40 + self:ExtraBarCount() * 10)
+end
+
+-- StatsDrop: how far the stats reach below the portrait (they sit under the name, overlapping it by 2).
+-- Worked out from the sizes, so it is right straight after they changed, and in combat while the frame's own
+-- height can't follow.
+function P:StatsDrop()
+	return self.nameFrame:GetHeight() - 2 + self.statsFrame:GetHeight() - self.portraitFrame:GetHeight()
+end
+
 -- ApplySize(width)
 function P:ApplySize(width)
 	local c = self.conf
@@ -113,7 +125,7 @@ function P:ApplySize(width)
 	local sf = self.statsFrame
 	self.nameFrame:SetWidth(barWidth)
 	sf:SetWidth(barWidth)
-	sf:SetHeight(40 + self:ExtraBarCount() * 10)
+	self:ApplyStatsHeight()
 	self:SetWidth((c.portrait and 62 or 0) + (c.percent and 32 or 0) + 124 + width)
 
 	if (c.extendPortrait) then
@@ -123,7 +135,7 @@ function P:ApplySize(width)
 	else
 		self.portraitFrame:SetHeight(62)
 	end
-	self:SetHeight(max(self.nameFrame:GetHeight() + sf:GetHeight() - 2, self.portraitFrame:GetHeight()))
+	self:SetHeight(self.portraitFrame:GetHeight() + max(0, self:StatsDrop()))
 end
 
 -- ApplyTypeSettings
@@ -423,6 +435,7 @@ function P:UpdateDruidBar()
 		local c = conf.colour.bar.mana
 		druidBar:SetStatusBarColor(c.r, c.g, c.b)
 		druidBar.bg:SetVertexColor(c.r, c.g, c.b, 0.25)
+		druidBar:Hide()			-- so showing it the first time lays the bars out
 	end
 
 	local maxMana, mana = UnitPowerMax("player", 0), UnitPower("player", 0)
@@ -445,13 +458,15 @@ function P:UpdateDruidBar()
 	end
 end
 
--- LayoutBars: heights and the aura holder after a bar came or went
+-- LayoutBars: after a bar came or went. The bars and the aura holder follow straight away; the frame's and the
+-- portrait's heights are protected in combat, so those wait for it to end.
 function P:LayoutBars()
 	if (InCombatLockdown()) then
+		self:ApplyStatsHeight()
 		XPerl_ProtectedCall(self.applySettingsDeferred)
-		return
+	else
+		self:ApplySize(max(0, pconf.size.width or 0))
 	end
-	self:ApplySize(max(0, pconf.size.width or 0))
 	XPerl_StatsFrameSetup(self, self:GetExtraBars())
 	self:PlaceAuras()
 end
@@ -744,7 +759,7 @@ function P:ConfigureAuras()
 end
 
 -- PlaceAuras: the holder follows the frame's layout (bars, runes, portrait) and re-wraps the rows when the
--- frame's width has changed
+-- frame's width has changed. It goes under the portrait, or 5 under the stats where those reach lower.
 function P:PlaceAuras()
 	local buffFrame = self.buffFrame
 	buffFrame:ClearAllPoints()
@@ -752,11 +767,9 @@ function P:PlaceAuras()
 		buffFrame:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 3, 0)
 	elseif (self.runes and self.runes:IsShown() and pconf.dockRunes) then
 		buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
-	elseif ((pconf.xpBar or pconf.repBar) and not pconf.extendPortrait) then
-		local diff = (self.statsFrame:GetBottom() or 0) - (self.portraitFrame:GetBottom() or 0)
-		buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, diff - 5)
 	else
-		buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, 0)
+		local drop = self:StatsDrop()
+		buffFrame:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, drop > 0 and -(drop + 5) or 0)
 	end
 	self:CheckAuraWidth()
 end
