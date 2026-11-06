@@ -54,6 +54,9 @@ XPERL_RAID_RESSER_AVAIL		= "Curatori Disponibili: "
 
 XPERL_LOC_NONEWATCHED	= "none watched"
 
+XPERL_AGGRO_PLAYER	= "- MINACCIA -"
+XPERL_AGGRO_PET		= "- FAMIGLIO MINACCIA -"
+
 XPERL_LOC_STATUSTIP = "Evidenziaziazione stato: " 	-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
 	AGGRO = "Aggressione",

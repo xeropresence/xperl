@@ -39,6 +39,9 @@ if (GetLocale() == "koKR") then
 
 	XPERL_LOC_NONEWATCHED	= "발견된 사항 없음"
 
+	XPERL_AGGRO_PLAYER	= "- 어그로 -"
+	XPERL_AGGRO_PET		= "- 소환수 어그로 -"
+
 	XPERL_LOC_STATUSTIP	= "상태 강조: "		-- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
 		AGGRO = "어그로",

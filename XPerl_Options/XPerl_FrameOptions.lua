@@ -2208,6 +2208,10 @@ local function XPerl_Player_ConfigDefault(default)
 			enable		= 1,
 		},
 
+		aggroWarning = {
+			enable		= 1,
+		},
+
 		healerMode = {
 --			enable		= nil,
 			type		= 1,

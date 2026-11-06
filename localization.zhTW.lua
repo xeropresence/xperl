@@ -51,6 +51,9 @@ XPERL_RAID_RESSER_AVAIL		= "可施展復活技能者仍有："
 
 XPERL_LOC_NONEWATCHED	= "無監看"
 
+XPERL_AGGRO_PLAYER	= "－獲得仇恨－"
+XPERL_AGGRO_PET		= "－寵物獲得仇恨－"
+
 XPERL_LOC_STATUSTIP	= "狀態提示："		-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
 	AGGRO = "敵方目標",

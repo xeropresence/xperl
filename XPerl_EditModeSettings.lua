@@ -294,6 +294,7 @@ function specs.player(s)
 
 	s:Group("XPERL_EDITMODE_GROUP_WARNING")
 	s:Check("fullScreen.enable", "XPERL_CONF_PARTY_FULLSCREEN")
+	s:Check("aggroWarning.enable", "XPERL_CONF_PLAYER_AGGROWARNING")
 end
 
 function specs.pet(s)

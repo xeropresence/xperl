@@ -47,6 +47,9 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 
 	XPERL_LOC_NONEWATCHED	= "Ninguno mirado"
 
+	XPERL_AGGRO_PLAYER	= "- AGGRO -"
+	XPERL_AGGRO_PET		= "- AGGRO EN MASCOTA -"
+
 	XPERL_LOC_STATUSTIP = "Condici\195\179n Destacados: " 	-- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
 		AGGRO = "Agresivo",

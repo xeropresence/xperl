@@ -46,6 +46,9 @@ if (GetLocale() == "deDE") then
 
 	XPERL_LOC_NONEWATCHED	= "nicht beobachtet"
 
+	XPERL_AGGRO_PLAYER		= "- AGGRO -"
+	XPERL_AGGRO_PET			= "- BEGLEITER AGGRO -"
+
 	XPERL_LOC_STATUSTIP 	= "Status Hervorhebungen: " 	-- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
 		AGGRO = "Aggro",

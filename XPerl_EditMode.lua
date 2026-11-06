@@ -296,10 +296,10 @@ end
 -- anchor, shifted by how far the client's active layout moves the mirrored Blizzard frame from its Classic
 -- spot. Anchored at the point the Blizzard frame is anchored to, so it follows a resized screen the same way.
 -- Until the client has reported its layouts (or for a Blizzard frame snapped to another frame) it is the XML
--- anchor.
+-- anchor. A frame registered with info.fixed keeps the XML anchor in every layout.
 local function DefaultPosition(reg)
 	local default, xml = reg.default, reg.info.default
-	local index = MIRRORED[reg.frameKey]
+	local index = not reg.info.fixed and MIRRORED[reg.frameKey]
 	local blizz = index and _G[BLIZZARD_FRAMES[index]]
 	local info = blizz and EditModeManagerFrame:GetActiveLayoutSystemInfo(Enum.EditModeSystem.UnitFrame, Enum.EditModeUnitFrameSystemIndices[index])
 	local active = info and info.anchorInfo
@@ -584,7 +584,8 @@ end
 
 -- XPerl_EditMode_Register(frame, frameKey, info)
 -- info: label, default (position), index (several frames of one key), preview(on) (shows placeholders),
--- leader (a frame registered before, which this one follows while linked)
+-- leader (a frame registered before, which this one follows while linked), fixed (the default doesn't move
+-- with the Blizzard frame its key follows between layouts)
 function XPerl_EditMode_Register(frame, frameKey, info)
 	assert(type(frame) == "table" and frame.GetName and frame:GetName(), "XPerl_EditMode_Register: frame must be a named frame")
 	assert(frameKeySet[frameKey], "XPerl_EditMode_Register: unknown frame key")

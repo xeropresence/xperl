@@ -47,6 +47,9 @@ XPERL_RAID_RESSER_AVAIL		= "可以复活者: "
 
 XPERL_LOC_NONEWATCHED	= "无监控"
 
+XPERL_AGGRO_PLAYER	= "- 获得仇恨 -"
+XPERL_AGGRO_PET		= "- 宠物获得仇恨 -"
+
 XPERL_LOC_STATUSTIP	= "状态提示: "		-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
 	AGGRO = "你仇恨过高了",

@@ -36,6 +36,9 @@ if (GetLocale() == "frFR") then
 	XPERL_RAID_AFK = "Afk"
 	XPERL_RAID_RESSER_AVAIL = "R\195\169surrection possible: "
 
+	XPERL_AGGRO_PLAYER	= "- AGGRO -"
+	XPERL_AGGRO_PET		= "- AGGRO DU FAMILIER -"
+
 	XPERL_LOC_STATUSTIP = "Statuts accentu\195\169s: " -- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
 		AGGRO = "Aggro",

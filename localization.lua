@@ -66,6 +66,10 @@ XPERL_TARGETCOUNTER_TARGETING	= "Targeting Me"
 XPERL_TARGETCOUNTER_HEALERS	= "Healers Targeting Me"
 XPERL_TARGETCOUNTER_CLICK		= "Click to show or hide this list in the targeting window"
 
+-- Aggro warning (middle of the screen)
+XPERL_AGGRO_PLAYER	= "- AGGRO -"
+XPERL_AGGRO_PET		= "- PET AGGRO -"
+
 XPERL_LOC_STATUSTIP = "Status Highlights: " 	-- Tooltip explanation of status highlight on unit
 XPERL_LOC_STATUSTIPLIST = {
 	AGGRO = "Aggro",
@@ -146,7 +150,7 @@ XPERL_EDITMODE_GROUP_COMBO		= "Combo Points"
 XPERL_EDITMODE_GROUP_BUFFS		= "Buffs"
 XPERL_EDITMODE_GROUP_DEBUFFS	= "Debuffs"
 XPERL_EDITMODE_GROUP_TOTEMS		= "Totems"
-XPERL_EDITMODE_GROUP_WARNING	= "Low Health Warning"
+XPERL_EDITMODE_GROUP_WARNING	= "Warnings"
 XPERL_EDITMODE_GROUP_TARGETS	= "Party Targets"
 XPERL_EDITMODE_GROUP_PARTYPETS	= "Party Pets"
 XPERL_EDITMODE_GROUP_SORTING	= "Groups and Sorting"

@@ -588,6 +588,11 @@ function XPerl_ValidateSettings()
 		if (conf.player.targetCounterHealers == nil) then
 			conf.player.targetCounterHealers = 1
 		end
+		-- The aggro warning came back on by default; its table marks settings that have it, so switching it
+		-- off (enable = nil) stays off
+		if (type(conf.player.aggroWarning) ~= "table") then
+			conf.player.aggroWarning = {enable = 1}
+		end
 	end
 
 	-- Status icon spots that older settings don't have come from the defaults; the alternate raid icon

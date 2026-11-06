@@ -50,6 +50,9 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 
 	XPERL_LOC_NONEWATCHED	= "не наблюдался"
 
+	XPERL_AGGRO_PLAYER	= "- АГГРО -"
+	XPERL_AGGRO_PET		= "- АГГРО НА ПИТОМЦЕ -"
+
 	XPERL_LOC_STATUSTIP = "Статус подсвечивания: " 	-- Tooltip explanation of status highlight on unit
 	XPERL_LOC_STATUSTIPLIST = {
 	AGGRO = "Аггро",

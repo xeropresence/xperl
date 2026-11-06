@@ -61,6 +61,9 @@ One download covers both clients; each client loads its own TOC.
 - Buffs and debuffs are drawn by the game's own aura containers, so they stay
   visible in combat, encounters, keystones and PvP.
 - Aggro and your target are highlighted on the frames.
+- **Aggro warning:** in a group, "- AGGRO -" shows in the middle of the screen while a mob
+  is attacking you, and "- PET AGGRO -" while one is attacking your pet. Move it in Edit
+  Mode ("X-Perl Aggro Warning"); switch it off with Options → Global → "Aggro Warning".
 - Player buff row with weapon enchants first; right-click a buff to cancel it.
 
 ### Range finder
@@ -173,8 +176,8 @@ Raid buttons are children of their group header, e.g.
 Some modules from older X-Perl versions are gone, because the game no longer gives add-ons the
 information they need:
 
-- **Raid Helper** (main tank list, aggro warning). Its target counters live on as the
-  player frame's targeting counter.
+- **Raid Helper** (main tank list). Its target counters live on as the player frame's
+  targeting counter, and its "- AGGRO -" warning as the aggro warning.
 - **Raid Monitor** (cast monitor, mana and health totals).
 - **Raid Admin** (roster save/load, item check, roster text).
 - **Custom raid highlight** (per-zone debuff icons).

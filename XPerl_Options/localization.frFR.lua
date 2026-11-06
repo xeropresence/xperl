@@ -166,6 +166,8 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_PLAYER_ENERGY_DESC			= "Affiche le ticker d'energie sous la barre d'energie pour les voleurs et les druides félins"
         XPERL_CONF_PARTY_FULLSCREEN			= "Avertissements de plein \195\169cran"
         XPERL_CONF_PARTY_FULLSCREEN_DESC		= "Affiche un avertissement en plein \195\169cran tant que vous avez perdu le contr\195\180le de votre personnage, par exemple sous l'effet de la peur ou d'un contr\195\180le mental"
+        XPERL_CONF_PLAYER_AGGROWARNING			= "Avertissement d'aggro"
+        XPERL_CONF_PLAYER_AGGROWARNING_DESC		= "En groupe, affiche un avertissement au milieu de l'\195\169cran tant qu'un monstre vous attaque, vous ou votre familier"
         XPERL_CONF_PLAYER_HEALER_MODE			= "Healer Mode"
         XPERL_CONF_PLAYER_HEALER_MODE_DESC		= "Montrer les d'\195\169ficits plut\195\180t que les valeurs de vie"
         XPERL_CONF_PLAYER_HEALERMODE_DEFICIT		= "D\195\169ficit"

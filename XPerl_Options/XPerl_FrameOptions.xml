@@ -3290,6 +3290,22 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_AggroWarning" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativeTo="$parent_HighlightTarget" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_AGGROWARNING")
+								self.configBase = "XPerlDB.player.aggroWarning"
+								self.configIndex = "enable"
+								self.configClick = XPerl_OptionActions
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<Frame name="$parent_RangeFinder">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT">
