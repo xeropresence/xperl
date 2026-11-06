@@ -41,6 +41,8 @@ One download covers both clients; each client loads its own TOC.
   each icon on one of nine spots on the frame, or hide it.
 - **Threat** on the pet, target, focus and party frames; **level, class icon,
   classification** (elite, rare, boss) and reaction colours.
+- **Pet happiness** (WoW: Forever): the hunter pet's happiness icon below the pet frame's level
+  box. Hover it for the pet's damage, loyalty and diet.
 
 ### Raid
 
