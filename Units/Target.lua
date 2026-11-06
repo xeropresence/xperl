@@ -459,62 +459,98 @@ function T:UpdateCombo()
 	end
 end
 
+-- Blizzard's ComboFrame (combo.blizzard) moves onto our portrait, which carries our scale. Blizzard's code keeps
+-- driving it (PlayerFrame calls into it as well, so none of it is replaced); its points are only re-anchored to
+-- run in a line along the chosen edge of the portrait, in the order they fill. The frame differs per client:
+-- Retail's has nine points, of which ComboFrame_UpdateMax picks the ones in use, starting at the first or the
+-- second. WoW: Forever's has five, fills them from the last one back, and its LayoutPointsCircle puts them back
+-- in a ring around Blizzard's portrait on every update.
+local isForever = XPerlAPI.isForever
+local comboLayoutHooked
+
+-- Where the line starts (ComboFrame and the first point anchor there) and which way it runs, per combo.pos
+local comboEdges = {
+	top		= {point = "TOPLEFT", x = -1, y = 4, along = "LEFT", alongRel = "RIGHT"},
+	bottom	= {point = "BOTTOMLEFT", x = -1, y = -4, along = "LEFT", alongRel = "RIGHT"},
+	left	= {point = "BOTTOMLEFT", x = -1, y = 0, along = "BOTTOM", alongRel = "TOP"},
+	right	= {point = "BOTTOMRIGHT", x = 2, y = 0, along = "BOTTOM", alongRel = "TOP"},
+}
+
+-- ComboFrame's events, [event] = unit filter. Retail's OnLoad registers them only when combo points are set to
+-- show on the target frame; WoW: Forever's always does, with its power events for the player alone.
+local comboFrameEvents = isForever and {
+	PLAYER_TARGET_CHANGED = false, PLAYER_ENTERING_WORLD = false, UNIT_POWER_FREQUENT = "player",
+	UNIT_POWER_UPDATE = "player", UNIT_POWER_POINT_CHARGE = "player", UNIT_MAXPOWER = "player",
+} or {
+	PLAYER_TARGET_CHANGED = false, PLAYER_ENTERING_WORLD = false, UNIT_POWER_FREQUENT = false, UNIT_MAXPOWER = false,
+}
+
+-- LayoutBlizzardComboPoints: also runs right after Blizzard's own layout, which it overrides
+local function LayoutBlizzardComboPoints()
+	local points = ComboFrame.ComboPoints
+	for _, point in ipairs(points) do
+		point:ClearAllPoints()
+	end
+	local combo = conf.target.combo
+	local edge = combo.blizzard and comboEdges[combo.pos]
+	if (not edge) then
+		return
+	end
+
+	local first, last, step
+	if (isForever) then
+		first, last, step = ComboFrame.maxComboPoints, 1, -1
+	else
+		first, last, step = ComboFrame.startComboPointIndex or 1, #points, 1		-- nil until ComboFrame_UpdateMax
+	end
+	local previous
+	for i = first, last, step do
+		local point = points[i]
+		if (previous) then
+			point:SetPoint(edge.along, previous, edge.alongRel)
+		else
+			point:SetPoint(edge.point)
+		end
+		previous = point
+	end
+end
+
 -- SetupBlizzardComboFrame
--- Blizzard's combo points (combo.blizzard) move onto our portrait, which carries our scale
 function T:SetupBlizzardComboFrame()
 	if (not ComboFrame or not ComboFrame.ComboPoints) then
 		return
 	end
-	local combo = conf.target.combo
-	local points = ComboFrame.ComboPoints
-	ComboFrame:ClearAllPoints()
-	for _, point in ipairs(points) do
-		point:ClearAllPoints()
+	if (not comboLayoutHooked) then
+		comboLayoutHooked = true
+		if (isForever) then
+			hooksecurefunc(ComboFrame, "LayoutPointsCircle", LayoutBlizzardComboPoints)
+		else
+			hooksecurefunc("ComboFrame_UpdateMax", LayoutBlizzardComboPoints)
+		end
 	end
 
+	local combo = conf.target.combo
+	ComboFrame:ClearAllPoints()
 	if (combo.blizzard) then
 		local pf = self.portraitFrame
+		local edge = comboEdges[combo.pos]
 		ComboFrame:SetParent(pf)
 		ComboFrame:SetScale(1)
-
-		-- The points run in a line along the chosen edge of the portrait
-		local pos = combo.pos
-		local first, along, alongRel
-		if (pos == "top") then
-			ComboFrame:SetPoint("TOPLEFT", pf, "TOPLEFT", -1, 4)
-			first, along, alongRel = "TOPLEFT", "LEFT", "RIGHT"
-		elseif (pos == "bottom") then
-			ComboFrame:SetPoint("BOTTOMLEFT", pf, "BOTTOMLEFT", -1, -4)
-			first, along, alongRel = "BOTTOMLEFT", "LEFT", "RIGHT"
-		elseif (pos == "left") then
-			ComboFrame:SetPoint("BOTTOMLEFT", pf, "BOTTOMLEFT", -1, 0)
-			first, along, alongRel = "BOTTOMLEFT", "BOTTOM", "TOP"
-		elseif (pos == "right") then
-			ComboFrame:SetPoint("BOTTOMRIGHT", pf, "BOTTOMRIGHT", 2, 0)
-			first, along, alongRel = "BOTTOMRIGHT", "BOTTOM", "TOP"
+		if (edge) then
+			ComboFrame:SetPoint(edge.point, pf, edge.point, edge.x, edge.y)
 		end
-		if (first) then
-			for i, point in ipairs(points) do
-				if (i == 1) then
-					point:SetPoint(first)
-				else
-					point:SetPoint(along, points[i - 1], alongRel)
-				end
+		for event, unit in pairs(comboFrameEvents) do
+			if (unit) then
+				ComboFrame:RegisterUnitEvent(event, unit)
+			else
+				ComboFrame:RegisterEvent(event)
 			end
 		end
-
-		-- Blizzard's own ComboFrame_OnEvent/ComboFrame_Update drive the points (PlayerFrame calls them as well,
-		-- so they mustn't be replaced). ComboFrame's OnLoad only registers these when combo points are set to
-		-- show on the target frame, so they're registered here.
-		ComboFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-		ComboFrame:RegisterEvent("UNIT_POWER_FREQUENT")
-		ComboFrame:RegisterEvent("UNIT_MAXPOWER")
-		ComboFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
 	else
 		ComboFrame:Hide()
-		ComboFrame:UnregisterEvent("PLAYER_TARGET_CHANGED")
-		ComboFrame:UnregisterEvent("UNIT_POWER_FREQUENT")
-		ComboFrame:UnregisterEvent("UNIT_MAXPOWER")
-		ComboFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+		for event in pairs(comboFrameEvents) do
+			ComboFrame:UnregisterEvent(event)
+		end
 	end
+	LayoutBlizzardComboPoints()
 end
