@@ -600,7 +600,6 @@
 					for i,f in pairs(array) do
 						if (f and XPerl_FrameIsFlashing(f)) then
 							XPerl_FrameFlashStop(f)
-							f:Show()
 						end
 					end
 					if (self.configClick) then
