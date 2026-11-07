@@ -283,6 +283,7 @@ function CB:Start()
 	self:ShowPrecast(startTime, endTime)
 
 	self.flashFrame:Hide()
+	self.fadeAlpha = 1
 	self:SetAlpha(1)
 	self.castTimeText:SetShown(self.showCastTime and true or false)
 	self.nameText:Hide()
@@ -312,7 +313,7 @@ function CB:SameCast(castID)
 	return issecretvalue(castID) or issecretvalue(self.castID) or castID == self.castID
 end
 
--- Finish(failText): fills the bar (red with failText, green otherwise) and lets it flash and fade
+-- Finish(failText): fills the bar (red with failText, green otherwise) and lets it flash (success only) and fade
 function CB:Finish(failText)
 	if (self.timeBinding) then
 		self.timeBinding:SetEnabled(false)
@@ -330,12 +331,13 @@ function CB:Finish(failText)
 		self.spellText:SetText(failText)
 		self.holdTime = GetTime() + HOLD_TIME
 	else
+		self.flashFrame.alpha = 0
 		self.flashFrame:SetAlpha(0)
 		self.flashFrame:Show()
 		self.holdTime = 0
 	end
 	self.casting, self.channeling = nil, nil
-	self.flashFrame.active = not self.fadeOut
+	self.flashFrame.active = not failText and not self.fadeOut
 	self.fadeOut = true
 end
 
@@ -386,7 +388,8 @@ function CB:OnEvent(event, unit, castID, spellID, extra)
 	end
 end
 
--- OnUpdate: plain-time progress (no duration objects), the end flash and the fade out
+-- OnUpdate: plain-time progress (no duration objects), the end flash and the fade out. The flash and fade alphas
+-- are kept in Lua, never read back: GetAlpha returns a secret once the bar's alpha is restricted (range fading).
 function CB:OnUpdate(elapsed)
 	local now = GetTime()
 	if (self.casting or self.channeling) then
@@ -411,15 +414,17 @@ function CB:OnUpdate(elapsed)
 
 	local flash = self.flashFrame
 	if (flash.active) then
-		local alpha = flash:GetAlpha() + elapsed * FLASH_STEP
+		local alpha = flash.alpha + elapsed * FLASH_STEP
 		if (alpha < 1) then
+			flash.alpha = alpha
 			flash:SetAlpha(alpha)
 		else
 			flash.active = nil
 		end
 	elseif (self.fadeOut) then
-		local alpha = self:GetAlpha() - elapsed * FADE_STEP
+		local alpha = self.fadeAlpha - elapsed * FADE_STEP
 		if (alpha > 0) then
+			self.fadeAlpha = alpha
 			self:SetAlpha(alpha)
 			self.nameText:SetAlpha((1 - alpha) * conf.transparency.text)
 			self.nameText:Show()
