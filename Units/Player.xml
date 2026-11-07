@@ -73,6 +73,9 @@
 							</Anchors>
 							<Color r="0.7" g="0.7" b="0.7"/>
 						</FontString>
+					</Layer>
+					<!-- Above the template's pvpIcon (OVERLAY, sublevel 0) it counts down over -->
+					<Layer level="OVERLAY" textureSubLevel="1">
 						<FontString name="$parentpvpTimer" parentKey="pvpTimer" inherits="GameFontNormalSmall" hidden="true">
 							<Anchors>
 								<Anchor point="TOPLEFT" x="-1" y="-8"/>
