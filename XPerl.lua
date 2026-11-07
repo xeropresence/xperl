@@ -498,10 +498,14 @@ end
 
 -- XPerl_GetClassColour
 local defaultColour = {r = 0.5, g = 0.5, b = 1}
--- A restricted (secret) class can't be used as a table key, so it gets the default colour
+-- A restricted (secret) class can't be used as a table key. C_ClassColor.GetClassColor takes it and answers with
+-- Blizzard's colour (not CUSTOM_CLASS_COLORS), with secret r, g, b: fine for FontString:SetTextColor, not for arithmetic.
 function XPerl_GetClassColour(class)
-	if (not class or issecretvalue(class)) then
+	if (not class) then
 		return defaultColour
+	end
+	if (issecretvalue(class)) then
+		return C_ClassColor.GetClassColor(class) or defaultColour
 	end
 	return (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class] or defaultColour
 end
