@@ -613,7 +613,7 @@
 					if self:GetChecked() then
 						XPerl_Options_SetIndex(self, 1)
 					else
-						XPerl_Options_SetIndex(self, nil)
+						XPerl_Options_SetIndex(self, self.configOff)	-- nil, or false for a setting that a missing value turns on
 					end
 
 				elseif (type(self.configSelection) == "table") then
@@ -1716,6 +1716,7 @@
 					end
 
 					table.insert(tabs, XPerl_Options_Tab9)
+					table.insert(tabs, XPerl_Options_Tab10)
 
 					local lastTab = nil
 					local totalTabWidth = 0
@@ -2838,7 +2839,8 @@
 								"_Party_Options",
 								"_Raid_Options",
 								"_All_Options",
-								"_Colour_Options"}
+								"_Colour_Options",
+								"_Helper_Options"}
 
 						self.SelectTab = function(self, id)
 
@@ -2981,6 +2983,17 @@
 						<Scripts>
 							<OnClick>
 								self:GetParent():SelectTab(9)
+							</OnClick>
+						</Scripts>
+					</Button>
+
+					<Button name="$parent10" inherits="XPerlTabTemplate" id="10" hidden="true">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parent9"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():SelectTab(10)
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -3306,22 +3319,6 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_TARGET")
 								self.configBase = "XPerlDB.highlight"
 								self.configIndex = "TARGET"
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_AggroWarning" inherits="XPerlCheckButtonTemplate">
-						<Anchors>
-							<Anchor point="TOPRIGHT" relativeTo="$parent_HighlightTarget" relativePoint="BOTTOM">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_AGGROWARNING")
-								self.configBase = "XPerlDB.player.aggroWarning"
-								self.configIndex = "enable"
-								self.configClick = XPerl_OptionActions
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -11305,6 +11302,72 @@
 							</Button>
 						</Frames>
 					</Frame>
+				</Frames>
+			</Frame>
+
+			-- Helper Options
+			<Frame name="$parent_Helper_Options" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="XPerl_Options_Area_Tabs"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="XPerl_Options_Area_Tabs"/>
+				</Anchors>
+
+				<Frames>
+					<CheckButton name="$parent_TargetCounter" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset><AbsDimension x="6" y="-3"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_TARGETCOUNTER")
+								self.flashFrame = XPerl_Player and XPerl_Player.targetCounter
+								self.configBase = "XPerlDB.player"
+								self.configIndex = "targetCounter"
+								self.configOff = false
+								self.configClick = XPerl_Player_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling(self, "TargetCounterHealers")
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_TargetCounterHealers" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_TargetCounter" relativePoint="BOTTOMRIGHT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_TARGETCOUNTER_HEALERS")
+								self.flashFrame = XPerl_Player and XPerl_Player.targetCounter
+								self.configBase = "XPerlDB.player"
+								self.configIndex = "targetCounterHealers"
+								self.configOff = false
+								self.configClick = XPerl_Player_Reset
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_AggroWarning" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativeTo="$parent_TargetCounterHealers" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_AGGROWARNING")
+								self.configBase = "XPerlDB.player.aggroWarning"
+								self.configIndex = "enable"
+								self.configClick = XPerl_OptionActions
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
 				</Frames>
 			</Frame>
 		</Frames>

@@ -14,6 +14,7 @@ XPERL_CONF_TITLE6			= PARTY		-- "Party"
 XPERL_CONF_TITLE7			= RAID		-- "Raid"
 XPERL_CONF_TITLE8			= ALL		-- "All"
 XPERL_CONF_TITLE9			= "색상"
+XPERL_CONF_TITLE10			= "도움말"
 
 XPERL_CONF_OPTIONS_COLOUR		= "설정창의 색상을 변경"
 

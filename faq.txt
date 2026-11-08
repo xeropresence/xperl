@@ -16,7 +16,7 @@ Q. How does X-Perl know there's a newer version available?
 A. When you log in, your version number is sent out on the WoW raid/guild addons channel (the same way CTRA, Omen and all other addons communicate). If anyone else is using X-Perl, they reply with their version number. If theirs is higher, X-Perl tells you. It's nothing more than an automated version check that other mods have. Simple.
 
 Q. How can I turn off the -AGGRO- warning!
-A. Options, Global tab, "Aggro Warning". It is also in the player frame's Edit Mode settings, under Warnings.
+A. Options, Helpers tab, "Aggro Warning". It is also in the player frame's Edit Mode settings, under Warnings.
 
 Q. Aggro warning won't work when I'm solo.
 A. It only shows in a group. It is assumed that if you are in combat and have a mob smacking you, you probably have aggro.
@@ -76,7 +76,7 @@ Q. Why does my Player frame lose it's position when I login?
 A. WoW won't save window locations if they're at 0,0 (the very top left corner of screen), so then it takes the default position from the xml file. Best thing you can do is put it at 0,1 or 1,0.
 
 Q. There's this big -AGGRO- warning on my screen, how do I get rid of it?
-A. Options, Global tab, "Aggro Warning". To move it instead, drag it in Edit Mode or while the options are open.
+A. Options, Helpers tab, "Aggro Warning". To move it instead, drag it in Edit Mode or while the options are open.
 
 Q. How can I delete old configs from my saved variables?
 A. You can delete un-used config data from the saved variables by issueing the command: /xperl delete config REALMNAME PLAYERNAME

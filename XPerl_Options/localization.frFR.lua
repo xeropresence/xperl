@@ -21,6 +21,7 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_TITLE7  				= RAID		-- "Raid"
         XPERL_CONF_TITLE8  				= ALL		-- "Tout"
         XPERL_CONF_TITLE9       			= "Couleurs"
+        XPERL_CONF_TITLE10      			= "Assistance"
 
         XPERL_CONF_OPTIONS_COLOUR			= "Change les couleurs de la fen\195\170tre d'option"
 

@@ -10,6 +10,7 @@ XPERL_CONF_TITLE6       	= PARTY	    	-- "Gruppe"
 XPERL_CONF_TITLE7       	= RAID			-- "Schlachtzug"
 XPERL_CONF_TITLE8       	= ALL			-- "Alle"
 XPERL_CONF_TITLE9       	= COLORS		-- "Farben"
+XPERL_CONF_TITLE10      	= "Helfer"
 
 XPERL_CONF_OPTIONS_COLOUR	= "Die Farbe des Einstellungsfensters anpassen"
 

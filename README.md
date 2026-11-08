@@ -73,7 +73,7 @@ One download covers both clients; each client loads its own TOC.
 - Aggro and your target are highlighted on the frames.
 - **Aggro warning:** in a group, "- AGGRO -" shows in the middle of the screen while a mob
   is attacking you, and "- PET AGGRO -" while one is attacking your pet. Move it in Edit
-  Mode ("X-Perl Aggro Warning"); switch it off with Options → Global → "Aggro Warning".
+  Mode ("X-Perl Aggro Warning"); switch it off with Options → Helpers → "Aggro Warning".
 - Player buff row with weapon enchants first; right-click a buff to cancel it.
 
 ### Range finder
@@ -87,7 +87,10 @@ need curing stay clear.
 ### Targeting counter
 
 The player frame counts the group members targeting you (healers only by default).
-Click the counter to list them in the "X-Perl Targeting" window.
+Click the counter to list them in the "X-Perl Targeting" window. Options → Helpers
+switches the counter; untick "Count Only Healers" there to count everyone in the group
+who is targeting you, pets included. Both are also in the player frame's Edit Mode
+settings.
 
 ## Installation
 

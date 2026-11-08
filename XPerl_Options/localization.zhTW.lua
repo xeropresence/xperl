@@ -12,6 +12,7 @@ XPERL_CONF_TITLE6						= PARTY		-- "Party"
 XPERL_CONF_TITLE7						= RAID		-- "Raid"
 XPERL_CONF_TITLE8						= ALL		-- "All"
 XPERL_CONF_TITLE9						= "色彩"
+XPERL_CONF_TITLE10						= "助手"
 
 XPERL_CONF_OPTIONS_COLOUR		= "改變設定視窗的色調"
 

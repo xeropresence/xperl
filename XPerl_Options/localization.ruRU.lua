@@ -13,6 +13,7 @@ XPERL_CONF_TITLE6						= "Группа"		-- "Группа"
 XPERL_CONF_TITLE7						= "Рейд"		-- "Рейд"
 XPERL_CONF_TITLE8						= "Все"		-- "Все"
 XPERL_CONF_TITLE9						= "Цвета"
+XPERL_CONF_TITLE10						= "Помощники"
 
 XPERL_CONF_OPTIONS_COLOUR				= "Сменить цвет в окне настроек"
 

@@ -15,6 +15,7 @@ XPERL_CONF_TITLE6       		= PARTY		-- "Party"
 XPERL_CONF_TITLE7       		= RAID		-- "Raid"
 XPERL_CONF_TITLE8       		= ALL		-- "All"
 XPERL_CONF_TITLE9       		= "Colores"
+XPERL_CONF_TITLE10      		= "Ayudantes"
 
 XPERL_CONF_OPTIONS_COLOUR		= "Cambiar el color de la ventana de opciones"
 
