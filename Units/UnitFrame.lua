@@ -414,6 +414,16 @@ function UF:SetUnit(unit)
 	self:UnitChanged()
 end
 
+-- GetTargetInfo
+-- What a ping on the frame targets (PingableUnitFrameTemplate, Blizzard_SharedXML/PingableType.lua): the unit
+-- the frame shows. Blizzard's version reads self.unit or the "unit" attribute; X-Perl keeps the unit in partyid,
+-- party targets and pets have no unit attribute (useparent-unit with unitsuffix), and the player and pet
+-- frames show another unit than their attribute in a vehicle.
+function UF:GetTargetInfo()
+	local unit = self.partyid
+	return {guid = unit and UnitGUID(unit)}
+end
+
 -- UnitChanged
 -- The unit behind the frame changed (new token, or a new target behind "target")
 function UF:UnitChanged()

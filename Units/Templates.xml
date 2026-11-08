@@ -9,8 +9,11 @@
 	     The element children (name frame, stats, portrait, ...) come from the templates below, declared by
 	     the type with its own anchors, using $parent names so the global child names stay stable.
 	     No parent here: standalone frames set parent="UIParent" themselves; group header children and frames
-	     created with CreateFrame keep the parent they are given. -->
-	<Button name="XPerl_UnitButtonTemplate" inherits="SecureUnitButtonTemplate" virtual="true" clampedToScreen="true" frameStrata="LOW" movable="true" hidden="true">
+	     created with CreateFrame keep the parent they are given.
+	     PingableUnitFrameTemplate makes the button a ping target (ping-receiver); the ping system takes the
+	     nearest ping receiver above the frame under the cursor, so the name frame, bars and auras ping the
+	     button's unit, and a party target or pet inside a party frame pings its own. -->
+	<Button name="XPerl_UnitButtonTemplate" inherits="SecureUnitButtonTemplate, PingableUnitFrameTemplate" virtual="true" clampedToScreen="true" frameStrata="LOW" movable="true" hidden="true">
 		<Scripts>
 			<OnLoad function="XPerl_UnitFrame_OnLoad"/>
 		</Scripts>
