@@ -2026,6 +2026,7 @@ local function XPerl_Global_ConfigDefault(default)
 		background	= 1,
 		fat		= 1,
 --		inverse		= nil,		-- 1.8.6
+--		fullNumbers	= nil,
 	}
 
 	default.highlight = {

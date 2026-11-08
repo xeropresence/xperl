@@ -3084,9 +3084,25 @@
 						</Scripts>
 					</CheckButton>
 
-					<CheckButton name="$parent_CombatFlash" inherits="XPerlCheckButtonTemplate">
+					<CheckButton name="$parent_FullNumbers" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_FatHealthBars" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_FULLNUMBERS")
+								self.configBase = "XPerlDB.bar"
+								self.configIndex = "fullNumbers"
+								self.configClick = XPerl_OptionActions
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_CombatFlash" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_FullNumbers" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>

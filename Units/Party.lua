@@ -855,7 +855,7 @@ function PP:UpdateHealth()
 		-- Restricted (secret) health can't be used in arithmetic, so the client formats it
 		if (healer.enable) then
 			if (healer.type == 1) then
-				text:SetText("-"..AbbreviateNumbers(UnitHealthMissing(unit)).."/"..AbbreviateNumbers(hpMax))
+				text:SetText("-"..XPerl_NumberText(UnitHealthMissing(unit)).."/"..XPerl_NumberText(hpMax))
 			else
 				text:SetText(XPerl_UnitHealthDeficitText(unit))
 			end

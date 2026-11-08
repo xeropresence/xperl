@@ -39,6 +39,8 @@ One download covers both clients; each client loads its own TOC.
 - **Heal prediction:** your incoming heals, other players' incoming heals, absorb
   shields and heal absorbs, in and out of combat. A glow marks absorbs that don't fit on
   the bar.
+- **Full numbers:** health, power and experience texts abbreviate large values (12.3K);
+  Options → Global → "Full Numbers" shows them in full (12345).
 - **Status icons:** raid target marker, group leader, raid assistant, master looter,
   main tank, main assist, and in combat (or resting, on the player frame). You can put
   each icon on one of nine spots on the frame, or hide it.

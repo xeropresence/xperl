@@ -742,8 +742,24 @@ function XPerl_UnitHealthDeficitText(unit)
 	return C_StringUtil.WrapString(C_StringUtil.TruncateWhenZero(UnitHealthMissing(unit)), "-")
 end
 
+-- XPerl_NumberText
+-- A health or power value for display text: abbreviated by the client (12.3K), or in full with the Full Numbers
+-- option. Takes restricted (secret) values, so the result is only for concatenating into text.
+function XPerl_NumberText(value)
+	if (conf.bar.fullNumbers) then
+		return value
+	end
+	return AbbreviateNumbers(value)
+end
+
 -- XPerl_SetValuedText
 function XPerl_SetValuedText(self, current, Max, suffix)
+	if (conf.bar.fullNumbers) then
+		-- Concatenation takes restricted (secret) values too
+		self:SetText(current.."/"..Max..(suffix or ""))
+		return
+	end
+
 	if (issecretvalue(current) or issecretvalue(Max)) then
 		-- Restricted values can't be measured or divided, so let the client abbreviate them
 		self:SetText(AbbreviateNumbers(current).."/"..AbbreviateNumbers(Max)..(suffix or ""))
@@ -805,7 +821,7 @@ local function SetSecretHealthBar(self, bar, hp, Max)
 		local hbt = bar.text
 		if (self.conf.healerMode and self.conf.healerMode.enable and self.conf.healerMode.type ~= 2) then
 			if (self.conf.healerMode.type == 1) then
-				hbt:SetText("-"..AbbreviateNumbers(UnitHealthMissing(unit)).."/"..AbbreviateNumbers(Max))
+				hbt:SetText("-"..XPerl_NumberText(UnitHealthMissing(unit)).."/"..XPerl_NumberText(Max))
 			else
 				hbt:SetText(XPerl_UnitHealthDeficitText(unit))
 			end
@@ -868,12 +884,12 @@ function XPerl_SetHealthBar(self, hp, Max)
 			if (self.conf.healerMode.type == 1) then
 				SetValuedText(hbt, health, Max)
 			else
-				if (abs(health) >= hugeNumDiv10) then
-					hbt:SetFormattedText("%d%s", health / hugeNumDiv, hugeNumTag)
-				elseif (abs(health) >= largeNumDiv100) then
-					hbt:SetFormattedText("%d%s", health / largeNumDiv, largeNumTag)
-				else
+				if (conf.bar.fullNumbers or abs(health) < largeNumDiv100) then
 					hbt:SetFormattedText("%d", health)
+				elseif (abs(health) >= hugeNumDiv10) then
+					hbt:SetFormattedText("%d%s", health / hugeNumDiv, hugeNumTag)
+				else
+					hbt:SetFormattedText("%d%s", health / largeNumDiv, largeNumTag)
 				end
 			end
 		else
