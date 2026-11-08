@@ -172,6 +172,7 @@ function XPerl_UnitFrame_OnLoad(self)
 	self.eventHandlers = {}
 	self.tick = 0
 	self.applySettingsDeferred = function() self:ApplySettings() end
+	self.registerEventsDeferred = function() self:RegisterElementEvents(true) end
 	if (XPerlDB) then
 		self.conf = XPerlDB[self.frameKey]
 	end
@@ -261,10 +262,14 @@ function UF:TypePreview() end
 -- Events
 ------------------------------------------------------------------------------
 
--- RegisterElementEvents
+-- RegisterElementEvents(retry)
 -- (Re)registers the events of the active elements. Called on activation, unit changes and ApplySettings.
 -- A frame without a unit (a group header's spare button) listens to nothing.
-function UF:RegisterElementEvents()
+-- RegisterEvent can return true yet leave the frame unregistered when it runs while that same event is being
+-- dispatched (seen with GROUP_ROSTER_UPDATE on WoW: Forever): group headers set their buttons' units from
+-- GROUP_ROSTER_UPDATE, and settings deferred by combat are applied from PLAYER_REGEN_ENABLED. Whatever didn't
+-- take is registered again once the dispatch is over (retry: that second pass).
+function UF:RegisterElementEvents(retry)
 	self:UnregisterAllEvents()
 	local handlers = self.eventHandlers
 	for _, list in pairs(handlers) do
@@ -302,6 +307,7 @@ function UF:RegisterElementEvents()
 		end
 	end
 
+	local missed
 	for event, list in pairs(handlers) do
 		if (#list > 0) then
 			local u1, u2, any
@@ -322,7 +328,13 @@ function UF:RegisterElementEvents()
 			else
 				self:RegisterUnitEvent(event, u1, u2)
 			end
+			if (not Plain(self:IsEventRegistered(event))) then
+				missed = true
+			end
 		end
+	end
+	if (missed and not retry) then
+		C_Timer.After(0, self.registerEventsDeferred)
 	end
 end
 
