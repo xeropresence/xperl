@@ -1256,20 +1256,77 @@ function UF:UpdateReadyCheck()
 	XPerl_Unit_UpdateReadyState(self)
 end
 
--- OnUnitCombat: hit indicator over the portrait (conf.hitIndicator), and the combat flash of the borders
-function UF:OnUnitCombat(event, unit, action, descriptor, damage, damageType)
-	if (issecretvalue(action) or issecretvalue(damage) or issecretvalue(descriptor) or issecretvalue(damageType)) then
-		return
-	end
-	if (self.feedbackText and self.conf.hitIndicator and self.conf.portrait) then
-		CombatFeedback_OnCombatEvent(self, action, descriptor, damage, damageType)
+-- ShowCombatFeedback: the hit indicator text, Blizzard's CombatFeedback_OnCombatEvent made safe for Retail,
+-- which sends every UNIT_COMBAT amount as a secret. Add-on code can format a secret but not compare it, so a
+-- wound flagged absorbed/blocked/resisted shows the reason after whatever still got through ("Absorb" alone
+-- for a full absorb). Blizzard's CombatFeedback_OnUpdate fades it out (feedbackStartTime)
+local STOPPED_FLAGS = {ABSORB = true, BLOCK = true, RESIST = true}
+
+function UF:ShowCombatFeedback(action, flags, amount, school)
+	local secret = issecretvalue(amount)
+	local text, height = CombatFeedbackText[action], self.feedbackFontHeight
+	local r, g, b = 1, 1, 1
+	if (action == "IMMUNE") then
+		height = height * 0.5
+	elseif (action == "BLOCK") then
+		height = height * 0.75
+	elseif (action == "WOUND") then
+		if (STOPPED_FLAGS[flags] and (secret or amount == 0)) then
+			height = height * 0.75
+			text = CombatFeedbackText[flags]
+			if (secret) then
+				text = C_StringUtil.WrapString(C_StringUtil.TruncateWhenZero(amount), "", " ")..text
+			end
+		elseif (secret or amount ~= 0) then
+			if (flags == "CRITICAL" or flags == "CRUSHING") then
+				height = height * 1.5
+			elseif (flags == "GLANCING") then
+				height = height * 0.75
+			end
+			if (school ~= Enum.Damageclass.MaskPhysical) then
+				r, g, b = 1, 1, 0
+			end
+			text = BreakUpLargeNumbers(amount)
+			if (flags == "BLOCK_REDUCED") then
+				text = format(COMBAT_TEXT_BLOCK_REDUCED, text)
+			end
+		else
+			text = CombatFeedbackText.MISS
+		end
+	elseif (action == "HEAL" or action == "ENERGIZE") then
+		text = BreakUpLargeNumbers(amount)
+		if (action == "HEAL") then
+			r, g, b = 0, 1, 0
+		else
+			r, g, b = 0.41, 0.8, 0.94
+		end
+		if (flags == "CRITICAL") then
+			height = height * 1.5
+		end
 	end
 
+	self.feedbackStartTime = GetTime()
+	local fs = self.feedbackText
+	fs:SetTextHeight(height)
+	fs:SetText(text)
+	fs:SetTextColor(r, g, b)
+	fs:SetAlpha(0)
+	fs:Show()
+end
+
+-- OnUnitCombat: hit indicator over the portrait (conf.hitIndicator), and the combat flash of the borders.
+-- Only the amount can be secret (Retail); a secret one can't be tested for zero, so every wound flashes then
+function UF:OnUnitCombat(event, unit, action, descriptor, damage, damageType)
+	if (self.feedbackText and self.conf.hitIndicator and self.conf.portrait) then
+		self:ShowCombatFeedback(action, descriptor, damage, damageType)
+	end
+
+	local secret = issecretvalue(damage)
 	if (action == "HEAL") then
 		if (XPerl_CombatFlashSet(self, 0, true, true)) then
 			XPerl_CombatFlashSetFrames(self)
 		end
-	elseif (damage and damage > 0) then
+	elseif ((secret and action == "WOUND") or (not secret and damage and damage > 0)) then
 		if (XPerl_CombatFlashSet(self, 0, true)) then
 			XPerl_CombatFlashSetFrames(self)
 		end
