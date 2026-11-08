@@ -320,6 +320,7 @@ function specs.pet(s)
 
 	s:Group("XPERL_EDITMODE_GROUP_CASTBAR")
 	s:Check("castBar.enable", P.."CASTBAR")
+	s:Check("castBar.inside", "XPERL_CONF_CAST_TIME_INSIDE")
 
 	s:Group("XPERL_EDITMODE_GROUP_BUFFS")
 	s:Check("buffs.enable", P.."BUFFS")
@@ -373,6 +374,7 @@ local function TargetLike(s, P, isTarget)
 
 	s:Group("XPERL_EDITMODE_GROUP_CASTBAR")
 	s:Check("castBar.enable", P.."ARCANE_BAR")
+	s:Check("castBar.inside", "XPERL_CONF_CAST_TIME_INSIDE")
 
 	if (isTarget) then
 		s:Group("XPERL_EDITMODE_GROUP_COMBO")
@@ -500,6 +502,7 @@ function specs.party(s)
 
 	s:Group("XPERL_EDITMODE_GROUP_CASTBAR")
 	s:Check("castBar.enable", P.."ARCANE_BAR")
+	s:Check("castBar.inside", "XPERL_CONF_CAST_TIME_INSIDE")
 
 	s:Group("XPERL_EDITMODE_GROUP_TARGETS")
 	s:Check("target.enable", P.."TARGET")
@@ -649,6 +652,7 @@ function specs.boss(s)
 
 	s:Group("XPERL_EDITMODE_GROUP_CASTBAR")
 	s:Check("castBar.enable", "XPERL_CONF_ARCANE_BAR", nil, true)
+	s:Check("castBar.inside", "XPERL_CONF_CAST_TIME_INSIDE")
 
 	HostileAuras(s)
 end
@@ -680,6 +684,7 @@ function specs.arena(s)
 
 	s:Group("XPERL_EDITMODE_GROUP_CASTBAR")
 	s:Check("castBar.enable", "XPERL_CONF_ARCANE_BAR", nil, true)
+	s:Check("castBar.inside", "XPERL_CONF_CAST_TIME_INSIDE")
 
 	HostileAuras(s)
 end

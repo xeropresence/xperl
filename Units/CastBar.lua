@@ -119,8 +119,9 @@ function XPerl_CastBar_Create(owner)
 	return bar
 end
 
--- ApplySettings: owner's conf.castBar.enable and .inside; the cast time text and precast mark follow the
--- player's settings (conf.player.castBar), as they always did, and the player frame owns Blizzard's bar
+-- ApplySettings: owner's conf.castBar.enable and .inside (cast time inside or beside the bar); whether the cast
+-- time shows and the precast mark follow the player's settings (conf.player.castBar), as they always did, and
+-- the player frame owns Blizzard's bar
 function CB:ApplySettings()
 	local c = self.owner.conf.castBar
 	local pc = conf.player.castBar

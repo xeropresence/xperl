@@ -5042,13 +5042,33 @@
 								self.configBase = "XPerlDB.pet.castBar"
 								self.configIndex = "enable"
 								self.configClick = XPerl_Player_Pet_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling(self,"CastTimeInside")
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_CastTimeInside" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMRIGHT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_CAST_TIME_INSIDE")
+								self.configBase = "XPerlDB.pet.castBar"
+								self.configIndex = "inside"
+								self.configClick = XPerl_Player_Pet_Reset
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
 
 					<CheckButton name="$parent_Level" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPRIGHT" relativeTo="$parent_CastTimeInside" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -5844,6 +5864,26 @@
 								self.configBase = "XPerlDB.target.castBar"
 								self.configIndex = "enable"
 								self.configClick = XPerl_Target_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling(self,"CastTimeInside")
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_CastTimeInside" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMRIGHT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_CAST_TIME_INSIDE")
+								self.configBase = "XPerlDB.target.castBar"
+								self.configIndex = "inside"
+								self.configClick = XPerl_Target_Reset
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -5867,7 +5907,7 @@
 
 					<CheckButton name="$parent_Reaction" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPRIGHT" relativeTo="$parent_CastTimeInside" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -7194,6 +7234,26 @@
 								self.configBase = "XPerlDB.focus.castBar"
 								self.configIndex = "enable"
 								self.configClick = XPerl_Target_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling(self,"CastTimeInside")
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_CastTimeInside" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMRIGHT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_CAST_TIME_INSIDE")
+								self.configBase = "XPerlDB.focus.castBar"
+								self.configIndex = "inside"
+								self.configClick = XPerl_Target_Reset
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -7217,7 +7277,7 @@
 
 					<CheckButton name="$parent_Reaction" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPRIGHT" relativeTo="$parent_CastTimeInside" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -8220,13 +8280,33 @@
 								self.configBase = "XPerlDB.party.castBar"
 								self.configIndex = "enable"
 								self.configClick = XPerl_Party_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling(self,"CastTimeInside")
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_CastTimeInside" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMRIGHT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_CAST_TIME_INSIDE")
+								self.configBase = "XPerlDB.party.castBar"
+								self.configIndex = "inside"
+								self.configClick = XPerl_Party_Reset
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
 
 					<CheckButton name="$parent_Level" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_ArcaneBar" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPRIGHT" relativeTo="$parent_CastTimeInside" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
