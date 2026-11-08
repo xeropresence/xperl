@@ -105,7 +105,8 @@ function XPerl_UnitFrame_DefineElement(name, def)
 end
 local Define = XPerl_UnitFrame_DefineElement
 
-Define("portrait",	{events = {UNIT_PORTRAIT_UPDATE = "unit", UNIT_MODEL_CHANGED = "unit", PORTRAITS_UPDATED = true}, method = "UpdatePortrait", deferrable = true})
+Define("portrait",	{events = {UNIT_PORTRAIT_UPDATE = "unit", UNIT_MODEL_CHANGED = "unit", PORTRAITS_UPDATED = true, ADDON_RESTRICTION_STATE_CHANGED = true},
+	method = "UpdatePortrait", deferrable = true})
 Define("name",		{events = {UNIT_NAME_UPDATE = "unit"}, method = "UpdateName"})
 Define("level",		{events = {UNIT_LEVEL = "unit"}, method = "UpdateLevel"})
 Define("classIcon",	{method = "UpdateClassIcon"})
@@ -630,14 +631,18 @@ end
 -- UpdatePortrait
 -- A unit's model and portrait art stream in after the paint that asked for them: until then SetUnit leaves
 -- the model blank and SetPortraitTexture paints nothing, and the unitless PORTRAITS_UPDATED is often the only
--- event that follows. It repaints shown 2D portraits and blank models; a model that has its file is left
--- alone, since a reload restarts it.
-function UF:UpdatePortrait(event)
+-- event that follows. A unit whose identity is restricted gets the 2D portrait (XPerl_Unit_UpdatePortrait)
+-- until a restriction ends. Both repaint shown 2D portraits and blank models; a model that has its file is
+-- left alone, since a reload restarts it.
+function UF:UpdatePortrait(event, _, state)
 	local pf = self.portraitFrame
 	if (not pf or not self.partyid) then
 		return
 	end
-	if (event == "PORTRAITS_UPDATED") then
+	if (event == "ADDON_RESTRICTION_STATE_CHANGED" and state ~= Enum.AddOnRestrictionState.Inactive) then
+		return
+	end
+	if (event == "PORTRAITS_UPDATED" or event == "ADDON_RESTRICTION_STATE_CHANGED") then
 		-- type(): the file ID can be secret
 		if (not self:IsVisible() or (pf.portrait3D:IsShown() and type(pf.portrait3D:GetModelFileID()) ~= "nil")) then
 			return

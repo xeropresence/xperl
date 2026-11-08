@@ -2311,23 +2311,29 @@ function XPerl_ProtectedCall(func, self)
 end
 
 -- XPerl_Unit_UpdatePortrait()
+-- The 2D portrait is always painted, so it can stand in for the model. A model needs the unit's identity
+-- (PlayerModel:SetUnit is guarded by it), which the game keeps secret for creatures in instances and for
+-- target chains through them; SetUnit then draws nothing. Those units, and units the model can't draw (out
+-- of range), get the 2D portrait.
 function XPerl_Unit_UpdatePortrait(self)
-
-	
-	if (self.conf and self.conf.portrait) then
-		SetPortraitTexture(self.portraitFrame.portrait, self.partyid)			-- If a player moves out of range for a 3D portrait, it will show their proper 2D one
-		if (self.conf.portrait3D and UnitIsVisible(self.partyid)) then
-			self.portraitFrame.portrait:Hide()
-			self.portraitFrame.portrait3D:Show()
-			self.portraitFrame.portrait3D:ClearModel()
-			self.portraitFrame.portrait3D:SetUnit(self.partyid)
-			self.portraitFrame.portrait3D:SetPortraitZoom(1)
-		else
-			self.portraitFrame.portrait:Show()
-			self.portraitFrame.portrait3D:Hide()
+	local c = self.conf
+	if (not c or not c.portrait) then
+		return
+	end
+	local pf, unit = self.portraitFrame, self.partyid
+	local model = pf.portrait3D
+	SetPortraitTexture(pf.portrait, unit)
+	local show3D = c.portrait3D and UnitIsVisible(unit) and not (C_Secrets and C_Secrets.ShouldUnitIdentityBeSecret(unit))
+	if (show3D) then
+		model:Show()
+		model:ClearModel()
+		show3D = model:SetUnit(unit) == true
+		if (show3D) then
+			model:SetPortraitZoom(1)
 		end
-	end	
-	
+	end
+	pf.portrait:SetShown(not show3D)
+	model:SetShown(show3D)
 end
 
 -- XPerl_Unit_UpdateLevel

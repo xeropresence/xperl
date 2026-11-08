@@ -31,7 +31,9 @@ One download covers both clients; each client loads its own TOC.
 - **Pick what you use:** Options → All → "X-Perl Frames" switches each frame type on or
   off. A frame type that is switched off leaves Blizzard's own frame in place.
 - **Portraits:** 2D or 3D, with hit indicators over the portrait and a red or green
-  flash on the frame border when the unit takes damage or healing.
+  flash on the frame border when the unit takes damage or healing. Creatures in instances
+  (and units seen through them, like their target) show the 2D portrait: the game hides
+  their identity there, and a 3D model needs it.
 - **Cast bars on every frame:** cast time and latency, and a shield icon when the
   cast can't be interrupted.
 - **Heal prediction:** your incoming heals, other players' incoming heals, absorb
