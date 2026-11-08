@@ -543,6 +543,8 @@ function specs.raid(s)
 	local P = "XPERL_CONF_RAID_"
 	s:Group("XPERL_EDITMODE_GROUP_FRAME", true)
 	s:Check("notInBG", P.."NOTINBG")
+	s:Check("inParty", P.."INPARTY")
+	s:Check("hideParty", P.."HIDEPARTY")
 	s:Scale(P.."SCALE")
 	s:Dropdown("anchor", "XPERL_CONF_ANCHORMENU", AnchorValues())
 	s:Slider("spacing", P.."SPACING", -5, 20)

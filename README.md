@@ -54,6 +54,9 @@ One download covers both clients; each client loads its own TOC.
 - **Linked groups:** dragging group 1 moves the whole raid and keeps the arrangement.
   Moving any other group on its own breaks the link. "Link Raid Groups" restores it.
 - "4 Wide" arranges the groups in rows of four.
+- "Show in Party" shows the raid frames when you are in a party, with the party in them
+  (yourself included, and the party's pets with the raid pets); "Hide Party Frames" below
+  it hides the party frames meanwhile.
 - Ready check, role icons, and status texts (dead, ghost, offline, AFK, feigning death,
   being resurrected).
 - Raid pets, filtered to hunter pets, warlock pets or both.

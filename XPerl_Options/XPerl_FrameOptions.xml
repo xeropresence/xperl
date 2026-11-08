@@ -8997,6 +8997,8 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_SHOW")
 								self.Validate = function()
 									XPerl_Options_EnableSibling(self, "NotInBG")
+									XPerl_Options_EnableSibling(self, "InParty")
+									XPerl_Options_EnableSibling(self, "HideParty", "InParty")
 									XPerl_Options_EnableSibling(self, "Titles")
 									XPerl_Options_EnableSibling(self, "Mana")
 									XPerl_Options_EnableSibling(self, "ManaPercent", "Mana")
@@ -9051,9 +9053,47 @@
 						</Scripts>
 					</CheckButton>
 
-					<CheckButton name="$parent_RaidPets" inherits="XPerlCheckButtonTemplate">
+					<CheckButton name="$parent_InParty" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOP" relativeTo="$parent_NotInBG" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_INPARTY")
+								self.configBase = "XPerlDB.raid"
+								self.configIndex = "inParty"
+								self.configClick = XPerl_Raid_OptionActions
+								self.Validate = function()
+									XPerl_Options_EnableSibling(self, "HideParty", "Enable")
+								end
+								XPerl_Options_RegisterProtected(self)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_HideParty" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_InParty" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIDEPARTY")
+								self.configBase = "XPerlDB.raid"
+								self.configIndex = "hideParty"
+								self.configClick = XPerl_Raid_OptionActions
+								XPerl_Options_RegisterProtected(self)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_RaidPets" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_HideParty" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>

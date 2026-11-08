@@ -2320,6 +2320,8 @@ end
 local function XPerl_Raid_ConfigDefault(default)
 	default.raid = {
 		enable			= 1,
+--		inParty			= nil,
+--		hideParty		= nil,
 		healPrediction	= 1,
 		icons			= XPerl_DefaultStatusIcons("raid"),
 --		sortByClass		= nil,

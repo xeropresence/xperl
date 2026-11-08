@@ -7,7 +7,8 @@
 -- framework (Units/UnitFrame.lua) with their own layout: health text modes, a mana bar made on demand,
 -- buffs or debuffs beside or below, role and raid target icons, status texts. The XPerl_Roster cache keeps
 -- AFK/DND/offline times, resurrections and CTRA versions for the tooltip and the status texts.
--- Raid pets (Units/RaidPets.lua) share the titles, scale, anchor and spacing.
+-- Raid pets (Units/RaidPets.lua) share the titles, scale, anchor and spacing. With raid.inParty the headers
+-- list your party (you included) outside raids, as group 1; raid.hideParty then hides the party frames.
 
 local _, ns = ...
 local UF = XPerl_UnitFrameMixin
@@ -106,10 +107,20 @@ function Raid.Shown()
 	if (rconf.notInBG and select(2, IsInInstance()) == "pvp") then
 		return false
 	end
-	if (conf.party.enable and conf.party.smallRaid and XPerl_Party_SingleGroup()) then
+	if (conf.party.enable and conf.party.smallRaid and IsInRaid() and XPerl_Party_SingleGroup()) then
 		return false
 	end
 	return true
+end
+
+-- Raid.ShowsParty(): the raid frames list your party (raid.inParty, in a party but not a raid)
+function Raid.ShowsParty()
+	return (rconf and rconf.inParty and IsInGroup() and not IsInRaid() and Raid.Shown()) and true or false
+end
+
+-- Raid.HidesParty(): the party frames make way for the raid frames listing your party (raid.hideParty)
+function Raid.HidesParty()
+	return (rconf and rconf.hideParty and Raid.ShowsParty()) and true or false
 end
 
 -- HeaderUsed(i): whether header i shows anybody with the current settings
@@ -117,39 +128,59 @@ local function HeaderUsed(i, mode)
 	return i <= HeaderCount() and (mode ~= "group" or rconf.group[i]) and true or false
 end
 
--- CountMembers: members per header, for the titles and the raid pets' alignment
+-- CountClass(class): one more member in the column of that class, if the column is enabled
+local function CountClass(class)
+	for i = 1, WoWclassCount do
+		local column = rconf.class[i]
+		if (column.name == class) then
+			if (column.enable) then
+				groupCounts[i] = groupCounts[i] + 1
+			end
+			return
+		end
+	end
+end
+
+-- CountMembers: members per header, for the titles and the raid pets' alignment. A party the raid frames
+-- list (raid.inParty) is group 1, as the headers list it.
 local function CountMembers()
 	for i = 1, WoWclassCount do
 		groupCounts[i] = 0
 	end
 	myGroup = 0
-	if (not IsInRaid()) then
+
+	local mode = SortMode()
+	local total
+	if (IsInRaid()) then
+		total = GetNumGroupMembers()
+		for i = 1, total do
+			local name, _, group, _, _, class = GetRaidRosterInfo(i)
+			if (name) then
+				if (Plain(UnitIsUnit("raid"..i, "player"))) then
+					myGroup = group
+				end
+				if (mode == "class") then
+					CountClass(class)
+				elseif (mode == "group" and groupCounts[group]) then
+					groupCounts[group] = groupCounts[group] + 1
+				end
+			end
+		end
+	elseif (Raid.ShowsParty()) then
+		myGroup = 1
+		total = GetNumSubgroupMembers() + 1
+		if (mode == "class") then
+			CountClass(Plain((select(2, UnitClass("player")))))
+			for i = 1, total - 1 do
+				CountClass(Plain((select(2, UnitClass("party"..i)))))
+			end
+		elseif (mode == "group") then
+			groupCounts[1] = total
+		end
+	else
 		return
 	end
 
-	local mode = SortMode()
-	local total = GetNumGroupMembers()
-	for i = 1, total do
-		local name, _, group, _, _, class = GetRaidRosterInfo(i)
-		if (name) then
-			if (Plain(UnitIsUnit("raid"..i, "player"))) then
-				myGroup = group
-			end
-			if (mode == "class") then
-				for j = 1, WoWclassCount do
-					local column = rconf.class[j]
-					if (column.name == class) then
-						if (column.enable) then
-							groupCounts[j] = groupCounts[j] + 1
-						end
-						break
-					end
-				end
-			elseif (mode == "group" and groupCounts[group]) then
-				groupCounts[group] = groupCounts[group] + 1
-			end
-		end
-	end
 	if (mode == "role") then
 		for i = 1, MAX_GROUPS do
 			groupCounts[i] = max(0, min(5, total - (i - 1) * 5))
@@ -220,6 +251,9 @@ end
 -- ConfigureHeader(header, i, mode)
 local function ConfigureHeader(header, i, mode)
 	header:SetAttribute("sortMethod", rconf.sortAlpha and "NAME" or nil)
+	-- raid.inParty: outside raids the header lists the party, you included (all in group 1)
+	header:SetAttribute("showParty", rconf.inParty and true or false)
+	header:SetAttribute("showPlayer", rconf.inParty and true or false)
 	if (mode == "role") then
 		header:SetAttribute("groupBy", "ASSIGNEDROLE")
 		header:SetAttribute("groupingOrder", "TANK,HEALER,DAMAGER,NONE")
@@ -692,7 +726,8 @@ end
 XPerl_RegisterOptionChanger(ApplyRaid)
 
 -- XPerl_Raid_OptionActions
--- Applies the raid and raid pet settings (options window, key bindings, minimap menu)
+-- Applies the raid and raid pet settings (options window, key bindings, minimap menu), and the party frames'
+-- visibility, which follows the raid frames with raid.hideParty
 function XPerl_Raid_OptionActions()
 	ApplyRaid()
 	if (ns.RaidPets) then
@@ -703,6 +738,7 @@ function XPerl_Raid_OptionActions()
 			frame:ApplySettings()
 		end
 	end)
+	XPerl_Party_Anchor:UpdateVisibility()
 end
 
 -- XPerl_Raid_TitleOnLoad: OnLoad of the raid and raid pet titles (XPerl_Raid_TitleTemplate)

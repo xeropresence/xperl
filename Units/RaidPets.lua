@@ -5,7 +5,8 @@
 -- Raid pets: the pet header XPerl_Raid_GrpPets below its title XPerl_Raid_TitlePets, with compact buttons on
 -- the shared framework (name, or <owner> while the owner is in a vehicle, in the owner's class colour, and
 -- health). Anchor, spacing, scale and titles follow the raid settings (Units/Raid.lua); raidpet.alignToRaid
--- puts the pets beside the last raid group in use, raidpet.hunter/warlock limit them to those owners.
+-- puts the pets beside the last raid group in use, raidpet.hunter/warlock limit them to those owners. Outside
+-- raids the header lists the party's pets (yours included) while the raid frames list the party (raid.inParty).
 
 local _, ns = ...
 local Raid = ns.Raid
@@ -99,6 +100,8 @@ local function ApplyPets()
 
 	header:Hide()		-- one re-layout after all the attribute changes
 	header:SetAttribute("groupFilter", PetFilter())
+	header:SetAttribute("showParty", rconf.inParty and true or false)
+	header:SetAttribute("showPlayer", rconf.inParty and true or false)
 	Raid.LayoutHeader(header)
 
 	local scale = rconf.scale or 0.8
@@ -224,10 +227,14 @@ function P:ApplySettings()
 	end
 end
 
--- UnitChanged: the owner's unit ("raid5" for "raidpet5")
+-- UnitChanged: the owner's unit ("raid5" for "raidpet5", "party2" for "partypet2", "player" for "pet")
 function P:UnitChanged()
 	local unit = self.partyid
-	self.ownerUnit = unit and (gsub(unit, "^(%a+)pet(%d+)$", "%1%2"))
+	if (unit == "pet") then
+		self.ownerUnit = "player"
+	else
+		self.ownerUnit = unit and (gsub(unit, "^(%a+)pet(%d+)$", "%1%2"))
+	end
 	self.unitGUID = unit and Plain(UnitGUID(unit))
 	XPerl_UnitFrameMixin.UnitChanged(self)
 end

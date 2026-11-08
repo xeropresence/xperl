@@ -4,12 +4,14 @@
 --
 -- Party frames (XPerl_party1..5) under a SecurePartyHeaderTemplate header in XPerl_Party_Anchor, each with
 -- its in-frame target (XPerl_party<N>targetFrame) and its pet (XPerl_partypet<N>): flip and portrait layouts,
--- phasing, debuffs beside the frame, show in raid / small raid, and you first with party.showPlayer (the header
--- then fills five frames). The rest comes from Units/UnitFrame.lua.
+-- phasing, debuffs beside the frame, show in raid / small raid, hidden while the raid frames list the party
+-- (raid.hideParty), and you first with party.showPlayer (the header then fills five frames). The rest comes
+-- from Units/UnitFrame.lua.
 --
 -- Settings: XPerlDB.party for the party frames, their targets (party.target) and the anchor (scale, anchor
 -- point, spacing, showPlayer); XPerlDB.partypet for the pets, which follow the party's flip and healer mode.
 
+local _, ns = ...		-- ns.Raid (Units/Raid.lua, loaded after this file)
 local UF = XPerl_UnitFrameMixin
 local pconf
 XPerl_RequestConfig(function(new) pconf = new.party end, "$Revision$")
@@ -118,14 +120,15 @@ function A:OnEvent(event)
 end
 
 -- UpdateVisibility: the header shows in a party, and in raids with party.inRaid (or party.smallRaid while
--- everybody is in group 1); everything hides during pet battles
+-- everybody is in group 1); it hides while the raid frames list the party with raid.hideParty
+-- (Units/Raid.lua), and everything hides during pet battles
 function A:UpdateVisibility()
 	if (InCombatLockdown()) then
 		XPerl_ProtectedCall(self.updateVisibility)
 		return
 	end
 	local active = self.active and pconf
-	local show = active and (pconf.inRaid or (pconf.smallRaid and XPerl_Party_SingleGroup()) or (GetNumGroupMembers() > 0 and not IsInRaid()))
+	local show = active and not ns.Raid.HidesParty() and (pconf.inRaid or (pconf.smallRaid and XPerl_Party_SingleGroup()) or (GetNumGroupMembers() > 0 and not IsInRaid()))
 	XPerl_Party_SecureHeader:SetShown(show and true or false)
 	self:SetShown((active and not self.petBattle) and true or false)
 end
