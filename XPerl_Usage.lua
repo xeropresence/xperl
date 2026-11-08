@@ -42,12 +42,34 @@ TooltipDataProcessor.AddTooltipPostCall(Enum.TooltipDataType.Unit,
 	end)
 
 
-local function UnitFullName(unit)
-	local n,s = UnitName(unit)
-	if (s and s ~= "") then
-		return n.."-"..s
+-- Players are keyed by the name their add-on messages arrive under, less our own realm. On Retail that's
+-- "Name-Realm" with the realm normalized, as UnitFullName returns it. WoW: Forever names are unique across the
+-- region: a sender is "First Surname" (with a realm that tells nothing apart there), and UnitName returns the
+-- surname where Retail returns the realm.
+local SURNAME_SEPARATOR = XPerlAPI.isForever and Constants.CharacterNameSeparatorConsts.CHARACTERNAME_SURNAME_SEPARATOR
+local SENDER_CONTEXT = SURNAME_SEPARATOR and "short" or "none"
+
+local function SenderKey(sender)
+	return Ambiguate(sender, SENDER_CONTEXT)
+end
+
+-- The key for a unit, nil while its name is secret
+local function UnitKey(unit)
+	local name, second
+	if (SURNAME_SEPARATOR) then
+		name, second = UnitName(unit)
+	else
+		name, second = UnitFullName(unit)
 	end
-	return n
+	if (issecretvalue(name) or issecretvalue(second)) then
+		return
+	end
+	if (not second or second == "") then
+		return name
+	elseif (SURNAME_SEPARATOR) then
+		return name..SURNAME_SEPARATOR..second
+	end
+	return Ambiguate(name.."-"..second, "none")
 end
 
 function mod:TooltipInfo(tooltip, unitid)
@@ -56,14 +78,21 @@ function mod:TooltipInfo(tooltip, unitid)
 		return
 	end
 	if (unitid and conf and conf.tooltip.xperlInfo and UnitIsPlayer(unitid) and UnitIsFriend(unitid, "player")) then
-		local xpUsage = XPerl_GetUsage(UnitFullName(unitid), unitid)
+		local isPlayer = UnitIsUnit(unitid, "player")
+		local xpUsage
+		if (isPlayer) then
+			xpUsage = self.ownUsage			-- known here, without waiting for our own announcement to come back
+		else
+			local key = UnitKey(unitid)
+			xpUsage = key and XPerl_GetUsage(key, unitid)
+		end
 		if (xpUsage) then
 			local xp = "|cFFD00000X-Perl|r "..(xpUsage.version or XPerl_VersionNumber)
 
 			if (xpUsage.revision) then
 				local r = "r"..xpUsage.revision
 				xp = format("%s |cFF%s%s", xp, r == XPerl_GetRevision() and "80FF80" or "FF8080", r)
-			elseif (UnitIsUnit("player", unitid)) then
+			elseif (isPlayer) then
 				xp = xp.." |cFF80FF80"..XPerl_GetRevision()
 			end
 
@@ -98,9 +127,7 @@ end
 
 -- ProcessXPerlMessage
 function mod:ProcessXPerlMessage(sender, msg, channel)
-	if string.find(sender, string.gsub(GetRealmName(), " ", "")) then
-		sender = Ambiguate(sender, "none")
-	end
+	sender = SenderKey(sender)
 	local myUsage = XPerl_Usage[sender]
 
 	if (strsub(msg, 1, 4) == "VER ") then
@@ -119,7 +146,7 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 			self:CheckForNewerVersion(ver) -- Won't do a per revision check
 		end
 
-		if (channel ~= "WHISPER" and sender and sender ~= UnitName("player")) then
+		if (channel ~= "WHISPER" and sender and sender ~= UnitKey("player")) then
 			self:SendModules("WHISPER", sender)
 		end
 
@@ -223,6 +250,15 @@ end
 -- this addon now, so all named slots are always loaded. false marks the slots of retired modules and of separate
 -- addons that X-Perl disables at load; they are always sent as not loaded and skipped when decoding.
 local xpModList = {"XPerl", "XPerl_Player", "XPerl_PlayerPet", "XPerl_Target", "XPerl_TargetTarget", "XPerl_Party", "XPerl_PartyPet", "XPerl_RaidFrames", false, false, false, false, "XPerl_RaidPets", "XPerl_ArcaneBar", "XPerl_PlayerBuffs", false}
+
+-- The MOD field
+local ownModules = ""
+for k,v in ipairs(xpModList) do
+	ownModules = ownModules..(v and "1" or "0")
+end
+
+-- Our own entry, for our own tooltip. version and revision stay nil, as they do for a sender matching ours.
+mod.ownUsage = {mods = ownModules}
 --------------------------------------------------------
 
 -- XPerl_SendModules
@@ -270,13 +306,9 @@ function mod:MakePacket(response, versionOnly)
 	if (versionOnly) then
 		return format("%sVER %s#REV %s", resp, XPerl_VersionNumber, XPerl_GetRevision())
 	else
-		local modules = ""
-		for k,v in ipairs(xpModList) do
-			modules = modules..(v and "1" or "0")
-		end
 		local gc = floor(collectgarbage("count"))
 
-		local s = format("%sVER %s#REV %s#GC %d#LOC %s#MOD %s", resp, XPerl_VersionNumber, XPerl_GetRevision(), gc, GetLocale(), modules)
+		local s = format("%sVER %s#REV %s#GC %d#LOC %s#MOD %s", resp, XPerl_VersionNumber, XPerl_GetRevision(), gc, GetLocale(), ownModules)
 		if (self.notifiedVersion and self.notifiedVersion > XPerl_VersionNumber) then
 			s = format("%s#MAXVER %s", s, self.notifiedVersion)
 		end
