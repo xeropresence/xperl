@@ -3249,8 +3249,12 @@
 							</OnShow>
 							<OnValueChanged>
 								if (not XPerlDB) then return end
+								local changed = XPerlDB.buffs.countdownStart ~= value
 								XPerlDB.buffs.countdownStart = value
 								_G[self:GetName().."Current"]:SetText(XPerlDB.buffs.countdownStart)
+								if (changed) then
+									XPerl_OptionActions()
+								end
 							</OnValueChanged>
 						</Scripts>
 					</Slider>

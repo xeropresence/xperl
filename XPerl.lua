@@ -1844,12 +1844,24 @@ local function AuraCountdownCurve()
 	return auraCountdownCurve
 end
 
+-- AuraCountdownFormatter
+-- Countdown text is the bare number of seconds left, with tenths in the last second. The client's default
+-- aura duration text carries a unit ("12 s") that is too wide for the icon and shows as "...".
+local AuraCountdownFormatter = C_StringUtil.CreateNumericRuleFormatter()
+AuraCountdownFormatter:SetBreakpoints({
+	{threshold = 0, format = "%.1f", step = 0.1, rounding = Enum.NumericRuleFormatRounding.Down},
+	{threshold = 1, format = "%d", step = 1, rounding = Enum.NumericRuleFormatRounding.Down},
+})
+
 -- AuraButton_Style
 local function AuraButton_Style(button, style)
 	button:SetSize(style.size, style.size)
 	button.CooldownHolder:SetAlpha(style.cooldown and 1 or 0)
 	if (style.countdown) then
-		button:SetDurationText(button.CountdownHolder.Countdown, {textColor = {curve = AuraCountdownCurve(), property = Enum.DurationTextBindingProperty.RemainingDuration}})
+		button:SetDurationText(button.CountdownHolder.Countdown, {
+			textFormatter = AuraCountdownFormatter,
+			textColor = {curve = AuraCountdownCurve(), property = Enum.DurationTextBindingProperty.RemainingDuration},
+		})
 		button.CountdownHolder:SetAlpha(1)
 	else
 		button:ClearDurationText()
