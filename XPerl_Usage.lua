@@ -343,7 +343,8 @@ function XPerl_GetUsage(unitName, unitID)
 			end
 			if (not mod.directQueries[unitName]) then
 				mod.directQueries[unitName] = true
-				C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true), "WHISPER", unitName)
+				-- A whispered VER gets no reply (replies are whispers too), so ask for one
+				C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true).."#ASK", "WHISPER", unitName)
 			end
 		end
 	end
