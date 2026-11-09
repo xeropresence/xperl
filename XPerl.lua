@@ -202,6 +202,13 @@ end
 XPerl_StatusIconSections = {"player", "pet", "party", "partypet", "target", "focus", "targettarget", "targettargettarget",
 	"focustarget", "pettarget", "boss", "arena", "raid", "raidpet"}
 
+-- XPerl_CanCheckInteractDistance(unit)
+-- Whether add-on code may call CheckInteractDistance on unit: in combat it's a protected call, except on units
+-- you can attack
+function XPerl_CanCheckInteractDistance(unit)
+	return not InCombatLockdown() or UnitCanAttack("player", unit)
+end
+
 -- A do-nothing placeholder until XPerl_StartupSpellRange has checked the range finder settings
 function XPerl_UpdateSpellRange()
 	return

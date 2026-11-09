@@ -346,7 +346,8 @@ do
 	else
 		hooksecurefunc("NotifyInspect", function(unit)
 			local isPlayer = UnitIsUnit("player", unit)
-			if (issecretvalue(isPlayer) or isPlayer or UnitInVehicle(unit) or not (UnitExists(unit) and CanInspect(unit) and UnitIsVisible(unit) and UnitIsConnected(unit) and CheckInteractDistance(unit, 4))) then
+			if (issecretvalue(isPlayer) or isPlayer or UnitInVehicle(unit) or not (UnitExists(unit) and CanInspect(unit) and UnitIsVisible(unit) and UnitIsConnected(unit)
+					and XPerl_CanCheckInteractDistance(unit) and CheckInteractDistance(unit, 4))) then
 				return
 			end
 			lastInspectPending = lastInspectPending + 1
@@ -408,7 +409,7 @@ do
 				inspectReady = nil
 				LTQ:Query(unit)
 			elseif ((lastInspectPending == 0 or GetTime() > lastInspectTime + 15) and UnitExists(unit) and UnitIsVisible(unit)
-					and CheckInteractDistance(unit, 4) and not issecretvalue(isMe) and not isMe) then
+					and XPerl_CanCheckInteractDistance(unit) and CheckInteractDistance(unit, 4) and not issecretvalue(isMe) and not isMe) then
 				inspectReady = nil
 				lastInspectPending = 0
 				if (lastInspectName ~= UnitFullName(unit)) then

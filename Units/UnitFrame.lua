@@ -1064,7 +1064,8 @@ function UF:UpdateThreat(event)
 	XPerl_Unit_ThreatStatus(self, relative, not event)
 end
 
--- UpdateRange: spell range fade, and the 30 yard icon (conf.range30yard; target, boss and arena)
+-- UpdateRange: spell range fade, and the 30 yard icon (conf.range30yard; target, boss and arena). The icon stays
+-- hidden while the distance can't be checked (a friendly unit in combat)
 function UF:UpdateRange()
 	local unit = self.partyid
 	if (not unit or not UnitExists(unit)) then
@@ -1074,7 +1075,8 @@ function UF:UpdateRange()
 
 	local icon = self.nameFrame.rangeIcon
 	if (icon) then
-		local near = not self.conf.range30yard or not UnitIsConnected(unit) or CheckInteractDistance(unit, 1)
+		local near = not self.conf.range30yard or not UnitIsConnected(unit) or not XPerl_CanCheckInteractDistance(unit)
+			or CheckInteractDistance(unit, 1)
 		if (issecretvalue(near) or near) then
 			icon:Hide()
 		else
