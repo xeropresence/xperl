@@ -449,7 +449,9 @@ function P:UpdateDruidBar()
 		druidBar.percent:SetFormattedText(percD, maxMana > 0 and mana * 100 / maxMana or 0)
 	end
 
-	local show = UnitPowerType(self.partyid) > 0
+	-- UnitPowerType has no answer while the unit's data is unavailable (zoning, logging in)
+	local powerType = UnitPowerType(self.partyid)
+	local show = powerType ~= nil and powerType > 0
 	druidBar.text:SetShown(show)
 	druidBar.percent:SetShown(show and pconf.percent and true or false)
 	if (show ~= druidBar:IsShown()) then
