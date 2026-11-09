@@ -86,11 +86,12 @@ local function Update()
 end
 
 -- Edit Mode and the options window's unlocked frames show the warning for placing, in blue as it used to be
--- while dragged, unless it is switched off
+-- while dragged, unless it is switched off. In Edit Mode LibEditMode's child selection owns the mouse; the
+-- warning's own drag handler only works in the options window's unlocked mode and would intercept that drag.
 local function Preview(on)
 	local was = previewing
 	previewing = (on and Enabled()) and true or nil
-	warning:EnableMouse(previewing == true)
+	warning:EnableMouse(previewing == true and not XPerl_EditMode_IsEditing())
 	if (previewing) then
 		warning:SetScript("OnUpdate", nil)
 		for _, text in ipairs(texts) do
