@@ -2,9 +2,9 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 --
--- Edit Mode settings dialogs: one per registered frame, editing that frame's settings section of the layout
--- LibEditMode passes (always the active one). They are a second view of the same settings the options
--- window edits, with its labels (XPERL_CONF_*). Built at login, when every localization file is loaded.
+-- Edit Mode settings dialogs: one per registered frame, editing that frame's settings section of XPerlDB (the
+-- same in every layout). They are a second view of the same settings the options window edits, with its labels
+-- (XPERL_CONF_*). Built at login, when every localization file is loaded.
 
 XPerl_SetModuleRevision("$Revision$")
 
@@ -101,18 +101,22 @@ function Builder:Add(setting, path, convert, store, fallback)
 		default = fallback
 	end
 	setting.default = convert(default)
-	setting.get = function(layoutName)
-		local frames = ns.EditMode.GetFrames(layoutName)
-		return convert(Read(frames and frames[section], parts))
+	setting.get = function()
+		return convert(Read(XPerlDB and XPerlDB[section], parts))
 	end
-	setting.set = function(layoutName, value)
-		local frames = ns.EditMode.GetFrames(layoutName)
-		if (not frames) then
+	setting.set = function(_, value)
+		if (not XPerlDB) then
 			return
 		end
-		local t = frames[section] or ns.EditMode.CreateSection(layoutName, section)
+		local t = XPerlDB[section]
+		if (not t) then
+			-- A frame type newer than the settings: modules pick its new section up from the notification
+			t = {}
+			XPerlDB[section] = t
+			XPerl_NotifyConfig()
+		end
 		Write(t, parts, store(value))
-		ns.EditMode.SettingChanged(layoutName)
+		ns.EditMode.SettingChanged()
 	end
 	tinsert(self.list, setting)
 	return setting

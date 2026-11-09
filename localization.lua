@@ -128,7 +128,7 @@ XPERL_PROFILE_NOT_A_PROFILE	= "That is not an X-Perl profile string."
 XPERL_PROFILE_CORRUPT		= "The profile string is damaged or incomplete."
 XPERL_PROFILE_IN_COMBAT	= "Profiles cannot be imported in combat."
 XPERL_PROFILE_OTHER_FLAVOR	= "Note: this profile was exported from %s; frame positions may need adjusting."
-XPERL_PROFILE_IMPORTED		= "Imported profile from X-Perl %s into the Edit Mode layout \"%s\"."
+XPERL_PROFILE_IMPORTED		= "Imported profile from X-Perl %s; its frame positions went to the Edit Mode layout \"%s\"."
 XPERL_CMD_HELP		= "|c00FFFF80Usage: |c00FFFFFF/xperl menu | lock | unlock | config list | config delete <realm> <name>"
 XPERL_CANNOT_DELETE_CURRENT = "Cannot delete you current config"
 XPERL_CONFIG_DELETED		= "Deleted config for %s/%s"
@@ -137,9 +137,9 @@ XPERL_CANNOT_DELETE_BADARGS = "Please give realm name and player name"
 XPERL_CONFIG_LIST		= "Config List:"
 XPERL_CONFIG_CURRENT		= " (Current)"
 XPERL_CONFIG_GLOBAL		= "Global settings"
-XPERL_CONFIG_LAYOUTS		= "Edit Mode layouts with X-Perl frame settings and positions:"
+XPERL_CONFIG_LAYOUTS		= "Edit Mode layouts with X-Perl frame positions:"
 
--- Edit Mode (frame positions and frame settings follow the active Edit Mode layout)
+-- Edit Mode (frame positions follow the active Edit Mode layout; frame settings are the same in every layout)
 XPERL_EDITMODE_LABEL			= "X-Perl %s"			-- name of a frame in Edit Mode
 XPERL_EDITMODE_SCALE			= "Scale"
 XPERL_EDITMODE_GROUP_FRAME		= "Frame"

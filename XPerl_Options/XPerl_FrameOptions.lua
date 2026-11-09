@@ -582,28 +582,11 @@ function XPerl_Options_Anchor_OnClick(self)
 end
 
 -- CopySelectedSettings
--- Copies another character's account-wide settings into the settings slot in use. Frame settings follow the
--- Edit Mode layouts, so the slot keeps its own frame sections.
+-- Copies another character's settings, frame settings included, into the settings slot in use
 local CopyFrom
 local function CopySelectedSettings()
-	XPerl_EditMode_DetachConfig()
-
 	local realm, name = XPerlAPI.SettingsOwner()
-	local current
-	if (XPerlConfigSavePerCharacter) then
-		current = XPerlConfigNew[realm] and XPerlConfigNew[realm][name]
-	else
-		current = XPerlConfigNew.global
-	end
-
 	local new = XPerl_CopyTable(CopyFrom.config)
-	if (current) then
-		for _, key in ipairs(XPerl_FrameConfigKeys) do
-			if (current[key] ~= nil) then
-				new[key] = current[key]
-			end
-		end
-	end
 
 	if (XPerlConfigSavePerCharacter) then
 		if (not XPerlConfigNew[realm]) then
@@ -1040,8 +1023,14 @@ function XPerl_Options_FrameToggles_OnLoad(self)
 		XPerl_OptionsSetMyText(check, row[2])
 		check:SetScript("OnShow", nil)
 		check:SetScript("OnClick", function(button)
-			-- One flag per settings slot, whatever the Edit Mode layout
-			XPerl_EditMode_SetFrameEnabledFlag(key, button:GetChecked() and 1 or false)
+			-- One flag per settings slot; a new section reaches the modules through the notification
+			local value = button:GetChecked() and 1 or false
+			if (XPerlDB[key]) then
+				XPerlDB[key].enable = value
+			else
+				XPerlDB[key] = {enable = value}
+				XPerl_NotifyConfig()
+			end
 			UpdateFrameToggles(self)
 		end)
 		self.toggles[key] = check

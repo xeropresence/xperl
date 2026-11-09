@@ -4,7 +4,7 @@
 --
 -- Targeting counter: on the player frame the number of group members targeting you (all of them, or only
 -- healers). Clicking the counter shows or hides the list in the targeting window (XPerl_TargetCounters).
--- player.targetCounter and player.targetCounterHealers are frame settings (per Edit Mode layout);
+-- player.targetCounter and player.targetCounterHealers are player frame settings;
 -- XPerlDB.targetCounters holds whether the window is open (targeting), its position and size.
 --
 -- 12.x secret values: on add-on restricted maps (instances) comparisons of compound unit tokens ("raid5target")

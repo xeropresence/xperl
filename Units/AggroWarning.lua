@@ -5,7 +5,7 @@
 -- Aggro warning (once part of the Raid Helper): "- AGGRO -" in the middle of the screen while a mob is
 -- attacking you, "- PET AGGRO -" below it while one is attacking your pet. Only in a group: alone you know
 -- who is being hit. Red while it lasts, then it fades out in green. player.aggroWarning.enable is a player
--- frame setting (per Edit Mode layout). Edit Mode places the warning (XPerl_AggroWarning) as a third "player"
+-- frame setting. Edit Mode places the warning (XPerl_AggroWarning) as a third "player"
 -- frame whose default stays in the middle of the screen in every layout.
 --
 -- 12.x secret values: on restricted maps it is secret whom a group member's target is targeting, so the old

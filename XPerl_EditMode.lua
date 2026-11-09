@@ -2,31 +2,29 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 --
--- Edit Mode integration (LibEditMode). Frame positions and the per-frame settings sections
--- (XPerl_FrameConfigKeys) follow the active Edit Mode layout; everything else in XPerlDB stays in the
--- profile slot (global or per character).
+-- Edit Mode integration (LibEditMode). Frame positions follow the active Edit Mode layout; the frame settings
+-- (XPerl_FrameConfigKeys sections of XPerlDB) are the same in every layout, like the rest of XPerlDB.
 --
 -- Saved data, account-wide, in XPerlConfigNew.editMode:
---   layouts[layoutKey]       = {name = <layout name>, frames = {[frameKey] = <section>}, positions = {[posKey] = <position>}}
+--   layouts[layoutKey]       = {name = <layout name>, positions = {[posKey] = <position>},
+--                               unlinked = {[leader frameKey] = true}}
 --   lastLayout[realm][char]  = layoutKey in use when that character last played (used at login until the client
 --                              reports the layout, so frames don't jump)
---   legacy[realm][char]      = {[frameName] = {top =, left =}}: positions from before Edit Mode support; with the
---                              profile slot's own frame sections they seed layouts that have no data yet
+--   legacy[realm][char]      = {[frameName] = {top =, left =}}: positions from before Edit Mode support; they seed
+--                              layouts that have no data yet
 --   named[name]              = {[posKey] = <position>}: the options window's saved frame layouts
 -- layoutKey: "preset:<n>", "account:<name>" or "character:<realm>/<character>/<name>" (character layouts of
--- different characters can share a name). posKey: the frame key, plus the index for several frames of one key.
+-- different characters can share a name; realm and character from XPerlAPI.SettingsOwner). posKey: the frame
+-- key, plus the index for several frames of one key.
 -- <position> = {point =, relativePoint = (defaults to point), x =, y =}, relative to UIParent, in the frame's
 -- own (scaled) units like SetPoint offsets. A frame its layout stores no position for sits at its default: the
 -- XML anchor, moved along with the Blizzard frame it replaces where the layout moves that one (see MIRRORED).
 --
--- While a layout is active its frame sections are swapped into the profile slot (XPerlDB.player is that
--- layout's table); the slot's own sections are put back before the slot is switched or saved.
---
 -- Linked frames (raid groups 2-13, following group 1): a frame registered with info.leader moves with its leader
--- while the leader's frame section has no `unlinked` flag (so per layout). It is anchored to the leader, so a
--- drag, nudge or position reset of the leader (in Edit Mode or the options window's unlocked mode) takes it
--- along, and its stored position moves with the leader's. Moving a follower itself sets the flag for all of
--- them; the "Link Raid Groups" button of their dialogs (and the options window's, XPerl_EditMode_Link) clears it.
+-- while the layout doesn't list the leader's key as unlinked. It is anchored to the leader, so a drag, nudge or
+-- position reset of the leader (in Edit Mode or the options window's unlocked mode) takes it along, and its
+-- stored position moves with the leader's. Moving a follower itself unlinks all of them; the "Link Raid Groups"
+-- button of their dialogs (and the options window's, XPerl_EditMode_Link) links them again.
 
 XPerl_SetModuleRevision("$Revision$")
 
@@ -42,9 +40,9 @@ end
 local registered = {}		-- frame -> {frameKey =, posKey =, info =, disabled =, leader =, followers =}
 local order = {}			-- registered frames in registration order
 local store					-- XPerlConfigNew.editMode
-local slot, originals		-- attached profile slot and its own frame sections
 local activeKey, activeData	-- active layout; nil until the client reports it (and no last layout is stored)
 local pendingPositions		-- positions in use while no layout is active
+local pendingUnlinked		-- unlinked leaders while no layout is active
 local realm, character
 local loggedIn
 
@@ -148,7 +146,7 @@ end
 
 local function SeedPositions()
 	local list = store.legacy[realm]
-	return ConvertLegacy(list and list[character], originals)
+	return ConvertLegacy(list and list[character], XPerlDB)
 end
 
 local function CurrentPositions()
@@ -161,22 +159,27 @@ local function CurrentPositions()
 	return pendingPositions
 end
 
--- A new layout's data: a copy of `source`, or else seeded from the profile slot's own frame sections and
--- this character's old positions.
-local function NewLayoutData(name, source)
-	local data = {name = name, frames = {}}
-	if (source) then
-		for _, key in ipairs(FRAME_KEYS) do
-			data.frames[key] = XPerl_CopyTable(source.frames[key])
+-- The active layout's unlinked leaders ([leader frameKey] = true); created when `create` is set
+local function CurrentUnlinked(create)
+	if (activeData) then
+		if (create and not activeData.unlinked) then
+			activeData.unlinked = {}
 		end
-		data.positions = XPerl_CopyTable(source.positions) or {}
-	else
-		for _, key in ipairs(FRAME_KEYS) do
-			data.frames[key] = XPerl_CopyTable(originals[key])
-		end
-		data.positions = XPerl_CopyTable(pendingPositions) or SeedPositions()
+		return activeData.unlinked
 	end
-	return data
+	if (create and not pendingUnlinked) then
+		pendingUnlinked = {}
+	end
+	return pendingUnlinked
+end
+
+-- A new layout's data: a copy of `source`'s, or else what was in use while no layout was active (seeded from
+-- this character's old positions)
+local function NewLayoutData(name, source)
+	if (source) then
+		return {name = name, positions = XPerl_CopyTable(source.positions) or {}, unlinked = XPerl_CopyTable(source.unlinked)}
+	end
+	return {name = name, positions = XPerl_CopyTable(pendingPositions) or SeedPositions(), unlinked = XPerl_CopyTable(pendingUnlinked)}
 end
 
 local function SetLastLayout(key)
@@ -188,56 +191,76 @@ local function SetLastLayout(key)
 	list[character] = key
 end
 
--- Puts the active layout's frame sections into the slot, validates them (which may create missing sections)
--- and keeps whatever the validation created. The enable flags are not per layout: each layout section gets
--- the slot's own flag.
-local function SwapIn()
-	if (activeData) then
-		local frames = activeData.frames
-		for _, key in ipairs(FRAME_KEYS) do
-			local own = originals[key]
-			if (frames[key] == nil and own ~= nil) then
-				frames[key] = XPerl_CopyTable(own)
-			end
-			if (frames[key] and own) then
-				frames[key].enable = own.enable
-			end
-			slot[key] = frames[key]
-		end
-	end
+------------------------------------------------------------------------------
+-- Frame settings from before they were shared between layouts
+------------------------------------------------------------------------------
 
-	XPerl_pcall(XPerl_ValidateSettings)
-
-	local keep = activeData and activeData.frames or originals
-	for _, key in ipairs(FRAME_KEYS) do
-		keep[key] = slot[key]
-	end
-
-	-- The slot keeps the validated flags, and a section of its own for types it had none for
-	if (activeData) then
-		for _, key in ipairs(FRAME_KEYS) do
-			local section = slot[key]
-			if (section) then
-				if (originals[key]) then
-					originals[key].enable = section.enable
-				else
-					originals[key] = XPerl_CopyTable(section)
-				end
-			end
+-- Frame settings used to be kept per layout (layouts[key].frames, swapped into the settings slot while that
+-- layout was active), so a layout switch, e.g. by a specialization change, changed every frame's settings.
+local function HasLayoutFrames()
+	for _, data in pairs(store.layouts) do
+		if (data.frames) then
+			return true
 		end
 	end
 end
 
--- Before the active layout's sections leave the slot: enable flags changed in them since (options window
--- checkboxes, key bindings) go to the slot, which holds them
-local function KeepEnableFlags()
-	if (slot and activeData) then
+-- Once, the frame settings move into the settings slots: this character's slot and the global slot get those
+-- of `current` (the layout this character plays with now, else the one it played with last), every other
+-- character's slot those of the layout that character played with last (else `current`'s). The slots keep
+-- their frame on/off flags, which always were theirs. The other layouts' frame settings go; their unlinked raid
+-- groups stay with their positions.
+local function ShareFrameSettings(current)
+	local layouts = store.layouts
+	local function LastFrames(realmName, charName)
+		local list = store.lastLayout[realmName]
+		local data = list and list[charName] and layouts[list[charName]]
+		return data and data.frames
+	end
+	local currentFrames = current and current.frames or LastFrames(realm, character)
+
+	local function Fill(settings, frames)
+		if (type(settings) ~= "table") then
+			return
+		end
 		for _, key in ipairs(FRAME_KEYS) do
-			local section, own = slot[key], originals[key]
-			if (section and own and section ~= own) then
-				own.enable = section.enable
+			if (type(frames) == "table" and type(frames[key]) == "table") then
+				local section = XPerl_CopyTable(frames[key])
+				if (type(settings[key]) == "table") then
+					section.enable = settings[key].enable
+				end
+				settings[key] = section
+			end
+			if (type(settings[key]) == "table") then
+				settings[key].unlinked = nil
 			end
 		end
+	end
+
+	Fill(XPerlConfigNew.global, currentFrames)
+	for realmName, list in pairs(XPerlConfigNew) do
+		if (type(list) == "table" and not XPerl_ConfigReservedKeys[realmName]) then
+			for charName, settings in pairs(list) do
+				if (realmName == realm and charName == character) then
+					Fill(settings, currentFrames)
+				else
+					Fill(settings, LastFrames(realmName, charName) or currentFrames)
+				end
+			end
+		end
+	end
+
+	for _, data in pairs(layouts) do
+		if (type(data.frames) == "table") then
+			for _, key in ipairs(FRAME_KEYS) do
+				local section = data.frames[key]
+				if (type(section) == "table" and section.unlinked) then
+					data.unlinked = data.unlinked or {}
+					data.unlinked[key] = true
+				end
+			end
+		end
+		data.frames = nil
 	end
 end
 
@@ -328,14 +351,14 @@ local function Position(reg)
 	return CurrentPositions()[reg.posKey] or DefaultPosition(reg)
 end
 
--- Whether a leader's followers move with it
+-- Whether a leader's followers move with it in the active layout
 local function Linked(leaderReg)
-	local section = XPerlDB and XPerlDB[leaderReg.frameKey]
-	return not (section and section.unlinked)
+	local unlinked = CurrentUnlinked()
+	return not (unlinked and unlinked[leaderReg.frameKey])
 end
 
 local function SetLinked(leaderReg, linked)
-	XPerlDB[leaderReg.frameKey].unlinked = not linked or nil
+	CurrentUnlinked(true)[leaderReg.frameKey] = not linked or nil
 end
 
 -- The leader's registration while the frame follows it
@@ -546,21 +569,14 @@ local function RefreshDialogs()
 	end
 end
 
--- Settings changed outside the Edit Mode dialogs (options window, layout switch, profile import) show in an
--- open dialog. A dialog's own changes don't rebuild it (that would swap its widgets mid-drag).
+-- Settings changed outside the Edit Mode dialogs (options window, profile import) show in an open dialog. A
+-- dialog's own changes don't rebuild it (that would swap its widgets mid-drag).
 local applyingDialogChange
 hooksecurefunc("XPerl_OptionActions", function()
 	if (not applyingDialogChange) then
 		RefreshDialogs()
 	end
 end)
-
-local function RefreshOptionsWindow()
-	if (XPerl_Options and XPerl_Options:IsShown()) then
-		XPerl_Options:Hide()
-		XPerl_Options:Show()
-	end
-end
 
 ------------------------------------------------------------------------------
 -- Registration
@@ -652,20 +668,15 @@ function XPerl_EditMode_SetEnabled(frame, enabled)
 end
 
 ------------------------------------------------------------------------------
--- Profile slot attachment (XPerl_Globals.lua GiveConfig)
+-- Settings slot attachment (XPerl_Globals.lua GiveConfig)
 ------------------------------------------------------------------------------
 
 -- XPerl_EditMode_AttachConfig
--- Called with the profile slot that just became XPerlDB: swaps in the active layout's frame sections.
+-- Called with the settings slot that just became XPerlDB, before it is validated: places the frames for the
+-- active layout (the last one this character played with until the client reports it).
 function XPerl_EditMode_AttachConfig(newSlot)
 	realm, character = XPerlAPI.SettingsOwner()
 	EnsureStore(newSlot)
-
-	slot = newSlot
-	originals = {}
-	for _, key in ipairs(FRAME_KEYS) do
-		originals[key] = newSlot[key]
-	end
 
 	if (not activeKey) then
 		local list = store.lastLayout[realm]
@@ -675,67 +686,12 @@ function XPerl_EditMode_AttachConfig(newSlot)
 		end
 	end
 
-	SwapIn()
+	-- Without a last layout, the first layout the client reports picks the frame settings (Activate)
+	if (activeData and HasLayoutFrames()) then
+		ShareFrameSettings(activeData)
+	end
+
 	ApplyAllPositions()
-end
-
--- XPerl_EditMode_DetachConfig
--- Gives the attached profile slot its own frame sections back (before switching slots, copying or saving it)
-function XPerl_EditMode_DetachConfig()
-	if (slot) then
-		KeepEnableFlags()
-		for _, key in ipairs(FRAME_KEYS) do
-			slot[key] = originals[key]
-		end
-		slot, originals = nil, nil
-	end
-end
-
--- XPerl_EditMode_SetFrameEnabledFlag
--- Turns a frame type on or off (value 1 or false; takes effect after a /reload). The flag belongs to the
--- settings slot, not to an Edit Mode layout, so it is written to the slot and to every layout's section.
-function XPerl_EditMode_SetFrameEnabledFlag(frameKey, value)
-	assert(frameKeySet[frameKey], "XPerl_EditMode_SetFrameEnabledFlag: unknown frame key")
-	if (not slot) then
-		return
-	end
-
-	local created
-	if (not slot[frameKey]) then
-		slot[frameKey] = {}
-		if (activeData) then
-			activeData.frames[frameKey] = slot[frameKey]
-		end
-		created = true
-	end
-	slot[frameKey].enable = value
-	if (not originals[frameKey]) then
-		-- Without an active layout the slot's section is its own
-		originals[frameKey] = activeData and XPerl_CopyTable(slot[frameKey]) or slot[frameKey]
-	end
-	originals[frameKey].enable = value
-
-	for _, data in pairs(store.layouts) do
-		local section = data.frames[frameKey]
-		if (section) then
-			section.enable = value
-		end
-	end
-
-	if (created) then
-		XPerl_NotifyConfig()
-	end
-end
-
--- XPerl_EditMode_SetActiveFrames
--- Replaces the active layout's frame sections with copies of `sections` (reset to defaults, profile import).
--- Takes effect at the next attach (XPerl_GiveConfig).
-function XPerl_EditMode_SetActiveFrames(sections)
-	if (activeData) then
-		for _, key in ipairs(FRAME_KEYS) do
-			activeData.frames[key] = XPerl_CopyTable(sections[key])
-		end
-	end
 end
 
 ------------------------------------------------------------------------------
@@ -808,6 +764,7 @@ end
 
 local knownLayouts		-- CurrentLayoutKeys() as of the last layout event; tells which layout a "create" added
 
+-- Switching layouts moves the frames; their settings are the same in every layout
 local function Activate(key, name)
 	local data = store.layouts[key]
 	if (not data) then
@@ -815,22 +772,24 @@ local function Activate(key, name)
 		store.layouts[key] = data
 	end
 	data.name = name
+
+	-- First layout of a session that had no last layout to start with: it picks the frame settings
+	if (HasLayoutFrames()) then
+		ShareFrameSettings(data)
+		XPerl_pcall(XPerl_ValidateSettings)
+		XPerl_NotifyConfig()
+		XPerl_OptionActions()
+	end
+
 	SetLastLayout(key)
 
 	if (key == activeKey and data == activeData) then
 		return
 	end
 
-	KeepEnableFlags()
 	activeKey, activeData = key, data
-	pendingPositions = nil
-	if (slot) then
-		SwapIn()
-	end
-	XPerl_NotifyConfig()
-	XPerl_OptionActions()		-- also refreshes open Edit Mode dialogs
+	pendingPositions, pendingUnlinked = nil, nil
 	ApplyAllPositions()
-	RefreshOptionsWindow()
 end
 
 local function OnLayout(name, index)
@@ -953,36 +912,6 @@ end
 
 ns.EditMode = {}
 
--- Frame sections of the layout LibEditMode names (its dialogs always pass the active layout)
-function ns.EditMode.GetFrames(layoutName)
-	if (activeData and layoutName == LEM:GetActiveLayoutName()) then
-		return activeData.frames, true
-	end
-	for _, key in ipairs({"account:"..tostring(layoutName), format("character:%s/%s/%s", realm, character, tostring(layoutName))}) do
-		if (store.layouts[key]) then
-			return store.layouts[key].frames, false
-		end
-	end
-	for key, data in pairs(store.layouts) do
-		if (strsub(key, 1, 7) == "preset:" and data.name == layoutName) then
-			return data.frames, false
-		end
-	end
-end
-
--- A frame section that doesn't exist yet in that layout (e.g. a frame type newer than the layout's data)
-function ns.EditMode.CreateSection(layoutName, frameKey)
-	local frames, isActive = ns.EditMode.GetFrames(layoutName)
-	if (frames and not frames[frameKey]) then
-		frames[frameKey] = {}
-		if (isActive and slot) then
-			slot[frameKey] = frames[frameKey]
-			XPerl_NotifyConfig()
-		end
-	end
-	return frames and frames[frameKey]
-end
-
 local applyQueued
 local function ApplySettings()
 	applyQueued = nil
@@ -992,8 +921,8 @@ local function ApplySettings()
 end
 
 -- A dialog setting was changed; several changes in one frame (Reset to default) apply once
-function ns.EditMode.SettingChanged(layoutName)
-	if (not applyQueued and activeData and layoutName == LEM:GetActiveLayoutName()) then
+function ns.EditMode.SettingChanged()
+	if (not applyQueued) then
 		applyQueued = true
 		C_Timer.After(0, ApplySettings)
 	end
@@ -1010,9 +939,24 @@ function XPerl_EditMode_GetPositions()
 	return store and CurrentPositions()
 end
 
--- XPerl_EditMode_SetPositions
--- Replaces the active layout's positions with a copy of `positions` and moves the frames
-function XPerl_EditMode_SetPositions(positions)
+-- XPerl_EditMode_GetUnlinked
+-- The active layout's unlinked leaders ([leader frameKey] = true), or nil
+function XPerl_EditMode_GetUnlinked()
+	return CurrentUnlinked()
+end
+
+-- XPerl_EditMode_SetPositions(positions, unlinked)
+-- Replaces the active layout's positions with a copy of `positions`, and its unlinked leaders with `unlinked`
+-- when given, and moves the frames
+function XPerl_EditMode_SetPositions(positions, unlinked)
+	if (unlinked) then
+		local current = CurrentUnlinked(true)
+		wipe(current)
+		for _, key in ipairs(FRAME_KEYS) do
+			current[key] = unlinked[key] and true or nil
+		end
+	end
+
 	local current = CurrentPositions()
 	wipe(current)
 	for posKey, pos in pairs(positions) do
@@ -1137,8 +1081,3 @@ function XPerl_EditMode_MoveCharacter(oldRealm, oldChar, newRealm, newChar)
 		end
 	end
 end
-
--- The profile slot is saved with its own frame sections
-local events = CreateFrame("Frame")
-events:RegisterEvent("PLAYER_LOGOUT")
-events:SetScript("OnEvent", XPerl_EditMode_DetachConfig)

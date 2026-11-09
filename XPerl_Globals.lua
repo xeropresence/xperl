@@ -62,8 +62,8 @@ do
 	end
 end
 
--- Settings sections that belong to a unit frame type. They follow the active Edit Mode layout
--- (XPerl_EditMode.lua); every other section of XPerlDB is account-wide in the profile slot.
+-- Settings sections that belong to a unit frame type (frame settings). Edit Mode dialogs edit these
+-- (XPerl_EditModeSettings.lua); they used to be kept per Edit Mode layout (XPerl_EditMode.lua).
 XPerl_FrameConfigKeys = {"player", "pet", "target", "focus", "targettarget", "focustarget", "targettargettarget",
 	"pettarget", "party", "partypet", "raid", "raidpet", "boss", "arena"}
 
@@ -133,30 +133,27 @@ local function CurrentConfig()
 end
 
 -- GiveConfig
--- (Re)selects the profile slot and attaches the active Edit Mode layout's frame sections to it
+-- (Re)selects the settings slot, validates it and hands it to every module
 local function GiveConfig()
-	XPerl_EditMode_DetachConfig()
 	conf = CurrentConfig()
 	XPerlDB = conf
 	XPerl_EditMode_AttachConfig(conf)
+	XPerl_pcall(XPerl_ValidateSettings)
 	XPerl_NotifyConfig()
 end
 
 XPerl_GiveConfig = GiveConfig
 
 -- XPerl_SetCurrentConfig
--- Replace the active settings (per-character or global, whichever is in use) and the active Edit Mode
--- layout's frame sections with `new`, and push them to every module.
+-- Replace the active settings (per-character or global, whichever is in use) with `new`, and push them to
+-- every module.
 function XPerl_SetCurrentConfig(new)
-	XPerl_EditMode_DetachConfig()
-
 	if (XPerlConfigSavePerCharacter) then
 		XPerlConfigNew[realmKey] = XPerlConfigNew[realmKey] or {}
 		XPerlConfigNew[realmKey][playerName] = new
 	else
 		XPerlConfigNew.global = new
 	end
-	XPerl_EditMode_SetActiveFrames(new)
 
 	GiveConfig()
 
@@ -438,7 +435,7 @@ local function settingspart1(self,event)
 	XPerl_Options_ImportOldConfig = nil
 	XPerl_Options_UpgradeSettings = nil
 
-	-- Also validates the settings (XPerl_ValidateSettings, from XPerl_EditMode_AttachConfig)
+	-- Also validates the settings (XPerl_ValidateSettings)
 	GiveConfig()
 end
 	
@@ -496,9 +493,6 @@ end
 function XPerl_SetMyGlobal()
 	local realm = realmKey
 
-	-- Copy the slot with its own frame sections, not the Edit Mode layout's
-	XPerl_EditMode_DetachConfig()
-
 	if (not lastConfigMode and XPerlConfigSavePerCharacter) then
 		if (not XPerlConfigNew[realm]) then
 			XPerlConfigNew[realm] = {}
@@ -525,8 +519,8 @@ function XPerl_SetMyGlobal()
 end
 
 -- XPerl_ValidateSettings()
--- Runs whenever a profile slot or an Edit Mode layout is attached (XPerl_EditMode.lua), before the
--- XPerl_RequestConfig callbacks.
+-- Runs whenever a settings slot is selected (GiveConfig) and after the one-time move of frame settings out of
+-- the Edit Mode layouts (XPerl_EditMode.lua), before the XPerl_RequestConfig callbacks.
 function XPerl_ValidateSettings()
 
 	local function validate(set)

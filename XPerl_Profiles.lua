@@ -6,16 +6,17 @@
 --
 -- Several WoW: Forever beta builds have dropped add-on SavedVariables on
 -- patch day. A profile string lets people keep their setup outside the game
--- and paste it back in. The string holds the account-wide settings plus the
--- active Edit Mode layout's frame settings and frame positions, CBOR-serialised,
--- deflated and base64'd by the client's own C_EncodingUtil, behind a short
--- format tag so a future layout change can be detected instead of misread.
+-- and paste it back in. The string holds the settings plus the active Edit Mode
+-- layout's frame positions, CBOR-serialised, deflated and base64'd by the
+-- client's own C_EncodingUtil, behind a short format tag so a future layout
+-- change can be detected instead of misread.
 --
 -- XPERL2: {version, flavor, config = account-wide sections, frames = frame sections
---          (XPerl_FrameConfigKeys), positions = Edit Mode layout positions}
+--          (XPerl_FrameConfigKeys; a leader's section has unlinked = true while its
+--          raid groups move on their own), positions = Edit Mode layout positions}
 -- XPERL1: (before Edit Mode layouts) {version, flavor, config = whole settings table,
 --          positions = {[frameName] = {top, left}}}
--- An import goes into the active Edit Mode layout.
+-- An import replaces the settings and the active Edit Mode layout's positions.
 
 XPerl_SetModuleRevision("$Revision$")
 
@@ -30,9 +31,14 @@ local function Encode()
 	for key, value in pairs(XPerlDB) do
 		config[key] = value
 	end
+	local unlinked = XPerl_EditMode_GetUnlinked()
 	for _, key in ipairs(XPerl_FrameConfigKeys) do
 		frames[key] = config[key]
 		config[key] = nil
+		if (unlinked and unlinked[key] and type(frames[key]) == "table") then
+			frames[key] = XPerl_CopyTable(frames[key])
+			frames[key].unlinked = true
+		end
 	end
 
 	local payload = {
@@ -46,14 +52,15 @@ local function Encode()
 	return FORMAT_TAG..C_EncodingUtil.EncodeBase64(packed)
 end
 
--- The settings table and layout positions a payload stands for (positions nil: leave them alone)
+-- The settings table, layout positions and unlinked leaders a payload stands for (positions nil: leave them
+-- alone; unlinked nil: leave the links alone)
 local function Unpack(payload, old)
 	if (type(payload) ~= "table" or type(payload.config) ~= "table") then
 		return
 	end
 
 	local settings = XPerl_CopyTable(payload.config)
-	local positions
+	local positions, unlinked
 	if (old) then
 		if (type(payload.positions) == "table") then
 			positions = XPerl_EditMode_ConvertLegacyPositions(payload.positions, settings)
@@ -62,8 +69,14 @@ local function Unpack(payload, old)
 		if (type(payload.frames) ~= "table") then
 			return
 		end
+		unlinked = {}
 		for _, key in ipairs(XPerl_FrameConfigKeys) do
-			settings[key] = XPerl_CopyTable(payload.frames[key])
+			local section = XPerl_CopyTable(payload.frames[key])
+			if (type(section) == "table" and section.unlinked) then
+				unlinked[key] = true
+				section.unlinked = nil
+			end
+			settings[key] = section
 		end
 		if (type(payload.positions) == "table") then
 			positions = payload.positions
@@ -71,7 +84,7 @@ local function Unpack(payload, old)
 	end
 
 	if (XPerl_IsValidConfig(settings)) then
-		return settings, positions
+		return settings, positions, unlinked
 	end
 end
 
@@ -89,21 +102,21 @@ local function Decode(text)
 		local packed = C_EncodingUtil.DecodeBase64(strsub(text, #FORMAT_TAG + 1))
 		return C_EncodingUtil.DeserializeCBOR(C_EncodingUtil.DecompressString(packed))
 	end)
-	local settings, positions
+	local settings, positions, unlinked
 	if (ok) then
-		settings, positions = Unpack(payload, old)
+		settings, positions, unlinked = Unpack(payload, old)
 	end
 	if (not settings) then
 		return nil, XPERL_PROFILE_CORRUPT
 	end
-	return payload, settings, positions
+	return payload, settings, positions, unlinked
 end
 
-local function Apply(settings, positions)
+local function Apply(settings, positions, unlinked)
 	XPerl_SetCurrentConfig(settings)
 
 	if (positions) then
-		XPerl_EditMode_SetPositions(positions)
+		XPerl_EditMode_SetPositions(positions, unlinked)
 	end
 end
 
@@ -172,7 +185,7 @@ end
 
 local function DoImport()
 	local f = GetDialog()
-	local payload, settings, positions = Decode(f.edit:GetText())
+	local payload, settings, positions, unlinked = Decode(f.edit:GetText())
 	if (not payload) then
 		XPerl_Notice(settings)		-- the error message
 		return
@@ -186,7 +199,7 @@ local function DoImport()
 		XPerl_Notice(XPERL_PROFILE_OTHER_FLAVOR, tostring(payload.flavor))
 	end
 
-	Apply(settings, positions)
+	Apply(settings, positions, unlinked)
 	f:Hide()
 	XPerl_Notice(XPERL_PROFILE_IMPORTED, tostring(payload.version or "?"), tostring(XPerl_EditMode_GetActiveLayoutName() or "?"))
 end

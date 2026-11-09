@@ -120,11 +120,11 @@ settings.
 
 ## Edit Mode layouts
 
-Frame positions and frame settings (scale, portrait, texts, buffs, cast bar, status
-icons, ...) are saved per Edit Mode layout. Modern, Classic, your own layouts and
-character-specific layouts can each arrange the frames differently. Switching
-layouts, including through a specialization change, switches the frames with them.
-Copying a layout copies its X-Perl setup, and renaming or deleting a layout carries over.
+Frame positions are saved per Edit Mode layout. Modern, Classic, your own layouts and
+character-specific layouts can each arrange the frames differently, and switching
+layouts, including through a specialization change, moves the frames with them.
+Whether raid groups 2-13 follow group 1 is part of a layout's positions. Copying a
+layout copies its X-Perl positions, and renaming or deleting a layout carries over.
 
 Frames you haven't moved in a layout sit where that layout puts Blizzard's own frames.
 The player, target and focus frames, with their pet, pet target, target-of-target and
@@ -133,12 +133,18 @@ Modern and Gamepad (and in layouts copied from those). Party, raid, boss and are
 frames keep the same default spot in every layout, as Blizzard's do. Edit Mode's
 "Reset Position" puts a frame back on its default for the active layout.
 
-Colours, bar textures, tooltips, highlights, the range finder and the other global
-options are the same in every layout. "Save Settings Per Character" applies to these
-global options only.
+Frame settings (scale, portrait, texts, buffs, cast bar, status icons, ...) and the
+global options (colours, bar textures, tooltips, ...) are the same in every layout,
+whether you change them in the options window or in a frame's Edit Mode dialog. With
+"Save Settings Per Character" they are saved per character.
 
-The first time X-Perl sees a layout, it fills it with your existing settings and frame
-positions, so an upgrade keeps your setup.
+Versions before 4.4.0 kept frame settings per layout as well. On the first login after
+updating, the frames keep the settings of the layout you were using; each other
+character's own settings (with "Save Settings Per Character") take those of the layout
+that character last used. Other layouts' frame settings are dropped.
+
+The first time X-Perl sees a layout, it gives it the frame positions in use, so an
+upgrade keeps your setup.
 
 On WoW: Forever, X-Perl files a character's settings under its ruleset and full name
 (`Forever-PvE` / `First-Surname`), not under the server name the client reports
@@ -151,8 +157,8 @@ existing settings move over the first time it logs in.
 | --- | --- |
 | `/xperl` | Open the options window |
 | `/xperl lock`, `/xperl unlock` | Lock or unlock the frames (unlocked shows placeholders) |
-| `/xperl export` | Show your settings, the active layout's frame settings and positions as a profile string |
-| `/xperl import` | Paste a profile string into the active layout |
+| `/xperl export` | Show your settings and the active layout's frame positions as a profile string |
+| `/xperl import` | Paste a profile string: it replaces your settings and the active layout's frame positions |
 | `/xperl config list` | List saved per-character settings and the Edit Mode layouts X-Perl has data for |
 | `/xperl config delete <realm> <name>` | Delete another character's saved settings (WoW: Forever: `<ruleset> <First-Surname>`, as `config list` shows them) |
 | `/xperl version` | Show the add-on version, client, build and interface |

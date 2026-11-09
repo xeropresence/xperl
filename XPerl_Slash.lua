@@ -24,7 +24,7 @@ local function XPerl_SlashHandler(msg)
 
 	elseif (args[1] == XPERL_CMD_CONFIG) then
 		if (args[2] == XPERL_CMD_LIST) then
-			-- Settings slots; the frame settings live in the Edit Mode layouts listed after them
+			-- Settings slots, then the Edit Mode layouts X-Perl keeps frame positions for
 			local myRealm, myName = XPerlAPI.SettingsOwner()
 			myRealm, myName = strlower(myRealm), strlower(myName)
 			XPerl_Notice(XPERL_CONFIG_LIST)
