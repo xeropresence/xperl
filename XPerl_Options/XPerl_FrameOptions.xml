@@ -4775,7 +4775,7 @@
 					<Frame name="$parent_Totems" inherits="BackdropTemplate">
 						<Scripts>
 							<OnLoad inherit="prepend">
-								class = select(2, UnitClass("player"))
+								local class = select(2, UnitClass("player"))
 								self:Hide()
 								if ((class == "SHAMAN") or (class == "DRUID") or (class == "MAGE")) then
 									self:Show()
