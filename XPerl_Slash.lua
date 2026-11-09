@@ -25,7 +25,8 @@ local function XPerl_SlashHandler(msg)
 	elseif (args[1] == XPERL_CMD_CONFIG) then
 		if (args[2] == XPERL_CMD_LIST) then
 			-- Settings slots; the frame settings live in the Edit Mode layouts listed after them
-			local myRealm, myName = strlower(GetRealmName()), strlower(UnitName("player"))
+			local myRealm, myName = XPerlAPI.SettingsOwner()
+			myRealm, myName = strlower(myRealm), strlower(myName)
 			XPerl_Notice(XPERL_CONFIG_LIST)
 			if (XPerlConfigNew.global) then
 				DEFAULT_CHAT_FRAME:AddMessage(format("|c00FFFF80%s%s", XPERL_CONFIG_GLOBAL, XPerlConfigSavePerCharacter and "" or XPERL_CONFIG_CURRENT))
@@ -50,7 +51,8 @@ local function XPerl_SlashHandler(msg)
 
 		elseif (args[2] == XPERL_CMD_DELETE) then
 			if (args[3] and args[4]) then
-				if (strlower(args[3]) ~= strlower(GetRealmName()) or strlower(args[4]) ~= strlower(UnitName("player"))) then
+				local myRealm, myName = XPerlAPI.SettingsOwner()
+				if (strlower(args[3]) ~= strlower(myRealm) or strlower(args[4]) ~= strlower(myName)) then
 
 					for realmName,realmList in pairs(XPerlConfigNew) do
 						if (strlower(realmName) == strlower(args[3]) and type(realmList) == "table" and not XPerl_ConfigReservedKeys[realmName]) then

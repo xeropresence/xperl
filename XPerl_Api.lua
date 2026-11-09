@@ -35,6 +35,52 @@ API.flavor = API.isForever and "Camelot" or "Mainline"
 API.flavorName = API.isForever and "WoW: Forever" or "Retail"
 
 ------------------------------------------------------------------------------
+-- Settings owner
+------------------------------------------------------------------------------
+
+-- API.SettingsOwner()
+-- Realm and character keys of this character's settings slot (XPerlConfigNew[realm][character]) and its Edit
+-- Mode data (last layout, character-specific layouts). Mainline: the realm name and the character name.
+-- WoW: Forever characters belong to a ruleset, not a realm. GetRealmName() there names one of the servers
+-- behind the region's megaserver ("CAMWOW US1 Realm 5 PvE"), which says nothing about the character and
+-- needn't be the same next session, so the realm key is the ruleset ("Forever-PvP"). A character is its first
+-- name and surname ("First-Surname"), unique per region; first names repeat. Neither key has spaces, so
+-- /xperl config delete can name them. Worked out once per session, so every caller gets the same keys.
+local ownerRealm, ownerCharacter
+
+local function ForeverRuleset()
+	local rules = Enum.GameRule
+	local function Active(rule)
+		return rule ~= nil and C_GameRules.IsGameRuleActive(rule)
+	end
+	if (Active(rules.HardcoreRuleset)) then
+		return "Forever-Hardcore"
+	end
+	local rp, pvp = Active(rules.RPRuleset), Active(rules.PvPRuleset)
+	if (rp and pvp) then
+		return "Forever-RP-PvP"
+	elseif (rp) then
+		return "Forever-RP"
+	elseif (pvp) then
+		return "Forever-PvP"
+	end
+	return "Forever-PvE"
+end
+
+function API.SettingsOwner()
+	if (not ownerRealm) then
+		local name, surname = UnitName("player")
+		if (API.isForever) then
+			ownerRealm = ForeverRuleset()
+			ownerCharacter = (surname and surname ~= "") and (name.."-"..surname) or name
+		else
+			ownerRealm, ownerCharacter = GetRealmName(), name
+		end
+	end
+	return ownerRealm, ownerCharacter
+end
+
+------------------------------------------------------------------------------
 -- Add-on manager
 ------------------------------------------------------------------------------
 

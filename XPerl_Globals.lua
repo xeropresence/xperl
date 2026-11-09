@@ -8,7 +8,7 @@ XPerlLocked		= 1
 local conf
 local ConfigRequesters = {}
 XPerl_OutOfCombatQueue	= {}
-local playerName
+local realmKey, playerName		-- XPerlAPI.SettingsOwner()
 local iFixed1
 local totalBlocked = 0
 local xperlBlocked = 0
@@ -100,7 +100,7 @@ local QuickValidate = XPerl_IsValidConfig
 -- The settings slot in use. "Save per character" is account-wide, so a character can find itself in a mode
 -- it has no slot for yet; it then starts from a copy of the other mode's settings (or defaults).
 local function CurrentConfig()
-	local realm = GetRealmName()
+	local realm = realmKey
 	local mine = XPerlConfigNew[realm] and XPerlConfigNew[realm][playerName]
 	local global = XPerlConfigNew.global
 
@@ -151,7 +151,8 @@ function XPerl_SetCurrentConfig(new)
 	XPerl_EditMode_DetachConfig()
 
 	if (XPerlConfigSavePerCharacter) then
-		XPerlConfigNew[GetRealmName()][playerName] = new
+		XPerlConfigNew[realmKey] = XPerlConfigNew[realmKey] or {}
+		XPerlConfigNew[realmKey][playerName] = new
 	else
 		XPerlConfigNew.global = new
 	end
@@ -391,8 +392,26 @@ local function XPerl_RegisterLDB()
 end
 
 
+-- WoW: Forever settings from before the ruleset keys (XPerlAPI.SettingsOwner) sit under the server name and the
+-- first name. This character's move to its own keys when it logs in, unless it has data there already.
+local function MoveServerKeyedSettings()
+	local oldRealm, oldName = GetRealmName(), UnitName("player")
+	local list = XPerlConfigNew[oldRealm]
+	if (type(list) == "table" and not XPerl_ConfigReservedKeys[oldRealm] and list[oldName] ~= nil) then
+		XPerlConfigNew[realmKey] = XPerlConfigNew[realmKey] or {}
+		if (XPerlConfigNew[realmKey][playerName] == nil) then
+			XPerlConfigNew[realmKey][playerName] = list[oldName]
+			list[oldName] = nil
+			if (next(list) == nil) then
+				XPerlConfigNew[oldRealm] = nil
+			end
+		end
+	end
+	XPerl_EditMode_MoveCharacter(oldRealm, oldName, realmKey, playerName)
+end
+
 local function settingspart1(self,event)
-	playerName = UnitName("player")
+	realmKey, playerName = XPerlAPI.SettingsOwner()
 	self:UnregisterEvent(event)
 
 	if (not XPerlConfigNew) then
@@ -401,6 +420,10 @@ local function settingspart1(self,event)
 		else
 			XPerlConfigNew = {}
 		end
+	end
+
+	if (XPerlAPI.isForever) then
+		MoveServerKeyedSettings()
 	end
 
 	-- Variable checking only occurs for new install and version number change. Runs on the stored slots,
@@ -471,7 +494,7 @@ end
 
 -- XPerl_SetMyGlobal
 function XPerl_SetMyGlobal()
-	local realm = GetRealmName()
+	local realm = realmKey
 
 	-- Copy the slot with its own frame sections, not the Edit Mode layout's
 	XPerl_EditMode_DetachConfig()

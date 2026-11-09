@@ -501,7 +501,8 @@ local MyIndex = 0
 local function GetPlayerList()
 	local ret = {}
 	if (XPerlConfigNew) then
-		local me = GetRealmName().." / "..UnitName("player")
+		local myRealm, myName = XPerlAPI.SettingsOwner()
+		local me = myRealm.." / "..myName
 		for realmName, realmConfig in pairs(XPerlConfigNew) do
 			if (type(realmConfig) == "table" and not XPerl_ConfigReservedKeys[realmName]) then
 				for playerName, settings in pairs(realmConfig) do
@@ -587,7 +588,7 @@ local CopyFrom
 local function CopySelectedSettings()
 	XPerl_EditMode_DetachConfig()
 
-	local realm, name = GetRealmName(), UnitName("player")
+	local realm, name = XPerlAPI.SettingsOwner()
 	local current
 	if (XPerlConfigSavePerCharacter) then
 		current = XPerlConfigNew[realm] and XPerlConfigNew[realm][name]
@@ -2694,7 +2695,7 @@ do
 					end
 				end
 
-				local realm, name = GetRealmName(), UnitName("player")
+				local realm, name = XPerlAPI.SettingsOwner()
 				if (not XPerlConfigNew.savedPositions[realm]) then
 					XPerlConfigNew.savedPositions[realm] = {}
 				end

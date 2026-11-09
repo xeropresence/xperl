@@ -140,6 +140,11 @@ global options only.
 The first time X-Perl sees a layout, it fills it with your existing settings and frame
 positions, so an upgrade keeps your setup.
 
+On WoW: Forever, X-Perl files a character's settings under its ruleset and full name
+(`Forever-PvE` / `First-Surname`), not under the server name the client reports
+(`CAMWOW US1 Realm 5 PvE`), which is not tied to the character. Each character's
+existing settings move over the first time it logs in.
+
 ## Commands
 
 | Command | |
@@ -149,7 +154,7 @@ positions, so an upgrade keeps your setup.
 | `/xperl export` | Show your settings, the active layout's frame settings and positions as a profile string |
 | `/xperl import` | Paste a profile string into the active layout |
 | `/xperl config list` | List saved per-character settings and the Edit Mode layouts X-Perl has data for |
-| `/xperl config delete <realm> <name>` | Delete another character's saved settings |
+| `/xperl config delete <realm> <name>` | Delete another character's saved settings (WoW: Forever: `<ruleset> <First-Surname>`, as `config list` shows them) |
 | `/xperl version` | Show the add-on version, client, build and interface |
 
 Profile strings are plain text. They are an easy way to share a setup or to keep a

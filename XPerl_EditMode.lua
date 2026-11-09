@@ -658,7 +658,7 @@ end
 -- XPerl_EditMode_AttachConfig
 -- Called with the profile slot that just became XPerlDB: swaps in the active layout's frame sections.
 function XPerl_EditMode_AttachConfig(newSlot)
-	realm, character = GetRealmName(), UnitName("player")
+	realm, character = XPerlAPI.SettingsOwner()
 	EnsureStore(newSlot)
 
 	slot = newSlot
@@ -1090,6 +1090,50 @@ function XPerl_EditMode_ForgetCharacter(realmName, charName)
 	for key in pairs(store.layouts) do
 		if (strsub(key, 1, #prefix) == prefix) then
 			store.layouts[key] = nil
+		end
+	end
+end
+
+-- XPerl_EditMode_MoveCharacter
+-- Moves a character's Edit Mode data to new realm and character keys (XPerlAPI.SettingsOwner) where it has none
+-- yet. Runs at ADDON_LOADED, before the store is set up, on the saved data as it is.
+function XPerl_EditMode_MoveCharacter(oldRealm, oldChar, newRealm, newChar)
+	local data = XPerlConfigNew.editMode
+	if (type(data) ~= "table") then
+		return
+	end
+
+	local movedLayouts = {}
+	if (type(data.layouts) == "table") then
+		local oldPrefix = format("character:%s/%s/", oldRealm, oldChar)
+		local newPrefix = format("character:%s/%s/", newRealm, newChar)
+		for key in pairs(data.layouts) do
+			if (strsub(key, 1, #oldPrefix) == oldPrefix) then
+				local newKey = newPrefix..strsub(key, #oldPrefix + 1)
+				if (data.layouts[newKey] == nil) then
+					movedLayouts[key] = newKey
+				end
+			end
+		end
+		for oldKey, newKey in pairs(movedLayouts) do
+			data.layouts[newKey] = data.layouts[oldKey]
+			data.layouts[oldKey] = nil
+		end
+	end
+
+	for _, listName in ipairs({"lastLayout", "legacy"}) do
+		local lists = data[listName]
+		local old = type(lists) == "table" and lists[oldRealm]
+		if (type(old) == "table" and old[oldChar] ~= nil) then
+			lists[newRealm] = lists[newRealm] or {}
+			if (lists[newRealm][newChar] == nil) then
+				local value = old[oldChar]
+				lists[newRealm][newChar] = movedLayouts[value] or value
+				old[oldChar] = nil
+				if (next(old) == nil) then
+					lists[oldRealm] = nil
+				end
+			end
 		end
 	end
 end
