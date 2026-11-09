@@ -280,7 +280,7 @@
 			<Frame parentKey="CountdownHolder" setAllPoints="true">
 				<Layers>
 					<Layer level="OVERLAY">
-						<FontString parentKey="Countdown" inherits="GameFontNormalHuge">
+						<FontString parentKey="Countdown" inherits="GameFontNormalLarge">
 							<Anchors>
 								<Anchor point="TOPLEFT"/>
 								<Anchor point="BOTTOMRIGHT" x="-1" y="2"/>
