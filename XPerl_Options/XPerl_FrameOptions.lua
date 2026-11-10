@@ -316,6 +316,8 @@ end
 -- XPerl_SliderSetup(self)
 function XPerl_SliderSetup(self, percent)
 	self.xperlSliderEnabled = true
+	-- Dragging otherwise yields values between the steps
+	self:SetObeyStepOnDrag(true)
 
 	self.IsEnabled = function(self)
 		return self.xperlSliderEnabled

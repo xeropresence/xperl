@@ -576,12 +576,9 @@ function P:ConfigureAuras()
 	if (not c.debuffs.below) then
 		opts.placeDebuffs = PlaceDebuffs
 		if (c.debuffs.halfSize) then
-			-- Aura counts are unknowable, so debuffs can't shrink only once there are too many to fit:
-			-- they're always half size instead, wrapping at the frame's width (two rows where one fitted)
-			opts.debuffs = setmetatable({
-				size = (tonumber(c.debuffs.size) or 20) / 2,
-				lineWidth = self:GetWidth(),
-			}, {__index = c.debuffs})
+			-- "Wrap Lots" used to halve the debuffs once there were too many to fit, but aura counts are
+			-- unknowable now, so it only wraps them at the frame's width, at the set size
+			opts.debuffs = setmetatable({lineWidth = self:GetWidth()}, {__index = c.debuffs})
 		else
 			-- Beside the frame debuffs stay one line whether or not the buffs wrap
 			opts.debuffs = setmetatable({lineWidth = false}, {__index = c.debuffs})

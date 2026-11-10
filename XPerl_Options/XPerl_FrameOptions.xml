@@ -947,6 +947,7 @@
 					<OnLoad>
 						self:OnBackdropLoaded()
 						XPerl_OptionsSetMyText(self, "XPERL_CONF_ALPHA")
+						self:SetValueStep(0.01)
 						_G[self:GetName().."Low"]:SetText("0%")
 						_G[self:GetName().."High"]:SetText("100%")
 					</OnLoad>
