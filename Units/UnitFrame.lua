@@ -827,7 +827,8 @@ end
 -- on a layer above the frame's parts, each on the spot its setting names (conf.icons, XPerl_StatusIconSpots;
 -- "NONE" hides it). Icons sharing a spot line up left to right in XPerl_StatusIcons order: from the frame's
 -- left or right side, or centred on the spot. The top and bottom rows straddle the frame's edge, the middle
--- row is centred on the frame's middle.
+-- row is centred on the frame's middle. A type can narrow the top row with statusIcons.topRow, a region along
+-- the frame's top edge (party frames: as far as the name bar, which is narrower than the frame).
 
 local statusOrder = XPerl_StatusIcons
 local statusTextures = {
@@ -845,6 +846,7 @@ local spotAlign = {
 	TOP = "CENTER", CENTER = "CENTER", BOTTOM = "CENTER",
 	TOPRIGHT = "RIGHT", RIGHT = "RIGHT", BOTTOMRIGHT = "RIGHT",
 }
+local topSpots = {TOPLEFT = true, TOP = true, TOPRIGHT = true}
 local STATUS_ICON_GAP = 1		-- between the icons of a row
 local STATUS_ICON_INSET = 2		-- between a row and the frame's side
 
@@ -964,6 +966,7 @@ function UF:PlaceStatusIcons()
 			end
 		end
 		if (count > 0) then
+			local relative = (si.topRow and topSpots[spot]) and si.topRow or layer
 			local align = spotAlign[spot]
 			local x
 			if (align == "LEFT") then
@@ -978,7 +981,7 @@ function UF:PlaceStatusIcons()
 				if (shown[key] and spots[key] == spot) then
 					local icon = icons[key]
 					icon:ClearAllPoints()
-					icon:SetPoint(align, layer, spot, x, 0)
+					icon:SetPoint(align, relative, spot, x, 0)
 					x = x + step
 				end
 			end

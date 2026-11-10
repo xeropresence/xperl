@@ -291,6 +291,10 @@ function P:InitType()
 	local tf = CreateFrame("Button", self:GetName().."targetFrame", self, "XPerl_Party_TargetTemplate")
 	tf:SetFrameLevel(self:GetFrameLevel() + 1)
 	self.targetFrame = tf
+
+	-- Top row status icons (the combat icon's default spot is TOPRIGHT) stay on the name bar: it only grows
+	-- by half the extra width, so the frame's own corner would leave them over the target frame
+	self.statusIcons.topRow = CreateFrame("Frame", nil, self.statusIcons.layer)
 end
 
 -- SetUnit: the header gave the frame another unit; its target and pet follow
@@ -422,6 +426,13 @@ function P:ApplyTypeSettings()
 
 	self.phasingIcon:ClearAllPoints()
 	self.phasingIcon:SetPoint(M("BOTTOMLEFT", flip), nf, M("BOTTOMRIGHT", flip), 0, 2)
+
+	-- Without the name bar the stats bars make the top edge, across the whole frame
+	local row = self.statusIcons.topRow
+	row:ClearAllPoints()
+	row:SetPoint(M("TOPLEFT", flip), self, M("TOPLEFT", flip), 0, 0)
+	row:SetPoint(M("TOPRIGHT", flip), c.name and nf or self, M("TOPRIGHT", flip), 0, 0)
+	row:SetHeight(1)
 
 	local tf = self.targetFrame
 	tf:ClearAllPoints()
