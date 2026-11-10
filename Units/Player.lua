@@ -181,14 +181,8 @@ function P:ApplyTypeSettings()
 	end
 	self.highlight:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
 
-	if (playerClass == "SHAMAN" or playerClass == "DRUID" or playerClass == "MAGE") then
-		if (not c.totems) then
-			c.totems = {enable = true, offsetX = 0, offsetY = 0}
-		end
-		if (not self.totemHooked and TotemFrame and TotemFrame.Update) then
-			self.totemHooked = true
-			hooksecurefunc(TotemFrame, "Update", function() self:UpdateTotems() end)
-		end
+	if (not c.totems) then
+		c.totems = {enable = true, offsetX = 0, offsetY = 0}
 	end
 	self:UpdateTotems()
 
@@ -204,6 +198,7 @@ function P:OnActivate(on)
 		self.healBotOverridden = true
 		HealBot_Options_EnablePlayerFrame = function() end
 	end
+	self:UpdateTotems()
 end
 
 ------------------------------------------------------------------------------
@@ -648,9 +643,17 @@ function P:UpdateRunes()
 	end
 end
 
--- UpdateTotems: Blizzard's TotemFrame under the player frame (conf.player.totems), or back where it was
+-- UpdateTotems: Blizzard's TotemFrame under the player frame (conf.player.totems, while the player frame is in
+-- use), or back where it was. Every class can have one (statues, Consecration, Efflorescence and the like).
+-- TotemFrame is a managed frame of PlayerBottomManagedFrameContainer, a child of Blizzard's PlayerFrame: its
+-- OnShow puts it back into that container (hidden along with PlayerFrame) each time a totem appears, mostly in
+-- combat, where it could not be taken again. Those OnShow / OnHide scripts do nothing else, so taking the frame
+-- clears them. Given back, it keeps them cleared: the container leaves it where it was until a reload (scripts
+-- put back by add-on code would run tainted, and their layout pass moves the protected PetFrame).
+local totemParent, totemPoints		-- Blizzard's placement while TotemFrame is ours
 function P:UpdateTotems()
-	if (not TotemFrame or not pconf.totems) then
+	local totems = pconf.totems
+	if (not TotemFrame or not totems) then
 		return
 	end
 	if (InCombatLockdown()) then
@@ -659,27 +662,25 @@ function P:UpdateTotems()
 		return
 	end
 
-	local totems = pconf.totems
-	if (totems.enable) then
-		if (not TotemFrame.XPerlParent) then
-			-- Remember Blizzard's placement (managed by the player frame) so it can be given back
-			TotemFrame.XPerlParent = TotemFrame:GetParent()
-			TotemFrame.XPerlPoints = {}
+	if (totems.enable and self.active) then
+		if (not totemParent) then
+			totemParent, totemPoints = TotemFrame:GetParent(), {}
 			for i = 1, TotemFrame:GetNumPoints() do
-				TotemFrame.XPerlPoints[i] = {TotemFrame:GetPoint(i)}
+				totemPoints[i] = {TotemFrame:GetPoint(i)}
 			end
+			TotemFrame:SetScript("OnShow", nil)
+			TotemFrame:SetScript("OnHide", nil)
 		end
 		TotemFrame:SetParent(self)
 		TotemFrame:ClearAllPoints()
 		TotemFrame:SetPoint("TOP", self, "BOTTOM", totems.offsetX, totems.offsetY)
-	elseif (TotemFrame.XPerlParent) then
-		TotemFrame:SetParent(TotemFrame.XPerlParent)
+	elseif (totemParent) then
+		TotemFrame:SetParent(totemParent)
 		TotemFrame:ClearAllPoints()
-		for _, point in ipairs(TotemFrame.XPerlPoints) do
+		for _, point in ipairs(totemPoints) do
 			TotemFrame:SetPoint(unpack(point))
 		end
-		TotemFrame.XPerlParent = nil
-		TotemFrame.XPerlPoints = nil
+		totemParent, totemPoints = nil, nil
 	end
 end
 

@@ -4774,15 +4774,6 @@
 					</Frame>
 
 					<Frame name="$parent_Totems" inherits="BackdropTemplate">
-						<Scripts>
-							<OnLoad inherit="prepend">
-								local class = select(2, UnitClass("player"))
-								self:Hide()
-								if ((class == "SHAMAN") or (class == "DRUID") or (class == "MAGE")) then
-									self:Show()
-								end
-							</OnLoad>
-						</Scripts>
 						<KeyValues>
 							<KeyValue key="backdropInfo" value="XPERL_BACKDROP_OPTIONS_AREA" type="global"/>
 						</KeyValues>

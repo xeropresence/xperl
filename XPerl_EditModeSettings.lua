@@ -286,15 +286,11 @@ function specs.player(s)
 	s:Check("debuffs.enable", P.."DEBUFFS")
 	s:Slider("debuffs.size", P.."DEBUFFSIZE", 7, 45)
 
-	-- Blizzard's totem frame is taken over for these classes only (Units/Player.lua); the player code creates
-	-- the same settings at runtime, so they are the "Reset to default" values
-	local class = select(2, UnitClass("player"))
-	if (class == "SHAMAN" or class == "DRUID" or class == "MAGE") then
-		s:Group("XPERL_EDITMODE_GROUP_TOTEMS")
-		s:Check("totems.enable", P.."TOTEMS_ENABLE", "bool", nil, true)
-		s:Slider("totems.offsetX", P.."TOTEM_OFFSETX", -1100, 1100, nil, nil, 0)
-		s:Slider("totems.offsetY", P.."TOTEM_OFFSETY", -800, 800, nil, nil, 0)
-	end
+	-- The player code creates the same settings at runtime, so they are the "Reset to default" values
+	s:Group("XPERL_EDITMODE_GROUP_TOTEMS")
+	s:Check("totems.enable", P.."TOTEMS_ENABLE", "bool", nil, true)
+	s:Slider("totems.offsetX", P.."TOTEM_OFFSETX", -1100, 1100, nil, nil, 0)
+	s:Slider("totems.offsetY", P.."TOTEM_OFFSETY", -800, 800, nil, nil, 0)
 
 	s:Group("XPERL_EDITMODE_GROUP_WARNING")
 	s:Check("fullScreen.enable", "XPERL_CONF_PARTY_FULLSCREEN")
