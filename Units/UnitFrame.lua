@@ -1008,10 +1008,11 @@ function XPerl_UnitFrame_RoleTexture(role)
 	return role and (conf.xperlOldroleicons and oldRoleTextures or roleTextures)[role]
 end
 
--- UpdateRole: the assigned role icon, in dungeons only (elsewhere roles can be left over from the last one)
+-- UpdateRole: the assigned role icon. Groups keep roles wherever they are now (as the raid frames and the
+-- client's own party frames show them), so it isn't limited to dungeons.
 function UF:UpdateRole()
 	local icon = self.nameFrame.roleIcon
-	local texture = select(2, IsInInstance()) == "party" and XPerl_UnitFrame_RoleTexture(UnitGroupRolesAssigned(self.partyid))
+	local texture = XPerl_UnitFrame_RoleTexture(UnitGroupRolesAssigned(self.partyid))
 	if (texture) then
 		icon:SetTexture(texture)
 		icon:Show()
