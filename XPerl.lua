@@ -1861,10 +1861,42 @@ AuraCountdownFormatter:SetBreakpoints({
 })
 
 -- AuraButton_Style
+-- style.external hands the countdown to cooldown text add-ons (tullaCTC, OmniCC GODMODE): the icon shows
+-- the cooldown's own countdown numbers, which those add-ons restyle, instead of X-Perl's countdown text.
+-- The cooldown then stays visible, style.cooldown only switching its swipe.
 local function AuraButton_Style(button, style)
 	button:SetSize(style.size, style.size)
-	button.CooldownHolder:SetAlpha(style.cooldown and 1 or 0)
-	if (style.countdown) then
+	local cooldown = button.CooldownHolder.Cooldown
+	-- Icons made before the first XPerl_Auras_Configure have neither set
+	local swipe, external = style.cooldown and true or false, style.external and true or false
+	button.CooldownHolder:SetAlpha((swipe or external) and 1 or 0)
+	cooldown:SetDrawSwipe(swipe)
+	cooldown:SetDrawEdge(swipe)
+	cooldown:SetDrawBling(swipe)
+
+	-- The countdown numbers are only switched when the mode changes (the template starts them hidden): OmniCC
+	-- GODMODE's Retail engine turns them back on whenever add-on code hides them, as its themes show
+	-- numbers on every cooldown it hasn't been told to leave alone. noCooldownCount (tullaCTC, OmniCC) and
+	-- noOCC (OmniCC GODMODE on WoW: Forever) are the flags that tell them to.
+	-- Those add-ons take up a cooldown when it is set, through hooks on the cooldown methods. The container
+	-- sets it from the client's secure environment, which those hooks may not see, so it is set (or
+	-- cleared, to let them drop it) here, and handing it to the icon again has the container reapply the
+	-- aura's duration.
+	cooldown.noCooldownCount = (not external) or nil
+	cooldown.noOCC = (not external) or nil
+	if ((button.externalTimer or false) ~= external) then
+		button.externalTimer = external
+		if (external) then
+			cooldown:SetHideCountdownNumbers(false)
+			cooldown:SetCooldown(0, 0)
+		else
+			cooldown:Clear()
+			cooldown:SetHideCountdownNumbers(true)
+		end
+		button:SetDurationCooldown(cooldown)
+	end
+
+	if (style.countdown and not external) then
 		button:SetDurationText(button.CountdownHolder.Countdown, {
 			textFormatter = AuraCountdownFormatter,
 			textColor = {curve = AuraCountdownCurve(), property = Enum.DurationTextBindingProperty.RemainingDuration},
@@ -2026,6 +2058,7 @@ local function Auras_ConfigureRow(self, kind)
 		style.size = big and (AURA_ICON * 2) or AURA_ICON
 		style.cooldown = opts.cooldown and (mine or opts.cooldownAny) and true or false
 		style.countdown = opts.countdown and (mine or opts.countdownAny) and true or false
+		style.external = style.countdown and opts.countdownExternal and true or false
 	end
 end
 
@@ -2162,6 +2195,7 @@ end
 --			max (icon limit per group), lineWidth (this row's wrap width, false for none; overrides
 --			opts.lineWidth), and castable (buffs), curable (debuffs), onlyMine
 --	cooldown, cooldownAny, countdown, countdownAny	swipe/countdown on own auras, or on all of them
+--	countdownExternal	the countdown is left to cooldown text add-ons (AuraButton_Style)
 --	lineWidth	wrap width in the unit frame's pixels (nil: one line)
 --	above, flip	rows grow upwards / right to left
 --	vertical	icons stack in columns (lineWidth is the column height then)
@@ -2192,6 +2226,7 @@ function XPerl_Auras_UnitOptions(self, layout)
 	opts.cooldownAny = conf.buffs.cooldownAny
 	opts.countdown = conf.buffs.countdown
 	opts.countdownAny = conf.buffs.countdownAny
+	opts.countdownExternal = conf.buffs.countdownExternal
 	return opts
 end
 

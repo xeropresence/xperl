@@ -22,6 +22,7 @@
 ## SavedVariablesPerCharacter: XPerl_Roster
 ## Category: Unit Frames
 ## IconTexture: Interface\Icons\INV_Misc_Gem_Pearl_02
+## OptionalDeps: tullaCTC, OmniCC_GODMODE
 Libs\LibStub\LibStub.lua
 Libs\LibEditMode\embed.xml
 XPerl_Globals.xml

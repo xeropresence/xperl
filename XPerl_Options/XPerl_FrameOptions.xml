@@ -3160,7 +3160,8 @@
 									XPerl_Options_EnableSibling(self,"BuffCooldownAny")
 									XPerl_Options_EnableSibling(self,"BuffCountdown")
 									XPerl_Options_EnableSibling(self,"BuffCountdownAny", "BuffCountdown")
-									XPerl_Options_EnableSibling(self,"BuffCountdownStart", "BuffCountdown")
+									XPerl_Options_EnableSibling(self,"BuffCountdownExternal", "BuffCountdown")
+									XPerl_Options_GetSibling("BuffCountdownExternal", self).Validate()
 								end
 							</OnLoad>
 						</Scripts>
@@ -3197,8 +3198,9 @@
 								self.configIndex = "countdown"
 								self.configClick = XPerl_OptionActions
 								self.Validate = function()
-									XPerl_Options_EnableSibling(self,"BuffCountdownStart")
 									XPerl_Options_EnableSibling(self,"BuffCountdownAny", "BuffCooldown")
+									XPerl_Options_EnableSibling(self,"BuffCountdownExternal", "BuffCooldown")
+									XPerl_Options_GetSibling("BuffCountdownExternal", self).Validate()
 								end
 							</OnLoad>
 						</Scripts>
@@ -3217,6 +3219,32 @@
 								self.configBase = "XPerlDB.buffs"
 								self.configIndex = "countdownAny"
 								self.configClick = XPerl_OptionActions
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_BuffCountdownExternal" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_BuffCountdownAny" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_BUFFCOUNTDOWNEXTERNAL")
+								self.configBase = "XPerlDB.buffs"
+								self.configIndex = "countdownExternal"
+								self.configClick = XPerl_OptionActions
+								-- The countdown start only applies to X-Perl's own countdown
+								self.Validate = function()
+									local slider = XPerl_Options_GetSibling("BuffCountdownStart", self)
+									if (XPerl_Options_GetSibling("BuffCooldown", self):GetChecked() and XPerl_Options_GetSibling("BuffCountdown", self):GetChecked() and not self:GetChecked()) then
+										slider:EnableSlider()
+									else
+										slider:DisableSlider()
+									end
+								end
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
@@ -3255,7 +3283,7 @@
 							</OnLoad>
 							<OnShow>
 								self:SetValue(XPerlDB.buffs.countdownStart)
-								if (XPerlDB.buffs.countdown) then
+								if (XPerlDB.buffs.cooldown and XPerlDB.buffs.countdown and not XPerlDB.buffs.countdownExternal) then
 									self:EnableSlider()
 								else
 									self:DisableSlider()

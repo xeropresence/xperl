@@ -70,7 +70,13 @@ One download covers both clients; each client loads its own TOC.
 - Buffs and debuffs are drawn by the game's own aura containers, so they stay
   visible in combat, encounters, keystones and PvP.
 - "Buff Countdown" shows bare seconds on aura icons, with tenths in the final second;
-  "Countdown Start" controls how early the number appears.
+  "Countdown Start" controls how early the number appears. "Timer Add-on" beside it
+  leaves the countdown to a cooldown text add-on such as
+  [tullaCTC](https://www.curseforge.com/wow/addons/tullactc) or
+  [OmniCC GODMODE](https://www.curseforge.com/wow/addons/omnicc-godmode-midnight-forever):
+  the icons then show the game's own cooldown numbers, styled by that add-on. With OmniCC
+  GODMODE on Retail, `/reload` after switching "Timer Add-on" off, or the game's numbers
+  stay on beside X-Perl's. The original OmniCC doesn't work on Retail since 12.0.
 - For a unit out of sight (in another zone, or beyond your view range) the game can't
   tell who cast an aura, so its auras aren't split into yours and everybody else's: each
   shows once at normal size, and a row set to show only your own auras stays empty.

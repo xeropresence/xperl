@@ -755,6 +755,7 @@ function P:ConfigureAuras()
 	auraOpts.cooldownAny = conf.buffs.cooldownAny
 	auraOpts.countdown = conf.buffs.countdown
 	auraOpts.countdownAny = conf.buffs.countdownAny
+	auraOpts.countdownExternal = conf.buffs.countdownExternal
 	auraOpts.above = buffs.above
 	auraOpts.lineWidth = self:GetAuraLineWidth()
 
