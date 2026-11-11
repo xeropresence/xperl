@@ -7,8 +7,6 @@ if (GetLocale() == "deDE") then
 
 	XPERL_MINIMAP_HELP1		= "|c00FFFFFFLinks-Klick|r, f\195\188r die Optionen (und zum |c0000FF00Entsperren der Fenster|r)"
 	XPERL_MINIMAP_HELP2		= "|c00FFFFFFRechts-Klick|r, um das Symbol zu verschieben"
-	XPERL_MINIMAP_HELP3		= "\rTats\195\164chliche Schlachtzugsmitglieder: |c00FFFF80%d|r\rTats\195\164chliche Gruppenmitglieder: |c00FFFF80%d|r"
-	XPERL_MINIMAP_HELP4		= "\rDu bist der tats\195\164chliche Gruppen- oder Schlachtzugsleiter"
 	XPERL_MINIMAP_HELP5		= "|c00FFFFFFAlt|r, f\195\188r die X-Perl Speicherausnutzung"
 	XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Umschalt|r, f\195\188r die X-Perl Speicherausnutzung seit dem Start"
 
@@ -70,7 +68,6 @@ if (GetLocale() == "deDE") then
 	BINDING_NAME_TOGGLEOPTIONS 			= "Schalter f\195\188r das Optionenfenster"
 	BINDING_NAME_TOGGLEBUFFTYPE 		= "Schalter f\195\188r Buffs/Debuffs/Keine"
 	BINDING_NAME_TOGGLEBUFFCASTABLE 	= "Schalter f\195\188r Zauberbar/Heilbar"
-	BINDING_NAME_TEAMSPEAKMONITOR 		= "Teamspeak Monitor"
 	BINDING_NAME_TOGGLERANGEFINDER 		= "Schalter f\195\188r Reichweiten-Finder"
 
 	XPERL_KEY_NOTICE_RAID_BUFFANY 		= "Alle Buffs/Debuffs anzeigen"
@@ -84,9 +81,6 @@ if (GetLocale() == "deDE") then
 
 	-- Usage
 	XPerlUsageNameList					= {XPerl = "Core", XPerl_Player = "Player", XPerl_PlayerPet = "Pet", XPerl_Target = "Target", XPerl_TargetTarget = "Target's Target", XPerl_Party = "Party", XPerl_PartyPet = "Party Pets", XPerl_RaidFrames = "Raid Frames", XPerl_RaidPets = "Raid Pets", XPerl_ArcaneBar = "Arcane Bar", XPerl_PlayerBuffs = "Player Buffs"}
-	XPERL_USAGE_MEMMAX					= "UI Max. Speicher: %d"
-	XPERL_USAGE_MODULES 				= "Module: "
-	XPERL_USAGE_NEWVERSION				= "*Neuere Version"
 	XPERL_USAGE_AVAILABLE				= "%s |c00FFFFFF%s|r ist zum Download verf\195\188gbar"
 
 	XPERL_CMD_MENU						= "menu"

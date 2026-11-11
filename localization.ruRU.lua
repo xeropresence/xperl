@@ -7,12 +7,10 @@ if (GetLocale() == "ruRU") then
 XPerl_ProductName	    = "|cFFD00000X-Perl|r Фреймы Игроков"
 XPerl_Description	    = XPerl_ProductName.." от "..XPerl_Author
 XPerl_Version		    = XPerl_Description.." - "..XPerl_VersionNumber
-XPERL_LongDescription	= "Фреймы Игроков заменяются на новый вид Игроков, Питомцев, Группы, Цели, Целей Цели, Фокуса, Рейда"
+XPerl_LongDescription	= "Фреймы Игроков заменяются на новый вид Игроков, Питомцев, Группы, Цели, Целей Цели, Фокуса, Рейда"
 
-	XPERL_MINIMAP_HELP1		= "|c00FFFFFFЛевый rклик|r - опции  (а также |c0000FF00перемещение фреймов|r)"
+	XPERL_MINIMAP_HELP1		= "|c00FFFFFFЛевый клик|r - опции  (а также |c0000FF00перемещение фреймов|r)"
 	XPERL_MINIMAP_HELP2		= "|c00FFFFFFПравый клик|r - перемещение иконки"
-	XPERL_MINIMAP_HELP3		= "\rУчастники рейда: |c00FFFF80%d|r\rУчастники рейда: |c00FFFF80%d|r"
-	XPERL_MINIMAP_HELP4		= "\rВы лидер группы/рейда"
 	XPERL_MINIMAP_HELP5		= "|c00FFFFFFAlt|r для просмотра потребления памяти X-Perl'ом"
 	XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Shift|r для просмотра потребления памяти X-Perl'ом после запуска"
 
@@ -74,7 +72,6 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 	BINDING_NAME_TOGGLEOPTIONS = "Окно опций"
 	BINDING_NAME_TOGGLEBUFFTYPE = "Баффы/Дебаффы/пусто"
 	BINDING_NAME_TOGGLEBUFFCASTABLE = "Примен./Лечение"
-	BINDING_NAME_TEAMSPEAKMONITOR = "Монитор Teamspeak'a"
 	BINDING_NAME_TOGGLERANGEFINDER = "Определитель досягаемости"
 
 	XPERL_KEY_NOTICE_RAID_BUFFANY = "Показ всех баффов/дебаффов"
@@ -88,9 +85,6 @@ XPERL_LongDescription	= "Фреймы Игроков заменяются на �
 
 -- Usage
 	XPerlUsageNameList	= {XPerl = "Основной", 	XPERL_Player = "Игрок", 	XPERL_PlayerPet = "Питомец", 	XPERL_Target = "Цель", 	XPERL_TargetTarget = "Цель цели", 	XPERL_Party = "Группа", 	XPERL_PartyPet = "Питомцы группы", 	XPERL_RaidFrames = "Фреймы рейда", 	XPERL_RaidPets = "Питомцы рейда", 	XPERL_ArcaneBar = "Индикатор заклинаний", 	XPERL_PlayerBuffs = "Баффы игрока"}
-	XPERL_USAGE_MEMMAX	= "UI Макс Пам: %d"
-	XPERL_USAGE_MODULES = "Модули: "
-	XPERL_USAGE_NEWVERSION	= "*Новейшая версия"
 	XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r доступна для скачивания"
 
 	XPERL_CMD_HELP	= "|c00FFFF80Используйте: |c00FFFFFF/xperl menu | lock | unlock | config list | config delete <сервер> <имя>"

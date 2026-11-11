@@ -12,8 +12,6 @@ XPerl_LongDescription	= "全新外觀的玩家單位狀態框架模組，包括�
 
 XPERL_MINIMAP_HELP1	= "|c00FFFFFF左鍵點擊|r 開啟設定視窗 (以及 |c0000FF00解鎖框架|r)"
 XPERL_MINIMAP_HELP2	= "|c00FFFFFF右鍵拖動|r 移動此圖標"
-XPERL_MINIMAP_HELP3	= "\r團隊成員: |c00FFFF80%d|r\r隊伍成員: |c00FFFF80%d|r"
-XPERL_MINIMAP_HELP4	= "\r你是此 隊伍/團隊 的隊長"
 XPERL_MINIMAP_HELP5	= "|c00FFFFFFAlt|r 顯示 X-Perl 記憶體用量"
 XPERL_MINIMAP_HELP6	= "|c00FFFFFF+Shift|r 顯示 X-Perl 記憶體使用明細"
 
@@ -75,7 +73,6 @@ BINDING_NAME_TOGGLERAIDPETS = "切換是否使用團隊寵物"
 BINDING_NAME_TOGGLEOPTIONS = "開/關設定視窗"
 BINDING_NAME_TOGGLEBUFFTYPE = "切換 增益/減益/無"
 BINDING_NAME_TOGGLEBUFFCASTABLE = "切換顯示可施加/解除的增益/減益效果"
-BINDING_NAME_TEAMSPEAKMONITOR = "顯示 Teamspeak 監看圖標"
 BINDING_NAME_TOGGLERANGEFINDER = "切換距離偵測開啟/關閉"
 
 XPERL_KEY_NOTICE_RAID_BUFFANY = "顯示所有 增益/減益效果"
@@ -89,9 +86,6 @@ XPERL_DRAGHINT2		= "|c00FFFFFFShift+點擊|r 重置視窗尺寸"
 
 -- Usage
 XPerlUsageNameList	= {XPerl = "核心", XPerl_Player = "玩家", XPerl_PlayerPet = "寵物", XPerl_Target = "目標", XPerl_TargetTarget = "目標的目標", XPerl_Party = "隊友", XPerl_PartyPet = "隊友寵物", XPerl_RaidFrames = "團隊框架", XPerl_RaidPets = "團隊寵物", XPerl_ArcaneBar = "施法條", XPerl_PlayerBuffs = "玩家 Buffs"}
-XPERL_USAGE_MEMMAX	= "UI 記憶體用量: %d"
-XPERL_USAGE_MODULES	= "模組: "
-XPERL_USAGE_NEWVERSION	= "*新版本"
 XPERL_USAGE_AVAILABLE	= "已有新版本 %s |c00FFFFFF%s|r 可以下載使用"
 
 XPERL_CMD_HELP		= "|c00FFFF80使用: |c00FFFFFF/xperl menu | lock | unlock | config list | config delete <realm> <name>"

@@ -1022,9 +1022,9 @@ function UF:UpdateRole()
 	end
 end
 
--- XPerl_UnitPvPIcon(unit)
+-- UnitPvPIcon(unit)
 -- "FFA", the unit's faction for a PvP flagged unit, or nil
-function XPerl_UnitPvPIcon(unit)
+local function UnitPvPIcon(unit)
 	if (Plain(UnitIsPVPFreeForAll(unit))) then
 		return "FFA"
 	elseif (UnitIsPVP(unit)) then
@@ -1038,7 +1038,7 @@ end
 -- UpdatePvP
 function UF:UpdatePvP()
 	local icon = self.nameFrame.pvpIcon
-	local pvp = self.conf.pvpIcon and XPerl_UnitPvPIcon(self.pvpUnit or self.partyid)
+	local pvp = self.conf.pvpIcon and UnitPvPIcon(self.pvpUnit or self.partyid)
 	if (pvp) then
 		icon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..pvp)
 		icon:Show()

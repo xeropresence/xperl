@@ -17,14 +17,11 @@ XPERL_CONF_TITLE8       		= ALL		-- "All"
 XPERL_CONF_TITLE9       		= "Colores"
 XPERL_CONF_TITLE10      		= "Ayudantes"
 
-XPERL_CONF_OPTIONS_COLOUR		= "Cambiar el color de la ventana de opciones"
-
 -- Titles
 XPERL_CONF_PLAYER_ALIGNMENT		= "Alin. marco jug."
 XPERL_CONF_PARTY_ALIGNMENT		= "Alin. marco grup."
 XPERL_CONF_RAID_ALIGNMENT		= "Alin. marco banda"
 XPERL_CONF_FRAME_APPEARANCE		= "Apariencia del marco"
-XPERL_CONF_PET_OPTIONS			= "Opciones de mascota"
 XPERL_CONF_TARGETTARGET_OPTIONS		= "Opciones de objetivo de objetivo"
 XPERL_CONF_FOCUSTARGET_OPTIONS			= "Focus' Target Options"
 XPERL_CONF_PETTARGET_OPTIONS			= "Pet's Target Options"
@@ -53,7 +50,6 @@ XPERL_CONF_COLOUR_FRAMES_RESET_DESC		= "Reset the gradient options"
 XPERL_CONF_FRAME_APPEARANCE_RESET		= "Reset"
 XPERL_CONF_FRAME_APPEARANCE_RESET_DESC	= "Reset the frame appearance options"
 
-XPERL_CONF_FRAME_LAYOUT_NAME			= "Name"
 XPERL_CONF_FRAME_LAYOUT_SAVE			= "Save"
 XPERL_CONF_FRAME_LAYOUT_SAVE_DESC		= "Save the current frame layout with the specified name"
 XPERL_CONF_FRAME_LAYOUT_LOAD			= "Load"
@@ -182,10 +178,6 @@ XPERL_CONF_LOAD_SETTINGS		= "Copiar configuración de..."
 XPERL_CONF_LOAD_SETTINGS_DESC		= "Copiar configuración de otro personaje"
 XPERL_CONF_ANCHORMENU			= "Ancla"
 XPERL_CONF_ANCHORMENU_DESC		= "Elegir dirección del ancla"
-XPERL_CONF_RESET_TUTORIAL		= RESET_TUTORIALS
-XPERL_CONF_RESET_TUTORIAL_DESC		= "Reinicia los consejos del tutorial de X-Perl"
-XPERL_CONF_SHOW_TUTORIAL		= SHOW_TUTORIALS
-XPERL_CONF_SHOW_TUTORIAL_DESC		= "Muestra los consejos del tutorial de X-Perl"
 
 XPERL_CONF_HEALER_MODE					= "Healer Mode"
 XPERL_CONF_HEALER_MODE_DESC				= "Show health deficits rather than values"
@@ -196,8 +188,6 @@ XPERL_CONF_HEALERMODE_DEFICITMAX_DESC	= "Show deficit and maximum health values"
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT		= "Cur/Max/Deficit"
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT_DESC= "Show current/max hp as normal, with deficit in place of percentage"
 
-XPERL_CONF_PLAYER_HIDEOOC		= "Ocultar fuera de combate"
-XPERL_CONF_PLAYER_HIDEOOC_DESC     = "Ocultar el marco de jugador al salir de combate"
 XPERL_CONF_PLAYER_PORTRAIT              = "Retrato del jugador"
 XPERL_CONF_PLAYER_PORTRAIT_DESC         = "Activar el retrato del jugador\r|c00FF0000NOTA: El indicador de golpes en combate depende de esto."
 XPERL_CONF_PLAYER_PORTRAIT3D            = "Retrato en 3D"
@@ -217,11 +207,9 @@ XPERL_CONF_PLAYER_ICON_DESC             = "Mostrar icono de clase del jugador"
 XPERL_CONF_PLAYER_XP                    = "Barra de experiencia del jugador"
 XPERL_CONF_PLAYER_XP_DESC               = "Mostrar barra de experiencia del jugador. Si el jugador está en el nivel máximo, en su lugar se mostrará la reputación que se esté observando."
 XPERL_CONF_PLAYER_REP			= "Reputación del jugador"
-XPERL_CONF_PLAYER_REP_DECS		= "Mostrar la barra de reputación del jugador. La reputación que se muestra es la que está siendo 'Observada' por el sistema que aparece seleccionada el gestor de reputación de Blizzard"
+XPERL_CONF_PLAYER_REP_DESC		= "Mostrar la barra de reputación del jugador. La reputación que se muestra es la que está siendo 'Observada' por el sistema que aparece seleccionada el gestor de reputación de Blizzard"
 XPERL_CONF_PLAYER_PVPICON		= "Icono JcJ"
 XPERL_CONF_PLAYER_PVPICON_DESC		= "Mostrar estado JcJ del jugador"
-XPERL_CONF_PLAYER_ENERGY		= "Aumento de energía"
-XPERL_CONF_PLAYER_ENERGY_DESC		= "Mostrar el monitor de aumento de energía para pícaros y druidas en forma de gato"
 XPERL_CONF_PARTY_FULLSCREEN		= "Avisos a pantalla completa"
 XPERL_CONF_PARTY_FULLSCREEN_DESC	= "Muestra un aviso a pantalla completa mientras has perdido el control de tu personaje, como con miedo o control mental"
 XPERL_CONF_PLAYER_AGGROWARNING		= "Aviso de aggro"
@@ -628,8 +616,6 @@ XPERL_CONF_RAID_SELECTALL		= ALL
 XPERL_CONF_RAID_SELECTALL_DESC		= "Seleccionar todos"
 XPERL_CONF_RAID_SELECTNONE		= NONE
 XPERL_CONF_RAID_SELECTNONE_DESC		= "No seleccionar ninguno"
-XPERL_CONF_RAID_HEALER_MODE		= XPERL_CONF_PLAYER_HEALER_MODE
-XPERL_CONF_RAID_HEALER_MODE_DESC	= XPERL_CONF_PLAYER_HEALER_MODE_DESC
 
 XPERL_CONF_ALL_PORTRAIT			= "Retratos"
 XPERL_CONF_ALL_PORTRAIT_DESC		= "Mostrar TODOS los retratos"
@@ -734,8 +720,6 @@ XPERL_CONF_ADDON_RAID			= RAID
 XPERL_CONF_ADDON_RAID_DESC		= "Activar accesorio "..XPerl_ShortProductName.." de marco de banda"
 XPERL_CONF_ADDON_RAIDPETS		= "Mascotas de banda"
 XPERL_CONF_ADDON_RAIDPETS_DESC		= "Activar accesorio "..XPerl_ShortProductName.." de mascotas de banda"
-XPERL_CONF_ADDON_GRIMR					= "Grim Reaper"
-XPERL_CONF_ADDON_GRIMR_DESC				= "Enable the Grim Reaper to track recent combat events for all raid or party units. Tooltip extends to show recent dmg in/out for selected unit. Useful to determine cause of death; crushings, crit streak etc."
 
 XPERL_CONF_RELOADUI			= "Recargar IU"
 XPERL_CONF_RELOADUI_DESC		= "Recargar la interfaz de usuario para aplicar los cambios"

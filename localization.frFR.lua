@@ -6,19 +6,10 @@ if (GetLocale() == "frFR") then
 	XPerl_LongDescription = "UnitFrame replacement for new look Joueur, Familier, Groupe, Cible, Cible de la cible, Raid"
 	XPERL_MINIMAP_HELP1 = "|c00FFFFFFClique gauche pour options"
 	XPERL_MINIMAP_HELP2 = "|c00FFFFFFClique droit pour bouger l'ic\195\180ne"
-	XPERL_MINIMAP_HELP3 = "\rReal Raid Members: |c00FFFF80%d|r\rReal Party Members: |c00FFFF80%d|r"
-	XPERL_MINIMAP_HELP4 = "\rYou are leader of the real party/raid"
 
 	XPERL_TYPE_NOT_SPECIFIED = "Non indiqu\195\169"
 
 	XPERL_TYPE_PET = "Familiers"
-
-	XPERL_LOC_CLASS_WARRIORFEM = "Guerri\195\168re"
-	XPERL_LOC_CLASS_ROGUEFEM = "Voleuse"
-	XPERL_LOC_CLASS_DRUIDFEM = "Druidesse"
-	XPERL_LOC_CLASS_HUNTERFEM = "Chasseresse"
-	XPERL_LOC_CLASS_SHAMANFEM = "Chamane"
-	XPERL_LOC_CLASS_PRIESTFEM = "Pr\195\170tresse"
 
 
 	XPERL_LOC_DEAD = "Mort"
@@ -57,7 +48,6 @@ if (GetLocale() == "frFR") then
 	BINDING_NAME_TOGGLEOPTIONS = "Bascule de la fen\195\170tre d'options"
 	BINDING_NAME_TOGGLEBUFFTYPE = "Bascule aucun buffs/debuffs"
 	BINDING_NAME_TOGGLEBUFFCASTABLE = "Bascule lanceable/soignable"
-	BINDING_NAME_TEAMSPEAKMONITOR = "Moniteur Teamspeack"
 	BINDING_NAME_TOGGLERANGEFINDER = "Bascule du t\195\169l\195\169m\195\169tre"
 
 	XPERL_KEY_NOTICE_RAID_BUFFANY = "Montrer tout les buffs/debuffs"

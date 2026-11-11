@@ -8,8 +8,6 @@ XPerl_LongDescription	= "全新外观的玩家状态框，包括玩家、宠物�
 --XPERL_COMMS_PREFIX		= "X-Perl"
 XPERL_MINIMAP_HELP1	= "|c00FFFFFF左键点击|r打开选项（并解锁框体）"
 XPERL_MINIMAP_HELP2	= "|c00FFFFFF右键点击|r拖动图标"
-XPERL_MINIMAP_HELP3	= "\r团队成员: |c00FFFF80%d|r\r小队成员: |c00FFFF80%d|r"
-XPERL_MINIMAP_HELP4	= "\r你是此 队伍/团队 队长"
 XPERL_MINIMAP_HELP5	= "|c00FFFFFFAlt|r  X-Perl 内存占用"
 XPERL_MINIMAP_HELP6	= "|c00FFFFFF+Shift|r  X-Perl 启用以来的内存占用"
 
@@ -71,7 +69,6 @@ BINDING_NAME_TOGGLERAIDPETS = "切换团队宠物窗口"
 BINDING_NAME_TOGGLEOPTIONS = "切换选项窗"
 BINDING_NAME_TOGGLEBUFFTYPE = "切换增益/减益/无"
 BINDING_NAME_TOGGLEBUFFCASTABLE = "切换显示可施加/解除的增益/减益魔法"
-BINDING_NAME_TEAMSPEAKMONITOR = "显示 Teamspeak 监控图标"
 BINDING_NAME_TOGGLERANGEFINDER = "切换距离侦测"
 
 XPERL_KEY_NOTICE_RAID_BUFFANY = "显示所有的增益/减益魔法"
@@ -85,9 +82,6 @@ XPERL_DRAGHINT2		= "|c00FFFFFFShift+单击|r 改变窗口大小"
 
 -- Usage
 XPerlUsageNameList = {XPerl = "主体文件", XPerl_Player = "玩家", XPerl_PlayerPet = "玩家宠物", XPerl_Target = "目标", XPerl_TargetTarget = "目标的目标", XPerl_Party = "队伍", XPerl_PartyPet = "队友宠物", XPerl_RaidFrames = "团队框", XPerl_RaidPets = "团队宠物", XPerl_ArcaneBar = "施法条", XPerl_PlayerBuffs = "玩家增益"}
-XPERL_USAGE_MEMMAX	= "UI Mem Max: %d"
-XPERL_USAGE_MODULES	= "模块: "
-XPERL_USAGE_NEWVERSION	= "*新版本"
 XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r 可下载使用"
 
 XPERL_CMD_HELP		= "|c00FFFF80Usage: |c00FFFFFF/xperl menu | lock | unlock | config list | config delete <realm> <name>"

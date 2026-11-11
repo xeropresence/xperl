@@ -15,14 +15,11 @@ XPERL_CONF_TITLE8						= "Все"		-- "Все"
 XPERL_CONF_TITLE9						= "Цвета"
 XPERL_CONF_TITLE10						= "Помощники"
 
-XPERL_CONF_OPTIONS_COLOUR				= "Сменить цвет в окне настроек"
-
 -- Titles
 XPERL_CONF_PLAYER_ALIGNMENT				= "Регулировка игрока"
 XPERL_CONF_PARTY_ALIGNMENT				= "Регулировка группы"
 XPERL_CONF_RAID_ALIGNMENT				= "Регулировка рейда"
 XPERL_CONF_FRAME_APPEARANCE				= "Вид фреймов"
-XPERL_CONF_PET_OPTIONS					= "Опции пета"
 XPERL_CONF_TARGETTARGET_OPTIONS			= "Опции целей цели"
 XPERL_CONF_FOCUSTARGET_OPTIONS			= "Опции цели фокуса"
 XPERL_CONF_PETTARGET_OPTIONS			= "Опции цели пета"
@@ -51,7 +48,6 @@ XPERL_CONF_COLOUR_FRAMES_RESET_DESC		= "Сброс настроек градие
 XPERL_CONF_FRAME_APPEARANCE_RESET		= "Сброс"
 XPERL_CONF_FRAME_APPEARANCE_RESET_DESC	= "Сброс настроек вида фреймов"
 
-XPERL_CONF_FRAME_LAYOUT_NAME				= "Название"
 XPERL_CONF_FRAME_LAYOUT_SAVE				= "Сохр-ть"
 XPERL_CONF_FRAME_LAYOUT_SAVE_DESC			= "Сохранить текущий слой фреймов под определённым названием"
 XPERL_CONF_FRAME_LAYOUT_LOAD				= "Загр-ть"
@@ -119,8 +115,6 @@ XPERL_CONF_BUFFCOUNTDOWNSTART				= "Старт отсчёта"
 XPERL_CONF_BUFFCOUNTDOWNSTART_DESC			= "Устанавливает значение в секундах сколько времени осталось до начала перезарядка баффа"
 XPERL_CONF_BUFFIGNORESEASONAL			    = "Игнор сезонных дебафов"
 XPERL_CONF_BUFFIGNORESEASONAL_DESC		    = "Фильтр сезонных дебафов (Таких как: Омела, Победа над орком, Предмет обожания и т.д.)"
-XPERL_CONF_BUFFBLIZZARDTOO				    = "По умолчанию Blizzard"
-XPERL_CONF_BUFFBLIZZARDTOO_DESC			    = "Применить настройки восстоновлений и отсчет времени к стандартным Blizzard иконкам бафов и дебафов"
 XPERL_CONF_FADINGTOOLTIP					= "Затухание подсказки"
 XPERL_CONF_FADINGTOOLTIP_DESC				= "Включает затухание подсказки (вместо немедленного исчезновения)"
 XPERL_CONF_RANGEFINDER						= "Определитель досягаемости"
@@ -188,10 +182,6 @@ XPERL_CONF_LOAD_SETTINGS						= "Копировать настройки с..."
 XPERL_CONF_LOAD_SETTINGS_DESC					= "Копировать настройки другого персонажа"
 XPERL_CONF_ANCHORMENU							= "Указатель"
 XPERL_CONF_ANCHORMENU_DESC						= "Выбрать область указателя"
-XPERL_CONF_RESET_TUTORIAL						= RESET_TUTORIALS
-XPERL_CONF_RESET_TUTORIAL_DESC					= "Сброс советов учебного пособия X-Perlа"
-XPERL_CONF_SHOW_TUTORIAL						= SHOW_TUTORIALS
-XPERL_CONF_SHOW_TUTORIAL_DESC					= "Показывать советы учебного пособия X-Perlа"
 
 XPERL_CONF_HEALER_MODE							= "Режим лекаря"
 XPERL_CONF_HEALER_MODE_DESC						= "Отображает нехватку здоровья точнее нежели значение"
@@ -202,8 +192,6 @@ XPERL_CONF_HEALERMODE_DEFICITMAX_DESC			= "Показывать нехватае
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT				= "Тек/Макс/Нехватка"
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT_DESC		= "Показывает текущее/макс по нормальному, а нехватаемое значение вместо процентов"
 
-XPERL_CONF_PLAYER_HIDEOOC						= "Скрыть вне боя"
-XPERL_CONF_PLAYER_HIDEOOC_DESC					= "Скрыть фреймы игроков которые вышли из боя"
 XPERL_CONF_PLAYER_PORTRAIT						= "Портрет игрока"
 XPERL_CONF_PLAYER_PORTRAIT_DESC					= "Включить отображение портретов игроков"
 XPERL_CONF_PLAYER_PORTRAIT3D					= "3D портрет"
@@ -229,11 +217,9 @@ XPERL_CONF_PLAYER_XP_DESC						= "Включает отображение пол
 XPERL_CONF_PLAYER_XPDEFICIT						= "Сколько нехват"
 XPERL_CONF_PLAYER_XPDEFICIT_DESC				= "Отображает опыт игрока в виде нехватаемого количества опыта до уровня"
 XPERL_CONF_PLAYER_REP							= "Репутация игрока"
-XPERL_CONF_PLAYER_REP_DECS						= "Включает отображение полосы репутации игрока. Отображается репутация со статусом 'Наблюдается' выбранном в Blizzard'ском менеджере репутаций"
+XPERL_CONF_PLAYER_REP_DESC						= "Включает отображение полосы репутации игрока. Отображается репутация со статусом 'Наблюдается' выбранном в Blizzard'ском менеджере репутаций"
 XPERL_CONF_PLAYER_PVPICON						= "Знак ПвП"
 XPERL_CONF_PLAYER_PVPICON_DESC					= "Включает отображение у игроков статус ПвП"
-XPERL_CONF_PLAYER_ENERGY						= "Тиккер энергии/FSR Индикатор"
-XPERL_CONF_PLAYER_ENERGY_DESC					= "Отображает тиккер энергии под полосой энергии для разбойников и формы кошки для друидов. Для обладателей маны 5 секундный FSR индикатор"
 XPERL_CONF_PARTY_FULLSCREEN						= "Предупреждения"
 XPERL_CONF_PARTY_FULLSCREEN_DESC				= "Включает полноэкранное предупреждение, пока вы потеряли контроль над персонажем (страх, контроль разума и т.п.)"
 XPERL_CONF_PLAYER_AGGROWARNING					= "Агро сигнал"
@@ -683,9 +669,6 @@ XPERL_CONF_RAID_SELECTALL_DESC			= "Выбрать всё"
 XPERL_CONF_RAID_SELECTNONE				= NONE
 XPERL_CONF_RAID_SELECTNONE_DESC			= "Без выбора"
 
-XPERL_CONF_RAID_HEALER_MODE				= XPERL_CONF_PLAYER_HEALER_MODE
-XPERL_CONF_RAID_HEALER_MODE_DESC		= XPERL_CONF_PLAYER_HEALER_MODE_DESC
-
 XPERL_CONF_ALL_PORTRAIT					= "Портреты"
 XPERL_CONF_ALL_PORTRAIT_DESC			= "Включает отображение ВСЕХ портретов"
 XPERL_CONF_ALL_PORTRAIT3D				= "3D Портреты"
@@ -791,8 +774,6 @@ XPERL_CONF_ADDON_RAID					= RAID
 XPERL_CONF_ADDON_RAID_DESC				= "Включает модуль рейда"
 XPERL_CONF_ADDON_RAIDPETS				= "Петы Рейда"
 XPERL_CONF_ADDON_RAIDPETS_DESC			= "Включает модуль питомцев рейда рейда"
-XPERL_CONF_ADDON_GRIMR					= "Grim Reaper"
-XPERL_CONF_ADDON_GRIMR_DESC				= "Включает Некроз для слежки последний событий боя для всего рейда или участников группы. В подсказках отображается полученный/нанесённый дамаг выбранного объекта. Полезен в определении причин смерти; критических промежуток и т.д."
 
 XPERL_CONF_RELOADUI						= "Перезагрузка UI"
 XPERL_CONF_RELOADUI_DESC				= "Перезагрузка пользовательского интерфейса для изменения настроек"

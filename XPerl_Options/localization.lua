@@ -14,14 +14,11 @@ XPERL_CONF_TITLE8						= ALL		-- "All"
 XPERL_CONF_TITLE9						= COLORS	-- "Colors"
 XPERL_CONF_TITLE10						= "Helpers"
 
-XPERL_CONF_OPTIONS_COLOUR				= "Change the colour of the options window"
-
 -- Titles
 XPERL_CONF_PLAYER_ALIGNMENT				= "Player Alignment"
 XPERL_CONF_PARTY_ALIGNMENT				= "Party Alignment"
 XPERL_CONF_RAID_ALIGNMENT				= "Raid Alignment"
 XPERL_CONF_FRAME_APPEARANCE				= "Frame Appearance"
-XPERL_CONF_PET_OPTIONS					= "Pet Options"
 XPERL_CONF_TARGETTARGET_OPTIONS			= "Target's Target Options"
 XPERL_CONF_FOCUSTARGET_OPTIONS			= "Focus' Target Options"
 XPERL_CONF_PETTARGET_OPTIONS			= "Pet's Target Options"
@@ -50,7 +47,6 @@ XPERL_CONF_COLOUR_FRAMES_RESET_DESC		= "Reset the gradient options"
 XPERL_CONF_FRAME_APPEARANCE_RESET		= RESET
 XPERL_CONF_FRAME_APPEARANCE_RESET_DESC	= "Reset the frame appearance options"
 
-XPERL_CONF_FRAME_LAYOUT_NAME			= NAME
 XPERL_CONF_FRAME_LAYOUT_SAVE			= SAVE
 XPERL_CONF_FRAME_LAYOUT_SAVE_DESC		= "Save the current frame layout with the specified name"
 XPERL_CONF_FRAME_LAYOUT_LOAD			= "Load"
@@ -126,8 +122,6 @@ XPERL_CONF_BUFFCOUNTDOWNEXTERNAL		= "Timer Add-on"
 XPERL_CONF_BUFFCOUNTDOWNEXTERNAL_DESC	= "Leave the countdown to a cooldown text add-on such as tullaCTC or OmniCC GODMODE: the icons show the game's own cooldown numbers, which that add-on styles, instead of X-Perl's countdown. Countdown Start doesn't apply then"
 XPERL_CONF_BUFFIGNORESEASONAL			= "Ignore Seasonal Debuffs"
 XPERL_CONF_BUFFIGNORESEASONAL_DESC		= "Filter out seasonal debuffs from the frames (Mistletoe, Bested Orgrimmar, Adored etc.)"
-XPERL_CONF_BUFFBLIZZARDTOO				= "Blizzard Default"
-XPERL_CONF_BUFFBLIZZARDTOO_DESC			= "Apply Cooldown and Countdown settings to the Blizzard default buffs and debuff icons"
 XPERL_CONF_FADINGTOOLTIP				= "Fading Tooltips"
 XPERL_CONF_FADINGTOOLTIP_DESC			= "Enable fading tooltips (instead of instantly vanishing)"
 XPERL_CONF_RANGEFINDER					= "Range Finder"
@@ -195,10 +189,6 @@ XPERL_CONF_LOAD_SETTINGS				= "Copy Settings from..."
 XPERL_CONF_LOAD_SETTINGS_DESC			= "Copy the settings from another character"
 XPERL_CONF_ANCHORMENU					= "Anchor"
 XPERL_CONF_ANCHORMENU_DESC				= "Select anchor direction"
-XPERL_CONF_RESET_TUTORIAL				= RESET_TUTORIALS
-XPERL_CONF_RESET_TUTORIAL_DESC			= "Reset the "..XPerl_ShortProductName.." tutorial hints"
-XPERL_CONF_SHOW_TUTORIAL				= SHOW_TUTORIALS
-XPERL_CONF_SHOW_TUTORIAL_DESC			= "Show the "..XPerl_ShortProductName.." tutorial hints"
 
 XPERL_CONF_HEALER_MODE					= "Healer Mode"
 XPERL_CONF_HEALER_MODE_DESC				= "Show health deficits rather than values"
@@ -211,8 +201,6 @@ XPERL_CONF_HEALERMODE_DEFICITMAX_DESC	= "Show deficit and maximum health values"
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT		= "Cur/Max/Deficit"
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT_DESC= "Show current/max hp as normal, with deficit in place of percentage"
 
-XPERL_CONF_PLAYER_HIDEOOC				= "Hide Out of Combat"
-XPERL_CONF_PLAYER_HIDEOOC_DESC			= "Hide the player frame when out of combat"
 XPERL_CONF_PLAYER_PORTRAIT              = "Player Portrait"
 XPERL_CONF_PLAYER_PORTRAIT_DESC         = "Enable display of player's portrait"
 XPERL_CONF_PLAYER_PORTRAIT3D            = "3D Portrait"
@@ -240,11 +228,9 @@ XPERL_CONF_PLAYER_DRUIDBAR_DESC			= "Disable Druid Bar that shows mana status wh
 XPERL_CONF_PLAYER_XPDEFICIT				= "As Deficit"
 XPERL_CONF_PLAYER_XPDEFICIT_DESC		= "Display the player XP as a deficit of needed experience for level"
 XPERL_CONF_PLAYER_REP					= "Player Reputation"
-XPERL_CONF_PLAYER_REP_DECS				= "Enable display of the player's reputation bar. This displayed reputation is the system 'Watched' reputation as selected in the Blizzard reputation manager"
+XPERL_CONF_PLAYER_REP_DESC				= "Enable display of the player's reputation bar. This displayed reputation is the system 'Watched' reputation as selected in the Blizzard reputation manager"
 XPERL_CONF_PLAYER_PVPICON				= "PVP Flag"
 XPERL_CONF_PLAYER_PVPICON_DESC			= "Enable display of player's PVP status"
-XPERL_CONF_PLAYER_ENERGY				= "Energy Ticker/FSR Indicator"
-XPERL_CONF_PLAYER_ENERGY_DESC			= "Display energy watch ticker under energy bar for rogues and cat form druids. For mana users this performs as an FSR (5 second rule) indication"
 XPERL_CONF_PARTY_FULLSCREEN				= "Full Screen Warnings"
 XPERL_CONF_PARTY_FULLSCREEN_DESC		= "Flash a full screen warning while you have lost control of your character, such as when feared or mind controlled"
 XPERL_CONF_PLAYER_AGGROWARNING			= "Aggro Warning"
@@ -709,9 +695,6 @@ XPERL_CONF_RAID_SELECTALL				= ALL
 XPERL_CONF_RAID_SELECTALL_DESC			= "Select all"
 XPERL_CONF_RAID_SELECTNONE				= NONE
 XPERL_CONF_RAID_SELECTNONE_DESC			= "Select none"
-
-XPERL_CONF_RAID_HEALER_MODE				= XPERL_CONF_PLAYER_HEALER_MODE
-XPERL_CONF_RAID_HEALER_MODE_DESC		= XPERL_CONF_PLAYER_HEALER_MODE_DESC
 
 XPERL_CONF_ALL_PORTRAIT					= "Portraits"
 XPERL_CONF_ALL_PORTRAIT_DESC			= "Enable ALL Portraits"

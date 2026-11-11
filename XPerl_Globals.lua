@@ -219,75 +219,6 @@ local function ImportOldConfigs()
 	end
 end
 
--- XPerl_UnitEvents
-local unitEvents = {}
-function XPerl_UnitEvents(self, eventArray, eventList)
-
-	local unit = self.partyid
-	if (not unit) then
-		unit = self:GetAttribute("unit")
-		if (not unit) then
-			return
-		end
-	end
-
-	local a = unitEvents[unit]
-	if (not a) then
-		a = {}
-		unitEvents[unit] = a
-	end
-
-	a.array = eventArray
-	for k,v in pairs(eventList) do
-		local selves = a[v]
-		if (not selves) then
-			selves = {}
-			a[v] = selves
-		end
-		tinsert(selves, self)
-		XPerl_Globals:RegisterEvent(v)
-	end
-end
-
--- XPerl_UnitEvent
-local function XPerl_UnitEvent(unit, event, a, b, c, d)
-	local a = unitEvents[unit]
-	if (a) then
-		local selves = a[event]
-		if (selves) then
-			local array = a.array
-			if (array) then
-				for k,v in pairs(selves) do
-					array[event](v, a, b, c, d)
-				end
-				return true
-			end
-		end
-	end
-end
-
--- XPerl_RegisterBasics
-function XPerl_RegisterBasics(self, eventArray)
-
-        --WoW 4.0 UNIT_POWER change, thanks Brounks helps me fix this.
-        
-        
-        --local events = {"UNIT_POWER", "UNIT_MAXPOWER", "UNIT_HEALTH", "UNIT_MAXHEALTH",
-        --                "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
-
-        --if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
-        --        tinsert(events, "UNIT_POWER")
-        --end
-   
-	local events = { "UNIT_POWER_UPDATE", "UNIT_MAXPOWER", "UNIT_HEALTH", "UNIT_MAXHEALTH", "UNIT_LEVEL", "UNIT_DISPLAYPOWER", "UNIT_NAME_UPDATE"}
-
-        if (self ~= XPerl_Player or not GetCVarBool("predictedPower")) then
-                tinsert(events, "UNIT_POWER_UPDATE")
-        end
-               
-	XPerl_UnitEvents(self, eventArray, events)
-end
-
 --[[
 -- XPerl_GuildStatusUpdate()
 function XPerl_GuildRoster_Update()
@@ -337,9 +268,6 @@ end ]]
 
 -- onEventPostSetup
 local function onEventPostSetup(self, event, unit, ...)
-	--if (unit and XPerl_UnitEvent(unit, event, unit, ...)) then
-	--	return
-	--end
 	--print(event)
 	--if (event == "PLAYER_REGEN_ENABLED") then
 		--print("something useful")
@@ -450,7 +378,6 @@ local function startupCheckSettings(self,event)
 	XPerl_RegisterLDB()
 
 	lastConfigMode = XPerlConfigSavePerCharacter
-	XPerl_Globals_AddonLoaded = nil
 end
 
 -- XPerl_Globals_OnEvent

@@ -72,6 +72,25 @@ local function UnitKey(unit)
 	return Ambiguate(name.."-"..second, "none")
 end
 
+-- GetUsage(unitName, unitID): what that player's X-Perl announced, asking for it by whisper when it isn't known
+local function GetUsage(unitName, unitID)
+	local ver = XPerl_Usage[unitName]
+	if (not ver) then
+		if (unitID and unitName ~= UNKNOWN and (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
+			if (not mod.directQueries) then
+				mod.directQueries = {}
+			end
+			if (not mod.directQueries[unitName]) then
+				mod.directQueries[unitName] = true
+				-- A whispered VER gets no reply (replies are whispers too), so ask for one
+				C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true).."#ASK", "WHISPER", unitName)
+			end
+		end
+	end
+
+	return ver
+end
+
 function mod:TooltipInfo(tooltip, unitid)
 	-- The tooltip's unit token is secret for identity-restricted units, and add-on code can't pass that to UnitIsPlayer
 	if (issecretvalue(unitid)) then
@@ -84,7 +103,7 @@ function mod:TooltipInfo(tooltip, unitid)
 			xpUsage = self.ownUsage			-- known here, without waiting for our own announcement to come back
 		else
 			local key = UnitKey(unitid)
-			xpUsage = key and XPerl_GetUsage(key, unitid)
+			xpUsage = key and GetUsage(key, unitid)
 		end
 		if (xpUsage) then
 			local xp = "|cFFD00000X-Perl|r "..(xpUsage.version or XPerl_VersionNumber)
@@ -331,23 +350,4 @@ function mod:DecodeModuleList(modList)
 	local tmp = table.concat(ret, ", ")
 	del(ret)
 	return tmp
-end
-
--- XPerl_GetUsage
-function XPerl_GetUsage(unitName, unitID)
-	local ver = XPerl_Usage[unitName]
-	if (not ver) then
-		if (unitID and unitName ~= UNKNOWN and (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
-			if (not mod.directQueries) then
-				mod.directQueries = {}
-			end
-			if (not mod.directQueries[unitName]) then
-				mod.directQueries[unitName] = true
-				-- A whispered VER gets no reply (replies are whispers too), so ask for one
-				C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true).."#ASK", "WHISPER", unitName)
-			end
-		end
-	end
-
-	return ver
 end

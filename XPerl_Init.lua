@@ -42,8 +42,8 @@ function XPerl_RegisterHighlight(frame, ratio)
 	end
 end
 
--- XPerl_SetHighlights
-function XPerl_SetHighlights()
+-- SetHighlights
+local function SetHighlights()
 	for k,v in pairs(HighlightFrames) do
 		SetTex(k, v)
 	end
@@ -128,8 +128,8 @@ function XPerl_RegisterPerlFrames(frame, subList)
 	end
 end
 
--- XPerl_SetupAllPerlFrames
-function XPerl_SetupAllPerlFrames(frame)
+-- SetupAllPerlFrames
+local function SetupAllPerlFrames()
 	for k,v in pairs(UnitFrames) do
 		SetupUnitFrameList(k, v)
 	end
@@ -137,8 +137,8 @@ end
 
 -- XPerl_SetAllFrames
 function XPerl_SetAllFrames()
-	XPerl_SetupAllPerlFrames()
-	XPerl_SetHighlights()
+	SetupAllPerlFrames()
+	SetHighlights()
 end
 
 -- XPerl_pcall
@@ -243,10 +243,6 @@ function XPerl_Init()
 	end
 
 	XPerl_RegisterSMBarTextures()
-
-	--if (not strfind("Zek Zali Hek Zeks Zekked Zekstuff Pooksie Wazek", UnitName("player")) or GetRealmName() ~= "Bloodhoof") then
-	--	XPerl_ShowMessage = function() end
-	--end
 
 	XPerl_Init = nil
 end

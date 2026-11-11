@@ -626,9 +626,7 @@
 						if (type(v) == "table") then
 							table = v
 						else
-							RunScript("XPerlTemp = "..v)
-							table = XPerlTemp
-							XPerlTemp = nil
+							table = XPerl_Options_ResolveTable(v)
 						end
 
 						if (type(table) == "table") then
@@ -663,9 +661,7 @@
 						if (type(var) == "table") then
 							table = var
 						else
-							RunScript("XPerlTemp = "..var)
-							table = XPerlTemp
-							XPerlTemp = nil
+							table = XPerl_Options_ResolveTable(var)
 						end
 
 						if (type(table) == "table" and table[self.configIndex]) then

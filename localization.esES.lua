@@ -9,8 +9,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 
 	XPERL_MINIMAP_HELP1 = "|c00FFFFFFClick izquierdo|r para Opciones (y para |c0000FF00desbloquear los marcos|r)"
 	XPERL_MINIMAP_HELP2 = "|c00FFFFFFClick derecho|r para mover este icono"
-	XPERL_MINIMAP_HELP3 = "\rMiembros de la Banda: |c00FFFF80%d|r\rMiembros del Grupo: |c00FFFF80%d|r"
-	XPERL_MINIMAP_HELP4 = "\rEres el lider del grupo/raid"
 	XPERL_MINIMAP_HELP5 = "|c00FFFFFFAlt|r para ver el uso de memoria de X-Perl"
 	XPERL_MINIMAP_HELP6 = "|c00FFFFFF+Shift|r para ver el uso de memoria de X-Perl desde el inicio"
 
@@ -69,7 +67,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	BINDING_NAME_TOGGLEOPTIONS = "Mostrar ventana de opciones"
 	BINDING_NAME_TOGGLEBUFFTYPE = "Mostrar Ventajas/Desventajas/Nada"
 	BINDING_NAME_TOGGLEBUFFCASTABLE = "Mostrar Disponibles/Curables"
-	BINDING_NAME_TEAMSPEAKMONITOR = "Monitor de Teamspeak"
 	BINDING_NAME_TOGGLERANGEFINDER = "Alternar Buscador Rango"
 
 	XPERL_KEY_NOTICE_RAID_BUFFANY = "Mostrar ventajas/desventajas"
@@ -83,9 +80,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 
 	-- Usage
 	XPerlUsageNameList	= {XPerl = "N\195\186cleo", XPerl_Player = "Jugador", XPerl_PlayerPet = "Mascota", XPerl_Target = "Objetivo", XPerl_TargetTarget = "Objetivo de Objetivo", XPerl_Party = "Grupo", XPerl_PartyPet = "Mascotas Grupo", XPerl_RaidFrames = "Marcos Banda", XPerl_RaidPets = "Mascotas Banda", XPerl_ArcaneBar = "Barra Arcana", XPerl_PlayerBuffs = "Buffs Jugador"}
-	XPERL_USAGE_MEMMAX	= "UI Mem Max: %d"
-	XPERL_USAGE_MODULES 	= "M\195\179dulos: "
-	XPERL_USAGE_NEWVERSION	= "*Nueva versi\195\179n"
 	XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r est\195\161 disponible para descarga"
 
 	XPERL_CMD_MENU		= "men\195\186"

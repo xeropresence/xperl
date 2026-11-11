@@ -17,14 +17,11 @@ XPERL_CONF_TITLE8                        = ALL        -- "All"
 XPERL_CONF_TITLE9                        = COLORS    -- "Colors"
 XPERL_CONF_TITLE10                       = "Aiutanti"
 
-XPERL_CONF_OPTIONS_COLOUR                = "Modifica il colore della finestra Opzioni"
-
 -- Titles
 XPERL_CONF_PLAYER_ALIGNMENT                = "Allineamento Giocatore"
 XPERL_CONF_PARTY_ALIGNMENT                = "Allineamento Gruppo"
 XPERL_CONF_RAID_ALIGNMENT                = "Allineamento Incursione"
 XPERL_CONF_FRAME_APPEARANCE                = "Apparenza Finestra"
-XPERL_CONF_PET_OPTIONS                    = "Opzioni famiglio"
 XPERL_CONF_TARGETTARGET_OPTIONS            = "Opzioni del Bersaglio del Bersaglio"
 XPERL_CONF_FOCUSTARGET_OPTIONS            = "Opzioni del Bersaglio del Focus"
 XPERL_CONF_PETTARGET_OPTIONS            = "Opzioni del Bersaglio del Pet"
@@ -53,7 +50,6 @@ XPERL_CONF_COLOUR_FRAMES_RESET_DESC        = "Reimposta le opzioni della sfumatu
 XPERL_CONF_FRAME_APPEARANCE_RESET        = RESET
 XPERL_CONF_FRAME_APPEARANCE_RESET_DESC    = "Reimposta le opzioni dell'apparenza delle finestre"
 
-XPERL_CONF_FRAME_LAYOUT_NAME            = NAME
 XPERL_CONF_FRAME_LAYOUT_SAVE            = SAVE
 XPERL_CONF_FRAME_LAYOUT_SAVE_DESC        = "Salva la configurazione corrente delle finestre con il nome specificato"
 XPERL_CONF_FRAME_LAYOUT_LOAD            = "Carica"
@@ -121,8 +117,6 @@ XPERL_CONF_BUFFCOUNTDOWNSTART            = "Inizio Countdown"
 XPERL_CONF_BUFFCOUNTDOWNSTART_DESC        = "Imposta il numero di secondi rimanenti necessari per l'attivazione del conto alla rovescia"
 XPERL_CONF_BUFFIGNORESEASONAL            = "Ignora penalità stagionali"
 XPERL_CONF_BUFFIGNORESEASONAL_DESC        = "Filtra le penalità stagionali (Mistletoe, Bested Orgrimmar, Adored etc.)"
-XPERL_CONF_BUFFBLIZZARDTOO                = "Default di Blizzard"
-XPERL_CONF_BUFFBLIZZARDTOO_DESC            = "Applica le impostazioni del tempo di recupero e del conto alla rovescia alle icone dei benefici e delle penalità standard"
 XPERL_CONF_FADINGTOOLTIP                = "Dissolvenza Tooltip"
 XPERL_CONF_FADINGTOOLTIP_DESC            = "Abilita la dissolvenza dei tooltip (al posto di scomparire immediatamente)"
 XPERL_CONF_RANGEFINDER                    = "Controllo Distanza"
@@ -190,10 +184,6 @@ XPERL_CONF_LOAD_SETTINGS                = "Copia impostazioni da..."
 XPERL_CONF_LOAD_SETTINGS_DESC            = "Copia informazioni da un altro personaggio"
 XPERL_CONF_ANCHORMENU                    = "Ancoraggio"
 XPERL_CONF_ANCHORMENU_DESC                = "Imposta direzione ancoraggio"
-XPERL_CONF_RESET_TUTORIAL                = RESET_TUTORIALS
-XPERL_CONF_RESET_TUTORIAL_DESC            = "Reimposta i suggerimenti di "..XPerl_ShortProductName
-XPERL_CONF_SHOW_TUTORIAL                = SHOW_TUTORIALS
-XPERL_CONF_SHOW_TUTORIAL_DESC            = "Visualizza i suggerimenti di "..XPerl_ShortProductName
 
 XPERL_CONF_HEALER_MODE                    = "Modalità curatore"
 XPERL_CONF_HEALER_MODE_DESC                = "Visualizza la vita mancante al posto di quella restante"
@@ -204,8 +194,6 @@ XPERL_CONF_HEALERMODE_DEFICITMAX_DESC    = "Visualizza la vita mancante e la vit
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT        = "Corr/Max/Mancante"
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT_DESC= "Visualizza la vita corrente/massima come normalmente, con la vita mancante al posto della percentuale"
 
-XPERL_CONF_PLAYER_HIDEOOC                = "Nascondi fuori combattimento"
-XPERL_CONF_PLAYER_HIDEOOC_DESC            = "Nascondi il giocatore quando esci dal combattimento"
 XPERL_CONF_PLAYER_PORTRAIT              = "Immagine Giocatore"
 XPERL_CONF_PLAYER_PORTRAIT_DESC         = "Abilita la visualizzazione dell'immagine del giocatore"
 XPERL_CONF_PLAYER_PORTRAIT3D            = "Immagine 3D"
@@ -233,11 +221,9 @@ XPERL_CONF_PLAYER_DRUIDBAR_DESC            = "Disabilita la barra del Druido che
 XPERL_CONF_PLAYER_XPDEFICIT                = "Mancante"
 XPERL_CONF_PLAYER_XPDEFICIT_DESC        = "Visualizza la barra dell'esperienza come esperienza mancante al prossimo livello"
 XPERL_CONF_PLAYER_REP                    = "Reputazione giocatore"
-XPERL_CONF_PLAYER_REP_DECS                = "Abilita la visualizzazione della barra della reputazione del giocatore. La reputazione visualizzata è quella selezionata nella lista standard delle reputazioni"
+XPERL_CONF_PLAYER_REP_DESC                = "Abilita la visualizzazione della barra della reputazione del giocatore. La reputazione visualizzata è quella selezionata nella lista standard delle reputazioni"
 XPERL_CONF_PLAYER_PVPICON                = "Marchiatore PVP"
 XPERL_CONF_PLAYER_PVPICON_DESC            = "Abilita la visualizzazione dello stato PVP del giocatore"
-XPERL_CONF_PLAYER_ENERGY                = "Energy Ticker/FSR Indicator"
-XPERL_CONF_PLAYER_ENERGY_DESC            = "Display energy watch ticker under energy bar for rogues and cat form druids. For mana users this performs as an FSR (5 second rule) indication"
 XPERL_CONF_PARTY_FULLSCREEN                = "Mostra avvertimenti a tutto schermo"
 XPERL_CONF_PARTY_FULLSCREEN_DESC        = "Mostra un avvertimento a tutto schermo mentre hai perso il controllo del personaggio, ad esempio per paura o controllo mentale"
 XPERL_CONF_PLAYER_AGGROWARNING            = "Allerta Minaccia"

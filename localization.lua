@@ -19,8 +19,6 @@ XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
 XPERL_COMMS_PREFIX		= "X-Perl"
 XPERL_MINIMAP_HELP1		= "|c00FFFFFFLeft click|r for Options (and to |c0000FF00unlock frames|r)"
 XPERL_MINIMAP_HELP2		= "|c00FFFFFFRight click|r to drag this icon"
-XPERL_MINIMAP_HELP3		= "\rReal Raid Members: |c00FFFF80%d|r\rReal Party Members: |c00FFFF80%d|r"
-XPERL_MINIMAP_HELP4		= "\rYou are leader of the real party/raid"
 XPERL_MINIMAP_HELP5		= "|c00FFFFFFAlt|r for X-Perl memory usage"
 XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Shift|r for X-Perl memory usage since startup"
 
@@ -91,7 +89,6 @@ BINDING_NAME_TOGGLERAIDPETS = "Toggle Raid Pets"
 BINDING_NAME_TOGGLEOPTIONS = "Toggle Options Window"
 BINDING_NAME_TOGGLEBUFFTYPE = "Toggle Buffs/Debuffs/none"
 BINDING_NAME_TOGGLEBUFFCASTABLE = "Toggle Castable/Curable"
-BINDING_NAME_TEAMSPEAKMONITOR = "Teamspeak Monitor"
 BINDING_NAME_TOGGLERANGEFINDER = "Toggle Range Finder"
 
 XPERL_KEY_NOTICE_RAID_BUFFANY = "All buffs/debuffs shown"
@@ -105,9 +102,6 @@ XPERL_DRAGHINT2		= "|c00FFFFFFShift+Click|r to resize window"
 
 -- Usage
 XPerlUsageNameList	= {XPerl = "Core", XPerl_Player = "Player", XPerl_PlayerPet = "Pet", XPerl_Target = "Target", XPerl_TargetTarget = "Target's Target", XPerl_Party = "Party", XPerl_PartyPet = "Party Pets", XPerl_RaidFrames = "Raid Frames", XPerl_RaidPets = "Raid Pets", XPerl_ArcaneBar = "Arcane Bar", XPerl_PlayerBuffs = "Player Buffs"}
-XPERL_USAGE_MEMMAX	= "UI Mem Max: %d"
-XPERL_USAGE_MODULES = "Modules: "
-XPERL_USAGE_NEWVERSION	= "*Newer version"
 XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r is available for download"
 
 XPERL_CMD_MENU		= "menu"

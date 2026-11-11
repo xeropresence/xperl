@@ -16,14 +16,11 @@ XPERL_CONF_TITLE8			= ALL		-- "All"
 XPERL_CONF_TITLE9			= "색상"
 XPERL_CONF_TITLE10			= "도움말"
 
-XPERL_CONF_OPTIONS_COLOUR		= "설정창의 색상을 변경"
-
 -- 타이틀
 XPERL_CONF_PLAYER_ALIGNMENT		= "플레이어 정렬"
 XPERL_CONF_PARTY_ALIGNMENT		= "파티 정렬"
 XPERL_CONF_RAID_ALIGNMENT		= "공격대 정렬"
 XPERL_CONF_FRAME_APPEARANCE		= "창 형태"
-XPERL_CONF_PET_OPTIONS			= "소환수 설정"
 XPERL_CONF_TARGETTARGET_OPTIONS		= "대상의 대상 설정"
 XPERL_CONF_FOCUSTARGET_OPTIONS		= "주시 대상의 대상 설정"
 XPERL_CONF_PETTARGET_OPTIONS		= "소환수의 대상 설정"
@@ -52,7 +49,6 @@ XPERL_CONF_COLOUR_FRAMES_RESET_DESC	= "그라데이션 설정을 초기화합니
 XPERL_CONF_FRAME_APPEARANCE_RESET	= "초기화"
 XPERL_CONF_FRAME_APPEARANCE_RESET_DESC	= "창 형태 설정을 초기화합니다."
 
-XPERL_CONF_FRAME_LAYOUT_NAME		= "이름"
 XPERL_CONF_FRAME_LAYOUT_SAVE		= "저장"
 XPERL_CONF_FRAME_LAYOUT_SAVE_DESC	= "지정된 이름으로 현재 창 레이아웃을 저장합니다."
 XPERL_CONF_FRAME_LAYOUT_LOAD		= "불러오기"
@@ -183,10 +179,6 @@ XPERL_CONF_LOAD_SETTINGS		= "...로부터 설정 복사"
 XPERL_CONF_LOAD_SETTINGS_DESC		= "다른 대상으로부터 설정을 복사"
 XPERL_CONF_ANCHORMENU			= "고정위치"
 XPERL_CONF_ANCHORMENU_DESC		= "고정위치 방향 선택"
-XPERL_CONF_RESET_TUTORIAL		= RESET_TUTORIALS
-XPERL_CONF_RESET_TUTORIAL_DESC		= XPerl_ShortProductName.." 튜토리얼 도움말을 초기화합니다."
-XPERL_CONF_SHOW_TUTORIAL		= SHOW_TUTORIALS
-XPERL_CONF_SHOW_TUTORIAL_DESC		= XPerl_ShortProductName.." 튜토리얼 도움말을 표시합니다."
 
 XPERL_CONF_HEALER_MODE			= "힐러 모드"
 XPERL_CONF_HEALER_MODE_DESC		= "생명력 결손치를 표시합니다."
@@ -197,8 +189,6 @@ XPERL_CONF_HEALERMODE_DEFICITMAX_DESC	= "생명력 결손치와 최대치를 표
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT	= "현재/최대/결손치"
 XPERL_CONF_HEALERMODE_CURMAXDEFICIT_DESC= "보통 현재/최대 생명력을 표시하고 백분율 위치에 결손치를 표시합니다."
 
-XPERL_CONF_PLAYER_HIDEOOC		= "전투 종료시 숨김"
-XPERL_CONF_PLAYER_HIDEOOC_DESC		= "전투 종료 시 플레이어 창을 숨깁니다."
 XPERL_CONF_PLAYER_PORTRAIT		= "사진 표시"
 XPERL_CONF_PLAYER_PORTRAIT_DESC		= "플레이어 사진 표시"
 XPERL_CONF_PLAYER_PORTRAIT3D		= "3D 사진 표시"
@@ -222,11 +212,9 @@ XPERL_CONF_PLAYER_ICON_DESC		= "플레이어 직업 아이콘 표시"
 XPERL_CONF_PLAYER_XP			= "플레이어 경험치바"
 XPERL_CONF_PLAYER_XP_DESC		= "플레이어 경험치바 표시"
 XPERL_CONF_PLAYER_REP			= "플레이어 평판"
-XPERL_CONF_PLAYER_REP_DECS		= "플레이어의 평판바 표시. This displayed reputation is the system 'Watched' reputation as selected in the Blizzard reputation manager"
+XPERL_CONF_PLAYER_REP_DESC		= "플레이어의 평판바 표시. This displayed reputation is the system 'Watched' reputation as selected in the Blizzard reputation manager"
 XPERL_CONF_PLAYER_PVPICON		= "PVP 표시"
 XPERL_CONF_PLAYER_PVPICON_DESC		= "플레이어 PVP 상태 표시"
-XPERL_CONF_PLAYER_ENERGY		= "기력 표시기"
-XPERL_CONF_PLAYER_ENERGY_DESC		= "도적과 캣 폼 드루이드의 기력 표시기를 표시"
 XPERL_CONF_PARTY_FULLSCREEN		= "전체 화면 경고"
 XPERL_CONF_PARTY_FULLSCREEN_DESC	= "캐릭터를 조종할 수 없는 동안 (공포, 정신 지배 등) 전체 화면 경고를 표시합니다."
 XPERL_CONF_PLAYER_AGGROWARNING		= "어그로 경고"
@@ -664,9 +652,6 @@ XPERL_CONF_RAID_SELECTALL_DESC		= "모두 선택"
 XPERL_CONF_RAID_SELECTNONE		= NONE
 XPERL_CONF_RAID_SELECTNONE_DESC		= "선택 해제"
 
-XPERL_CONF_RAID_HEALER_MODE		= XPERL_CONF_PLAYER_HEALER_MODE
-XPERL_CONF_RAID_HEALER_MODE_DESC	= XPERL_CONF_PLAYER_HEALER_MODE_DESC
-
 XPERL_CONF_ALL_PORTRAIT			= "사진 보기"
 XPERL_CONF_ALL_PORTRAIT_DESC		= "모든 사진 표시"
 XPERL_CONF_ALL_PORTRAIT3D		= "3D 사진"
@@ -770,8 +755,6 @@ XPERL_CONF_ADDON_RAID			= RAID
 XPERL_CONF_ADDON_RAID_DESC		= XPerl_ShortProductName.." 공격대 프레임 애드온을 사용합니다."
 XPERL_CONF_ADDON_RAIDPETS		= "공격대 소환수"
 XPERL_CONF_ADDON_RAIDPETS_DESC		= XPerl_ShortProductName.." 공격대 소환수 애드온을 사용합니다."
-XPERL_CONF_ADDON_GRIMR			= "엄격한 수확자"
-XPERL_CONF_ADDON_GRIMR_DESC		= "모든 공격대 혹은 파티 유닛에 대한 최근 전투 이벤트 기록을 위한 Grim Reaper를 활성화 합니다. 선택된 유닛의 툴팁에 최근 입힌/받은 피해량을 표시합니다. 사망 원인 확인에 유용합니다.(강타, 치명타 등)"
 
 XPERL_CONF_RELOADUI			= "UI 재실행"
 XPERL_CONF_RELOADUI_DESC		= "변경된 사항을 적용하도록 애드온을 재실행"

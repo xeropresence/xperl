@@ -7,7 +7,7 @@ XPerl_SetModuleRevision("$Revision$")
 local WoWclassCount = XPERL_RAID_CLASS_COUNT	-- Raid class columns (XPerl.lua)
 
 
-function XPerl_OptionsFrame_DisableSlider(slider)
+local function DisableSlider(slider)
 	local name = slider:GetName();
 	getmetatable(slider).__index.Disable(slider);
 	_G[name.."Text"]:SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
@@ -15,7 +15,7 @@ function XPerl_OptionsFrame_DisableSlider(slider)
 	_G[name.."High"]:SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b);
 end
 
-function XPerl_OptionsFrame_EnableSlider(slider)
+local function EnableSlider(slider)
 	local name = slider:GetName();
 	getmetatable(slider).__index.Enable(slider);
 	_G[name.."Text"]:SetVertexColor(NORMAL_FONT_COLOR.r , NORMAL_FONT_COLOR.g , NORMAL_FONT_COLOR.b);
@@ -77,7 +77,7 @@ end
 function XPerl_Options_CheckButton_OnEnter(self)
 	if (self.flashFrame and not InCombatLockdown()) then
 		local array
-		if (table.getn(self.flashFrame) == 0) then
+		if (#self.flashFrame == 0) then
 			array = {self.flashFrame}
 		else
 			array = self.flashFrame
@@ -105,15 +105,6 @@ function XPerl_Options_CheckButton_OnEnter(self)
 	end
 
 	_G[self:GetName().."Text"]:SetTextColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b)
-end
-
--- XPerl_GetCheck
-function XPerl_GetCheck(f)
-	if (f:GetChecked()) then
-		return 1
-	else
-		return 0
-	end
 end
 
 -- XPerl_Options_GetSibling(sibling,self)
@@ -245,12 +236,6 @@ function XPerl_Options_CheckRadio(self,buttons)
 	end
 end
 
--- XPerl_Options_GetSiblingChecked
-function XPerl_Options_GetSiblingChecked(name,self)
-	local prefix = self:GetParent():GetName().."_"
-	return _G[prefix..name]:GetChecked()
-end
-
 -- XPerl_Options_OnUpdate
 function XPerl_Options_OnUpdate(self,arg1)
 
@@ -324,14 +309,14 @@ function XPerl_SliderSetup(self, percent)
 	end
 	self.DisableSlider = function(self)
 		self.xperlSliderEnabled = false
-		XPerl_OptionsFrame_DisableSlider(self)
+		DisableSlider(self)
 		_G[self:GetName().."Current"]:SetVertexColor(GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b)
 		self:EnableMouse(false)
 		self:EnableMouseWheel(false)
 	end
 	self.EnableSlider = function(self)
 		self.xperlSliderEnabled = true
-		XPerl_OptionsFrame_EnableSlider(self)
+		EnableSlider(self)
 		_G[self:GetName().."Current"]:SetVertexColor(0.4, 0.4, 0.80)
 		self:EnableMouse(true)
 		self:EnableMouseWheel(true)
@@ -370,20 +355,28 @@ function XPerl_EditBoxSetup(self)
 	self:SetScript("OnLoad", nil)
 end
 
+-- XPerl_Options_ResolveTable(path)
+-- The table behind a dotted settings path such as "XPerlDB.target.buffs" (an option's configBase, or an
+-- entry of its configSelection); nil when the path doesn't lead to a table
+function XPerl_Options_ResolveTable(path)
+	local val = _G
+	for key in gmatch(path, "[^.]+") do
+		if (type(val) ~= "table") then
+			return
+		end
+		val = val[key]
+	end
+	if (type(val) == "table") then
+		return val
+	end
+end
+
 -- GetTable(self)
 local function GetTable(self)
 	if (self.configIndex == nil) then
 		error("No index for configBase in "..self:GetName())
 	end
-
-	local table = RunScript("XPerlTemp = "..self.configBase)
-	local val = XPerlTemp
-	XPerlTemp = nil
-
-	if (type(val) == "table") then
-		return val
-	end
-	--error(self:GetName().." needs to return a table from self.configBase")
+	return XPerl_Options_ResolveTable(self.configBase)
 end
 
 -- XPerl_Options_GetIndex(self)
@@ -522,67 +515,6 @@ local function GetPlayerList()
 	return ret
 end
 
--- XPerl_Options_LoadSettings_OnLoad
-function XPerl_Options_LoadSettings_OnLoad(self)
-	self.displayMode = "MENU"
-	UIDropDownMenu_Initialize(self, XPerl_Options_LoadSettings_Initialize)
-	UIDropDownMenu_SetWidth(self, 140)
-	if (MyIndex == 0) then
-		XPerl_Options_DropDown_LoadSettingsText:SetText("")
-	else
-		UIDropDownMenu_SetSelectedID(self, MyIndex, 1)
-	end
-end
-
--- XPerl_Options_LoadSettings_Initialize
-function XPerl_Options_LoadSettings_Initialize()
-	local list = GetPlayerList()
-
-	for i,entry in pairs(list) do
-		local info = UIDropDownMenu_CreateInfo()
-		info.text = entry.name
-		info.func = XPerl_Options_LoadSettings_OnClick
-		UIDropDownMenu_AddButton(info)
-	end
-end
-
--- XPerl_Options_Anchor_OnLoad
-function XPerl_Options_Anchor_OnLoad(self)
-	self.displayMode = "MENU"
-	UIDropDownMenu_Initialize(self, XPerl_Options_Anchor_Initialize)
-	UIDropDownMenu_SetSelectedID(self, MyIndex, 1)
-	UIDropDownMenu_SetWidth(self, 100)
-end
-
--- XPerl_Options_Anchor_OnLoad
-function XPerl_Options_Anchor_Initialize()
-	local info
-	local current = XPerl_Options_Party_Anchor.varGet() or "TOP"
-
-	for k,v in pairs(XPerl_AnchorList) do
-		info = {}
-		info.text = v
-		info.func = XPerl_Options_Anchor_OnClick
-
-		if (current == v) then
-			MyIndex = k
-		end
-
-		UIDropDownMenu_AddButton(info)
-	end
-end
-
--- XPerl_Options_Anchor_OnClick
-function XPerl_Options_Anchor_OnClick(self)
-	local obj = UIDROPDOWNMENU_OPEN_MENU
-
-	obj.varSet(XPerl_AnchorList[self:GetID()])
-	MyIndex = self:GetID()
-	UIDropDownMenu_SetSelectedID(obj, MyIndex, 1)
-
-	XPerl_ProtectedCall(obj.setFunc)
-end
-
 -- CopySelectedSettings
 -- Copies another character's settings, frame settings included, into the settings slot in use
 local CopyFrom
@@ -609,8 +541,8 @@ local function CopySelectedSettings()
 	XPerl_OptionActions()
 end
 
--- XPerl_Options_LoadSettings_OnClick
-function XPerl_Options_LoadSettings_OnClick(self)
+-- LoadSettingsOnClick
+local function LoadSettingsOnClick(self)
 
 	local list = GetPlayerList()
 
@@ -622,6 +554,67 @@ function XPerl_Options_LoadSettings_OnClick(self)
 			XPerl_Popup(format("Copy settings from %s?", entry.name), CopySelectedSettings)
 		end
 	end
+end
+
+-- LoadSettingsInitialize
+local function LoadSettingsInitialize()
+	local list = GetPlayerList()
+
+	for i,entry in pairs(list) do
+		local info = UIDropDownMenu_CreateInfo()
+		info.text = entry.name
+		info.func = LoadSettingsOnClick
+		UIDropDownMenu_AddButton(info)
+	end
+end
+
+-- XPerl_Options_LoadSettings_OnLoad
+function XPerl_Options_LoadSettings_OnLoad(self)
+	self.displayMode = "MENU"
+	UIDropDownMenu_Initialize(self, LoadSettingsInitialize)
+	UIDropDownMenu_SetWidth(self, 140)
+	if (MyIndex == 0) then
+		XPerl_Options_DropDown_LoadSettingsText:SetText("")
+	else
+		UIDropDownMenu_SetSelectedID(self, MyIndex, 1)
+	end
+end
+
+-- AnchorOnClick
+local function AnchorOnClick(self)
+	local obj = UIDROPDOWNMENU_OPEN_MENU
+
+	obj.varSet(XPerl_AnchorList[self:GetID()])
+	MyIndex = self:GetID()
+	UIDropDownMenu_SetSelectedID(obj, MyIndex, 1)
+
+	XPerl_ProtectedCall(obj.setFunc)
+end
+
+-- AnchorInitialize
+local function AnchorInitialize()
+	local info
+	local current = XPerl_Options_Party_Anchor.varGet() or "TOP"
+
+	for k,v in pairs(XPerl_AnchorList) do
+		info = {}
+		info.text = v
+		info.func = AnchorOnClick
+
+		if (current == v) then
+			MyIndex = k
+		end
+
+		UIDropDownMenu_AddButton(info)
+	end
+end
+
+-- XPerl_Options_Anchor_OnLoad
+function XPerl_Options_Anchor_OnLoad(self)
+	self.displayMode = "MENU"
+	UIDropDownMenu_Initialize(self, AnchorInitialize)
+	UIDropDownMenu_SetSelectedID(self, MyIndex, 1)
+	UIDropDownMenu_SetWidth(self, 100)
 end
 
 -- XPerl_Options_TextureSelect_Onload
@@ -1338,12 +1331,6 @@ end
 -- Named frame layouts save and load the active Edit Mode layout's frame positions. The list also offers
 -- the positions of the other Edit Mode layouts X-Perl knows (loading copies them into the active one).
 
--- XPerl_Options_LayoutGetList
--- {label =, positions =, named =} entries (XPerl_EditMode_PositionSets)
-function XPerl_Options_LayoutGetList(self)
-	return XPerl_EditMode_PositionSets()
-end
-
 -- XPerl_Options_GetLayout
 function XPerl_Options_GetLayout(self, label)
 	for _, set in ipairs(XPerl_EditMode_PositionSets()) do
@@ -1393,7 +1380,7 @@ end
 
 -- XPerl_Options_LayoutFill
 function XPerl_Options_LayoutFill(self, setName)
-	local list = XPerl_Options_LayoutGetList(self)
+	local list = XPerl_EditMode_PositionSets()
 
 	self.start = self.scrollBar.bar:GetValue() + 1
 
@@ -1453,6 +1440,16 @@ function XPerl_Options_LayoutFill(self, setName)
 	else
 		self.scrollBar:Hide()
 	end
+end
+
+-- DefaultRangeFinder
+local function DefaultRangeFinder()
+	return {						-- 2.1.7
+--		enabled		= e,	-- 2.3.4a Defaulting to OFF now, because of so many confused users complaining about faded frames. RTFM... (TODO: Write a manual)
+		Main		= {enabled = true, FadeAmount = 0.5},
+		NameFrame	= {FadeAmount = 0.5},
+		StatsFrame	= {FadeAmount = 0.5},
+	}
 end
 
 ---------------------------------------------------------------------
@@ -1534,7 +1531,7 @@ function XPerl_Options_ImportOldConfig(old)
 			countdown	= Convert(old.BuffCountdown),				-- 2.2.2
 			countdownStart	= old.BuffCountdownStart	or 20,			-- 2.2.2
 		},
-		rangeFinder = old.RangeFinder or XPerl_DefaultRangeFinder(),
+		rangeFinder = old.RangeFinder or DefaultRangeFinder(),
 		highlight = {
 			enable			= Convert(old.RaidHighlights),
 			AGGRO			= Convert(old.RaidHighlightAggro),
@@ -1992,7 +1989,7 @@ local function XPerl_Global_ConfigDefault(default)
 		countdownStart	= 20,			-- 2.2.2
 	}
 
-	default.rangeFinder = XPerl_DefaultRangeFinder()
+	default.rangeFinder = DefaultRangeFinder()
 
 	default.tooltip = {
 		enable		= 1,			-- 2.0.5
@@ -2514,16 +2511,6 @@ function XPerl_DefaultFrameAppearance()
 	XPerlDB.transparency.text	= 1
 	XPerlDB.colour.border		= {r = 0.5, g = 0.5, b = 0.5, a = 1}
 	XPerlDB.colour.frame		= {r = 0, g = 0, b = 0, a = 1}
-end
-
--- XPerl_DefaultRangeFinder
-function XPerl_DefaultRangeFinder()
-	return {						-- 2.1.7
---		enabled		= e,	-- 2.3.4a Defaulting to OFF now, because of so many confused users complaining about faded frames. RTFM... (TODO: Write a manual)
-		Main		= {enabled = true, FadeAmount = 0.5},
-		NameFrame	= {FadeAmount = 0.5},
-		StatsFrame	= {FadeAmount = 0.5},
-	}
 end
 
 

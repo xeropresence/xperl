@@ -23,14 +23,11 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_TITLE9       			= "Couleurs"
         XPERL_CONF_TITLE10      			= "Assistance"
 
-        XPERL_CONF_OPTIONS_COLOUR			= "Change les couleurs de la fen\195\170tre d'option"
-
         -- Titles
         XPERL_CONF_PLAYER_ALIGNMENT			= "R\195\169glages ic\195\180ne joueur"
         XPERL_CONF_PARTY_ALIGNMENT			= "Alignement groupe"
         XPERL_CONF_RAID_ALIGNMENT			= "Alignement raid"
         XPERL_CONF_FRAME_APPEARANCE			= "Apparence des cadres"
-        XPERL_CONF_PET_OPTIONS				= "Options du familier"
         XPERL_CONF_TARGETTARGET_OPTIONS			= "Options de la cible de la cible"
         XPERL_CONF_FOCUSTARGET_OPTIONS		        = "Options de la cible g\195\169n\195\169rale"
         XPERL_CONF_PETTARGET_OPTIONS		        = "Options de la cible du familier"
@@ -134,15 +131,9 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_LOAD_SETTINGS_DESC			= "Copie des r\195\169glages d'un autre perso"
         XPERL_CONF_ANCHORMENU				= "Ancre"
         XPERL_CONF_ANCHORMENU_DESC			= "S\195\169l\195\169ctionner la direction de l'ancre"
-        XPERL_CONF_RESET_TUTORIAL		        = RESET_TUTORIALS
-        XPERL_CONF_RESET_TUTORIAL_DESC		        = "Remmettre les conseils de X-PERL \195\160 z\195\169ro"
-        XPERL_CONF_SHOW_TUTORIAL		        = SHOW_TUTORIALS
-        XPERL_CONF_SHOW_TUTORIAL_DESC		        = "Montrer les conseils de X-PERL"
 
-        XPERL_CONF_PLAYER_HIDEOOC			= "Cacher hors-combat"
-        XPERL_CONF_PLAYER_HIDEOOC_DESC			= "Cacher la fen\195\170tre joueur quand hors-combat"
         XPERL_CONF_PLAYER_PORTRAIT			= "Portrait du joueur"
-        XPERL_CONF_PLAYER_PORTRAIT_DESC     		= "Permettre l'affichage du portrait du joueur \ r|c00FF0000NOTE : L'indicateur de coup de combat d\195\169pend de ceci."
+        XPERL_CONF_PLAYER_PORTRAIT_DESC     		= "Permettre l'affichage du portrait du joueur\r|c00FF0000NOTE : L'indicateur de coup de combat d\195\169pend de ceci."
         XPERL_CONF_PLAYER_PORTRAIT3D            	= "Portrait 3D"
         XPERL_CONF_PLAYER_PORTRAIT3D_DESC       	= "Activer l'affichage des portraits 3D"
         XPERL_CONF_HIT_INDICATOR		        = "Indicateurs de coup"
@@ -158,23 +149,13 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_PLAYER_XP                    	= "Barre d'experience du joueur"
         XPERL_CONF_PLAYER_XP_DESC               	= "Active l'affichage de la barre d'experience du joueur"
         XPERL_CONF_PLAYER_REP				= "R\195\169putation de joueur"
-        XPERL_CONF_PLAYER_REP_DECS			= "Permettre l'affichage de la barre de la r\195\169putation du joueur. Cette r\195\169putation montr\195\169e est r\195\169putation la « observ\195\169e » de système comme choisie dans le directeur de r\195\169putation de Blizzard"
-        XPERL_CONF_PLAYER_PVP                   	= "Rangs PvP"
-        XPERL_CONF_PLAYER_PVP_DESC              	= "Active l'affichage du rangs PvP du joueurs"
+        XPERL_CONF_PLAYER_REP_DESC			= "Permettre l'affichage de la barre de la r\195\169putation du joueur. Cette r\195\169putation montr\195\169e est r\195\169putation la « observ\195\169e » de système comme choisie dans le directeur de r\195\169putation de Blizzard"
         XPERL_CONF_PLAYER_PVPICON			= "Drapeux PvP"
         XPERL_CONF_PLAYER_PVPICON_DESC			= "Active l'affichage des statuts PvP du joueur"
-        XPERL_CONF_PLAYER_ENERGY			= "Ticker d'\195\169nergie"
-        XPERL_CONF_PLAYER_ENERGY_DESC			= "Affiche le ticker d'energie sous la barre d'energie pour les voleurs et les druides félins"
         XPERL_CONF_PARTY_FULLSCREEN			= "Avertissements de plein \195\169cran"
         XPERL_CONF_PARTY_FULLSCREEN_DESC		= "Affiche un avertissement en plein \195\169cran tant que vous avez perdu le contr\195\180le de votre personnage, par exemple sous l'effet de la peur ou d'un contr\195\180le mental"
         XPERL_CONF_PLAYER_AGGROWARNING			= "Avertissement d'aggro"
         XPERL_CONF_PLAYER_AGGROWARNING_DESC		= "En groupe, affiche un avertissement au milieu de l'\195\169cran tant qu'un monstre vous attaque, vous ou votre familier"
-        XPERL_CONF_PLAYER_HEALER_MODE			= "Healer Mode"
-        XPERL_CONF_PLAYER_HEALER_MODE_DESC		= "Montrer les d'\195\169ficits plut\195\180t que les valeurs de vie"
-        XPERL_CONF_PLAYER_HEALERMODE_DEFICIT		= "D\195\169ficit"
-        XPERL_CONF_PLAYER_HEALERMODE_DEFICIT_DESC	= "Montrer la valeur de vie de d\195\169ficit seulement"
-        XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX 	= "Deficit/Max"
-        XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX_DESC	= "Montrer les valeurs de vie d\195\169ficitaire et maximum"
         XPERL_CONF_PLAYER_BUFFS			        = "Buffs des joueurs"
         XPERL_CONF_PLAYER_BUFFS_DESC		        = "Active les buffs de joueur. Cela d\195\169sactive l'affichage des buffs/debuffs de Blizzard"
         XPERL_CONF_PLAYER_BUFFSABOVE		        = "Au-dessus"
@@ -202,7 +183,7 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_PLAYER_PET_BUFF_SIZE_DESC		= "Ajuste l'affichage de la taille des buffs/debuffs du familier"
 
         XPERL_CONF_TARGET_PORTRAIT              	= "Portrait de la cible"
-        XPERL_CONF_TARGET_PORTRAIT_DESC         	= "Permettre l'affichage du portrait de la cible \ r|c00FF0000NOTE : L'indicateur de coup de combat dépend de ceci."
+        XPERL_CONF_TARGET_PORTRAIT_DESC         	= "Permettre l'affichage du portrait de la cible\r|c00FF0000NOTE : L'indicateur de coup de combat dépend de ceci."
         XPERL_CONF_TARGET_PORTRAIT3D            	= "Portrait 3d"
         XPERL_CONF_TARGET_PORTRAIT3D_DESC       	= "Active l'affichage du portrait 3D"
         XPERL_CONF_TARGET_HIT_INDICATOR		        = XPERL_CONF_HIT_INDICATOR
@@ -241,8 +222,6 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_TARGET_CPBLIZZ_POSBOTTOM_DESC	= "Align les points de combo sur le fond du portrait"
         XPERL_CONF_TARGET_CP                    	= "Affichage de la barre des points de combos"
         XPERL_CONF_TARGET_CP_DESC               	= "affichage de progression des points de combos de la cadre de la cible. Note il montrera \195\169galement Sunder count, Vulnerabilit\195\169e a l'ombre, Vulnerabilit\195\169e au feu where applicable)"
-        XPERL_CONF_TARGET_PVP                   	= "Rangs PvP"
-        XPERL_CONF_TARGET_PVP_DESC              	= "Permettre l'affichage des rangs PvP des cibles"
         XPERL_CONF_TARGET_PVPICON			= "Drapeau PvP"
         XPERL_CONF_TARGET_PVPICON_DESC			= "Permettre l'affichage du status pvp de la cible"
         XPERL_CONF_TARGET_30YD				= "Indicateur de zone des 30 yard"
@@ -257,12 +236,6 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_TARGET_CURABLE_DESC			= "Limiter l'affichage de debuff lanc\195\169 que vous pouvez traiter"
         XPERL_CONF_TARGET_REACTION			= "Accentuation de r\195\169action"
         XPERL_CONF_TARGET_REACTION_DESC			= "Permettre l'accentuation de couleur de r\195\169action de colorer le cadre de cible bas\195\169 sur la r\195\169putation de la cible vis\195\169 enver soi"
-        XPERL_CONF_TARGET_HEALER_MODE			= XPERL_CONF_PLAYER_HEALER_MODE
-        XPERL_CONF_TARGET_HEALER_MODE_DESC	  	= XPERL_CONF_PLAYER_HEALER_MODE_DESC
-        XPERL_CONF_TARGET_HEALERMODE_DEFICIT	     	= XPERL_CONF_PLAYER_HEALERMODE_DEFICIT
-        XPERL_CONF_TARGET_HEALERMODE_DEFICIT_DESC    	= XPERL_CONF_PLAYER_HEALERMODE_DEFICIT_DESC
-        XPERL_CONF_TARGET_HEALERMODE_DEFICITMAX      	= XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX
-        XPERL_CONF_TARGET_HEALERMODE_DEFICITMAX_DESC 	= XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX_DESC
         XPERL_CONF_TARGET_DEFER				= "Reporter refont"
         XPERL_CONF_TARGET_DEFER_DESC			= "Quand la cible change, ne refont pas tout imm\195\169diatement, mais \195\160 la place retarder l'affichage du portrait, des points combo, de l'ic\195\180ne de chef et du statut de combat pendant 0.5 seconde. Ceci aide \195\160 am\195\169liorer plus loin la latence de commutation de cible et a te permettre de regagner la r\195\169ponse presque instantan\195\169 pour des choses importantes"
 
@@ -315,8 +288,6 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_FOCUS_VALUES_DESC			= "Permettre l'affichage de la vie/mana sous formes de valeurs pour la cible g\195\169n\195\169rale "
         XPERL_CONF_FOCUS_PERCENT			= "Pourcetages"
 	XPERL_CONF_FOCUS_PERCENT_DESC			= "Permettre l'affichage de la vie/mana en pourcentages"
-	XPERL_CONF_FOCUS_PVP                  	 	= "Rang PvP"
-	XPERL_CONF_FOCUS_PVP_DESC             	 	= "Permettre l'affichage du rang PvP de la cible g\195\169n\195\169rale"
 	XPERL_CONF_FOCUS_PVPICON			= "Statut PvP"
 	XPERL_CONF_FOCUS_PVPICON_DESC			= "Permettre l'affichage sus stat PvP de la cible g\195\169n\195\169rale"
         XPERL_CONF_FOCUS_TARGET			        = "Cible de la cible g\195\169n\195\169rale"
@@ -331,12 +302,6 @@ if (GetLocale() == "frFR") then
 	XPERL_CONF_FOCUS_CURABLE_DESC			= "Limite l'affichage des d\195\169buffs que vous pouvez soign\195\169"
 	XPERL_CONF_FOCUS_REACTION			= "Sommet de r\195\169actions"
 	XPERL_CONF_FOCUS_REACTION_DESC			= "Permettre au somment de r\195\169action de color\195\169 le plat nomm\195\169 entier du cadre de la cible g\195\169n\195\169rale basé sur le friendlyness de la cible envers soi"
-	XPERL_CONF_FOCUS_HEALER_MODE			= XPERL_CONF_PLAYER_HEALER_MODE
-	XPERL_CONF_FOCUS_HEALER_MODE_DESC		= XPERL_CONF_PLAYER_HEALER_MODE_DESC
-	XPERL_CONF_FOCUS_HEALERMODE_DEFICIT		= XPERL_CONF_PLAYER_HEALERMODE_DEFICIT
-	XPERL_CONF_FOCUS_HEALERMODE_DEFICIT_DESC	= XPERL_CONF_PLAYER_HEALERMODE_DEFICIT_DESC
-	XPERL_CONF_FOCUS_HEALERMODE_DEFICITMAX 		= XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX
-	XPERL_CONF_FOCUS_HEALERMODE_DEFICITMAX_DESC	= XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX_DESC
 
         XPERL_CONF_FOCUSTARGET_BUFFS		        = "Buffs de la cible g\195\169n\195\169rale"
         XPERL_CONF_FOCUSTARGET_BUFFS_DESC	        = "Permettre l'affichage des buffs de la cible g\195\169n\195\169rale"
@@ -416,12 +381,6 @@ if (GetLocale() == "frFR") then
 	XPERL_CONF_PARTY_CASTABLE_DESC			= "Limite l'affichage des buffs que l'on peux lancer"
 	XPERL_CONF_PARTY_CURABLE			= "Debuffs soignable seulement"
 	XPERL_CONF_PARTY_CURABLE_DESC			= "Limite l'affichage des debuffs que l'on peut soigner"
-	XPERL_CONF_PARTY_HEALER_MODE		    	= XPERL_CONF_PLAYER_HEALER_MODE
-	XPERL_CONF_PARTY_HEALER_MODE_DESC	    	= XPERL_CONF_PLAYER_HEALER_MODE_DESC
-	XPERL_CONF_PARTY_HEALERMODE_DEFICIT	   	= XPERL_CONF_PLAYER_HEALERMODE_DEFICIT
-	XPERL_CONF_PARTY_HEALERMODE_DEFICIT_DESC   	= XPERL_CONF_PLAYER_HEALERMODE_DEFICIT_DESC
-	XPERL_CONF_PARTY_HEALERMODE_DEFICITMAX     	= XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX
-	XPERL_CONF_PARTY_HEALERMODE_DEFICITMAX_DESC	= XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX_DESC
 
 	XPERL_CONF_RAID_PARTY_NUM			= "Afficher le num\195\169ro de groupe"
 	XPERL_CONF_RAID_PARTY_NUM_DESC			= "Afficher le num\195\169ro de groupe avec les joueurs en raid"
@@ -474,9 +433,6 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_RAID_SELECTNONE		        = NONE
         XPERL_CONF_RAID_SELECTNONE_DESC		        = "Ne rien s\195\169l\195\169ctionner"
 
-        XPERL_CONF_RAID_HEALER_MODE		        = XPERL_CONF_PLAYER_HEALER_MODE
-	XPERL_CONF_RAID_HEALER_MODE_DESC	        = XPERL_CONF_PLAYER_HEALER_MODE_DESC
-
         XPERL_CONF_ALL_PORTRAIT				= "Portraits"
         XPERL_CONF_ALL_PORTRAIT_DESC			= "Active tout les portraits"
         XPERL_CONF_ALL_PORTRAIT3D			= "Portraits 3d"
@@ -485,20 +441,12 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_ALL_LEVEL_DESC			= "Active l'affichage de tout les niveuax"
         XPERL_CONF_ALL_ICON				= "Ic\195\180nes de classes"
         XPERL_CONF_ALL_ICON_DESC			= "Permettre les ic\195\180nes de toutes les classes"
-        XPERL_CONF_ALL_PVP				= "Rangs PvP"
-        XPERL_CONF_ALL_PVP_DESC				= "Active tout les rangs pvp"
         XPERL_CONF_ALL_PVPFLAG				= "Marqueurs PVP"
         XPERL_CONF_ALL_PVPFLAG_DESC			= "Activer tout les marqueurs pvp"
         XPERL_CONF_ALL_VALUES				= "Valeurs"
         XPERL_CONF_ALL_VALUES_DESC			= "Permettre toutes les valeurs d'affichage"
         XPERL_CONF_ALL_PERCENT				= "Pourcentages"
         XPERL_CONF_ALL_PERCENT_DESC			= "Active l'affichages de tout les pourcentages"
-        XPERL_CONF_ALL_HEALER_MODE			= XPERL_CONF_PLAYER_HEALER_MODE
-        XPERL_CONF_ALL_HEALER_MODE_DESC	     		= XPERL_CONF_PLAYER_HEALER_MODE_DESC
-        XPERL_CONF_ALL_HEALERMODE_DEFICIT		= XPERL_CONF_PLAYER_HEALERMODE_DEFICIT
-        XPERL_CONF_ALL_HEALERMODE_DEFICIT_DESC  	= XPERL_CONF_PLAYER_HEALERMODE_DEFICIT_DESC
-        XPERL_CONF_ALL_HEALERMODE_DEFICITMAX    	= XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX
-        XPERL_CONF_ALL_HEALERMODE_DEFICITMAX_DESC 	= XPERL_CONF_PLAYER_HEALERMODE_DEFICITMAX_DESC
 
         XPERL_CONF_GLOBAL_BORDERS			= EMBLEM_BORDER	-- "Bordures"		Generic WoW lozalization
         XPERL_CONF_GLOBAL_BORDERS_DESC			= "D\195\169finir la couleur et la transparence pour toutes les bordures de cadres"

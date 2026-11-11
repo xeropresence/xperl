@@ -5,8 +5,6 @@
 if (GetLocale() == "koKR") then
 	XPERL_MINIMAP_HELP1	= "|c00FFFFFF좌클릭|r 하시면 설정창이 나옵니다. (그리고 |c0000FF00프레임 고정|r이 풀립니다.)"
 	XPERL_MINIMAP_HELP2	= "|c00FFFFFF우클릭|r 으로 버튼을 드래그해서 이동가능합니다."
-	XPERL_MINIMAP_HELP3	= "\r실제 공대원: |c00FFFF80%d|r\r실제 파티원: |c00FFFF80%d|r"
-	XPERL_MINIMAP_HELP4	= "\r당신은 실제 파티/공격대장 입니다."
 	XPERL_MINIMAP_HELP5	= "|c00FFFFFFALT|r : X-Perl 메모리 사용량"
 	XPERL_MINIMAP_HELP6	= "|c00FFFFFF+SHIFT|r : 접속 후 X-Perl 메모리 사용량"
 
@@ -63,7 +61,6 @@ if (GetLocale() == "koKR") then
 	BINDING_NAME_TOGGLEOPTIONS = "설정창 열기/닫기"
 	BINDING_NAME_TOGGLEBUFFTYPE = "버프/디버프/없음 변경"
 	BINDING_NAME_TOGGLEBUFFCASTABLE = "시전가능/해제가능 변경"
-	BINDING_NAME_TEAMSPEAKMONITOR = "음성대화 현황"
 	BINDING_NAME_TOGGLERANGEFINDER = "거리 측정 켜기/끄기"
 
 	XPERL_KEY_NOTICE_RAID_BUFFANY = "모든 버프/디버프 표시"
@@ -77,9 +74,6 @@ if (GetLocale() == "koKR") then
 
 -- 사용법
 	XPerlUsageNameList	= {XPerl = "코어", XPerl_Player = "플레이어", XPerl_PlayerPet = "소환수", XPerl_Target = "대상", XPerl_TargetTarget = "대상의 대상", XPerl_Party = "파티", XPerl_PartyPet = "파티 소환수", XPerl_RaidFrames = "공격대 창", XPerl_RaidPets = "공격대 소환수", XPerl_ArcaneBar = "아케인 바", XPerl_PlayerBuffs = "플레이어 버프"}
-	XPERL_USAGE_MEMMAX	= "UI 메모리 최대값 : %d"
-	XPERL_USAGE_MODULES	= "모듈: "
-	XPERL_USAGE_NEWVERSION	= "*새로운 버전"
 	XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r : 다운로드 가능"
 
 

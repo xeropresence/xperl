@@ -48,9 +48,7 @@ end
 ------------------------------------------------------------------------------
 -- Re-usable tables
 local FreeTables = setmetatable({}, {__mode = "k"})
-local requested, freed = 0, 0
 function XPerl_GetReusableTable(...)
-	requested = requested + 1
 	for t in pairs(FreeTables) do
 		FreeTables[t] = nil
 		for i = 1, select("#", ...) do
@@ -69,8 +67,6 @@ function XPerl_FreeTable(t, deep)
 			error("XPerl_FreeTable - Table already freed")
 		end
 
-		freed = freed + 1
-
 		FreeTables[t] = true
 		for k,v in pairs(t) do
 			if (deep and type(v) == "table") then
@@ -81,9 +77,6 @@ function XPerl_FreeTable(t, deep)
 		t[''] = 0
 		t[''] = nil
 	end
-end
-function XPerl_TableStats()
-	return requested, freed
 end
 
 local new, del = XPerl_GetReusableTable, XPerl_FreeTable
@@ -123,35 +116,6 @@ XPerlColourTable = setmetatable({},{
 --	end
 --	})
 --local xpPercent = XPerl_Percent
-
--- XPerl_ShowMessage
--- debug function: prints an event and its arguments (the event/arg1..arg9 globals it used to read are long gone)
-function XPerl_ShowMessage(cMsg, event, ...)
-	local str = "|c00FF7F00"..tostring(event).."|r"
-	local first = 1
-	local unit = ...
-	if (type(unit) == "string" and (unit == "player" or unit == "pet" or unit == "target" or unit =="focus" or strfind(unit, "^raid") or strfind(unit, "^party"))) then
-		local class = select(2, UnitClass(unit))
-		if (class and not issecretvalue(class)) then
-			str = str..", |c00808080"..unit.."("..XPerlColourTable[class]..UnitName(unit).."|c00808080)|r"
-			first = 2
-		end
-	end
-
-	for i = first, select("#", ...) do
-		str = str..", "..tostring((select(i, ...)))
-	end
-
-	if (cMsg) then
-		str = cMsg.." - "..str
-	end
-
-	local cf = ChatFrame2
-	if (not cf:IsVisible()) then
-		cf = DEFAULT_CHAT_FRAME
-	end
-	cf:AddMessage(str)
-end
 
 XPerl_AnchorList = {"TOP", "LEFT", "BOTTOM", "RIGHT"}
 
@@ -286,7 +250,7 @@ end
 -- XPerl_UpdateSpellRange(self, overrideUnit, isRaidFrame)
 -- Fades the frame (rangeFinder.Main), its name (NameFrame) and its stats (StatsFrame) while the unit is out of
 -- range or out of sight, and the whole frame while the unit is offline
-function XPerl_UpdateSpellRange2(self, overrideUnit, isRaidFrame)
+local function UpdateSpellRange(self, overrideUnit, isRaidFrame)
 	local unit
 	if (overrideUnit) then
 		unit = overrideUnit
@@ -383,7 +347,7 @@ function XPerl_StartupSpellRange()
 	SetupRangeRow(rf.StatsFrame, defaultSpell)
 
 	-- Put the real work function in place
-	XPerl_UpdateSpellRange = XPerl_UpdateSpellRange2
+	XPerl_UpdateSpellRange = UpdateSpellRange
 end
 
 XPerl_RegisterOptionChanger(XPerl_StartupSpellRange)
@@ -1012,23 +976,8 @@ function XPerl_LockFrames()
 end
 
 -- Minimap Icon
-function XPerl_MinimapButton_OnClick(self, button)
-	GameTooltip:Hide()
-	if (button == "LeftButton") then
-		XPerl_Toggle()
-	elseif (button == "RightButton") then
-		XPerl_MinimapMenu(self)
-	end
-end
-
--- XPerl_MinimapMenu_OnLoad
-function XPerl_MinimapMenu_OnLoad(self)
-	self.displayMode = "MENU"
-	UIDropDownMenu_Initialize(self, XPerl_MinimapMenu_Initialize)
-end
-
--- XPerl_MinimapMenu_Initialize
-function XPerl_MinimapMenu_Initialize(self, level)
+-- MinimapMenuInitialize: the minimap button's right-click menu and its submenus
+local function MinimapMenuInitialize(self, level)
 	local info
 
 	if (level == 2) then
@@ -1098,39 +1047,27 @@ function XPerl_MinimapMenu_Initialize(self, level)
 	UIDropDownMenu_AddButton(info)
 end
 
--- XPerl_MinimapMenu
-function XPerl_MinimapMenu(self)
+-- MinimapMenu: opens the right-click menu at the cursor
+local function MinimapMenu()
 	if (not XPerl_Minimap_Dropdown) then
-		CreateFrame("Frame", "XPerl_Minimap_Dropdown")
-		XPerl_MinimapMenu_OnLoad(XPerl_Minimap_Dropdown)
+		local menu = CreateFrame("Frame", "XPerl_Minimap_Dropdown")
+		menu.displayMode = "MENU"
+		UIDropDownMenu_Initialize(menu, MinimapMenuInitialize)
 	end
 
 	ToggleDropDownMenu(1, nil, XPerl_Minimap_Dropdown, "cursor", 0, 0)
 end
 
-local xpStartupMemory = 0
-
--- XPerl_MinimapButton_Init
-function XPerl_MinimapButton_Init(self)
-	self.time = 0
-	collectgarbage()
-	UpdateAddOnMemoryUsage()
-	xpStartupMemory = GetAddOnMemoryUsage(addonName) or 0
-
-	XPerl_MinimapButton_UpdatePosition(self)
-	-- Edit Mode's minimap size setting changes the orbit
-	Minimap:HookScript("OnSizeChanged", function() XPerl_MinimapButton_UpdatePosition(self) end)
-
-	if (conf.minimap.enable) then
-		self:Show()
-	else
-		self:Hide()
+function XPerl_MinimapButton_OnClick(self, button)
+	GameTooltip:Hide()
+	if (button == "LeftButton") then
+		XPerl_Toggle()
+	elseif (button == "RightButton") then
+		MinimapMenu()
 	end
-
-	self.UpdateTooltip = XPerl_MinimapButton_OnEnter
-
-	XPerl_MinimapButton_Init = nil
 end
+
+local xpStartupMemory = 0
 
 -- Minimap button orbit: conf.minimap.pos is the angle in degrees, counted from the left going clockwise over the
 -- top (180 = right), conf.minimap.distance how far past the minimap's edge the button sits (Alt-drag sets it).
@@ -1141,11 +1078,33 @@ local function MinimapRadius()
 	return Minimap:GetWidth() / 2 + MINIMAP_EDGE + (conf.minimap.distance or 0)
 end
 
--- XPerl_MinimapButton_UpdatePosition
-function XPerl_MinimapButton_UpdatePosition(self)
+-- UpdateMinimapButtonPosition
+local function UpdateMinimapButtonPosition(self)
 	local angle, radius = math.rad(conf.minimap.pos or 186), MinimapRadius()
 	self:ClearAllPoints()
 	self:SetPoint("CENTER", Minimap, "CENTER", -radius * math.cos(angle), radius * math.sin(angle))
+end
+
+-- XPerl_MinimapButton_Init
+function XPerl_MinimapButton_Init(self)
+	self.time = 0
+	collectgarbage()
+	UpdateAddOnMemoryUsage()
+	xpStartupMemory = GetAddOnMemoryUsage(addonName) or 0
+
+	UpdateMinimapButtonPosition(self)
+	-- Edit Mode's minimap size setting changes the orbit
+	Minimap:HookScript("OnSizeChanged", function() UpdateMinimapButtonPosition(self) end)
+
+	if (conf.minimap.enable) then
+		self:Show()
+	else
+		self:Hide()
+	end
+
+	self.UpdateTooltip = XPerl_MinimapButton_OnEnter
+
+	XPerl_MinimapButton_Init = nil
 end
 
 -- XPerl_MinimapButton_Dragging
@@ -1166,7 +1125,7 @@ function XPerl_MinimapButton_Dragging(self, elapsed)
 	end
 	conf.minimap.pos = angle
 
-	XPerl_MinimapButton_UpdatePosition(self)
+	UpdateMinimapButtonPosition(self)
 end
 
 -- DiffColour(diff, val)
@@ -1209,18 +1168,6 @@ function XPerl_MinimapButton_Details(tt, ldb)
 			tt:AddLine(XPERL_MINIMAP_HELP5)
 		end
 	end
-	--GetRealNumRaidMembers doesn't exist anymore in 5.0.4
-	--[==[if (GetRealNumRaidMembers) then
-		if (GetNumGroupMembers() > 0 and GetRealNumRaidMembers() > 0) then
-			if (select(2, IsInInstance()) == "pvp") then
-				tt:AddLine(format(XPERL_MINIMAP_HELP3, GetRealNumRaidMembers(), GetNumSubgroupMembers(LE_PARTY_CATEGORY_HOME)))
-
-				if (IsRealPartyLeader()) then
-					tt:AddLine(XPERL_MINIMAP_HELP4)
-				end
-			end
-		end
-	end]==]
 
 	if (UpdateAddOnMemoryUsage and IsAltKeyDown()) then
 		local showDiff = IsShiftKeyDown()
@@ -1335,8 +1282,8 @@ function XPerl_SetPowerBar(self, current, maxPower, powerType, exactText)
 	mb.tex:SetTexCoord(0, max(0, min(1, fraction)), 0, 1)
 end
 
--- XPerl_TooltipModiferPressed()
-function XPerl_TooltipModiferPressed(buffs)
+-- TooltipModifierPressed(buffs)
+local function TooltipModifierPressed(buffs)
 	local mod, ic
 	if (buffs) then
 		if (not conf.tooltip.enableBuffs) then
@@ -1377,7 +1324,7 @@ function XPerl_PlayerTip(self, unitid)
 		return
 	end
 
-	if (not XPerl_TooltipModiferPressed()) then
+	if (not TooltipModifierPressed()) then
 		return
 	end
 
@@ -1677,18 +1624,12 @@ end
 hooksecurefunc("WhoList_Update", XPerl_WhoList_Update)
 ]]
 
--- XPerl_RegisterClickCastFrame
-function XPerl_RegisterClickCastFrame(self)
+-- RegisterClickCastFrame: makes the frame known to click-cast add-ons
+local function RegisterClickCastFrame(self)
 	if (not ClickCastFrames) then
 		ClickCastFrames = {}
 	end
 	ClickCastFrames[self] = true
-end
-
-function XPerl_UnregisterClickCastFrame(self)
-	if (ClickCastFrames) then
-		ClickCastFrames[self] = nil
-	end
 end
 
 -- unitmenuOnPostClick
@@ -1729,7 +1670,7 @@ function XPerl_SecureUnitButton_OnLoad(self, unit, menufunc, m1, m2, toggledisab
 	self:SetAttribute("_menu", m2)
 	self:SetScript("PostClick", unitmenuOnPostClick)
 
-	XPerl_RegisterClickCastFrame(self)
+	RegisterClickCastFrame(self)
 end
 
 ------------------------------------------------------------------------------
@@ -2278,8 +2219,8 @@ end
 local FlashFrame = CreateFrame("Frame", "XPerl_FlashFrame")
 FlashFrame.list = {}
 
--- XPerl_FrameFlash_OnUpdate(self, elapsed)
-function XPerl_FrameFlash_OnUpdate(self, elapsed)
+-- FrameFlashOnUpdate(self, elapsed)
+local function FrameFlashOnUpdate(self, elapsed)
 	for k,v in pairs(self.list) do
 		if (k.frameFlash.out) then
 			k.frameFlash.alpha = k.frameFlash.alpha - elapsed
@@ -2309,7 +2250,7 @@ function XPerl_FrameFlash_OnUpdate(self, elapsed)
 	end
 end
 
-FlashFrame:SetScript("OnUpdate", XPerl_FrameFlash_OnUpdate)
+FlashFrame:SetScript("OnUpdate", FrameFlashOnUpdate)
 
 -- XPerl_FrameFlash
 function XPerl_FrameFlash(self)
@@ -2506,10 +2447,10 @@ function XPerl_Unit_UpdateReadyState(self)
 	end
 end
 
--- XPerl_SwitchAnchor(self, new)
+-- SwitchAnchor(self, new)
 -- Re-anchors a frame that has one anchor between the same corners (e.g. TOPLEFT to TOPLEFT) to another corner
 -- of the same region, without moving it
-function XPerl_SwitchAnchor(self, new)
+local function SwitchAnchor(self, new)
 	if (self:GetNumPoints() ~= 1) then
 		return
 	end
@@ -2600,7 +2541,7 @@ local function scaleMouseUp(self)
 	scaleIndication:Hide()
 
 	if (self.resizeTop) then
-		XPerl_SwitchAnchor(self.anchor, "BOTTOMLEFT")
+		SwitchAnchor(self.anchor, "BOTTOMLEFT")
 	end
 
 	if (self.scaling) then
@@ -2641,7 +2582,7 @@ local function scaleMouseChange(self)
 
 			w = self.corner.startSize.w * s		-- Set height and width of anchor window to match ratio of actual
 			if (self.corner.resizeTop) then
-				XPerl_SwitchAnchor(self, "BOTTOMLEFT")
+				SwitchAnchor(self, "BOTTOMLEFT")
 				local bottom, left = self:GetBottom(), self:GetLeft()
 				self:SetWidth(w)
 				self:SetHeight(w / ratio)

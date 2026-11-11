@@ -11,8 +11,7 @@
 -- <prefix>1..5; their type mixin includes XPerl_UnitStackFrameMixin and sets `stack`, `unitPrefix` and
 -- `labelFormat` (Edit Mode placeholder name, "%d" = index).
 
-XPerl_UnitStackMixin = {}
-local S = XPerl_UnitStackMixin
+local S = {}
 
 -- XPerl_UnitStack_Create(name, frameKey, label, default)
 -- name: global name of the anchor frame; label: its Edit Mode label; default: its Edit Mode default position

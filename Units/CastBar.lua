@@ -71,8 +71,7 @@ local function ShowBlizzardPlayerBar(show)
 	end
 end
 
-XPerl_CastBarMixin = {}
-local CB = XPerl_CastBarMixin
+local CB = {}
 
 -- XPerl_CastBar_Create(owner)
 -- Element init: the bar is named <nameFrame>CastBar and covers the name frame

@@ -14,8 +14,6 @@ XPerl_ModMenuIcon		= "Interface\\Icons\\INV_Misc_Gem_Pearl_02"
 XPERL_COMMS_PREFIX		= "X-Perl"
 XPERL_MINIMAP_HELP1		= "|c00FFFFFFClick Sinistro|r per le opzioni (e per |c0000FF00sbloccare le finestre|r)"
 XPERL_MINIMAP_HELP2		= "|c00FFFFFFClick Destro|r per spostare questa icona"
-XPERL_MINIMAP_HELP3		= "\rMembri reali dell'incursione: |c00FFFF80%d|r\rMembri reali del gruppo: |c00FFFF80%d|r"
-XPERL_MINIMAP_HELP4		= "\rSei il capogruppo/capoincursione reale"
 XPERL_MINIMAP_HELP5		= "|c00FFFFFFAlt|r per info sull'uso di memoria di X-Perl"
 XPERL_MINIMAP_HELP6		= "|c00FFFFFF+Maiusc|r per l'uso di memoria di X-Perl dall'avvio"
 
@@ -78,7 +76,6 @@ BINDING_NAME_TOGGLERAIDPETS = "Abilita/Disattiva Raid Pets"
 BINDING_NAME_TOGGLEOPTIONS = "Abilita/Disattiva finestra opzioni"
 BINDING_NAME_TOGGLEBUFFTYPE = "Abilita/Disattiva Buffs/Debuffs/none"
 BINDING_NAME_TOGGLEBUFFCASTABLE = "Abilita/Disattiva Castable/Curable"
-BINDING_NAME_TEAMSPEAKMONITOR = "Teamspeak Monitor"
 BINDING_NAME_TOGGLERANGEFINDER = "Abilita/Disattiva Range Finder"
 
 XPERL_KEY_NOTICE_RAID_BUFFANY = "Visualizza tutti i benefici/penalità"
@@ -92,9 +89,6 @@ XPERL_DRAGHINT2		= "|c00FFFFFFFai Maiusc+Click|r per ridimensionare la finestra"
 
 -- Usage
 XPerlUsageNameList = {XPerl = "Core", XPerl_Player = "Giocatore", XPerl_PlayerPet = "Famiglio", XPerl_Target = "Bersaglio", XPerl_TargetTarget = "Bersaglio del bersaglio", XPerl_Party = "Gruppo", XPerl_PartyPet = "Famigli del gruppo", XPerl_RaidFrames = "Finestre del raid", XPerl_RaidPets = "Famigli dell'incursione", XPerl_ArcaneBar = "Barra arcana", XPerl_PlayerBuffs = "Benefici del giocatore"}
-XPERL_USAGE_MEMMAX	= "IU Mem Max: %d"
-XPERL_USAGE_MODULES = "Moduli: "
-XPERL_USAGE_NEWVERSION	= "*Una nuova versione"
 XPERL_USAGE_AVAILABLE	= "%s |c00FFFFFF%s|r è disponibile per il download"
 
 XPERL_CMD_MENU		= "menu"
