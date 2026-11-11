@@ -184,8 +184,9 @@ function XPerl_UnitFrame_OnLoad(self)
 		self.editModePreview = function(on) self:EditModePreview(on) end
 	end
 
-	-- Group headers create buttons mid-combat when the roster grows, and their protected setup has to wait.
-	-- Header child templates declare their clicks and click attributes in XML for the meantime.
+	-- A group header out of spare buttons (Raid.ReserveButtons in Units/Raid.lua) creates one mid-combat, and
+	-- its protected setup has to wait. Header child templates declare their clicks and click attributes in XML
+	-- for the meantime.
 	if (self.headerChild and InCombatLockdown()) then
 		self.secureSetupDeferred = function() SecureSetup(self) end
 		XPerl_ProtectedCall(self.secureSetupDeferred)

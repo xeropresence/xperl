@@ -89,6 +89,21 @@ local function Align()
 	end
 end
 
+-- ShowHeader: the raid's visibility changed with the roster or the zone (protected). Pets come out in combat,
+-- so the header gets its buttons ahead: one per member and spare ones (Raid.ReserveButtons).
+local function ShowHeader()
+	if (InCombatLockdown()) then
+		XPerl_ProtectedCall(ShowHeader)
+		return
+	end
+	local header = XPerl_Raid_GrpPets
+	local shown = Enabled() and Raid.Shown()
+	if (shown) then
+		Raid.ReserveButtons(header, max(1, GetNumGroupMembers()) + Raid.SpareButtons())
+	end
+	header:SetShown(shown)
+end
+
 -- ApplyPets: header attributes, scale, Edit Mode registration, alignment, visibility (protected)
 local function ApplyPets()
 	if (InCombatLockdown()) then
@@ -121,17 +136,8 @@ local function ApplyPets()
 	Align()
 
 	title:SetShown(enabled)
-	header:SetShown(enabled and Raid.Shown())
+	ShowHeader()
 	RefreshTitle()
-end
-
--- ShowHeader: the raid's visibility changed with the roster or the zone (protected)
-local function ShowHeader()
-	if (InCombatLockdown()) then
-		XPerl_ProtectedCall(ShowHeader)
-		return
-	end
-	XPerl_Raid_GrpPets:SetShown(Enabled() and Raid.Shown())
 end
 
 -- Pets come and go without roster changes; the header shows them by itself, the title text follows on

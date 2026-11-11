@@ -28,8 +28,9 @@
 		</Scripts>
 	</StatusBar>
 
-	<!-- Raid member button (Units/Raid.lua), made by the group headers XPerl_Raid_Grp1-13. Headers make buttons
-	     mid-combat too, so the clicks are declared here rather than set up from Lua. -->
+	<!-- Raid member button (Units/Raid.lua), made ahead for the group headers XPerl_Raid_Grp1-13 (Raid.ReserveButtons).
+	     A header out of spare buttons still makes one mid-combat, so the clicks are declared here rather than set
+	     up from Lua. -->
 	<Button name="XPerl_Raid_FrameTemplate" inherits="XPerl_UnitButtonTemplate" registerForClicks="AnyUp" virtual="true">
 		<Size x="80" y="38"/>
 		<KeyValues>

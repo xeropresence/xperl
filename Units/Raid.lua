@@ -16,6 +16,8 @@ local conf, rconf
 
 local WoWclassCount = XPERL_RAID_CLASS_COUNT	-- class columns, one title/header pair each (XPerl.lua)
 local MAX_GROUPS = 8				-- raid groups, and role-sorted slices of five for 40 members
+local MAX_MEMBERS = MAX_GROUPS * 5
+local SPARE_BUTTONS = 10			-- see Raid.SpareButtons
 
 local titles = {}		-- XPerl_Raid_Title1-13 by id
 local groupCounts = {}		-- members each header shows, from the roster
@@ -229,6 +231,45 @@ function Raid.LayoutHeader(header)
 	header:SetPoint(a[1], header:GetParent(), a[2], 0, 0)
 end
 
+-- Raid.ReserveButtons(header, count): makes the header's buttons up to `count` (protected)
+-- A group header makes a button whenever its group outgrows the ones it has, also in combat, where the client
+-- blocks part of setting up a protected button from an add-on's template (ADDON_ACTION_BLOCKED for
+-- CreateFrame in SecureGroupHeaders.lua). So the buttons a header can come to need before combat ends are made
+-- ahead, as the header would make them; it takes them for its own by the child<N> attributes.
+function Raid.ReserveButtons(header, count)
+	if (header:GetAttribute("child"..count)) then
+		return
+	end
+	local name, template = header:GetName(), header:GetAttribute("template")
+	local templateType = header:GetAttribute("templateType") or "Button"
+	local ignore = header:GetAttribute("_ignore")
+	header:SetAttribute("_ignore", "attributeChanges")	-- no re-layout per button: spare ones aren't laid out
+	for i = 1, count do
+		local attribute = "child"..i
+		if (not header:GetAttribute(attribute)) then
+			header:SetAttribute(attribute, CreateFrame(templateType, name.."UnitButton"..i, header, template))
+		end
+	end
+	header:SetAttribute("_ignore", ignore)
+end
+
+-- Raid.SpareButtons(): the members to keep spare buttons for where a header's count isn't fixed (class
+-- columns, raid pets): those who can still join, SPARE_BUTTONS at most. Past that many joining one header
+-- within a single fight, the header is back to making buttons in combat.
+function Raid.SpareButtons()
+	return max(0, min(SPARE_BUTTONS, MAX_MEMBERS - GetNumGroupMembers()))
+end
+
+-- ButtonsNeeded(i, mode): the buttons header i has to have ready (see Raid.ReserveButtons)
+local function ButtonsNeeded(i, mode)
+	if (mode ~= "class") then
+		return 5			-- a raid group, or a role-sorted slice of five
+	elseif (not rconf.class[i].enable) then
+		return 1			-- shows nobody; a header keeps one button regardless
+	end
+	return groupCounts[i] + Raid.SpareButtons()
+end
+
 -- GroupFilter(i): a group header shows its group, limited to the enabled classes; a class column its class
 local function GroupFilter(i, mode)
 	if (mode == "class") then
@@ -384,7 +425,7 @@ local function RegisterTitles()
 	end
 end
 
--- ShowHeaders: which headers are shown (protected)
+-- ShowHeaders: which headers are shown, with the buttons they can come to need in combat (protected)
 local function ShowHeaders()
 	if (InCombatLockdown()) then
 		XPerl_ProtectedCall(ShowHeaders)
@@ -393,7 +434,12 @@ local function ShowHeaders()
 	local mode = SortMode()
 	local shown = Raid.Shown()
 	for i = 1, WoWclassCount do
-		titles[i].header:SetShown(shown and HeaderUsed(i, mode))
+		local header = titles[i].header
+		local used = shown and HeaderUsed(i, mode)
+		if (used) then
+			Raid.ReserveButtons(header, ButtonsNeeded(i, mode))
+		end
+		header:SetShown(used)
 	end
 end
 
