@@ -847,6 +847,12 @@ local statusTextures = {
 	mainTank	= "Interface\\GroupFrame\\UI-Group-MainTankIcon",
 	combat		= "Interface\\CharacterFrame\\UI-StateIcon",
 }
+-- UI-StateIcon's resting and combat cells pad their glyphs; these squares crop to the art so it fills the
+-- icon like the other status textures do
+local stateIconCoords = {
+	combat	= {0.546875, 0.921875, 0.0703125, 0.4453125},
+	resting	= {0.046875, 0.46875, 0.0390625, 0.4609375},
+}
 -- Spot -> the icons' point that lines up on it, which sets the way a row runs
 local spotAlign = {
 	TOPLEFT = "LEFT", LEFT = "LEFT", BOTTOMLEFT = "LEFT",
@@ -871,7 +877,7 @@ function UF:CreateStatusIcons()
 		icon:Hide()
 		icons[key] = icon
 	end
-	icons.combat:SetTexCoord(0.5, 1, 0, 0.5)
+	icons.combat:SetTexCoord(unpack(stateIconCoords.combat))
 	self.statusIcons = {layer = layer, icons = icons, want = {}, shown = {}, combatState = "combat", dirty = true}
 end
 
@@ -934,11 +940,7 @@ function UF:UpdateStatusIcons()
 		local state = combat and "combat" or "resting"
 		if (si.combatState ~= state) then
 			si.combatState = state
-			if (combat) then
-				icons.combat:SetTexCoord(0.5, 1, 0, 0.5)
-			else
-				icons.combat:SetTexCoord(0, 0.5, 0, 0.5)
-			end
+			icons.combat:SetTexCoord(unpack(stateIconCoords[state]))
 		end
 	end
 	want.combat = (combat or resting) and true or false
