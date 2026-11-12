@@ -24,6 +24,7 @@ XPerl_PetFrameMixin = {
 	highlightRatio = 2,
 }
 local P = XPerl_PetFrameMixin
+P.GetTargetInfo = UF.ShownUnitTargetInfo	-- pings the player while in a vehicle (the "unit" attribute stays "pet")
 
 local Define = XPerl_UnitFrame_DefineElement
 Define("petVehicle",	{events = {UNIT_ENTERED_VEHICLE = "player", UNIT_EXITED_VEHICLE = "player", UNIT_PET = "player", PLAYER_ENTERING_WORLD = true}, method = "UpdateVehicle", full = false})

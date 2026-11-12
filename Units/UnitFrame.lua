@@ -415,12 +415,18 @@ function UF:SetUnit(unit)
 	self:UnitChanged()
 end
 
--- GetTargetInfo
--- What a ping on the frame targets (PingableUnitFrameTemplate, Blizzard_SharedXML/PingableType.lua): the unit
--- the frame shows. Blizzard's version reads self.unit or the "unit" attribute; X-Perl keeps the unit in partyid,
--- party targets and pets have no unit attribute (useparent-unit with unitsuffix), and the player and pet
--- frames show another unit than their attribute in a vehicle.
-function UF:GetTargetInfo()
+-- Pings (PingableUnitFrameTemplate, Blizzard_SharedXML/PingableType.lua)
+-- The ping system asks the frame under the cursor for GetTargetInfo. The template's own version runs securely
+-- and reads the "unit" attribute, so a button with that attribute keeps it and X-Perl must not replace it: in
+-- an instance a GUID fetched by add-on code is secret for units outside the group (hostile targets, NPCs) and
+-- the ping is dropped; in the open world it is not, and either version works. For the same reason unit
+-- buttons never get a .unit field (the template reads self.unit first, and reading an add-on's field taints
+-- the call); the unit is kept in partyid.
+--
+-- ShownUnitTargetInfo is GetTargetInfo for the types whose "unit" attribute is not the unit they show: party
+-- pets have none (useparent-unit with unitsuffix), and the player and pet frames show another unit in a
+-- vehicle. Being add-on code, it can't ping a unit whose GUID is secret; these units never are.
+function UF:ShownUnitTargetInfo()
 	local unit = self.partyid
 	return {guid = unit and UnitGUID(unit)}
 end

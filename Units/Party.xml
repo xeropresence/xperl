@@ -87,17 +87,14 @@
 	</Button>
 
 	<!-- Party member's target (XPerl_party<N>targetFrame), created by the party frame. Its unit is the party
-	     frame's unit + "target"; it has no events of its own and is polled. -->
+	     frame's unit + "target", set as its "unit" attribute by the party frame's secure snippet
+	     (TARGET_UNIT_SNIPPET in Units/Party.lua); it has no events of its own and is polled. -->
 	<Button name="XPerl_Party_TargetTemplate" inherits="XPerl_UnitButtonTemplate" virtual="true">
 		<Size x="120" y="28"/>
 		<KeyValues>
 			<KeyValue key="typeMixin" value="XPerl_PartyTargetFrameMixin" type="global"/>
 			<KeyValue key="frameKey" value="party"/>
 		</KeyValues>
-		<Attributes>
-			<Attribute name="useparent-unit" type="boolean" value="true"/>
-			<Attribute name="unitsuffix" type="string" value="target"/>
-		</Attributes>
 		<Frames>
 			<Button name="$parentnameFrame" parentKey="nameFrame" inherits="XPerl_UnitNameFrameTemplate">
 				<Anchors>
@@ -106,7 +103,6 @@
 				</Anchors>
 				<Attributes>
 					<Attribute name="useparent-unit" type="boolean" value="true"/>
-					<Attribute name="useparent-unitsuffix" type="boolean" value="true"/>
 				</Attributes>
 				<Frames>
 					<StatusBar name="$parenthealthBar" parentKey="healthBar" inherits="XPerlStatusBar" hidden="true">

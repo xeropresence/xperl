@@ -35,6 +35,7 @@ XPerl_PlayerFrameMixin = {
 	tickInterval = 0.2,
 }
 local P = XPerl_PlayerFrameMixin
+P.GetTargetInfo = UF.ShownUnitTargetInfo	-- pings the vehicle while in one (the "unit" attribute stays "player")
 
 local Define = XPerl_UnitFrame_DefineElement
 local function XPBarEnabled() return pconf.xpBar end

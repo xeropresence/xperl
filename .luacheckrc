@@ -70,7 +70,7 @@ read_globals = {
 	"IsControlKeyDown", "IsInGroup", "IsInGuild", "IsInInstance", "IsInRaid", "IsPVPTimerRunning",
 	"IsResting", "IsShiftKeyDown", "LAYOUT_STYLE_CLASSIC", "LAYOUT_STYLE_GAMEPAD", "LAYOUT_STYLE_MODERN", "LibStub", "Mixin", "NotifyInspect", "PlaySound", "RegisterAttributeDriver",
 	"RegisterUnitWatch", "ReloadUI", "SOUNDKIT", "SecondsToTime", "SecureActionButton_OnClick",
-	"SecureButton_GetUnit", "SecureUnitButton_OnLoad", "SetCursor",
+	"SecureButton_GetUnit", "SecureHandlerSetFrameRef", "SecureHandlerWrapScript", "SecureUnitButton_OnLoad", "SetCursor",
 	"SetPortraitTexture", "SetRaidTargetIconTexture", "SpellCanTargetUnit",
 	"SpellIsTargeting", "ToggleDropDownMenu", "TooltipDataProcessor", "UIDropDownMenu_AddButton",
 	"UIDropDownMenu_CreateInfo", "UIDropDownMenu_GetSelectedID", "UIDropDownMenu_Initialize",

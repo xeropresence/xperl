@@ -279,10 +279,18 @@ Define("partyThreat",	{events = {UNIT_THREAT_LIST_UPDATE = "target", PLAYER_TARG
 Define("partyTarget",	{events = {UNIT_TARGET = "unit"}, method = "OnUnitTarget", full = false})
 Define("partyPet",	{events = {UNIT_PET = "unit"}, method = "OnUnitPet", full = false})
 
+-- Run from secure code whenever a party frame's attribute changes (the header assigns and clears "unit", in
+-- combat too): the target frame's unit is the member's target. A real "unit" attribute, instead of
+-- useparent-unit with a unitsuffix, is what lets the ping template's secure GetTargetInfo ping a member's
+-- hostile target (see ShownUnitTargetInfo in Units/UnitFrame.lua).
+local TARGET_UNIT_SNIPPET = [[
+	if (name == "unit") then
+		self:GetFrameRef("target"):SetAttribute("unit", value and value .. "target")
+	end
+]]
+
 -- InitType
 function P:InitType()
-	self:GetParent():SetAttribute("child"..self:GetID(), self)
-
 	local nf = self.nameFrame
 	nf.pvpIcon:SetSize(36, 36)
 	nf.pvpIcon:ClearAllPoints()
@@ -291,6 +299,11 @@ function P:InitType()
 	local tf = CreateFrame("Button", self:GetName().."targetFrame", self, "XPerl_Party_TargetTemplate")
 	tf:SetFrameLevel(self:GetFrameLevel() + 1)
 	self.targetFrame = tf
+	SecureHandlerSetFrameRef(self, "target", tf)
+	SecureHandlerWrapScript(self, "OnAttributeChanged", self, TARGET_UNIT_SNIPPET)
+
+	-- Known to the header only now: every unit it assigns goes through the wrapped script
+	self:GetParent():SetAttribute("child"..self:GetID(), self)
 
 	-- Top row status icons (the combat icon's default spot is TOPRIGHT) stay on the name bar: it only grows
 	-- by half the extra width, so the frame's own corner would leave them over the target frame
@@ -749,6 +762,7 @@ XPerl_PartyPetFrameMixin = {
 	statusIconSize = 12,
 }
 local PP = XPerl_PartyPetFrameMixin
+PP.GetTargetInfo = UF.ShownUnitTargetInfo	-- no "unit" attribute (useparent-unit with unitsuffix)
 
 local function PetManaEnabled(self) return self.conf.mana end
 Define("partyPetPower",	{events = {UNIT_POWER_FREQUENT = "unit", UNIT_MAXPOWER = "unit", UNIT_DISPLAYPOWER = "unit"}, method = "UpdatePower", enabled = PetManaEnabled})
