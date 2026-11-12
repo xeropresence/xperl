@@ -13,6 +13,7 @@ XPERL_CONF_TITLE7						= RAID		-- "Raid"
 XPERL_CONF_TITLE8						= ALL		-- "All"
 XPERL_CONF_TITLE9						= COLORS	-- "Colors"
 XPERL_CONF_TITLE10						= "Helpers"
+XPERL_CONF_TITLE11						= "Frames"
 
 -- Titles
 XPERL_CONF_PLAYER_ALIGNMENT				= "Player Alignment"

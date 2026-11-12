@@ -1712,6 +1712,8 @@
 						table.insert(tabs, XPerl_Options_Tab8)
 					end
 
+					table.insert(tabs, XPerl_Options_Tab11)
+
 					table.insert(tabs, XPerl_Options_Tab9)
 					table.insert(tabs, XPerl_Options_Tab10)
 
@@ -2837,7 +2839,8 @@
 								"_Raid_Options",
 								"_All_Options",
 								"_Colour_Options",
-								"_Helper_Options"}
+								"_Helper_Options",
+								"_Frames_Options"}
 
 						self.SelectTab = function(self, id)
 
@@ -2991,6 +2994,17 @@
 						<Scripts>
 							<OnClick>
 								self:GetParent():SelectTab(10)
+							</OnClick>
+						</Scripts>
+					</Button>
+
+					<Button name="$parent11" inherits="XPerlTabTemplate" id="11" hidden="true">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" relativeTo="$parent10"/>
+						</Anchors>
+						<Scripts>
+							<OnClick>
+								self:GetParent():SelectTab(11)
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -10200,7 +10214,17 @@
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
+				</Frames>
+			</Frame>
 
+			-- Frames Options
+			<Frame name="$parent_Frames_Options" hidden="true">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="XPerl_Options_Area_Tabs"/>
+					<Anchor point="BOTTOMRIGHT" relativeTo="XPerl_Options_Area_Tabs"/>
+				</Anchors>
+
+				<Frames>
 					<Frame name="$parent_AddOns" inherits="BackdropTemplate">
 						<Size>
 							<AbsDimension x="130" y="70"/>
@@ -10209,10 +10233,10 @@
 							<KeyValue key="backdropInfo" value="XPERL_BACKDROP_OPTIONS_AREA" type="global"/>
 						</KeyValues>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="XPerl_Options_Area_Tabs" relativePoint="TOP">
+							<Anchor point="TOPLEFT" relativeTo="XPerl_Options_Area_Tabs">
 								<Offset><AbsDimension x="5" y="-5"/></Offset>
 							</Anchor>
-							<Anchor point="BOTTOMRIGHT" relativeTo="XPerl_Options_Area_Tabs">
+							<Anchor point="BOTTOMRIGHT" relativeTo="XPerl_Options_Area_Tabs" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="-5" y="5"/></Offset>
 							</Anchor>
 						</Anchors>

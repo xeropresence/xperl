@@ -958,7 +958,7 @@ function XPerl_Target_Reset()
 	XPerl_Focus:ApplySettings()
 end
 
--- All -> Frames panel: the frame enable flags (XPerlDB.<key>.enable, 1 or false) with the type a row
+-- Frames panel: the frame enable flags (XPerlDB.<key>.enable, 1 or false) with the type a row
 -- depends on. The flags in use when the UI loaded tell whether a reload is needed. A second column switches
 -- each type's heal prediction (XPerlDB.<key>.healPrediction, 1 or false), which belongs to the active Edit Mode
 -- layout like the other frame settings.
