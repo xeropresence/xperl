@@ -298,6 +298,10 @@ function XPerl_Options_MaxScaleSet()
 	end
 end
 
+-- The scale sliders are built while the add-on loads, before the settings exist, so they start with the default
+-- maximum. Without this, the first time they're shown they clamp any larger saved scale to it and save that.
+XPerl_RequestConfig(XPerl_Options_MaxScaleSet)
+
 -- XPerl_SliderSetup(self)
 function XPerl_SliderSetup(self, percent)
 	self.xperlSliderEnabled = true
