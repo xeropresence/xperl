@@ -368,6 +368,9 @@ local function TargetLike(s, P, isTarget)
 		s:Check("showTalents", P.."TALENTS")
 	end
 	s:Healer()
+	if (isTarget) then
+		s:Check("assistCounter", P.."ASSISTCOUNTER", "bool")
+	end
 
 	s:Group("XPERL_EDITMODE_GROUP_ICONS")
 	s:StatusIcons("icons")

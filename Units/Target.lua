@@ -4,7 +4,7 @@
 --
 -- Target and focus frames (XPerl_Target, XPerl_Focus): classification and elite graphics, creature type or
 -- class, specialisation (target), combo points, target sounds, the focus marker, deferred updates. The rest
--- comes from Units/UnitFrame.lua.
+-- comes from Units/UnitFrame.lua, the target's assist counter from Units/TargetCounters.lua.
 
 local UF = XPerl_UnitFrameMixin
 local conf
@@ -16,9 +16,9 @@ XPerl_TargetFrameMixin = {
 	elementList = {
 		"highlight", "targetChanged", "focusChanged", "name", "classification", "level", "targetType", "power",
 		"health", "combat", "threat", "statusIcons", "role", "combo", "portrait", "range", "auras", "pvp",
-		"healPrediction", "combatFeedback", "castBar", "petBattle", "targetTalents",
+		"healPrediction", "combatFeedback", "castBar", "petBattle", "targetTalents", "assistCounter",
 	},
-	perlFrameKeys = {"nameFrame", "statsFrame", "levelFrame", "portraitFrame", "creatureTypeFrame", "bossFrame", "cpFrame"},
+	perlFrameKeys = {"nameFrame", "statsFrame", "levelFrame", "portraitFrame", "creatureTypeFrame", "bossFrame", "cpFrame", "assistCounter"},
 	flashFrameKeys = {"portraitFrame", "nameFrame", "levelFrame", "statsFrame", "bossFrame"},
 	baseWidth = 128,
 	portraitWidth = 60,
@@ -225,7 +225,7 @@ function T:UpdateClassification()
 		bf:Hide()
 	end
 
-	local lf = self.levelFrame
+	local lf, ac = self.levelFrame, self.assistCounter
 	if (eliteGfx) then
 		self.eliteFrame:Show()
 		if (self.conf.level) then
@@ -234,6 +234,13 @@ function T:UpdateClassification()
 			lf:SetFrameLevel(self.portraitFrame:GetFrameLevel() + 2)
 			lf.outOfPlace = true
 		end
+		-- The assist counter goes into the portrait's corner, out of the elite graphic's way
+		if (ac and not ac.outOfPlace) then
+			ac:ClearAllPoints()
+			ac:SetPoint("BOTTOMRIGHT", self.portraitFrame, "BOTTOMRIGHT", 0, 0)
+			ac:SetFrameLevel(self.portraitFrame:GetFrameLevel() + 2)
+			ac.outOfPlace = true
+		end
 	else
 		self.eliteFrame:Hide()
 		if (lf.outOfPlace) then
@@ -241,6 +248,12 @@ function T:UpdateClassification()
 			lf:ClearAllPoints()
 			lf:SetPoint("TOPLEFT", self.portraitFrame, "TOPRIGHT", -2, 0)
 			lf:SetFrameLevel(self.portraitFrame:GetFrameLevel())
+		end
+		if (ac and ac.outOfPlace) then
+			ac.outOfPlace = nil
+			ac:ClearAllPoints()
+			ac:SetPoint("TOPLEFT", self.portraitFrame, "TOPRIGHT", -2, -19)
+			ac:SetFrameLevel(lf:GetFrameLevel() + 1)
 		end
 	end
 end

@@ -539,6 +539,11 @@ function XPerl_ValidateSettings()
 		end
 	end
 
+	-- The target frame's assist counter came back on by default; switching it off stores false
+	if (conf.target and conf.target.assistCounter == nil) then
+		conf.target.assistCounter = 1
+	end
+
 	-- Status icon spots that older settings don't have come from the defaults; the alternate raid icon
 	-- placement they replace goes
 	local function completeIcons(set, section)
@@ -589,7 +594,4 @@ function XPerl_ValidateSettings()
 	conf.custom = nil		-- settings of the removed custom highlight module
 	conf.highlightDebuffs = nil	-- removed debuff highlighting
 	conf.buffHelper = nil		-- removed tooltip buff helper
-	if (type(conf.targetCounters) == "table") then
-		conf.targetCounters.assisting = nil	-- removed target frame counter's list
-	end
 end

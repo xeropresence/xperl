@@ -98,13 +98,17 @@ finder's spell button) or a fixed 40 yard check. Classes without a range spell g
 debuff check also fades units that have nothing to cure, so only units in range that
 need curing stay clear.
 
-### Targeting counter
+### Targeting counters
 
 The player frame counts the group members targeting you (healers only by default).
-Click the counter to list them in the "X-Perl Targeting" window. Options → Helpers
-switches the counter; untick "Count Only Healers" there to count everyone in the group
-who is targeting you, pets included. Both are also in the player frame's Edit Mode
-settings.
+The target frame counts the group members targeting your target, you and pets
+included. Click a counter to list them in the "X-Perl Targeting" window. Options →
+Helpers switches the counters; untick "Count Only Healers" there to count everyone in
+the group who is targeting you, pets included. They are also in the player and target
+frames' Edit Mode settings.
+
+In instances the game hides whom group members target unless it's a player or a pet,
+so the target frame's counter shows "?" for other targets there.
 
 ## Installation
 
@@ -214,8 +218,8 @@ Raid buttons are children of their group header, e.g.
 Some modules from older X-Perl versions are gone, because the game no longer gives add-ons the
 information they need:
 
-- **Raid Helper** (main tank list). Its target counters live on as the player frame's
-  targeting counter, and its "- AGGRO -" warning as the aggro warning.
+- **Raid Helper** (main tank list). Its target counters live on as the player and target
+  frames' targeting counters, and its "- AGGRO -" warning as the aggro warning.
 - **Raid Monitor** (cast monitor, mana and health totals).
 - **Raid Admin** (roster save/load, item check, roster text).
 - **Custom raid highlight** (per-zone debuff icons).
@@ -239,7 +243,7 @@ information they need:
   - threat on boss frames
   - the death knight rune flash
   - Spirit of Redemption shown as dead
-  - the target frame's "Assisting" counter and counting enemies that target you
+  - counting enemies that target you
   - the Tooltip Buff Helper and caster names in aura tooltips
   - CT_RaidAssist soulstone, resurrection-accepted and cooldown statuses
 

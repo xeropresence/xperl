@@ -2,15 +2,16 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 --
--- Targeting counter: on the player frame the number of group members targeting you (all of them, or only
--- healers). Clicking the counter shows or hides the list in the targeting window (XPerl_TargetCounters).
--- player.targetCounter and player.targetCounterHealers are player frame settings;
--- XPerlDB.targetCounters holds whether the window is open (targeting), its position and size.
+-- Targeting counters. On the player frame the number of group members targeting you (all of them, or only
+-- healers); on the target frame the number of group members, you and pets included, targeting your target.
+-- Clicking a counter shows or hides its list in the targeting window (XPerl_TargetCounters).
+-- player.targetCounter, player.targetCounterHealers and target.assistCounter are frame settings;
+-- XPerlDB.targetCounters holds which lists the window shows (targeting, assisting), its position and size.
 --
 -- 12.x secret values: on add-on restricted maps (instances) comparisons of compound unit tokens ("raid5target")
--- are secret. Members targeting you are still found through GUIDs: a token one step from a group member or a
--- pet has a readable GUID exactly when it is a player-controlled or grouped unit, so a secret GUID is never
--- you.
+-- are secret. A token one step from a group member or a pet has a readable GUID exactly when it is a
+-- player-controlled or grouped unit, so a secret GUID is never you, nor a player-controlled target. Whether a
+-- member targets the same mob as you stays hidden there; the target frame's counter shows "?" then.
 
 local conf
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
@@ -35,9 +36,11 @@ for i = 1, 4 do
 end
 
 local units, isPet = {}, {}				-- you, your pet, the other group members and their pets
-local list = {n = 0}					-- members targeting you, {name =, class =, key =}, sorted
-local lines = {}					-- display lines, a line per class
-local counter						-- the player frame's counter button
+-- The counted members, {name =, class =, key =} sorted, n of them, and their display lines (a line per class).
+-- key: the window setting that shows the list; hidden: the game hides whether some members count.
+local targeting = {n = 0, lines = {}, key = "targeting"}	-- targeting you
+local assisting = {n = 0, lines = {}, key = "assisting"}	-- targeting your target
+local counter, assistCounter			-- the player frame's and the target frame's counter buttons
 local window
 local myClass
 local dirty, sinceScan = true, 0
@@ -108,7 +111,28 @@ local function IsPlayer(token, playerGUID)
 	return not issecretvalue(guid) and guid == playerGUID
 end
 
-local function Add(name, class)
+-- Whether token (a group member's or pet's target) is your target; nil when the game hides it.
+-- targetGUID: your target's GUID (may be secret); targetControlled: your target is player-controlled
+local function IsYourTarget(token, targetGUID, targetControlled)
+	if (token == "target") then
+		return true
+	end
+	local same = UnitIsUnit(token, "target")
+	if (not issecretvalue(same)) then
+		return same
+	end
+	local guid = UnitGUID(token)
+	if (not issecretvalue(guid)) then
+		-- A player-controlled or grouped unit; a secret target GUID is neither
+		return not issecretvalue(targetGUID) and guid == targetGUID
+	end
+	if (targetControlled) then
+		return false
+	end
+	return nil
+end
+
+local function Add(list, name, class)
 	local n = list.n + 1
 	list.n = n
 	local entry = list[n]
@@ -132,12 +156,16 @@ local function Colour(class)
 end
 
 -- Sorts the list (dropping entries left from a longer one) and makes its display lines
-local function Finish()
+local function Finish(list)
 	for i = list.n + 1, #list do
 		list[i] = nil
 	end
 	sort(list, ByKey)
+	local lines = list.lines
 	wipe(lines)
+	if (list.hidden) then
+		return
+	end
 	local line, lastClass
 	for i = 1, list.n do
 		local entry = list[i]
@@ -160,7 +188,14 @@ local function Scan()
 	local pconf = conf.player
 	local healersOnly = pconf and pconf.targetCounterHealers
 	local playerGUID = UnitGUID("player")
-	list.n = 0
+	local hasTarget = UnitExists("target")
+	local targetGUID, targetControlled
+	if (hasTarget) then
+		targetGUID = UnitGUID("target")
+		targetControlled = UnitPlayerControlled("target")
+		targetControlled = not issecretvalue(targetControlled) and targetControlled
+	end
+	targeting.n, assisting.n, assisting.hidden = 0, 0, nil
 
 	for i = 1, #units do
 		local unit, pet = units[i], isPet[i]
@@ -173,19 +208,31 @@ local function Scan()
 			end
 
 			if ((not healersOnly or (not pet and IsHealer(unit, class))) and IsPlayer(token, playerGUID)) then
-				Add(Name(unit), class)
+				Add(targeting, Name(unit), class)
+			end
+			if (hasTarget) then
+				local same = IsYourTarget(token, targetGUID, targetControlled)
+				if (same == nil) then
+					assisting.hidden = true
+				elseif (same) then
+					Add(assisting, Name(unit), class)
+				end
 			end
 		end
 	end
 
-	Finish()
+	Finish(targeting)
+	Finish(assisting)
 end
 
 ------------------------------------------------------------------------------
 -- Display
 ------------------------------------------------------------------------------
 
-local function Title()
+local function Title(list)
+	if (list == assisting) then
+		return format("%s: %s", XPERL_TARGETCOUNTER_ASSISTING, list.hidden and "?" or list.n)
+	end
 	local pconf = conf.player
 	local label = (pconf and pconf.targetCounterHealers) and XPERL_TARGETCOUNTER_HEALERS or XPERL_TARGETCOUNTER_TARGETING
 	return format("%s: %d", label, list.n)
@@ -200,13 +247,30 @@ local function WindowSettings()
 	return db
 end
 
+local function AddSection(text, list)
+	if (text) then
+		text = text.."\n\n"
+	end
+	text = (text or "").."|cffffffff"..Title(list).."|r"
+	if (list.hidden) then
+		text = text.."\n"..XPERL_TARGETCOUNTER_HIDDEN
+	elseif (#list.lines > 0) then
+		text = text.."\n"..table.concat(list.lines, "\n")
+	end
+	return text
+end
+
 local function RenderWindow()
 	if (not (window and window:IsShown())) then
 		return
 	end
-	local text = "|cffffffff"..Title().."|r"
-	if (#lines > 0) then
-		text = text.."\n"..table.concat(lines, "\n")
+	local db = WindowSettings()
+	local text
+	if (db.targeting) then
+		text = AddSection(text, targeting)
+	end
+	if (db.assisting) then
+		text = AddSection(text, assisting)
 	end
 	window.pane.text:SetText(text)
 end
@@ -225,7 +289,8 @@ end
 local LayoutWindow
 
 local function CloseWindow()
-	WindowSettings().targeting = nil
+	local db = WindowSettings()
+	db.targeting, db.assisting = nil, nil
 	LayoutWindow()
 end
 
@@ -287,9 +352,10 @@ local function CreateWindow()
 	window = w
 end
 
--- Shows the window while its list is open
+-- Shows the window while one of its lists is open
 function LayoutWindow()
-	if (not WindowSettings().targeting) then
+	local db = WindowSettings()
+	if (not (db.targeting or db.assisting)) then
 		if (window) then
 			window:Hide()
 		end
@@ -303,80 +369,100 @@ function LayoutWindow()
 end
 
 local function CounterOnEnter(self)
+	local list = self.list
 	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-	GameTooltip:SetText(Title(), 1, 1, 1)
-	for _, line in ipairs(lines) do
+	GameTooltip:SetText(Title(list), 1, 1, 1)
+	if (list.hidden) then
+		GameTooltip:AddLine(XPERL_TARGETCOUNTER_HIDDEN, 1, 1, 1, true)
+	end
+	for _, line in ipairs(list.lines) do
 		GameTooltip:AddLine(line, 1, 1, 1, true)
 	end
 	GameTooltip:AddLine(XPERL_TARGETCOUNTER_CLICK, 0.62, 0.38, 0)
 	GameTooltip:Show()
 end
 
-local function CounterOnClick()
+local function CounterOnClick(self)
 	local db = WindowSettings()
-	db.targeting = not db.targeting or nil
+	local key = self.list.key
+	db[key] = not db[key] or nil
 	LayoutWindow()
 end
 
-local function RenderCounter()
-	local n = list.n
+-- RenderCounter(button, low, high): red below low members, green above high, blue between; grey while hidden
+local function RenderCounter(button, low, high)
+	local list = button.list
 	local alpha = conf.transparency.text
-	local text = counter.text
-	text:SetText(n)
-	if (n < 1) then				-- targeting you: nobody is bad, more than five is plenty
-		text:SetTextColor(1, 0.5, 0.5, alpha)
-	elseif (n > 5) then
-		text:SetTextColor(0.5, 1, 0.5, alpha)
+	local text = button.text
+	local n = list.n
+	if (list.hidden) then
+		text:SetText("?")
+		text:SetTextColor(0.6, 0.6, 0.6, alpha)
 	else
-		text:SetTextColor(0.5, 0.5, 1, alpha)
+		text:SetText(n)
+		if (n < low) then
+			text:SetTextColor(1, 0.5, 0.5, alpha)
+		elseif (n > high) then
+			text:SetTextColor(0.5, 1, 0.5, alpha)
+		else
+			text:SetTextColor(0.5, 0.5, 1, alpha)
+		end
 	end
-	if (GameTooltip:IsOwned(counter)) then
-		CounterOnEnter(counter)
+	if (GameTooltip:IsOwned(button)) then
+		CounterOnEnter(button)
 	end
+end
+
+-- Shows button while its frame is active and its setting is on
+local function ShowCounter(button)
+	if (not button) then
+		return false
+	end
+	local frame = button:GetParent()
+	local c = frame.conf
+	local on = (frame.active and c and c[button.setting]) and true or false
+	button:SetShown(on)
+	return on
 end
 
 local function Update()
 	if (not myClass) then
 		myClass = select(2, UnitClass("player"))
-		LayoutWindow()		-- the list left open last time
+		LayoutWindow()		-- the lists left open last time
 	end
 
-	local needed = window and window:IsShown()
-	if (counter) then
-		local frame = counter:GetParent()
-		local c = frame.conf
-		local on = (frame.active and c and c.targetCounter) and true or false
-		counter:SetShown(on)
-		needed = needed or on
-	end
-	if (not needed) then
+	local playerOn = ShowCounter(counter)
+	local targetOn = ShowCounter(assistCounter)
+	if (not (playerOn or targetOn or (window and window:IsShown()))) then
 		return
 	end
 
 	Scan()
-	if (counter and counter:IsShown()) then
-		RenderCounter()
+	if (playerOn) then
+		RenderCounter(counter, 1, 5)		-- targeting you: nobody is bad, more than five is plenty
+	end
+	if (targetOn and UnitExists("target")) then
+		RenderCounter(assistCounter, 2, #units / 2)	-- only you is bad, half the group is plenty
 	end
 	RenderWindow()
 end
 
 ------------------------------------------------------------------------------
--- Unit frame element and driver
+-- Unit frame elements and driver
 ------------------------------------------------------------------------------
 
--- The player frame's counter, left of the portrait (below the level)
-local function CreateCounter(frame)
+local function CreateCounter(frame, list, setting)
 	local button = CreateFrame("Button", nil, frame, "BackdropTemplate")
 	button.backdropInfo = XPERL_BACKDROP_FRAME
 	button:ApplyBackdrop()
 	button:SetSize(27, 20)
 	button:SetFrameLevel(frame.levelFrame:GetFrameLevel() + 1)
-	button:SetPoint("TOPRIGHT", frame.portraitFrame, "TOPLEFT", 2, -19)
 
 	local text = button:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 	text:SetAllPoints()
 	XPerl_RegisterUnitText(text)
 	button.text = text
+	button.list, button.setting = list, setting
 
 	button:SetHighlightTexture(HIGHLIGHT, "ADD")
 	button:GetHighlightTexture():SetTexCoord(0, 0.25, 0, 0.5)
@@ -384,16 +470,34 @@ local function CreateCounter(frame)
 	button:SetScript("OnEnter", CounterOnEnter)
 	button:SetScript("OnLeave", XPerl_PlayerTipHide)
 	button:Hide()
-
-	frame.targetCounter = button
-	counter = button
+	return button
 end
 
+local function MarkDirty()
+	dirty = true
+end
+
+-- The player frame's counter, left of the portrait (below the level)
 XPerl_UnitFrame_DefineElement("targetCounter", {
-	init = CreateCounter,
-	apply = function()
-		dirty = true
+	init = function(frame)
+		counter = CreateCounter(frame, targeting, "targetCounter")
+		counter:SetPoint("TOPRIGHT", frame.portraitFrame, "TOPLEFT", 2, -19)
+		frame.targetCounter = counter
 	end,
+	apply = MarkDirty,
+})
+
+-- The target frame's counter, right of the portrait (below the level; Units/Target.lua moves it into the
+-- portrait while the elite graphic takes that side). The focus frame shares the target's elements and has none.
+XPerl_UnitFrame_DefineElement("assistCounter", {
+	init = function(frame)
+		if (frame.frameKey == "target") then
+			assistCounter = CreateCounter(frame, assisting, "assistCounter")
+			assistCounter:SetPoint("TOPLEFT", frame.portraitFrame, "TOPRIGHT", -2, -19)
+			frame.assistCounter = assistCounter
+		end
+	end,
+	apply = MarkDirty,
 })
 
 local driver = CreateFrame("Frame")

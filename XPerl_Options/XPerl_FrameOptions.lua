@@ -2094,6 +2094,9 @@ local function XPerl_Target_ConfigDefault(default, section)
 		},
 		sound			= 1,			-- 2.2.6
 	}
+	if (section == "target") then
+		default.target.assistCounter = 1
+	end
 end
 
 -- XPerl_Party_ConfigDefault

@@ -58,10 +58,12 @@ XPERL_RAID_RESSER_AVAIL		= "Rezzers Available: "
 XPERL_LOC_NONEWATCHED	= "none watched"
 XPERL_LOC_RUNES		= "Runes"		-- Edit Mode label of the undocked death knight runes
 
--- Targeting counter (player frame) and its window
+-- Targeting counters (player and target frames) and their window
 XPERL_TARGETCOUNTER_WINDOW		= "X-Perl Targeting"
 XPERL_TARGETCOUNTER_TARGETING	= "Targeting Me"
 XPERL_TARGETCOUNTER_HEALERS	= "Healers Targeting Me"
+XPERL_TARGETCOUNTER_ASSISTING	= "Targeting My Target"
+XPERL_TARGETCOUNTER_HIDDEN		= "The game hides here who is targeting this unit"
 XPERL_TARGETCOUNTER_CLICK		= "Click to show or hide this list in the targeting window"
 
 -- Aggro warning (middle of the screen)
