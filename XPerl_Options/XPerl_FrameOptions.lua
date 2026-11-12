@@ -276,30 +276,43 @@ function XPerl_Options_OnUpdate(self,arg1)
 	end
 end
 
--- XPerl_Options_MaxScaleSet
 local Sliders = {}
-function XPerl_Options_MaxScaleSet()
+local showingSaved	-- set while a scale slider is moved to the saved scale; that move must not save anything
 
-	for i,slider in pairs(Sliders) do
-		local old = slider:GetValue()
+-- ShowSavedScale(slider)
+-- Moves a scale slider to the saved scale. The slider caps it to its range (scales can be set past the
+-- maximum by dragging a frame's corner); the label still shows the saved scale. Settings are left alone.
+local function ShowSavedScale(slider)
+	local i = XPerl_Options_GetIndex(slider)
+	if (i) then
+		local value = floor(100 * i + 0.5)
+		showingSaved = true
+		slider:SetValue(value)
+		showingSaved = nil
+		_G[slider:GetName().."Current"]:SetText(value.."%")
+	end
+end
+
+-- XPerl_Options_MaxScaleSet
+-- Sets the scale sliders' range from the maximum frame scale (Colours tab)
+function XPerl_Options_MaxScaleSet()
+	for _, slider in pairs(Sliders) do
 		local min = slider.min or 50
 		local max = slider.max or floor(XPerlDB.maximumScale * 100 + 0.5)
 
+		showingSaved = true
 		slider:SetMinMaxValues(min, max)
+		showingSaved = nil
 
 		_G[slider:GetName().."Low"]:SetFormattedText("%d"..PERCENT_SYMBOL, min)
 		_G[slider:GetName().."High"]:SetFormattedText("%d"..PERCENT_SYMBOL, max)
 
-		if (old > max) then
-			slider:SetValue(max)
-		elseif (old < min) then
-			slider:SetValue(min)
-		end
+		ShowSavedScale(slider)
 	end
 end
 
 -- The scale sliders are built while the add-on loads, before the settings exist, so they start with the default
--- maximum. Without this, the first time they're shown they clamp any larger saved scale to it and save that.
+-- maximum
 XPerl_RequestConfig(XPerl_Options_MaxScaleSet)
 
 -- XPerl_SliderSetup(self)
@@ -415,16 +428,11 @@ function XPerl_Options_SetIndex(self, new)
 	end
 end
 
--- scalingOnShow
-local function scalingOnShow(self)
-	local i = XPerl_Options_GetIndex(self)
-	if (i) then
-		self:SetValue(floor(100 * i + 0.5))
-	end
-end
-
 -- scalingOnValueChanged
 local function scalingOnValueChanged(self, value)
+	if (showingSaved) then
+		return
+	end
 	local i = XPerl_Options_GetIndex(self)
 
 	if (i) then
@@ -463,7 +471,7 @@ function XPerl_Options_RegisterScalingSlider(self, min, max)
 	self:SetValueStep(1)
 
 	if (self.configBase) then
-		self:SetScript("OnShow", scalingOnShow)
+		self:SetScript("OnShow", ShowSavedScale)
 		self:SetScript("OnValueChanged", scalingOnValueChanged)
 	end
 end
