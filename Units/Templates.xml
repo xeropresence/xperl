@@ -49,10 +49,12 @@
 						<Anchor point="TOP" x="0" y="2"/>
 					</Anchors>
 				</Texture>
+				<!-- Centred on the bar's top edge, the height of the status icons in the top row (combat, resting,
+				     leader, raid target) -->
 				<Texture name="$parentroleIcon" parentKey="roleIcon" file="Interface\GroupFrame\UI-Group-MainAssistIcon" hidden="true">
 					<Size x="16" y="16"/>
 					<Anchors>
-						<Anchor point="TOPLEFT" x="10" y="5"/>
+						<Anchor point="LEFT" relativePoint="TOPLEFT" x="10" y="0"/>
 					</Anchors>
 				</Texture>
 				<FontString name="$parenttext" parentKey="text" inherits="GameFontNormal">

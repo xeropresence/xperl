@@ -562,6 +562,17 @@ function XPerl_ValidateSettings()
 		completeIcons(conf.party.target, "partytarget")
 	end
 
+	-- The party frames' raid target icon moved from the top left, where it covered the role icon, to the right
+	-- end of the name bar. Settings from before hold the old default and follow once; the mark keeps a later
+	-- choice of the top left.
+	local party = conf.party
+	if (party and not party.raidTargetMoved) then
+		party.raidTargetMoved = 1
+		if (party.icons.raidTarget == "TOPLEFT") then
+			party.icons.raidTarget = "RIGHT"
+		end
+	end
+
 	-- Raid role sorting was stored as 0 (3.7.1), on for Lua but off for anything comparing with 1
 	if (conf.raid and conf.raid.sortByRole == 0) then
 		conf.raid.sortByRole = 1

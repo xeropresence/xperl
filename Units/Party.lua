@@ -440,12 +440,16 @@ function P:ApplyTypeSettings()
 	self.phasingIcon:ClearAllPoints()
 	self.phasingIcon:SetPoint(M("BOTTOMLEFT", flip), nf, M("BOTTOMRIGHT", flip), 0, 2)
 
-	-- Without the name bar the stats bars make the top edge, across the whole frame
-	local row = self.statusIcons.topRow
+	-- Without the name bar the stats bars make the top edge, across the whole frame, and the middle and
+	-- bottom rows are back on the frame's
+	local si = self.statusIcons
+	local row = si.topRow
 	row:ClearAllPoints()
 	row:SetPoint(M("TOPLEFT", flip), self, M("TOPLEFT", flip), 0, 0)
 	row:SetPoint(M("TOPRIGHT", flip), c.name and nf or self, M("TOPRIGHT", flip), 0, 0)
 	row:SetHeight(1)
+	si.middleRow = c.name and nf or nil
+	si.bottomRow = si.middleRow
 
 	local tf = self.targetFrame
 	tf:ClearAllPoints()

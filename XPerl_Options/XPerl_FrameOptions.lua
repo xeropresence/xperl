@@ -2090,6 +2090,7 @@ local function XPerl_Party_ConfigDefault(default)
 		enable			= 1,
 		healPrediction	= 1,
 		icons			= XPerl_DefaultStatusIcons("party"),
+		raidTargetMoved	= 1,			-- these icons hold today's default raid target spot (XPerl_ValidateSettings)
 		castBar = {
 			enable		= 1,
 		},

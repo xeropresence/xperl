@@ -127,11 +127,13 @@ XPerl_StatusIcons = {"raidTarget", "leader", "assistant", "masterLooter", "mainA
 XPerl_StatusIconSpots = {"TOPLEFT", "TOP", "TOPRIGHT", "LEFT", "CENTER", "RIGHT", "BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT"}
 
 -- Default spots per settings section ("partytarget": the party targets, party.target.icons): the raid
--- target icon, the group icons (leader, assistant, master looter, main assist, main tank), the combat icon
+-- target icon, the group icons (leader, assistant, master looter, main assist, main tank), the combat icon.
+-- The party frames' raid target sits at the right end of their name bar (their middle row, Units/Party.lua):
+-- the role icon has the top left.
 local statusIconDefaults = {
 	player			= {"TOPLEFT", "TOP", "TOPRIGHT"},
 	pet			= {"TOPLEFT", "TOP", "TOPRIGHT"},
-	party			= {"TOPLEFT", "TOP", "TOPRIGHT"},
+	party			= {"RIGHT", "TOP", "TOPRIGHT"},
 	partypet		= {"TOPLEFT", "TOP", "TOPRIGHT"},
 	partytarget		= {"RIGHT", "NONE", "RIGHT"},
 	target			= {"TOPRIGHT", "TOP", "TOPRIGHT"},

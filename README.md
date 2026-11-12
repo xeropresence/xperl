@@ -43,7 +43,8 @@ One download covers both clients; each client loads its own TOC.
   Options → Global → "Full Numbers" shows them in full (12345).
 - **Status icons:** raid target marker, group leader, raid assistant, master looter,
   main tank, main assist, and in combat (or resting, on the player frame). You can put
-  each icon on one of nine spots on the frame, or hide it.
+  each icon on one of nine spots on the frame, or hide it. On party frames the spots are
+  the name bar's.
 - **Threat** on the pet, target, focus and party frames; **level, class icon,
   classification** (elite, rare, boss) and reaction colours.
 - **Pings:** pinging a frame pings the unit it shows (a party member, their target or
