@@ -381,6 +381,7 @@ local function TargetLike(s, P, isTarget)
 
 	if (isTarget) then
 		s:Group("XPERL_EDITMODE_GROUP_COMBO")
+		s:Check("combo.show", P.."COMBO", "bool")
 		s:Check("combo.enable", P.."CP")
 		s:Check("combo.blizzard", P.."CPBLIZZ")
 		s:Dropdown("combo.pos", "XPERL_EDITMODE_COMBOPOS", {

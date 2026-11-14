@@ -6155,9 +6155,32 @@
 						</Scripts>
 					</CheckButton>
 
-					<CheckButton name="$parent_CPBlizzard" inherits="XPerlCheckButtonTemplate">
+					<CheckButton name="$parent_Combo" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_PVPIcon" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGET_COMBO")
+								self.configBase = "XPerlDB.target.combo"
+								self.configIndex = "show"
+								self.configOff = false
+								self.configClick = XPerl_Target_Reset
+								self.Validate = function()
+									XPerl_Options_EnableSibling(self, "CPBlizzard")
+									XPerl_Options_EnableSibling(self, "CPMeter")
+									XPerl_Options_GetSibling("CPBlizzard", self).Validate()
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_CPBlizzard" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_Combo" relativePoint="BOTTOMRIGHT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>
@@ -6169,10 +6192,10 @@
 								self.configIndex = "blizzard"
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
-									XPerl_Options_EnableSibling(self, "Top")
-									XPerl_Options_EnableSibling(self, "Bottom")
-									XPerl_Options_EnableSibling(self, "Left")
-									XPerl_Options_EnableSibling(self, "Right")
+									XPerl_Options_EnableSibling(self, "Top", "Combo")
+									XPerl_Options_EnableSibling(self, "Bottom", "Combo")
+									XPerl_Options_EnableSibling(self, "Left", "Combo")
+									XPerl_Options_EnableSibling(self, "Right", "Combo")
 								end
 							</OnLoad>
 						</Scripts>
@@ -6263,6 +6286,7 @@
 					</CheckButton>
 
 					<CheckButton name="$parent_CPMeter" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
 						<Anchors>
 							<Anchor point="TOPRIGHT" relativeTo="$parent_Left" relativePoint="BOTTOMLEFT">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
@@ -6281,7 +6305,7 @@
 
 					<CheckButton name="$parent_30yd" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_CPMeter" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPRIGHT" relativeTo="$parent_CPMeter" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
 							</Anchor>
 						</Anchors>

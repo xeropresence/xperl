@@ -2063,7 +2063,8 @@ local function XPerl_Target_ConfigDefault(default, section)
 		percent			= 1,
 		values			= 1,
 		combo = {
-			enable		= 1,
+			show		= 1,			-- off: no combo points at all
+			enable		= 1,			-- X-Perl's bar in the name frame
 			blizzard	= 1,
 			pos		= "top",
 		},

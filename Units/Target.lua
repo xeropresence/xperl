@@ -51,10 +51,11 @@ Define("combo",		{method = "UpdateCombo", deferrable = true,
 			end
 		end)
 	end,
+	-- combo.show off hides every combo point display (Blizzard's ComboFrame with it: SetupBlizzardComboFrame)
 	apply = function(self)
 		local cp = self.cpFrame
 		cp:UnregisterAllEvents()
-		if (self.active) then
+		if (self.active and conf.target.combo.show) then
 			cp:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player", "vehicle")
 			cp:RegisterUnitEvent("UNIT_MAXPOWER", "player", "vehicle")
 		end
@@ -446,10 +447,15 @@ local comboColours = {
 }
 
 -- UpdateCombo: our meter in the name frame (combo.enable) or the number box (neither our meter nor
--- Blizzard's ComboFrame), with the target's combo settings for target and focus alike
+-- Blizzard's ComboFrame), with the target's combo settings for target and focus alike; none with combo.show off
 function T:UpdateCombo()
 	local combo = conf.target.combo
 	local meter, box = self.nameFrame.cpMeter, self.cpFrame
+	if (not combo.show) then
+		meter:Hide()
+		box:Hide()
+		return
+	end
 	local points = GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player", self.partyid)
 	local colour = not issecretvalue(points) and comboColours[points]
 
@@ -473,12 +479,12 @@ function T:UpdateCombo()
 	end
 end
 
--- Blizzard's ComboFrame (combo.blizzard) moves onto our portrait, which carries our scale. Blizzard's code keeps
--- driving it (PlayerFrame calls into it as well, so none of it is replaced); its points are only re-anchored to
--- run in a line along the chosen edge of the portrait, in the order they fill. The frame differs per client:
--- Retail's has nine points, of which ComboFrame_UpdateMax picks the ones in use, starting at the first or the
--- second. WoW: Forever's has five, fills them from the last one back, and its LayoutPointsCircle puts them back
--- in a ring around Blizzard's portrait on every update.
+-- Blizzard's ComboFrame (combo.show and combo.blizzard) moves onto our portrait, which carries our scale.
+-- Blizzard's code keeps driving it (PlayerFrame calls into it as well, so none of it is replaced); its points are
+-- only re-anchored to run in a line along the chosen edge of the portrait, in the order they fill. The frame
+-- differs per client: Retail's has nine points, of which ComboFrame_UpdateMax picks the ones in use, starting at
+-- the first or the second. WoW: Forever's has five, fills them from the last one back, and its LayoutPointsCircle
+-- puts them back in a ring around Blizzard's portrait on every update.
 local isForever = XPerlAPI.isForever
 local comboLayoutHooked
 
@@ -506,7 +512,7 @@ local function LayoutBlizzardComboPoints()
 		point:ClearAllPoints()
 	end
 	local combo = conf.target.combo
-	local edge = combo.blizzard and comboEdges[combo.pos]
+	local edge = combo.show and combo.blizzard and comboEdges[combo.pos]
 	if (not edge) then
 		return
 	end
@@ -545,7 +551,7 @@ function T:SetupBlizzardComboFrame()
 
 	local combo = conf.target.combo
 	ComboFrame:ClearAllPoints()
-	if (combo.blizzard) then
+	if (combo.show and combo.blizzard) then
 		local pf = self.portraitFrame
 		local edge = comboEdges[combo.pos]
 		ComboFrame:SetParent(pf)

@@ -37,7 +37,7 @@ Q. Why do I get duplicate party member buffs?
 A. CT_PartyBuffs displays these. You don't need this mod as the buff display functionality is already included with X-Perl.
 
 Q. Where are my combo points?
-A. X-Perl has 3 combo point display options. The Combo Bar Meter shows a proress bar in the target's name frame. The Blizzard style displays the old style Blizzard combos around the target portrait. If neither of these options are used, then a combo numeric will be displayed next to the target level.
+A. X-Perl has 3 combo point display options. The Combo Bar Meter shows a proress bar in the target's name frame. The Blizzard style displays the old style Blizzard combos around the target portrait. If neither of these options are used, then a combo numeric will be displayed next to the target level. Untick "Show Combo Points" (Options -> Target) to hide combo points altogether.
 
 Q. How can I move the frames?
 A. All X-Perl frames are unlocked when you have the options window open. Click the minimap icon or type /perl. You may also use the /perl unlock and /perl lock options.

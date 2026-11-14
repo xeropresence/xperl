@@ -544,6 +544,12 @@ function XPerl_ValidateSettings()
 		conf.target.assistCounter = 1
 	end
 
+	-- The target's combo points got a switch of their own, on for settings from before it; switching it off
+	-- stores false
+	if (conf.target and conf.target.combo and conf.target.combo.show == nil) then
+		conf.target.combo.show = 1
+	end
+
 	-- Status icon spots that older settings don't have come from the defaults; the alternate raid icon
 	-- placement they replace goes
 	local function completeIcons(set, section)
