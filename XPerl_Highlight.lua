@@ -2,16 +2,18 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 --
--- Status highlights on unit frames: aggro and your target, as a border colour. Heal prediction and absorbs
--- on the health bar are the unit frames' own (Units/UnitFrame.lua).
+-- Status highlights on unit frames: aggro and your target, as a border colour, and debuffs, as a glow of the
+-- same shape in the debuff type's colour. Heal prediction and absorbs on the health bar are the unit frames' own
+-- (Units/UnitFrame.lua).
 --
 -- Unit code tells this module about its frames through XPerl_Highlight:UnitFrameChanged(frame) whenever a
 -- frame's unit (frame.partyid) changes or the frame is shown; XPerl_ForEachUnitFrame finds every frame when
 -- options change. Visuals go on frame.highlight (the XPerl_HighlightTemplate child).
 --
 -- 12.x secret values: UnitThreatSituation(unit) for a single unit is not secret, and a secret GUID simply
--- doesn't match your target. Aura-based highlights (HoTs, HoT counts) are gone: while add-on restrictions are
--- active every aura index reads as secret, filled or not, so nothing about auras can be told in combat.
+-- doesn't match your target. Add-on code can't tell auras apart while add-on restrictions are active (every
+-- aura index reads as secret, filled or not), so the HoT highlights are gone and the client draws the debuff
+-- glow (see "Debuff glow" below).
 
 local conf
 XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
@@ -95,6 +97,100 @@ local function RenderUnit(unit)
 	end
 end
 
+-- Debuff glow (conf.highlight.DEBUFF)
+-- A unit with a Magic, Curse, Disease or Poison debuff (with conf.highlight.curable, only one the player can
+-- cure) gets a second copy of the border art in that debuff type's colour. Each frame gets a custom aura
+-- container with a single aura slot: the client puts the unit's first such debuff in the slot and colours the
+-- glow on the slot's button by its type, or hides the button when there is none. Nothing tells add-on code the
+-- glow is showing, so it adds to the aggro and target colours instead of taking a side of their gradient.
+-- Container and button sit on frame.highlight at its frame level. Units get one while they get status
+-- highlights (they exist and the player can assist them). /xperl debuffs shows a preview of it.
+local DEBUFF_SLOT = "debuff"
+local DebuffTypes = {"Magic", "Curse", "Disease", "Poison"}
+local DebuffCandidates = {includeDispelTypes = {Magic = true, Curse = true, Disease = true, Poison = true}}
+local debuffGlows = {}		-- frame -> aura container drawing its glow, made the first time it's needed
+local debuffPreviews = {}	-- frame -> X-Perl's own copy of the glow, for /xperl debuffs
+local debuffPreviewType		-- dispel type /xperl debuffs shows, nil when it's off
+
+-- CreateGlow(parent, frame): a copy of frame's border art, on parent
+local function CreateGlow(parent, frame)
+	local h = frame.highlight
+	local glow = parent:CreateTexture(nil, "OVERLAY")
+	glow:SetTexture("Interface\\Addons\\XPerl\\images\\XPerl_Highlight")
+	glow:SetTexCoord(XPerl_GetHighlightTexCoords(h))
+	glow:SetBlendMode("ADD")
+	glow:SetAllPoints(h)
+	return glow
+end
+
+-- InitGlowButton
+-- Runs once as the container creates the slot's button, before the client locks it away from add-on code
+local function InitGlowButton(button, frame)
+	button:SetUsingParentLevel(true)
+	button:EnableMouse(false)		-- clicks and tooltips stay the unit frame's
+	button:SetAllPoints(frame.highlight)
+	button:AddDispelTypeTexture(CreateGlow(button, frame), {
+		showWhenHarmful = true,
+		style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset,
+	})
+end
+
+-- UpdateDebuffGlow(frame, unit): points frame's glow at unit (nil: none) and refreshes it. Frames can show before
+-- the settings arrive; no glow exists then.
+local function UpdateDebuffGlow(frame, unit)
+	local hc = conf and conf.highlight
+	local on = unit and hc and hc.enable and hc.DEBUFF and true or false
+	local container = debuffGlows[frame]
+	if (not container) then
+		if (not on) then
+			return
+		end
+		local h = frame.highlight
+		container = CreateFrame("AuraContainer", nil, h, "CustomAuraContainerTemplate")
+		container:SetUsingParentLevel(true)
+		container:SetAllPoints(h)
+		container:AddAuraSlot(DEBUFF_SLOT, "HARMFUL", {
+			candidateFilters = DebuffCandidates,
+			initializeFrame = function(button) InitGlowButton(button, frame) end,
+		})
+		debuffGlows[frame] = container
+	end
+	container:SetAuraSlotFilterString(DEBUFF_SLOT, hc.curable and "HARMFUL|RAID" or "HARMFUL")
+	container:SetUnit(unit or "none")
+	container:SetEnabled(on)
+	container:UpdateAllAuras()		-- the unit behind the token may have changed
+end
+
+-- ShowDebuffPreview(frame)
+-- X-Perl's own copy of the glow, in the colour the client gives debuffPreviewType, on every frame with status
+-- highlights whatever its unit
+local function ShowDebuffPreview(frame)
+	local hc = conf.highlight
+	local colour = debuffPreviewType and frame.active and hc.enable and hc.DEBUFF and AuraUtil.GetAuraBorderColor(debuffPreviewType)
+	local preview = debuffPreviews[frame]
+	if (colour) then
+		if (not preview) then
+			preview = CreateFrame("Frame", nil, frame.highlight)
+			preview:SetUsingParentLevel(true)
+			preview:SetAllPoints(frame.highlight)
+			preview.glow = CreateGlow(preview, frame)
+			debuffPreviews[frame] = preview
+		end
+		preview.glow:SetVertexColor(colour:GetRGBA())
+		preview:Show()
+	elseif (preview) then
+		preview:Hide()
+	end
+end
+
+local function ShowDebuffPreviews()
+	XPerl_ForEachUnitFrame(function(frame)
+		if (frame.highlight) then
+			ShowDebuffPreview(frame)
+		end
+	end)
+end
+
 ---------------------------------------------------------------------------------------------------------------
 -- State
 ---------------------------------------------------------------------------------------------------------------
@@ -140,6 +236,14 @@ local function RefreshUnit(unit)
 		ScanTarget(unit, st)
 	end
 	RenderUnit(unit)
+
+	local set = unitFrames[unit]
+	if (set) then
+		local glowUnit = unitState[unit] and unit
+		for frame in pairs(set) do
+			UpdateDebuffGlow(frame, glowUnit)
+		end
+	end
 end
 
 -- Units without events of their own (targettarget, party1target, ...) are polled
@@ -302,6 +406,7 @@ function xpHigh:UnitFrameChanged(frame)
 		RefreshUnit(unit)
 	else
 		ShowBorder(frame, nil)
+		UpdateDebuffGlow(frame, nil)
 	end
 end
 
@@ -327,6 +432,60 @@ function xpHigh:TooltipInfo(unit)
 		GameTooltip:AddLine(str)
 		GameTooltip:Show()
 	end
+end
+
+-- DebuffTypeName(dispelType): the type's name in its colour
+local function DebuffTypeName(dispelType)
+	return AuraUtil.GetAuraBorderColor(dispelType):WrapTextInColorCode(dispelType)
+end
+
+-- XPerl_DebuffHighlightPreview(which)
+-- /xperl debuffs: the debuff glow's four colours in turn, two seconds each; with a type ("magic", ...) that one
+-- alone. Run again without a type to stop.
+local previewTicker
+function XPerl_DebuffHighlightPreview(which)
+	if (not (conf.highlight.enable and conf.highlight.DEBUFF)) then
+		XPerl_Notice(XPERL_DEBUFFS_PREVIEW_OFF)
+		return
+	end
+	local fixed
+	if (which) then
+		for _, dispelType in ipairs(DebuffTypes) do
+			if (strlower(dispelType) == which) then
+				fixed = dispelType
+			end
+		end
+		if (not fixed) then
+			XPerl_Notice(XPERL_DEBUFFS_PREVIEW_USAGE)
+			return
+		end
+	end
+
+	if (previewTicker) then
+		previewTicker:Cancel()
+		previewTicker = nil
+	end
+	if (fixed) then
+		debuffPreviewType = fixed
+		XPerl_Notice(XPERL_DEBUFFS_PREVIEW_ONE, DebuffTypeName(fixed))
+	elseif (debuffPreviewType) then
+		debuffPreviewType = nil
+		XPerl_Notice(XPERL_DEBUFFS_PREVIEW_STOPPED)
+	else
+		local names = {}
+		for i, dispelType in ipairs(DebuffTypes) do
+			names[i] = DebuffTypeName(dispelType)
+		end
+		local index = 1
+		debuffPreviewType = DebuffTypes[index]
+		previewTicker = C_Timer.NewTicker(2, function()
+			index = index % #DebuffTypes + 1
+			debuffPreviewType = DebuffTypes[index]
+			ShowDebuffPreviews()
+		end)
+		XPerl_Notice(XPERL_DEBUFFS_PREVIEW_CYCLE, table.concat(names, ", "))
+	end
+	ShowDebuffPreviews()
 end
 
 -- OptionChange: (re)apply XPerlDB.highlight
@@ -355,6 +514,7 @@ local function OptionChange()
 			xpHigh:UnitFrameChanged(frame)
 		end
 	end
+	ShowDebuffPreviews()
 end
 
 XPerl_RegisterOptionChanger(OptionChange)

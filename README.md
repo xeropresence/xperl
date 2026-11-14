@@ -84,7 +84,11 @@ One download covers both clients; each client loads its own TOC.
 - Party debuffs shown beside the frame keep the set "Party Debuff Size". "Wrap Lots" wraps
   them at the frame's width; it no longer shrinks them to half size, as the game hides how
   many debuffs a unit has.
-- Aggro and your target are highlighted on the frames.
+- Status highlighting outlines a friendly unit's frame in red while it has aggro, marks
+  your target, and outlines it in a debuff type's colour while it has a Magic, Curse,
+  Disease or Poison debuff ("Debuffs", with "Only Curable" for debuffs you can cure;
+  Options → Global). The debuff colour adds to the aggro and target colours.
+  `/xperl debuffs` previews it on every frame.
 - **Aggro warning:** in a group, "- AGGRO -" shows in the middle of the screen while a mob
   is attacking you, and "- PET AGGRO -" while one is attacking your pet. Move it in Edit
   Mode ("X-Perl Aggro Warning"); switch it off with Options → Helpers → "Aggro Warning".
@@ -176,6 +180,7 @@ existing settings move over the first time it logs in.
 | `/xperl config list` | List saved per-character settings and the Edit Mode layouts X-Perl has data for |
 | `/xperl config delete <realm> <name>` | Delete another character's saved settings (WoW: Forever: `<ruleset> <First-Surname>`, as `config list` shows them) |
 | `/xperl version` | Show the add-on version, client, build and interface |
+| `/xperl debuffs [magic \| curse \| disease \| poison]` | Preview the debuff highlight on every frame: the four colours in turn, or the one named. Run `/xperl debuffs` again to stop |
 
 Profile strings are plain text. They are an easy way to share a setup or to keep a
 backup outside the game.

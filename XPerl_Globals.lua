@@ -550,6 +550,17 @@ function XPerl_ValidateSettings()
 		conf.target.combo.show = 1
 	end
 
+	-- The debuff status highlight came back, on by default with "Only Curable"; switching either off stores false
+	local highlight = conf.highlight
+	if (highlight) then
+		if (highlight.DEBUFF == nil) then
+			highlight.DEBUFF = 1
+		end
+		if (highlight.curable == nil) then
+			highlight.curable = 1
+		end
+	end
+
 	-- Status icon spots that older settings don't have come from the defaults; the alternate raid icon
 	-- placement they replace goes
 	local function completeIcons(set, section)
@@ -598,6 +609,6 @@ function XPerl_ValidateSettings()
 	end
 
 	conf.custom = nil		-- settings of the removed custom highlight module
-	conf.highlightDebuffs = nil	-- removed debuff highlighting
+	conf.highlightDebuffs = nil	-- the old debuff highlighting's settings (now conf.highlight.DEBUFF)
 	conf.buffHelper = nil		-- removed tooltip buff helper
 end

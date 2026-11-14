@@ -87,8 +87,11 @@ local function XPerl_SlashHandler(msg)
 	elseif (args[1] == XPERL_CMD_IMPORT) then
 		XPerl_ProfileImport()
 
+	elseif (args[1] == XPERL_CMD_DEBUFFS) then
+		XPerl_DebuffHighlightPreview(args[2])
+
 	else
-		DEFAULT_CHAT_FRAME:AddMessage(XPERL_CMD_HELP.." | "..XPERL_CMD_EXPORT.." | "..XPERL_CMD_IMPORT.." | "..XPERL_CMD_VERSION)
+		DEFAULT_CHAT_FRAME:AddMessage(XPERL_CMD_HELP.." | "..XPERL_CMD_EXPORT.." | "..XPERL_CMD_IMPORT.." | "..XPERL_CMD_VERSION.." | "..XPERL_CMD_DEBUFFS)
 	end
 end
 

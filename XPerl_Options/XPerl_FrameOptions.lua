@@ -2033,6 +2033,8 @@ local function XPerl_Global_ConfigDefault(default)
 	default.highlight = {
 		enable			= 1,
 		AGGRO			= 1,
+		DEBUFF			= 1,
+		curable			= 1,
 --		MISSING			= nil,
 --		all			= nil,
 	}

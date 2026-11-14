@@ -3325,6 +3325,8 @@
 								self.Validate = function()
 									XPerl_Options_EnableSibling(self,"HighlightAggro")
 									XPerl_Options_EnableSibling(self,"HighlightTarget")
+									XPerl_Options_EnableSibling(self,"HighlightDebuffs")
+									XPerl_Options_EnableSibling(self,"HighlightCurable", "HighlightDebuffs")
 								end
 							</OnLoad>
 						</Scripts>
@@ -3358,6 +3360,45 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_TARGET")
 								self.configBase = "XPerlDB.highlight"
 								self.configIndex = "TARGET"
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_HighlightDebuffs" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightTarget" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_DEBUFF")
+								self.configBase = "XPerlDB.highlight"
+								self.configIndex = "DEBUFF"
+								self.configOff = false
+								self.configClick = XPerl_OptionActions
+								self.Validate = function()
+									XPerl_Options_EnableSibling(self,"HighlightCurable", "Highlights")
+								end
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_HighlightCurable" inherits="XPerlCheckButtonTemplate">
+						<Size><AbsDimension x="26" y="26"/></Size>
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_HighlightDebuffs" relativePoint="BOTTOMRIGHT">
+								<Offset><AbsDimension x="0" y="6"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_CURABLE")
+								self.configBase = "XPerlDB.highlight"
+								self.configIndex = "curable"
+								self.configOff = false
+								self.configClick = XPerl_OptionActions
 							</OnLoad>
 						</Scripts>
 					</CheckButton>

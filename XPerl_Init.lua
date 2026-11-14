@@ -42,6 +42,11 @@ function XPerl_RegisterHighlight(frame, ratio)
 	end
 end
 
+-- XPerl_GetHighlightTexCoords(frame): where in XPerl_Highlight a registered highlight frame's art is
+function XPerl_GetHighlightTexCoords(frame)
+	return unpack(highlightPositions[HighlightFrames[frame]])
+end
+
 -- SetHighlights
 local function SetHighlights()
 	for k,v in pairs(HighlightFrames) do
