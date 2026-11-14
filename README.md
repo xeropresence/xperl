@@ -88,10 +88,12 @@ One download covers both clients; each client loads its own TOC.
   them at the frame's width; it no longer shrinks them to half size, as the game hides how
   many debuffs a unit has.
 - Status highlighting outlines a friendly unit's frame in red while it has aggro, marks
-  your target, and outlines it in a debuff type's colour while it has a Magic, Curse,
+  your target, and highlights it in a debuff type's colour while it has a Magic, Curse,
   Disease or Poison debuff ("Debuffs", with "Only Curable" for debuffs you can cure;
-  Options → Global). The debuff colour adds to the aggro and target colours.
-  `/xperl debuffs` previews it on every frame.
+  Options → Global). The debuff highlight is an outline (Border), a tint of the frame's
+  background (Background, as older X-Perl versions did; the portrait isn't tinted), or
+  both. The outline's colour adds to the aggro and target colours. `/xperl debuffs`
+  previews it on every frame.
 - **Aggro warning:** in a group, "- AGGRO -" shows in the middle of the screen while a mob
   is attacking you, and "- PET AGGRO -" while one is attacking your pet. Move it in Edit
   Mode ("X-Perl Aggro Warning"); switch it off with Options → Helpers → "Aggro Warning".
@@ -239,8 +241,6 @@ information they need:
 - Voice-chat speaking indicators.
 - Features that stopped working in combat, encounters or instances once the game started
   hiding unit health, auras, ranges and add-on messages:
-  - frame borders and backgrounds coloured by debuff type (the debuff icons keep their
-    debuff-type borders)
   - fading bars
   - the range finder's health check, its 10 and 30 yard modes and item (bandage) range
     checks

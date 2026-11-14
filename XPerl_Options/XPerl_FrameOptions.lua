@@ -2035,6 +2035,7 @@ local function XPerl_Global_ConfigDefault(default)
 		AGGRO			= 1,
 		DEBUFF			= 1,
 		curable			= 1,
+		debuffStyle		= "border",	-- "border", "background" or "both"
 --		MISSING			= nil,
 --		all			= nil,
 	}

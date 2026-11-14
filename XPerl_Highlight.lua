@@ -3,8 +3,8 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 --
 -- Status highlights on unit frames: aggro and your target, as a border colour, and debuffs, as a glow of the
--- same shape in the debuff type's colour. Heal prediction and absorbs on the health bar are the unit frames' own
--- (Units/UnitFrame.lua).
+-- same shape and/or a tint of the frame's background in the debuff type's colour. Heal prediction and absorbs on
+-- the health bar are the unit frames' own (Units/UnitFrame.lua).
 --
 -- Unit code tells this module about its frames through XPerl_Highlight:UnitFrameChanged(frame) whenever a
 -- frame's unit (frame.partyid) changes or the frame is shown; XPerl_ForEachUnitFrame finds every frame when
@@ -97,19 +97,26 @@ local function RenderUnit(unit)
 	end
 end
 
--- Debuff glow (conf.highlight.DEBUFF)
+-- Debuff highlight (conf.highlight.DEBUFF)
 -- A unit with a Magic, Curse, Disease or Poison debuff (with conf.highlight.curable, only one the player can
--- cure) gets a second copy of the border art in that debuff type's colour. Each frame gets a custom aura
--- container with a single aura slot: the client puts the unit's first such debuff in the slot and colours the
--- glow on the slot's button by its type, or hides the button when there is none. Nothing tells add-on code the
--- glow is showing, so it adds to the aggro and target colours instead of taking a side of their gradient.
--- Container and button sit on frame.highlight at its frame level. Units get one while they get status
--- highlights (they exist and the player can assist them). /xperl debuffs shows a preview of it.
+-- cure) is highlighted in that debuff type's colour, as conf.highlight.debuffStyle says: "border" is a second
+-- copy of the border art (the glow), "background" tints the frame's sections (frame.FlashFrames, whose
+-- backdrops the old debuff highlight coloured), "both" does both. Add-on code can't tell which debuffs a unit
+-- has, so the glow and each tint get a custom aura container with a single aura slot: the client puts the
+-- unit's first such debuff in the slot and colours the texture on the slot's button by its type, or hides the
+-- button when there is none. Nothing tells add-on code the glow is showing, so it adds to the aggro and target
+-- colours instead of taking a side of their gradient. Units get one while they get status highlights (they
+-- exist and the player can assist them). /xperl debuffs shows a preview of it.
+-- Every container and button takes its parent's frame level: the glow's sit on frame.highlight, a tint's on its
+-- section, so the tint draws with the section and before its children (bars, 3D portrait, icons). The tint is
+-- added to what's below it, so the section's own text stays readable. The portrait gets no tint: the 2D
+-- portrait is a texture of the portrait frame itself, which the tint would cover.
 local DEBUFF_SLOT = "debuff"
 local DebuffTypes = {"Magic", "Curse", "Disease", "Poison"}
 local DebuffCandidates = {includeDispelTypes = {Magic = true, Curse = true, Disease = true, Poison = true}}
 local debuffGlows = {}		-- frame -> aura container drawing its glow, made the first time it's needed
-local debuffPreviews = {}	-- frame -> X-Perl's own copy of the glow, for /xperl debuffs
+local debuffTints = {}		-- frame -> {aura container drawing a section's tint, ...}, made the first time they're needed
+local debuffPreviews = {}	-- frame -> {glow = preview, tints = {preview, ...}}: X-Perl's own copies, for /xperl debuffs
 local debuffPreviewType		-- dispel type /xperl debuffs shows, nil when it's off
 
 -- CreateGlow(parent, frame): a copy of frame's border art, on parent
@@ -123,63 +130,148 @@ local function CreateGlow(parent, frame)
 	return glow
 end
 
--- InitGlowButton
--- Runs once as the container creates the slot's button, before the client locks it away from add-on code
-local function InitGlowButton(button, frame)
+-- CreateTint(parent, inset): the backdrop's own background texture, inset from parent's edges as far as the
+-- backdrop's. Added to the default black background, it comes out as the debuff colour on that texture, the
+-- old debuff highlight's look; on top of the backdrop's background and below its edge.
+local function CreateTint(parent, inset)
+	local tint = parent:CreateTexture(nil, "BACKGROUND", nil, 7)
+	tint:SetTexture("Interface\\Addons\\XPerl\\Images\\XPerl_FrameBack")
+	tint:SetBlendMode("ADD")
+	tint:SetPoint("TOPLEFT", inset, -inset)
+	tint:SetPoint("BOTTOMRIGHT", -inset, inset)
+	return tint
+end
+
+-- CreateTints(frame, create): create(section, createTint) for each section of frame that gets a tint, where
+-- createTint(parent) makes that section's tint on parent; returns the results
+local function CreateTints(frame, create)
+	local list = {}
+	local inset = frame.edgeInsets or 5		-- as XPerl_ApplyFrameBackdrop
+	local function createTint(parent)
+		return CreateTint(parent, inset)
+	end
+	for _, section in ipairs(frame.FlashFrames) do
+		if (section ~= frame.portraitFrame) then
+			list[#list + 1] = create(section, createTint)
+		end
+	end
+	return list
+end
+
+-- InitDebuffButton(button, parent, createTexture)
+-- Runs once as a container creates its slot's button, before the client locks it away from add-on code: the
+-- button covers parent, and the client colours createTexture(button) by the debuff's type
+local function InitDebuffButton(button, parent, createTexture)
 	button:SetUsingParentLevel(true)
 	button:EnableMouse(false)		-- clicks and tooltips stay the unit frame's
-	button:SetAllPoints(frame.highlight)
-	button:AddDispelTypeTexture(CreateGlow(button, frame), {
+	button:SetAllPoints(parent)
+	button:AddDispelTypeTexture(createTexture(button), {
 		showWhenHarmful = true,
 		style = Enum.CustomAuraButtonDispelTypeTextureStyle.PreserveAsset,
 	})
 end
 
--- UpdateDebuffGlow(frame, unit): points frame's glow at unit (nil: none) and refreshes it. Frames can show before
--- the settings arrive; no glow exists then.
-local function UpdateDebuffGlow(frame, unit)
-	local hc = conf and conf.highlight
-	local on = unit and hc and hc.enable and hc.DEBUFF and true or false
-	local container = debuffGlows[frame]
-	if (not container) then
-		if (not on) then
-			return
-		end
-		local h = frame.highlight
-		container = CreateFrame("AuraContainer", nil, h, "CustomAuraContainerTemplate")
-		container:SetUsingParentLevel(true)
-		container:SetAllPoints(h)
-		container:AddAuraSlot(DEBUFF_SLOT, "HARMFUL", {
-			candidateFilters = DebuffCandidates,
-			initializeFrame = function(button) InitGlowButton(button, frame) end,
-		})
-		debuffGlows[frame] = container
-	end
-	container:SetAuraSlotFilterString(DEBUFF_SLOT, hc.curable and "HARMFUL|RAID" or "HARMFUL")
+-- CreateDebuffContainer(parent, createTexture): an aura container covering parent, at its frame level, that
+-- shows createTexture(button) on its slot's button
+local function CreateDebuffContainer(parent, createTexture)
+	local container = CreateFrame("AuraContainer", nil, parent, "CustomAuraContainerTemplate")
+	container:SetUsingParentLevel(true)
+	container:SetAllPoints(parent)
+	container:AddAuraSlot(DEBUFF_SLOT, "HARMFUL", {
+		candidateFilters = DebuffCandidates,
+		initializeFrame = function(button) InitDebuffButton(button, parent, createTexture) end,
+	})
+	return container
+end
+
+-- SetDebuffContainer(container, unit, on, filter): points container at unit (nil: none) and refreshes it
+local function SetDebuffContainer(container, unit, on, filter)
+	container:SetAuraSlotFilterString(DEBUFF_SLOT, filter)
 	container:SetUnit(unit or "none")
 	container:SetEnabled(on)
 	container:UpdateAllAuras()		-- the unit behind the token may have changed
 end
 
+-- UpdateDebuffHighlight(frame, unit): points frame's glow and tints at unit (nil: none) and refreshes them.
+-- Frames can show before the settings arrive; no highlight exists then.
+local function UpdateDebuffHighlight(frame, unit)
+	local hc = conf and conf.highlight
+	local on = unit and hc and hc.enable and hc.DEBUFF and true or false
+	local glowOn = on and hc.debuffStyle ~= "background"
+	local tintOn = on and hc.debuffStyle ~= "border"
+	local filter = hc and hc.curable and "HARMFUL|RAID" or "HARMFUL"
+
+	local glow = debuffGlows[frame]
+	if (not glow and glowOn) then
+		glow = CreateDebuffContainer(frame.highlight, function(button) return CreateGlow(button, frame) end)
+		debuffGlows[frame] = glow
+	end
+	if (glow) then
+		SetDebuffContainer(glow, unit, glowOn, filter)
+	end
+
+	local tints = debuffTints[frame]
+	if (not tints and tintOn and frame.FlashFrames) then
+		tints = CreateTints(frame, CreateDebuffContainer)
+		debuffTints[frame] = tints
+	end
+	if (tints) then
+		for _, container in ipairs(tints) do
+			SetDebuffContainer(container, unit, tintOn, filter)
+		end
+	end
+end
+
+-- CreatePreview(parent, createTexture): a frame covering parent, at its frame level, showing createTexture(frame)
+local function CreatePreview(parent, createTexture)
+	local preview = CreateFrame("Frame", nil, parent)
+	preview:SetUsingParentLevel(true)
+	preview:SetAllPoints(parent)
+	preview.texture = createTexture(preview)
+	return preview
+end
+
+-- ShowPreview(preview, colour): shows preview in colour, or hides it without one
+local function ShowPreview(preview, colour)
+	if (colour) then
+		preview.texture:SetVertexColor(colour:GetRGBA())
+		preview:Show()
+	else
+		preview:Hide()
+	end
+end
+
 -- ShowDebuffPreview(frame)
--- X-Perl's own copy of the glow, in the colour the client gives debuffPreviewType, on every frame with status
--- highlights whatever its unit
+-- X-Perl's own copies of the glow and tints, in the colour the client gives debuffPreviewType, on every frame
+-- with status highlights whatever its unit
 local function ShowDebuffPreview(frame)
 	local hc = conf.highlight
 	local colour = debuffPreviewType and frame.active and hc.enable and hc.DEBUFF and AuraUtil.GetAuraBorderColor(debuffPreviewType)
+	local glowColour = hc.debuffStyle ~= "background" and colour or nil
+	local tintColour = hc.debuffStyle ~= "border" and colour or nil
 	local preview = debuffPreviews[frame]
-	if (colour) then
-		if (not preview) then
-			preview = CreateFrame("Frame", nil, frame.highlight)
-			preview:SetUsingParentLevel(true)
-			preview:SetAllPoints(frame.highlight)
-			preview.glow = CreateGlow(preview, frame)
-			debuffPreviews[frame] = preview
+	if (not preview) then
+		if (not colour) then
+			return
 		end
-		preview.glow:SetVertexColor(colour:GetRGBA())
-		preview:Show()
-	elseif (preview) then
-		preview:Hide()
+		preview = {}
+		debuffPreviews[frame] = preview
+	end
+
+	if (glowColour and not preview.glow) then
+		preview.glow = CreatePreview(frame.highlight, function(parent) return CreateGlow(parent, frame) end)
+	end
+	if (preview.glow) then
+		ShowPreview(preview.glow, glowColour)
+	end
+
+	if (tintColour and not preview.tints and frame.FlashFrames) then
+		preview.tints = CreateTints(frame, CreatePreview)
+	end
+	if (preview.tints) then
+		for _, tint in ipairs(preview.tints) do
+			ShowPreview(tint, tintColour)
+		end
 	end
 end
 
@@ -239,9 +331,9 @@ local function RefreshUnit(unit)
 
 	local set = unitFrames[unit]
 	if (set) then
-		local glowUnit = unitState[unit] and unit
+		local debuffUnit = unitState[unit] and unit
 		for frame in pairs(set) do
-			UpdateDebuffGlow(frame, glowUnit)
+			UpdateDebuffHighlight(frame, debuffUnit)
 		end
 	end
 end
@@ -406,7 +498,7 @@ function xpHigh:UnitFrameChanged(frame)
 		RefreshUnit(unit)
 	else
 		ShowBorder(frame, nil)
-		UpdateDebuffGlow(frame, nil)
+		UpdateDebuffHighlight(frame, nil)
 	end
 end
 
@@ -440,7 +532,7 @@ local function DebuffTypeName(dispelType)
 end
 
 -- XPerl_DebuffHighlightPreview(which)
--- /xperl debuffs: the debuff glow's four colours in turn, two seconds each; with a type ("magic", ...) that one
+-- /xperl debuffs: the debuff highlight's four colours in turn, two seconds each; with a type ("magic", ...) that one
 -- alone. Run again without a type to stop.
 local previewTicker
 function XPerl_DebuffHighlightPreview(which)

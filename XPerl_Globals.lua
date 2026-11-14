@@ -550,7 +550,8 @@ function XPerl_ValidateSettings()
 		conf.target.combo.show = 1
 	end
 
-	-- The debuff status highlight came back, on by default with "Only Curable"; switching either off stores false
+	-- The debuff status highlight came back, on by default with "Only Curable"; switching either off stores false.
+	-- Its style (border, background or both) came after it, as a border for settings from before then.
 	local highlight = conf.highlight
 	if (highlight) then
 		if (highlight.DEBUFF == nil) then
@@ -558,6 +559,9 @@ function XPerl_ValidateSettings()
 		end
 		if (highlight.curable == nil) then
 			highlight.curable = 1
+		end
+		if (highlight.debuffStyle ~= "background" and highlight.debuffStyle ~= "both") then
+			highlight.debuffStyle = "border"
 		end
 	end
 

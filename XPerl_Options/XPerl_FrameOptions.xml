@@ -3326,6 +3326,9 @@
 									XPerl_Options_EnableSibling(self,"HighlightAggro")
 									XPerl_Options_EnableSibling(self,"HighlightTarget")
 									XPerl_Options_EnableSibling(self,"HighlightDebuffs")
+									XPerl_Options_EnableSibling(self,"HighlightDebuffBackground", "HighlightDebuffs")
+									XPerl_Options_EnableSibling(self,"HighlightDebuffBorder", "HighlightDebuffs")
+									XPerl_Options_EnableSibling(self,"HighlightDebuffBoth", "HighlightDebuffs")
 									XPerl_Options_EnableSibling(self,"HighlightCurable", "HighlightDebuffs")
 								end
 							</OnLoad>
@@ -3379,17 +3382,83 @@
 								self.configOff = false
 								self.configClick = XPerl_OptionActions
 								self.Validate = function()
+									XPerl_Options_EnableSibling(self,"HighlightDebuffBackground", "Highlights")
+									XPerl_Options_EnableSibling(self,"HighlightDebuffBorder", "Highlights")
+									XPerl_Options_EnableSibling(self,"HighlightDebuffBoth", "Highlights")
 									XPerl_Options_EnableSibling(self,"HighlightCurable", "Highlights")
 								end
 							</OnLoad>
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_HighlightDebuffBackground" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeTo="$parent_HighlightDebuffs" relativePoint="BOTTOMRIGHT">
+								<Offset><AbsDimension x="0" y="3"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_DEBUFF_BACKGROUND")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.highlight.debuffStyle == "background")
+							</OnShow>
+							<OnClick>
+								XPerlDB.highlight.debuffStyle = "background"
+								XPerl_Options_CheckRadio(self, {"HighlightDebuffBackground", "HighlightDebuffBorder", "HighlightDebuffBoth"})
+								XPerl_OptionActions()
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_HighlightDebuffBorder" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightDebuffBackground" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="2"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_DEBUFF_BORDER")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.highlight.debuffStyle == "border")
+							</OnShow>
+							<OnClick>
+								XPerlDB.highlight.debuffStyle = "border"
+								XPerl_Options_CheckRadio(self, {"HighlightDebuffBackground", "HighlightDebuffBorder", "HighlightDebuffBoth"})
+								XPerl_OptionActions()
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_HighlightDebuffBoth" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_HighlightDebuffBorder" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="2"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_DEBUFF_BOTH")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.highlight.debuffStyle == "both")
+							</OnShow>
+							<OnClick>
+								XPerlDB.highlight.debuffStyle = "both"
+								XPerl_Options_CheckRadio(self, {"HighlightDebuffBackground", "HighlightDebuffBorder", "HighlightDebuffBoth"})
+								XPerl_OptionActions()
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_HighlightCurable" inherits="XPerlCheckButtonTemplate">
 						<Size><AbsDimension x="26" y="26"/></Size>
 						<Anchors>
-							<Anchor point="TOP" relativeTo="$parent_HighlightDebuffs" relativePoint="BOTTOMRIGHT">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
+							<Anchor point="TOP" relativeTo="$parent_HighlightDebuffBoth" relativePoint="BOTTOM">
+								<Offset><AbsDimension x="0" y="3"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
