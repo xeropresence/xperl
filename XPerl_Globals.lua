@@ -608,6 +608,21 @@ function XPerl_ValidateSettings()
 		}
 	end
 
+	-- Bar colours missing from the settings (the runic power colour) come from the defaults; the options'
+	-- colour swatches and the power bars index them directly
+	if (conf.colour) then
+		local bar = conf.colour.bar
+		if (type(bar) ~= "table") then
+			bar = {}
+			conf.colour.bar = bar
+		end
+		for key, colour in pairs(XPerl_DefaultBarColours()) do
+			if (bar[key] == nil) then
+				bar[key] = colour
+			end
+		end
+	end
+
 	conf.custom = nil		-- settings of the removed custom highlight module
 	conf.highlightDebuffs = nil	-- the old debuff highlighting's settings (now conf.highlight.DEBUFF)
 	conf.buffHelper = nil		-- removed tooltip buff helper
