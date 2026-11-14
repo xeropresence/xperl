@@ -40,7 +40,6 @@ Define("targetType",	{method = "UpdateType"})
 Define("combo",		{method = "UpdateCombo", deferrable = true,
 	init = function(self)
 		local meter = self.nameFrame.cpMeter
-		meter:SetMinMaxValues(0, 5)
 		meter:GetStatusBarTexture():SetHorizTile(false)
 		meter:GetStatusBarTexture():SetVertTile(false)
 		-- Combo points are the player's (or vehicle's) power, so they're followed on a frame of their own
@@ -438,44 +437,43 @@ end
 -- Combo points
 ------------------------------------------------------------------------------
 
-local comboColours = {
-	{0, 1, 0},
-	{0.5, 1, 0},
-	{1, 1, 0},
-	{1, 0.5, 0},
-	{1, 0, 0},
-}
+-- ComboColour(points, most): green at the first point, yellow halfway, red at the most the unit can hold
+local function ComboColour(points, most)
+	local f = most > 1 and (points - 1) / (most - 1) or 1
+	return min(1, 2 * f), min(1, 2 * (1 - f)), 0
+end
 
 -- UpdateCombo: our meter in the name frame (combo.enable) or the number box (neither our meter nor
--- Blizzard's ComboFrame), with the target's combo settings for target and focus alike; none with combo.show off
+-- Blizzard's ComboFrame), with the target's combo settings for target and focus alike; none with combo.show off.
+-- The meter runs up to the most points the player (or vehicle) can hold: 5, or up to 7 with Retail talents.
 function T:UpdateCombo()
 	local combo = conf.target.combo
 	local meter, box = self.nameFrame.cpMeter, self.cpFrame
-	if (not combo.show) then
+	local unit = UnitHasVehicleUI("player") and "vehicle" or "player"
+	local points = combo.show and GetComboPoints(unit, self.partyid)
+	-- Secret points can't be compared, so they show nothing
+	if (not points or issecretvalue(points) or points <= 0 or (combo.blizzard and not combo.enable)) then
 		meter:Hide()
 		box:Hide()
 		return
 	end
-	local points = GetComboPoints(UnitHasVehicleUI("player") and "vehicle" or "player", self.partyid)
-	local colour = not issecretvalue(points) and comboColours[points]
 
+	local most = UnitPowerMax(unit, Enum.PowerType.ComboPoints)
+	if (issecretvalue(most) or most < points) then
+		most = max(points, 5)
+	end
+	local r, g, b = ComboColour(points, most)
 	if (combo.enable) then
 		box:Hide()
-		if (colour) then
-			meter:SetValue(points)
-			meter:SetStatusBarColor(colour[1], colour[2], colour[3], 0.7)
-			meter:Show()
-		else
-			meter:Hide()
-		end
-	elseif (not combo.blizzard and colour) then
-		meter:Hide()
-		box.text:SetText(points)
-		box.text:SetTextColor(colour[1], colour[2], colour[3])
-		box:Show()
+		meter:SetMinMaxValues(0, most)
+		meter:SetValue(points)
+		meter:SetStatusBarColor(r, g, b, 0.7)
+		meter:Show()
 	else
 		meter:Hide()
-		box:Hide()
+		box.text:SetText(points)
+		box.text:SetTextColor(r, g, b)
+		box:Show()
 	end
 end
 

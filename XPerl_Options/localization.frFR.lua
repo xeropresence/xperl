@@ -221,7 +221,7 @@ if (GetLocale() == "frFR") then
         XPERL_CONF_TARGET_CPBLIZZ_POSBOTTOM		= "Le fond"
         XPERL_CONF_TARGET_CPBLIZZ_POSBOTTOM_DESC	= "Align les points de combo sur le fond du portrait"
         XPERL_CONF_TARGET_CP                    	= "Affichage de la barre des points de combos"
-        XPERL_CONF_TARGET_CP_DESC               	= "affichage de progression des points de combos de la cadre de la cible. Note il montrera \195\169galement Sunder count, Vulnerabilit\195\169e a l'ombre, Vulnerabilit\195\169e au feu where applicable)"
+        XPERL_CONF_TARGET_CP_DESC               	= "affichage de progression des points de combos de la cadre de la cible."
         XPERL_CONF_TARGET_PVPICON			= "Drapeau PvP"
         XPERL_CONF_TARGET_PVPICON_DESC			= "Permettre l'affichage du status pvp de la cible"
         XPERL_CONF_TARGET_30YD				= "Indicateur de zone des 30 yard"
