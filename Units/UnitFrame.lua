@@ -686,6 +686,24 @@ function UF:UpdateName()
 	self:UpdateNameColour()
 end
 
+-- WoW: Forever's "My Secondary Name" (CVar UnitSurnameOwn) decides whether the player's own name shows its surname
+-- (XPerlAPI.UnitDisplayName); the names follow the option as soon as it changes
+if (XPerlAPI.isForever) then
+	local surnameWatcher = CreateFrame("Frame")
+	surnameWatcher:RegisterEvent("CVAR_UPDATE")
+	surnameWatcher:SetScript("OnEvent", function(_, _, cvar)
+		if (cvar == "UnitSurnameOwn") then
+			for i = 1, #unitFrames do
+				local frame = unitFrames[i]
+				local unit = frame.partyid
+				if (frame.active and unit and UnitExists(unit)) then
+					frame:UpdateName()
+				end
+			end
+		end
+	end)
+end
+
 -- UpdateNameColour
 -- With conf.reactionHighlight the name frame backdrop shows the reaction and the name its class colour
 function UF:UpdateNameColour()

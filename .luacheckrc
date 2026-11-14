@@ -49,7 +49,7 @@ read_globals = {
 	"AbbreviateNumbers", "Ambiguate", "AnchorUtil", "AuraContainerItemEnchantmentSlot", "AuraUtil", "BackdropTemplateMixin",
 	"CLASS_ICON_TCOORDS", "C_AddOns", "C_CVar", "C_ClassColor", "C_EditMode", "EditModeManagerFrame", "EditModePresetLayoutManager",
 	"C_ChatInfo", "C_CurveUtil", "C_DurationUtil", "C_EncodingUtil", "C_EventUtils", "C_GameRules", "C_Item", "C_PaperDollInfo",
-	"C_PartyInfo", "C_Reputation", "C_Secrets", "C_SpecializationInfo", "C_Spell", "C_SpellBook", "C_StringUtil", "C_Timer", "C_XMLUtil",
+	"C_PartyInfo", "C_PlayerInfo", "C_Reputation", "C_Secrets", "C_SpecializationInfo", "C_Spell", "C_SpellBook", "C_StringUtil", "C_Timer", "C_XMLUtil",
 	"C_UnitAuras", "CanInspect", "CheckInteractDistance", "ClearCursor", "ClearFocus",
 	"CloseMenus", "CombatFeedback_Initialize", "CombatFeedback_OnUpdate", "CombatFeedbackText",
 	"BreakUpLargeNumbers", "COMBAT_TEXT_BLOCK_REDUCED",

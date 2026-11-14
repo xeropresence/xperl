@@ -195,14 +195,22 @@ API.UnitIsDND = Plain(UnitIsDND)
 
 -- API.UnitDisplayName(unit)
 -- The name a unit frame shows. WoW: Forever characters have a surname, which UnitName returns second (where
--- Mainline returns the realm), and Forever's own frames show both parts. A unit whose identity is restricted
--- ("targettarget" while the target is an enemy NPC) has a secret name and surname. Add-on code can join those
--- but can't compare the surname with "", so C_StringUtil.WrapString adds the separator only in front of a
--- non-empty one.
+-- Mainline returns the realm), and Forever's own frames show both parts, except the player's own surname while
+-- "My Secondary Name" (Nameplates options, CVar UnitSurnameOwn) is off. A unit whose identity is restricted
+-- ("targettarget" while the target is an enemy NPC) has a secret name and surname, and whether it is the player
+-- is secret too, so it keeps its surname. Add-on code can join those but can't compare the surname with "", so
+-- C_StringUtil.WrapString adds the separator only in front of a non-empty one.
 local SURNAME_SEPARATOR = API.isForever and Constants.CharacterNameSeparatorConsts.CHARACTERNAME_SURNAME_SEPARATOR
+local function HidesOwnSurname(unit)
+	if (C_PlayerInfo.ShouldDisplaySurname()) then
+		return false
+	end
+	local isPlayer = UnitIsUnit(unit, "player")
+	return not issecretvalue(isPlayer) and isPlayer
+end
 function API.UnitDisplayName(unit)
 	local name, surname = UnitName(unit)
-	if (not SURNAME_SEPARATOR) then
+	if (not SURNAME_SEPARATOR or HidesOwnSurname(unit)) then
 		return name
 	end
 	if (issecretvalue(surname)) then
