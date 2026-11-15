@@ -144,7 +144,7 @@ function A:ApplySettings()
 
 	header:ClearAllPoints()
 	header:SetPoint(headerPoints[anchor], self, headerPoints[anchor], 0, 0)
-	header:SetAttribute("point", anchor)
+	XPerl_GroupHeader_SetPoint(header, anchor)
 	header:SetAttribute("showPlayer", pconf.showPlayer and true or false)
 	if (anchor == "TOP") then
 		header:SetAttribute("xOffset", 0)

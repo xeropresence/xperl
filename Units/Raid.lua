@@ -224,7 +224,7 @@ function Raid.LayoutHeader(header)
 	local anchor = Anchor()
 	local a = anchors[anchor]
 	local spacing = rconf.spacing or 0
-	header:SetAttribute("point", anchor)
+	XPerl_GroupHeader_SetPoint(header, anchor)
 	header:SetAttribute("xOffset", a[3] * spacing)
 	header:SetAttribute("yOffset", a[4] * spacing)
 	header:ClearAllPoints()

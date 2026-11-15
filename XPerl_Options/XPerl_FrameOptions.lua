@@ -592,40 +592,30 @@ function XPerl_Options_LoadSettings_OnLoad(self)
 	end
 end
 
--- AnchorOnClick
-local function AnchorOnClick(self)
-	local obj = UIDROPDOWNMENU_OPEN_MENU
-
-	obj.varSet(XPerl_AnchorList[self:GetID()])
-	MyIndex = self:GetID()
-	UIDropDownMenu_SetSelectedID(obj, MyIndex, 1)
-
-	XPerl_ProtectedCall(obj.setFunc)
+-- AnchorOnClick: arg1 is the dropdown (the menu has closed by now, which clears UIDROPDOWNMENU_OPEN_MENU)
+local function AnchorOnClick(self, dropdown)
+	dropdown.varSet(self.value)
+	UIDropDownMenu_SetSelectedValue(dropdown, self.value)
+	XPerl_ProtectedCall(dropdown.setFunc)
 end
 
 -- AnchorInitialize
-local function AnchorInitialize()
-	local info
-	local current = XPerl_Options_Party_Anchor.varGet() or "TOP"
-
-	for k,v in pairs(XPerl_AnchorList) do
-		info = {}
-		info.text = v
+local function AnchorInitialize(dropdown)
+	for _, anchor in ipairs(XPerl_AnchorList) do
+		local info = UIDropDownMenu_CreateInfo()
+		info.text = anchor
+		info.value = anchor
+		info.arg1 = dropdown
 		info.func = AnchorOnClick
-
-		if (current == v) then
-			MyIndex = k
-		end
-
 		UIDropDownMenu_AddButton(info)
 	end
 end
 
--- XPerl_Options_Anchor_OnLoad
+-- XPerl_Options_Anchor_OnLoad: OnShow of the party and raid anchor dropdowns (varGet/varSet/setFunc)
 function XPerl_Options_Anchor_OnLoad(self)
 	self.displayMode = "MENU"
 	UIDropDownMenu_Initialize(self, AnchorInitialize)
-	UIDropDownMenu_SetSelectedID(self, MyIndex, 1)
+	UIDropDownMenu_SetSelectedValue(self, self.varGet())
 	UIDropDownMenu_SetWidth(self, 100)
 end
 

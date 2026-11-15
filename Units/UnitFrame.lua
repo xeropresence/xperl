@@ -84,6 +84,23 @@ function XPerl_UnitFrames_ApplyEnableFlags()
 	end
 end
 
+-- XPerl_GroupHeader_SetPoint(header, point)
+-- Sets a group header's growth direction (its "point" attribute; protected). The header re-lays its buttons out
+-- with SetPoint alone, which keeps the points of the old direction on them, so they are cleared first.
+function XPerl_GroupHeader_SetPoint(header, point)
+	if (header:GetAttribute("point") == point) then
+		return
+	end
+	local i = 1
+	local button = header:GetAttribute("child1")
+	while (button) do
+		button:ClearAllPoints()
+		i = i + 1
+		button = header:GetAttribute("child"..i)
+	end
+	header:SetAttribute("point", point)
+end
+
 ------------------------------------------------------------------------------
 -- Elements
 ------------------------------------------------------------------------------
