@@ -36,6 +36,10 @@ One download covers both clients; each client loads its own TOC.
   their identity there, and a 3D model needs it.
 - **Cast bars on every frame:** cast time and latency, and a shield icon when the
   cast can't be interrupted.
+- **Class resources** (Retail) under the player frame, with Options → Player → "Show
+  special bar": X-Perl's death knight runes, or the game's own Soul Shards, Holy Power,
+  Chi, Arcane Charges or Essence bar, in the specializations that use them. Untick
+  "Docked with Player" to place the bar in Edit Mode.
 - **Heal prediction:** your incoming heals, other players' incoming heals, absorb
   shields and heal absorbs, in and out of combat. A glow marks absorbs that don't fit on
   the bar.

@@ -4242,9 +4242,8 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								local _, class = UnitClass("player")
-								if (class ~= "DEATHKNIGHT" and class ~= "DRUID" and class ~= "WARLOCK" and class ~= "PALADIN" and class ~= "PRIEST" and class ~= "MONK") then
-                                    self:Hide()
+								if (not (XPerl_Player and XPerl_Player.runes)) then
+									self:Hide()		-- no special bar for this class
 								end
 
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_SHOW_RUNES")
@@ -4268,8 +4267,7 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>  
-								local _, class = UnitClass("player")
-								if (class ~= "DEATHKNIGHT" and class ~= "DRUID" and class ~= "WARLOCK" and class ~= "PALADIN" and class ~= "PRIEST" and class ~= "MONK") then
+								if (not (XPerl_Player and XPerl_Player.runes)) then
 									self:Hide()
 								end
 
@@ -4290,10 +4288,9 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								local _, class = UnitClass("player")
-								if (class ~= "DEATHKNIGHT" and class ~= "DRUID" and class ~= "WARLOCK" and class ~= "PALADIN" and class ~= "PRIEST" and class ~= "MONK") then
-                                    self:ClearAllPoints()
-                                    self:SetPoint("TOPLEFT", XPerl_Options_Player_Options_ShowRunes, "TOPLEFT")
+								if (not (XPerl_Player and XPerl_Player.runes)) then
+									self:ClearAllPoints()
+									self:SetPoint("TOPLEFT", XPerl_Options_Player_Options_ShowRunes, "TOPLEFT")
 								end
 
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ARCANE_BAR")

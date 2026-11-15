@@ -109,12 +109,13 @@ read_globals = {
 	"GetUnitName", "HIGHLIGHT_FONT_COLOR", "LOCALIZED_CLASS_NAMES_MALE", "NONE", "NORMAL_FONT_COLOR",
 	"PERCENT_SYMBOL", "PETS", "RAID",
 	-- FrameXML frames and tables (12.1 FrameXML) and GlobalStrings
-	"BuffFrame", "CHAT_MSG_AFK", "CLOSE",
+	"ARCANE_CHARGES", "BuffFrame", "CHAT_MSG_AFK", "CHI_POWER", "CLOSE",
 	"ChatFontNormal", "ComboFrame", "DebuffFrame", "DropDownList1", "FACTION_BAR_COLORS", "FAILED",
-	"GRAY_FONT_COLOR", "Minimap", "PET_TYPE_SUFFIX", "PartyFrame", "PetFrame", "PlayerCastingBarFrame", "PlayerFrame",
+	"GRAY_FONT_COLOR", "HOLY_POWER", "Minimap", "PET_TYPE_SUFFIX", "PartyFrame", "PetFrame", "PlayerBottomManagedFrameContainer",
+	"PlayerCastingBarFrame", "PlayerFrame", "POWER_TYPE_ESSENCE",
 	"PowerBarColor", "RAID_CLASS_COLORS", "RAID_TARGET_ICON", "READY_CHECK_NOT_READY_TEXTURE",
-	"READY_CHECK_READY_TEXTURE", "READY_CHECK_WAITING_TEXTURE", "RuneFrame", "SPELL_FAILED_INTERRUPTED",
-	"UIDROPDOWNMENU_MENU_VALUE", "UIDROPDOWNMENU_OPEN_MENU", "UISpecialFrames", "WarlockPowerFrame",
+	"READY_CHECK_READY_TEXTURE", "READY_CHECK_WAITING_TEXTURE", "SOUL_SHARDS_POWER", "SPELL_FAILED_INTERRUPTED",
+	"UIDROPDOWNMENU_MENU_VALUE", "UIDROPDOWNMENU_OPEN_MENU", "UISpecialFrames",
 	-- Other add-ons X-Perl integrates with when they are loaded
 	"BCastBar", "BCastBarDragButton", "BCastingBar", "CT_PartyBuffFrame1", "CT_PartyBuffFrame2",
 	"CT_PartyBuffFrame3", "CT_PartyBuffFrame4", "CT_PetBuffFrame", "CT_RAGroup1", "CT_RAMTGroup", "CT_RAMTTGroup",

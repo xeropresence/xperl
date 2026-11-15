@@ -3,8 +3,9 @@
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 --
 -- Player frame (XPerl_Player): vehicle swap, experience / reputation / druid mana bars, class power
--- (death knight runes, warlock shards, totems), PvP timer, raid group number, the full screen out of control
--- flash, and the player's buffs (which replace Blizzard's BuffFrame and DebuffFrame).
+-- (death knight runes, Blizzard's class resource bar for the other classes, totems), PvP timer, raid group
+-- number, the full screen out of control flash, and the player's buffs (which replace Blizzard's BuffFrame and
+-- DebuffFrame).
 -- Everything else comes from Units/UnitFrame.lua, the targeting counter from Units/TargetCounters.lua.
 
 local UF = XPerl_UnitFrameMixin
@@ -15,6 +16,19 @@ local playerClass = select(2, UnitClass("player"))
 local isOutOfControl
 local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%.0f"..PERCENT_SYMBOL
+
+-- Blizzard's class resource bar per class (Retail), shown as the special bar, and its name as the undocked bar's
+-- Edit Mode label. Death knights get X-Perl's own runes instead; combo points show on the target frame.
+local CLASS_BARS = {
+	WARLOCK	= {frame = "WarlockPowerFrame", label = SOUL_SHARDS_POWER},
+	PALADIN	= {frame = "PaladinPowerBarFrame", label = HOLY_POWER},
+	MONK	= {frame = "MonkHarmonyBarFrame", label = CHI_POWER},
+	MAGE	= {frame = "MageArcaneChargesFrame", label = ARCANE_CHARGES},
+	EVOKER	= {frame = "EssencePlayerFrame", label = POWER_TYPE_ESSENCE},
+}
+local classBarInfo = not XPerlAPI.isForever and CLASS_BARS[playerClass]
+local classBar = classBarInfo and _G[classBarInfo.frame]
+local classBarParent, classBarPoints		-- Blizzard's placement while the class bar is ours
 
 XPerl_PlayerFrameMixin = {
 	elementList = {
@@ -74,8 +88,11 @@ function P:InitType()
 	nf.pvpIcon:ClearAllPoints()
 	nf.pvpIcon:SetPoint("TOPLEFT", nf, "TOPLEFT", -4, 1)
 
-	self:InitDeathKnight()
-	self:InitWarlock()
+	if (playerClass == "DEATHKNIGHT") then
+		self:InitDeathKnight()
+	elseif (classBar) then
+		self:CreateSpecialBar()
+	end
 end
 
 -- CreateBar(name): an extra bar under the mana bar (XPerl_PlayerstatsFrame<name>)
@@ -131,7 +148,7 @@ function P:ApplySize(width)
 
 	if (c.extendPortrait) then
 		self.portraitFrame:SetHeight(62 + self:ExtraBarCount() * 10)
-	elseif (self.runes and c.showRunes and c.dockRunes) then
+	elseif (self:SpecialBarDocked()) then
 		self.portraitFrame:SetHeight(62 + (((c.xpBar and 1 or 0) + (c.repBar and 1 or 0)) * 10))
 	else
 		self.portraitFrame:SetHeight(62)
@@ -169,10 +186,8 @@ function P:ApplyTypeSettings()
 		bar.text:SetShown(values)
 		bar.percent:SetShown(percent)
 	end
+	self:SetupRunes()		-- before the size: a docked special bar extends the portrait
 	self:ApplySize(max(0, c.size.width or 0))
-
-	self:SetupRunes()
-	self:InitWarlock()
 
 	self.highlight:ClearAllPoints()
 	if (not c.level and not c.classIcon and not c.targetCounter) then
@@ -190,8 +205,9 @@ function P:ApplyTypeSettings()
 	self:ShowBlizzardAuras(not (c.buffs.enable and c.buffs.hideBlizzard))
 end
 
--- OnActivate: a disabled player frame gives Blizzard's aura frames back. The first activation also stops
--- HealBot from switching Blizzard's player frame back on (only while X-Perl's player frame is in use).
+-- OnActivate: a disabled player frame gives Blizzard's aura frames back, and hides the special bar (it can sit
+-- on UIParent). The first activation also stops HealBot from switching Blizzard's player frame back on (only
+-- while X-Perl's player frame is in use).
 function P:OnActivate(on)
 	if (not on) then
 		self:ShowBlizzardAuras(true)
@@ -199,6 +215,7 @@ function P:OnActivate(on)
 		self.healBotOverridden = true
 		HealBot_Options_EnablePlayerFrame = function() end
 	end
+	self:SetupRunes()
 	self:UpdateTotems()
 end
 
@@ -499,42 +516,15 @@ function P:UpdateControl(event)
 end
 
 ------------------------------------------------------------------------------
--- Class power
+-- Class power: the special bar (conf.player.showRunes) in XPerl_Runes, docked under the stats (dockRunes) or
+-- free, where Edit Mode places it
 ------------------------------------------------------------------------------
 
--- InitDeathKnight
--- Our own rune buttons in XPerl_Runes, when Blizzard's RuneFrame still sits where the player frame put it
-function P:InitDeathKnight()
-	if (playerClass ~= "DEATHKNIGHT" or not RuneFrame or RuneFrame:GetParent() ~= PlayerFrame or not RuneFrame:IsShown()) then
-		return
-	end
-	local p, f, r = RuneFrame:GetPoint(1)
-	if (f ~= PlayerFrame or p ~= "TOP" or r ~= "BOTTOM") then
-		return		-- another mod moved it
-	end
-
-	local runes = CreateFrame("Frame", "XPerl_Runes", self, "BackdropTemplate")
+-- CreateSpecialBar(template): XPerl_Runes. Undocked, it can also be dragged while the options window has the
+-- frames unlocked.
+function P:CreateSpecialBar(template)
+	local runes = CreateFrame("Frame", "XPerl_Runes", self, template)
 	self.runes = runes
-	self.runeBorder = runes
-	runes:SetBackdrop({bgFile = "Interface\\Addons\\XPerl\\Images\\XPerl_FrameBack",
-			edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-			tile = true, tileSize = 32, edgeSize = 12,
-			insets = {left = 3, right = 3, top = 3, bottom = 3}})
-	runes:SetBackdropColor(0, 0, 0, 0.8)
-	runes:SetBackdropBorderColor(1, 1, 1, 1)
-
-	RuneFrame:ClearAllPoints()
-	RuneFrame:SetPoint("TOPLEFT", 5, -5)
-	RuneFrame:SetPoint("BOTTOMRIGHT", -5, 5)
-
-	self.runeButtons = {}
-	for i = 1, 6 do
-		local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, runes, "XPerl_RuneButtonIndividualTemplate")
-		rune:EnableMouse(false)
-		rune:SetID(i)
-		self.runeButtons[i] = rune
-	end
-
 	runes:SetMovable(true)
 	runes:RegisterForDrag("LeftButton")
 	runes:SetScript("OnDragStart", function(frame)
@@ -550,28 +540,102 @@ function P:InitDeathKnight()
 			XPerl_SavePosition(frame)
 		end
 	end)
+	return runes
 end
 
--- InitWarlock: Blizzard's shard bar moves into XPerl_Runes under the stats
-function P:InitWarlock()
-	if (playerClass ~= "WARLOCK" or not WarlockPowerFrame or WarlockPowerFrame:GetParent() ~= PlayerFrame or not WarlockPowerFrame:IsShown() or not pconf or not pconf.showRunes) then
-		return		-- not there, or already taken by us or another mod
+-- InitDeathKnight: our own rune buttons, on a backdrop
+function P:InitDeathKnight()
+	local runes = self:CreateSpecialBar("BackdropTemplate")
+	self.runeBorder = runes
+	runes:SetBackdrop({bgFile = "Interface\\Addons\\XPerl\\Images\\XPerl_FrameBack",
+			edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+			tile = true, tileSize = 32, edgeSize = 12,
+			insets = {left = 3, right = 3, top = 3, bottom = 3}})
+	runes:SetBackdropColor(0, 0, 0, 0.8)
+	runes:SetBackdropBorderColor(1, 1, 1, 1)
+
+	self.runeButtons = {}
+	for i = 1, 6 do
+		local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, runes, "XPerl_RuneButtonIndividualTemplate")
+		rune:EnableMouse(false)
+		rune:SetID(i)
+		self.runeButtons[i] = rune
 	end
-	local runes = CreateFrame("Frame", "XPerl_Runes", self)
-	self.runes = runes
-	runes:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 0, 2)
-	runes:SetPoint("BOTTOMRIGHT", self.statsFrame, "BOTTOMRIGHT", 0, -30)
-	WarlockPowerFrame:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 20, 1)
-	WarlockPowerFrame:SetParent(runes)
 end
 
--- SetupRunes: shown/hidden, docked under the portrait or free (then Edit Mode places it)
+-- SpecialBarDocked: whether the special bar takes room under the frame. Blizzard's class bar is only there while
+-- Blizzard shows it: in the specializations with that resource, and out of vehicles.
+function P:SpecialBarDocked()
+	local runes = self.runes
+	if (not (runes and runes:IsShown() and pconf.dockRunes)) then
+		return false
+	end
+	return self.runeButtons ~= nil or (classBarParent ~= nil and classBar:IsShown())
+end
+
+-- UpdateClassBar(take): Blizzard's class bar into XPerl_Runes, or back where it was. Like TotemFrame (see
+-- UpdateTotems) it is a managed frame of PlayerBottomManagedFrameContainer, under Blizzard's hidden PlayerFrame,
+-- and its OnShow would put it back there whenever Blizzard shows it again (a specialization change, leaving a
+-- vehicle), so taking it clears its OnShow / OnHide for good, as for TotemFrame. Blizzard's code keeps driving
+-- it: neither XPerl_Runes nor the player frame has the .unit field it would read (and be tainted by). Secure
+-- hooks on its Show / Hide lay out our frame when it comes or goes.
+function P:UpdateClassBar(take)
+	if (not classBar) then
+		return
+	end
+	if (take) then
+		if (classBarParent) then
+			return
+		end
+		local parent = classBar:GetParent()
+		if (parent ~= PlayerFrame and parent ~= PlayerBottomManagedFrameContainer) then
+			return		-- another add-on has it
+		end
+		classBarParent, classBarPoints = parent, {}
+		for i = 1, classBar:GetNumPoints() do
+			classBarPoints[i] = {classBar:GetPoint(i)}
+		end
+		classBar:SetScript("OnShow", nil)
+		classBar:SetScript("OnHide", nil)
+		classBar:SetParent(self.runes)
+		classBar:ClearAllPoints()
+		classBar:SetPoint("CENTER")
+
+		if (not self.classBarHooked) then
+			self.classBarHooked = true
+			local shown
+			local function Toggled()
+				if (classBar:IsShown() == shown) then
+					return		-- Blizzard shows it again on every setup
+				end
+				shown = classBar:IsShown()
+				if (classBarParent and pconf.dockRunes) then
+					self:LayoutBars()
+					self:UpdateTotems()
+				end
+			end
+			hooksecurefunc(classBar, "Show", Toggled)
+			hooksecurefunc(classBar, "Hide", Toggled)
+			hooksecurefunc(classBar, "SetShown", Toggled)
+		end
+	elseif (classBarParent) then
+		classBar:SetParent(classBarParent)
+		classBar:ClearAllPoints()
+		for _, point in ipairs(classBarPoints) do
+			classBar:SetPoint(unpack(point))
+		end
+		classBarParent, classBarPoints = nil, nil
+	end
+end
+
+-- SetupRunes: shown while the player frame is in use, docked under the portrait or free (then Edit Mode places it)
 function P:SetupRunes()
 	local runes = self.runes
 	if (not runes) then
 		return
 	end
-	if (not pconf.showRunes) then
+	if (not (pconf.showRunes and self.active)) then
+		self:UpdateClassBar(false)
 		runes:Hide()
 		if (runes.editModeRegistered) then
 			XPerl_EditMode_SetEnabled(runes, false)
@@ -579,9 +643,6 @@ function P:SetupRunes()
 		return
 	end
 	runes:Show()
-	if (not self.runeButtons) then
-		return		-- warlock shards stay docked
-	end
 
 	runes:ClearAllPoints()
 	if (pconf.dockRunes) then
@@ -600,7 +661,7 @@ function P:SetupRunes()
 		if (not runes.editModeRegistered) then
 			runes.editModeRegistered = true
 			XPerl_EditMode_Register(runes, "player", {
-				label = XPERL_LOC_RUNES,
+				label = classBarInfo and classBarInfo.label or XPERL_LOC_RUNES,
 				default = {point = "TOPLEFT", x = 23, y = -80},
 				index = 2,
 				preview = function(on) runes:EnableMouse(on and true or false) end,
@@ -610,6 +671,10 @@ function P:SetupRunes()
 		XPerl_EditMode_ApplyPosition(runes)
 	end
 
+	if (not self.runeButtons) then
+		self:UpdateClassBar(true)
+		return
+	end
 	local wide = runes:GetWidth() >= 200
 	local prev
 	for i = 1, 6 do
@@ -644,8 +709,9 @@ function P:UpdateRunes()
 	end
 end
 
--- UpdateTotems: Blizzard's TotemFrame under the player frame (conf.player.totems, while the player frame is in
--- use), or back where it was. Every class can have one (statues, Consecration, Efflorescence and the like).
+-- UpdateTotems: Blizzard's TotemFrame under the player frame, or under the docked special bar (conf.player.totems,
+-- while the player frame is in use), or back where it was. Every class can have one (statues, Consecration,
+-- Efflorescence and the like).
 -- TotemFrame is a managed frame of PlayerBottomManagedFrameContainer, a child of Blizzard's PlayerFrame: its
 -- OnShow puts it back into that container (hidden along with PlayerFrame) each time a totem appears, mostly in
 -- combat, where it could not be taken again. Those OnShow / OnHide scripts do nothing else, so taking the frame
@@ -674,7 +740,7 @@ function P:UpdateTotems()
 		end
 		TotemFrame:SetParent(self)
 		TotemFrame:ClearAllPoints()
-		TotemFrame:SetPoint("TOP", self, "BOTTOM", totems.offsetX, totems.offsetY)
+		TotemFrame:SetPoint("TOP", self:SpecialBarDocked() and self.runes or self, "BOTTOM", totems.offsetX, totems.offsetY)
 	elseif (totemParent) then
 		TotemFrame:SetParent(totemParent)
 		TotemFrame:ClearAllPoints()
@@ -685,9 +751,9 @@ function P:UpdateTotems()
 	end
 end
 
--- TypePreview: undocked runes can be dragged while unlocked
+-- TypePreview: the undocked special bar can be dragged while unlocked
 function P:TypePreview(on)
-	if (self.runes and self.runeButtons) then
+	if (self.runes) then
 		self.runes:EnableMouse(on and not pconf.dockRunes and true or false)
 	end
 end
@@ -770,7 +836,7 @@ function P:PlaceAuras()
 	buffFrame:ClearAllPoints()
 	if (pconf.buffs.above) then
 		buffFrame:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 3, 0)
-	elseif (self.runes and self.runes:IsShown() and pconf.dockRunes) then
+	elseif (self:SpecialBarDocked()) then
 		buffFrame:SetPoint("TOPLEFT", self.runes, "BOTTOMLEFT", 3, 0)
 	else
 		local drop = self:StatsDrop()
