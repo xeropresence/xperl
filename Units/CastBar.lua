@@ -28,6 +28,7 @@ local useDurations = UnitCastingDuration and UnitChannelDuration and C_DurationU
 local HOLD_TIME = 1			-- seconds a failed or interrupted bar stays before it fades
 local FLASH_STEP = 3			-- flash alpha per second after a cast ends
 local FADE_STEP = 2			-- bar alpha per second while fading
+local POLL_TIME = 0.2			-- seconds between checks that a shown cast still runs
 
 local barColours = {
 	main = {r = 1.0, g = 0.7, b = 0.0},
@@ -274,6 +275,7 @@ function CB:Start()
 	self.fadeOut = nil
 	self.flashFrame.active = nil
 	self.holdTime = 0
+	self.pollTime = GetTime() + POLL_TIME
 
 	local colour = self.channeling and barColours.channel or barColours.main
 	self:SetStatusBarColor(colour.r, colour.g, colour.b, conf.transparency.frame)
@@ -388,11 +390,22 @@ function CB:OnEvent(event, unit, castID, spellID, extra)
 	end
 end
 
--- OnUpdate: plain-time progress (no duration objects), the end flash and the fade out. The flash and fade alphas
--- are kept in Lua, never read back: GetAlpha returns a secret once the bar's alpha is restricted (range fading).
+-- OnUpdate: plain-time progress (no duration objects), casts that end without a stop event, the end flash and the
+-- fade out. The flash and fade alphas are kept in Lua, never read back: GetAlpha returns a secret once the bar's
+-- alpha is restricted (range fading).
 function CB:OnUpdate(elapsed)
 	local now = GetTime()
 	if (self.casting or self.channeling) then
+		-- The bar can't end itself on time (the times are secret for other units), and no stop event comes when the
+		-- unit leaves the client's view as its cast ends (a hearthstone or teleport, a party member running out of
+		-- range), so the unit is asked whether it still casts. The names tested are strings, allowed when secret.
+		if (now >= self.pollTime) then
+			self.pollTime = now + POLL_TIME
+			if (not UnitCastingInfo(self.unit) and not UnitChannelInfo(self.unit)) then
+				self:Finish()
+				return
+			end
+		end
 		if (self.endTime) then
 			local remaining = max(0, self.endTime - now)
 			local fill = 1 - remaining / (self.endTime - self.startTime)
