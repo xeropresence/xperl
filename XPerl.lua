@@ -771,7 +771,7 @@ local SetValuedText = XPerl_SetValuedText
 
 -- SetSecretHealthBar
 -- Restricted (secret) health can't be turned into a percentage here, so the bar's colour comes from the client's
--- colour curve, its texture isn't cropped, and the texts come from the client's formatting helpers
+-- colour curve and the texts come from the client's formatting helpers
 local function SetSecretHealthBar(self, bar, hp, Max)
 	local unit = self.partyid
 	if (conf.bar.inverse) then
@@ -779,7 +779,6 @@ local function SetSecretHealthBar(self, bar, hp, Max)
 	else
 		bar:SetValue(hp)
 	end
-	bar.tex:SetTexCoord(0, 1, 0, 1)
 
 	XPerl_ColourHealthBar(self)
 	if (bar.percent) then
@@ -806,6 +805,9 @@ local function SetSecretHealthBar(self, bar, hp, Max)
 end
 
 -- XPerl_SetHealthBar
+-- The StatusBar crops its fill texture to the value itself, secret values included, so bar textures never get
+-- texture coordinates here: the client puts its crop back shortly after, and every refresh would flash the whole
+-- texture squeezed into the fill (the target of target refreshes five times a second).
 function XPerl_SetHealthBar(self, hp, Max)
 	local bar = self.statsFrame.healthBar
 	--print(self.partyid .. hp .. ":" .. Max)
@@ -824,16 +826,10 @@ function XPerl_SetHealthBar(self, hp, Max)
 		percent = hp / Max
 	end		
 	if (percent > 1) then percent = 1 end -- a fraction: never more than full
-    if (conf.bar.inverse) then
-
+	if (conf.bar.inverse) then
 		bar:SetValue(Max - hp)
-		bar.tex:SetTexCoord(0, max(0,(1 - percent)), 0, 1)
-	
 	else
-
 		bar:SetValue(hp)
-		bar.tex:SetTexCoord(0, max(0, percent), 0, 1)
-	
 	end
 
 	XPerl_ColourHealthBar(self, percent)
@@ -1256,7 +1252,6 @@ function XPerl_SetPowerBar(self, current, maxPower, powerType, exactText)
 		else
 			mb.percent:SetText(current)
 		end
-		mb.tex:SetTexCoord(0, 1, 0, 1)
 		return
 	end
 
@@ -1281,7 +1276,6 @@ function XPerl_SetPowerBar(self, current, maxPower, powerType, exactText)
 	else
 		mb.percent:SetText(current)
 	end
-	mb.tex:SetTexCoord(0, max(0, min(1, fraction)), 0, 1)
 end
 
 -- TooltipModifierPressed(buffs)

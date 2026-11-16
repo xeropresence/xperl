@@ -373,7 +373,6 @@ function P:UpdateRep()
 
 	local fraction = maxValue > 0 and value / maxValue or 0
 	rb.percent:SetFormattedText(perc1F, fraction * 100)
-	rb.tex:SetTexCoord(0, fraction, 0, 1)
 
 	if (maxValue == 1) then
 		rb.text:SetText(name)
@@ -423,11 +422,9 @@ function P:UpdateXP()
 
 	xpBar:SetStatusBarColor(color.r, color.g, color.b, 1)
 	xpBar.bg:SetVertexColor(color.r, color.g, color.b, 0.25)
-	xpBar.tex:SetTexCoord(0, fraction, 0, 1)
 
 	restBar:SetValue(xp + rested)
 	restBar:SetStatusBarColor(color.r, color.g, color.b, 0.5)
-	restBar.tex:SetTexCoord(0, fraction, 0, 1)
 	restBar.bg:SetVertexColor(color.r, color.g, color.b, 0.5)
 	xpBar.percent:SetFormattedText(percD, fraction * 100)
 end
