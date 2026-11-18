@@ -23,7 +23,7 @@ end
 local UnitIsAFK = XPerlAPI.UnitIsAFK			-- secret-safe unit flags, see XPerl_Api.lua
 local UnitIsPVP = XPerlAPI.UnitIsPVP
 local UnitDisplayName = XPerlAPI.UnitDisplayName		-- with the WoW: Forever surname
-local GetDifficultyColor = GetCreatureDifficultyColor or GetQuestDifficultyColor		-- by level (GetDifficultyColor takes a difficulty enum)
+local GetLevelColor = GetCreatureDifficultyColor or GetQuestDifficultyColor		-- by level (GetDifficultyColor takes a difficulty enum)
 local IsEventValid = C_EventUtils and C_EventUtils.IsEventValid
 
 XPerl_UnitFrameMixin = {}
@@ -761,7 +761,14 @@ function UF:UpdateLevel()
 			lf:Hide()		-- bosses: the type's classification display says so
 		end
 	else
-		local color = GetDifficultyColor(level)
+		-- Attackable units take the server's con, as Blizzard's target frame does: the level formula keeps mobs
+		-- up to 4 levels below yellow where the con turns them green
+		local color
+		if (UnitCanAttack("player", unit)) then
+			color = GetDifficultyColor(C_PlayerInfo.GetContentDifficultyCreatureForPlayer(unit))
+		else
+			color = GetLevelColor(level)
+		end
 		lf.text:SetTextColor(color.r, color.g, color.b)
 		lf.text:Show()
 		if (not self.conf.elite and (classification == "elite" or classification == "worldboss")) then

@@ -58,7 +58,7 @@ read_globals = {
 	"FauxScrollFrame_GetOffset", "FauxScrollFrame_OnVerticalScroll",
 	"FauxScrollFrame_Update", "GameTooltip_Hide", "GameTooltip_SetDefaultAnchor", "GetAddOnCPUUsage",
 	"GetAddOnMemoryUsage", "GetBuildInfo",
-	"GetComboPoints", "GetCreatureDifficultyColor", "GetCursorInfo", "GetCursorPosition",
+	"GetComboPoints", "GetCreatureDifficultyColor", "GetCursorInfo", "GetCursorPosition", "GetDifficultyColor",
 	"GetGuildInfo", "GetGuildRosterInfo", "GetGuildRosterSelection", "GROUP",
 	"GetInventoryItemBroken", "GetInventoryItemTexture", "GetLocale", "GetMouseFoci",
 	"GetNetStats", "GetNumGroupMembers", "GetNumGuildMembers", "GetNumSpecializations", "GetNumSubgroupMembers",
