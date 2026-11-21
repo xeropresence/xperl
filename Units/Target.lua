@@ -572,3 +572,32 @@ function T:SetupBlizzardComboFrame()
 	end
 	LayoutBlizzardComboPoints()
 end
+
+------------------------------------------------------------------------------
+-- Gamepad target menu
+------------------------------------------------------------------------------
+
+-- The gamepad's unit page opens the target's menu with TargetFrame_OpenMenu(TargetFrame). A menu closes on its
+-- first update once its owner isn't visible, and TargetFrame is hidden while X-Perl's target frame replaces it.
+-- The menu Blizzard opened stays as it is (opened securely, so Target, Set Focus and the raid roles work); it
+-- moves to X-Perl's target frame and closes when that frame hides instead.
+if (TargetFrame_OpenMenu) then
+	hooksecurefunc("TargetFrame_OpenMenu", function(owner)
+		if (owner ~= TargetFrame or not TargetFrame.XPerlDisabled or not XPerl_Target:IsVisible()) then
+			return
+		end
+		local manager = Menu.GetManager()
+		local menu = manager:GetOpenMenu()
+		if (not menu) then
+			return
+		end
+		menu:ClearAllPoints()
+		menu:SetPoint("LEFT", XPerl_Target, "RIGHT")
+		menu:SetScript("OnUpdate", function()
+			if (not XPerl_Target:IsVisible()) then
+				menu:SetScript("OnUpdate", nil)
+				manager:CloseMenu(menu)
+			end
+		end)
+	end)
+end

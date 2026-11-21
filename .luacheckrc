@@ -99,6 +99,8 @@ read_globals = {
 	-- Units/Pet.lua
 	"GameFontNormalSmall", "UNKNOWN",
 	"FOM_FeedButton", "Set_FOM_FeedButton",	-- Feed-O-Matic (optional)
+	-- Units/Target.lua (checked against the 1.60.1 FrameXML)
+	"Menu", "TargetFrame", "TargetFrame_OpenMenu",
 	-- Units/Party.lua
 	"GameFontNormal", "PARTY", "PLAYER",
 	-- Units/Boss.lua, Units/Arena.lua (checked against the 12.1 FrameXML / API documentation)
