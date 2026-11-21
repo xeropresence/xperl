@@ -21,7 +21,6 @@ local function Plain(value)
 end
 
 local UnitIsAFK = XPerlAPI.UnitIsAFK			-- secret-safe unit flags, see XPerl_Api.lua
-local UnitIsPVP = XPerlAPI.UnitIsPVP
 local UnitDisplayName = XPerlAPI.UnitDisplayName		-- with the WoW: Forever surname
 local GetLevelColor = GetCreatureDifficultyColor or GetQuestDifficultyColor		-- by level (GetDifficultyColor takes a difficulty enum)
 local IsEventValid = C_EventUtils and C_EventUtils.IsEventValid
@@ -1079,25 +1078,34 @@ function UF:UpdateRole()
 	end
 end
 
--- UnitPvPIcon(unit)
--- "FFA", the unit's faction for a PvP flagged unit, or nil
+-- UnitPvPIcon(unit) -> icon, flagged
+-- "FFA" or the unit's faction, and whether the unit is PvP flagged. The flag is secret while the unit's
+-- identity is restricted (enemy players in battlegrounds and arenas); its faction isn't.
 local function UnitPvPIcon(unit)
 	if (Plain(UnitIsPVPFreeForAll(unit))) then
-		return "FFA"
-	elseif (UnitIsPVP(unit)) then
-		local faction = Plain(UnitFactionGroup(unit))
-		if (faction and faction ~= "Neutral") then
-			return faction
-		end
+		return "FFA", true
+	end
+	local faction = Plain(UnitFactionGroup(unit))
+	if (faction and faction ~= "Neutral") then
+		return faction, UnitIsPVP(unit)
 	end
 end
 
--- UpdatePvP
+-- UpdatePvP: a secret flag shows the icon through its alpha
 function UF:UpdatePvP()
 	local icon = self.nameFrame.pvpIcon
-	local pvp = self.conf.pvpIcon and UnitPvPIcon(self.pvpUnit or self.partyid)
-	if (pvp) then
+	local pvp, flagged
+	if (self.conf.pvpIcon) then
+		pvp, flagged = UnitPvPIcon(self.pvpUnit or self.partyid)
+	end
+	local secret = issecretvalue(flagged)
+	if (pvp and (secret or flagged)) then
 		icon:SetTexture("Interface\\TargetingFrame\\UI-PVP-"..pvp)
+		if (secret) then
+			icon:SetAlphaFromBoolean(flagged, 1, 0)
+		else
+			icon:SetAlpha(1)
+		end
 		icon:Show()
 	else
 		icon:Hide()

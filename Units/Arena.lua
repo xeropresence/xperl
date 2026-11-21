@@ -16,7 +16,9 @@
 local SF = XPerl_UnitStackFrameMixin
 local C_PvP = C_PvP
 
-local TRINKET_ICON = "Interface\\Icons\\INV_Jewelry_TrinketPVP_01"
+-- The faction PvP trinkets (Insignia of the Alliance / of the Horde) stand in for an opponent's crowd control
+-- removal until it is known
+local TRINKET_ICONS = {Alliance = "Interface\\Icons\\INV_Jewelry_TrinketPVP_01", Horde = "Interface\\Icons\\INV_Jewelry_TrinketPVP_02"}
 local UNKNOWN_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 local CLASS_ICONS = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
 
@@ -125,6 +127,11 @@ end
 -- PvP trinket
 ------------------------------------------------------------------------------
 
+-- TrinketIcon(unit): the unit's faction trinket; the player's while there is no unit (Edit Mode)
+local function TrinketIcon(unit)
+	return TRINKET_ICONS[Plain(UnitFactionGroup(unit))] or TRINKET_ICONS[UnitFactionGroup("player")] or UNKNOWN_ICON
+end
+
 -- SetTrinketSpell(spellID): the opponent's crowd control removal. The spell is secret while loss of control
 -- information is restricted; its texture then goes to the icon as it is.
 function A:SetTrinketSpell(spellID)
@@ -132,9 +139,9 @@ function A:SetTrinketSpell(spellID)
 	if (issecretvalue(spellID)) then
 		icon:SetTexture(C_Spell.GetSpellTexture(spellID))
 	elseif (spellID and spellID > 0) then
-		icon:SetTexture(C_Spell.GetSpellTexture(spellID) or TRINKET_ICON)
+		icon:SetTexture(C_Spell.GetSpellTexture(spellID) or TrinketIcon(self.partyid))
 	else
-		icon:SetTexture(TRINKET_ICON)
+		icon:SetTexture(TrinketIcon(self.partyid))
 	end
 end
 
@@ -180,7 +187,7 @@ function A:InitType()
 	SF.InitType(self)
 	self.specFrame.icon:SetTexture(UNKNOWN_ICON)
 	self.specFrame.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
-	self.trinketFrame.icon:SetTexture(TRINKET_ICON)
+	self.trinketFrame.icon:SetTexture(TrinketIcon(self.partyid))
 end
 
 -- OnOpponentUpdate(event, token): the opponent behind our token was seen (again) or went away

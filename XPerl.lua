@@ -1418,7 +1418,13 @@ function XPerl_ReactionColour(argUnit)
 				return conf.colour.reaction.friend
 			end
 		else
-			if (UnitIsPVP(argUnit)) then
+			-- An enemy player's PvP flag is secret while its identity is restricted (battlegrounds, arenas);
+			-- XPerlAPI.UnitIsPVP gives nil (not false) then, and whether we can attack them tells the same
+			local flagged = UnitIsPVP(argUnit)
+			if (flagged == nil) then
+				flagged = UnitCanAttack("player", argUnit)
+			end
+			if (flagged) then
 				if (UnitIsPVP("player")) then
 					return conf.colour.reaction.enemy
 				else
