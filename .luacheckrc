@@ -102,8 +102,9 @@ read_globals = {
 	-- Units/Party.lua
 	"GameFontNormal", "PARTY", "PLAYER",
 	-- Units/Boss.lua, Units/Arena.lua (checked against the 12.1 FrameXML / API documentation)
-	"Boss1TargetFrame", "BossTargetFrameContainer", "CompactArenaFrame", "CompactArenaFrame_Generate",
-	"CreateFromMixins", "C_PvP", "GetArenaOpponentSpec", "GetNumArenaOpponentSpecs", "UnitFrameUtil",
+	"ArenaEnemyFramesContainer", "ArenaEnemyMatchFramesContainer", "Boss1TargetFrame", "BossTargetFrameContainer",
+	"CompactArenaFrame",
+	"CreateFromMixins", "C_PvP", "EventUtil", "GetArenaOpponentSpec", "GetNumArenaOpponentSpecs", "UnitFrameUtil",
 	-- Units/Raid.lua, Units/RaidPets.lua (checked against the 12.1 FrameXML / API documentation)
 	"ALL", "CompactRaidFrameContainer", "CompactUnitFrameProfiles", "CT_RA_VersionNumber", "DURABILITY_TEMPLATE",
 	"GetUnitName", "HIGHLIGHT_FONT_COLOR", "LOCALIZED_CLASS_NAMES_MALE", "NONE", "NORMAL_FONT_COLOR",

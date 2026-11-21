@@ -10,12 +10,8 @@
 -- opponent specializations and the trinket spell. Secret values only go to widget calls that accept them
 -- (SetText, SetTexture, SetVertexColor, SetAlphaFromBoolean, duration objects); nothing compares them.
 --
--- Only clients with Blizzard's arena frames (CompactArenaFrame_Generate; WoW: Forever has none) have arenas,
--- so only they get these frames.
-
-if (not CompactArenaFrame_Generate) then
-	return
-end
+-- Outside arenas the arena units are the battleground flag carriers, so WoW: Forever, which has no arenas, gets
+-- these frames as well (in place of Blizzard's old arena frames, which show the flag carriers there).
 
 local SF = XPerl_UnitStackFrameMixin
 local C_PvP = C_PvP
@@ -211,29 +207,26 @@ function A:ApplyTypeSettings()
 end
 
 ------------------------------------------------------------------------------
--- Arena preparation placeholders and Blizzard's arena frame
+-- Arena preparation placeholders and Blizzard's arena frames
 ------------------------------------------------------------------------------
 
 local IsEventValid = C_EventUtils and C_EventUtils.IsEventValid
 local stackEvents = {"ARENA_PREP_OPPONENT_SPECIALIZATIONS", "ARENA_OPPONENT_UPDATE", "PVP_MATCH_STATE_CHANGED", "PLAYER_ENTERING_WORLD"}
 
--- Blizzard's arena frame is created on demand, maybe long after login, so the core's (login only) disable
--- function is kept for it. Whether it is hidden is decided by the settings in use at login, not by the
--- frames' activation (which waits for combat to end after a /reload in combat): then and whenever it gets
--- created.
+-- Blizzard's arena frames: CompactArenaFrame in arenas (Blizzard_CompactRaidFrames creates it as it loads,
+-- before any add-on), and the old ArenaEnemyFramesContainer, which shows the battleground flag carriers (the
+-- arena units outside arenas). Its add-on, Blizzard_Deprecated_ArenaUI, can load after X-Perl, so the core's
+-- (login only) disable function is kept for it. Whether they are hidden is decided by the settings in use at
+-- login, not by the frames' activation (which waits for combat to end after a /reload in combat).
 local BlizzFrameDisable = XPerl_BlizzFrameDisable
-local function DisableBlizzardArena()
-	if (CompactArenaFrame and not CompactArenaFrame.XPerlDisabled) then
-		BlizzFrameDisable(CompactArenaFrame)
-	end
-end
-
 local blizzardHidden
 XPerl_RequestConfig(function(new)
 	if (XPerl_BlizzFrameDisable and not blizzardHidden and new.arena and new.arena.enable) then
 		blizzardHidden = true
-		DisableBlizzardArena()
-		hooksecurefunc("CompactArenaFrame_Generate", DisableBlizzardArena)
+		BlizzFrameDisable(CompactArenaFrame)
+		EventUtil.ContinueOnAddOnLoaded("Blizzard_Deprecated_ArenaUI", function()
+			BlizzFrameDisable(ArenaEnemyFramesContainer)
+		end)
 	end
 end, "$Revision$")
 

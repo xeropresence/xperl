@@ -26,8 +26,9 @@ One download covers both clients; each client loads its own TOC.
 
 - **Every unit:** player, pet, target, focus, target's target and its target, focus
   target, pet target, party (with party targets and party pets, and yourself first with
-  Options → Party → "Show Player"), raid (up to 40), raid pets, boss 1-5 and arena 1-5
-  (Retail only).
+  Options → Party → "Show Player"), raid (up to 40), raid pets, boss 1-5 (Retail only) and
+  arena 1-5 (arena opponents, and the battleground flag carriers, which is all they show
+  on WoW: Forever).
 - **Pick what you use:** Options → All → "X-Perl Frames" switches each frame type on or
   off. A frame type that is switched off leaves Blizzard's own frame in place.
 - **Portraits:** 2D or 3D, with hit indicators over the portrait and a red or green

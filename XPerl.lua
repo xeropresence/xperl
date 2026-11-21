@@ -498,10 +498,24 @@ local function blizzFrameOnShow(self)
 	end
 end
 
+-- Parts of Blizzard's unit frames that register events of their own
+local blizzFrameParts = {"healthbar", "manabar", "powerBarAlt", "spellbar", "PetFrame", "castBar", "CastingBarFrame",
+	"CcRemoverFrame", "DebuffFrame"}
+
+-- blizzFrameSilence: a Blizzard unit frame and its parts stop handling events
+local function blizzFrameSilence(self)
+	self:UnregisterAllEvents()
+	for _, key in ipairs(blizzFrameParts) do
+		local part = self[key]
+		if (part) then
+			part:UnregisterAllEvents()
+		end
+	end
+end
+
 -- blizzFrameDisable
 local function blizzFrameDisable(self, keepParent)
 	UnregisterUnitWatch(self)		-- Should stop Archaeologist from re-showing target frame
-	self:UnregisterAllEvents()
 	self:Hide()
 	if (not keepParent) then
 		self:SetParent(blizzHiddenParent)
@@ -510,17 +524,27 @@ local function blizzFrameDisable(self, keepParent)
 		self.XPerlDisabled = true
 		self:HookScript("OnShow", blizzFrameOnShow)
 	end
+	blizzFrameSilence(self)
 
-	local bars = {self.healthbar, self.manabar, self.powerBarAlt, self.spellbar, self.PetFrame}
-	for i = 1, 5 do
-		if (bars[i]) then
-			bars[i]:UnregisterAllEvents()
-		end
-	end
-
-	-- Target of target (TargetFrame.totFrame) lives inside the target frame
+	-- Target of target (TargetFrame.totFrame) lives inside the target frame, an old arena frame's pet
+	-- (petFrame) inside the arena frame
 	if (self.totFrame) then
 		blizzFrameDisable(self.totFrame, true)
+	end
+	if (self.petFrame) then
+		blizzFrameDisable(self.petFrame, true)
+	end
+end
+
+-- blizzArenaSilence
+-- Blizzard's arena frames (CompactArenaFrame) are compact unit frames, which handle their unit's events
+-- whether they are shown or not. Every RefreshMembers (roster changes, Edit Mode) registers some again.
+local function blizzArenaSilence(arenaFrame)
+	for _, frame in ipairs(arenaFrame.memberUnitFrames) do
+		blizzFrameSilence(frame)
+	end
+	for _, frame in ipairs(arenaFrame.petUnitFrames) do
+		blizzFrameSilence(frame)
 	end
 end
 
@@ -544,6 +568,8 @@ local function blizzFrameDisableSafe(frame, keepParent)
 	end
 end
 
+local blizzArenaHooked
+
 -- XPerl_BlizzFrameDisable
 function XPerl_BlizzFrameDisable(self)
 	if (not self) then
@@ -565,6 +591,17 @@ function XPerl_BlizzFrameDisable(self)
 					blizzFrameDisableSafe(frame, true)
 				end
 			end
+		end
+	elseif (self == CompactArenaFrame) then
+		blizzArenaSilence(self)
+		if (not blizzArenaHooked) then
+			blizzArenaHooked = true
+			hooksecurefunc(self, "RefreshMembers", blizzArenaSilence)
+		end
+	elseif (self == ArenaEnemyFramesContainer) then
+		-- Blizzard's old arena frames, which show the battleground flag carriers (arena units outside arenas)
+		for _, frame in ipairs(ArenaEnemyMatchFramesContainer.UnitFrames) do
+			blizzFrameDisableSafe(frame, true)
 		end
 	end
 end
