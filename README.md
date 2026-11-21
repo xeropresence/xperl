@@ -89,6 +89,9 @@ One download covers both clients; each client loads its own TOC.
 - For a unit out of sight (in another zone, or beyond your view range) the game can't
   tell who cast an aura, so its auras aren't split into yours and everybody else's: each
   shows once at normal size, and a row set to show only your own auras stays empty.
+- "Castable Buffs Only" also shows the armour buffs critical heals leave: Inspiration for
+  priests and Ancestral Fortitude for shamans, from your heals and other priests' or
+  shamans' alike ("Only My Buffs" still limits them to yours).
 - Party debuffs shown beside the frame keep the set "Party Debuff Size". "Wrap Lots" wraps
   them at the frame's width; it no longer shrinks them to half size, as the game hides how
   many debuffs a unit has.

@@ -1774,11 +1774,35 @@ end
 local AURA_ICON = 32
 local AURA_ICON_CROP = 0.078125
 local StealAsset = {asset = "Interface\\Addons\\XPerl\\Images\\StealMe"}
+-- Buffs some classes' talents leave on the targets of their critical heals. Nobody casts them, so the castable
+-- test (the RAID filter: auras the player can apply) isn't relied on for them: with castable-only on they get
+-- groups of their own and the other groups leave them out, so they show once, whoever's heal set them off.
+local CastableProcIDsByClass = {
+	PRIEST = {
+		[14893] = true,				-- Inspiration (rank 1)
+		[15357] = true,				-- Inspiration (rank 2)
+		[15359] = true,				-- Inspiration (rank 3)
+	},
+	SHAMAN = {
+		[16177] = true,				-- Ancestral Fortitude (rank 1)
+		[16236] = true,				-- Ancestral Fortitude (rank 2)
+		[16237] = true,				-- Ancestral Fortitude (rank 3)
+	},
+}
+local CastableProcIDs = CastableProcIDsByClass[select(2, UnitClass("player"))]
+
 -- Group keys per row, in display order. Buffs others cast are split by whether we can spellsteal them, so
--- those can sit with our own (and be drawn big with conf.buffs.bigStealable).
-local AuraGroupKeys = {buffs = {"mine", "steal", "other"}, debuffs = {"mine", "other"}}
-local AuraSingleGroupKeys = {buffs = {"all"}, debuffs = {"all"}}
-local AuraGroupCandidates = {steal = {isStealable = true}, other = {isStealable = false}}
+-- those can sit with our own (and be drawn big with conf.buffs.bigStealable). The proc groups (CastableProcIDs)
+-- only exist for classes with procs, and are styled as the group AuraProcGroupStyle names.
+local AuraGroupKeys = {buffs = {"mine", "mineProc", "steal", "otherProc", "other"}, debuffs = {"mine", "other"}}
+local AuraSingleGroupKeys = {buffs = {"all", "allProc"}, debuffs = {"all"}}
+local AuraProcGroupStyle = {mineProc = "mine", otherProc = "other", allProc = "all"}
+local AuraProcCandidates = {includeSpellIDs = CastableProcIDs}
+local AuraGroupCandidates = {
+	buffs = {steal = {isStealable = true}, other = {isStealable = false},
+		mineProc = AuraProcCandidates, otherProc = AuraProcCandidates, allProc = AuraProcCandidates},
+	debuffs = {},
+}
 
 -- Debuffs left off aura rows: seasonal ones when conf.buffs.ignoreSeasonal is set, and on raid frames also
 -- the lockout ones. Only spells the client never keeps secret can be filtered by ID on friendly units.
@@ -1936,14 +1960,16 @@ local function Auras_CreateContainer(self, kind, setup)
 	local container = CreateFrame("AuraContainer", nil, self.buffFrame, "CustomAuraContainerTemplate, DisableUntrustedLayoutScriptsTemplate")
 	local styles = {}
 	for i, key in ipairs((setup.single and AuraSingleGroupKeys or AuraGroupKeys)[kind]) do
-		local style = {size = AURA_ICON}
-		styles[key] = style
-		container:AddAuraGroup(key, (kind == "buffs") and "HELPFUL" or "HARMFUL", {
-			templateNames = {"XPerl_AuraButtonTemplate"},
-			initializeFrame = function(button) AuraButton_Init(button, kind, style, setup) end,
-			candidateFilters = (kind == "buffs") and AuraGroupCandidates[key] or nil,
-			layout = {elementSpacing = (kind == "debuffs") and 2 or 1, lineSpacing = 1, layoutIndex = i},
-		})
+		if (CastableProcIDs or not AuraProcGroupStyle[key]) then
+			local style = {size = AURA_ICON}
+			styles[key] = style
+			container:AddAuraGroup(key, (kind == "buffs") and "HELPFUL" or "HARMFUL", {
+				templateNames = {"XPerl_AuraButtonTemplate"},
+				initializeFrame = function(button) AuraButton_Init(button, kind, style, setup) end,
+				candidateFilters = AuraGroupCandidates[kind][key],
+				layout = {elementSpacing = (kind == "debuffs") and 2 or 1, lineSpacing = 1, layoutIndex = i},
+			})
+		end
 	end
 	return container, styles
 end
@@ -2036,8 +2062,9 @@ local function Auras_ConfigureRow(self, kind)
 	auras.maxCount[kind] = maxCount
 
 	for key, style in pairs(auras.style[kind]) do
-		local mine = key == "mine" or key == "all"
-		local big = (key == "mine" and row.big) or (key == "steal" and row.bigStealable)
+		local as = AuraProcGroupStyle[key] or key
+		local mine = as == "mine" or as == "all"
+		local big = (as == "mine" and row.big) or (as == "steal" and row.bigStealable)
 		style.size = big and (AURA_ICON * 2) or AURA_ICON
 		style.cooldown = opts.cooldown and (mine or opts.cooldownAny) and true or false
 		style.countdown = opts.countdown and (mine or opts.countdownAny) and true or false
@@ -2052,10 +2079,27 @@ local function Auras_OutOfSight(auras, unit)
 	return not auras.setup.single and UnitExists(unit) and not UnitIsVisible(unit)
 end
 
+-- Auras_Candidates(kind, key, exclude)
+-- A group's candidate filters with the spells in the exclude set (or none) left out
+local function Auras_Candidates(kind, key, exclude)
+	local candidates = AuraGroupCandidates[kind][key]
+	if (not exclude) then
+		return candidates
+	end
+	local filters = {excludeSpellIDs = exclude}
+	if (candidates) then
+		for field, value in pairs(candidates) do
+			filters[field] = value
+		end
+	end
+	return filters
+end
+
 -- Auras_ApplyFilters
 -- Filters and limits that depend on the unit: whether it's hostile, and whether it's out of sight. Out of
 -- sight the own auras group stays empty and the others' groups drop the !PLAYER filter, so every aura shows
--- once at normal size (and none with own-only on, as none can be told to be ours).
+-- once at normal size (and none with own-only on, as none can be told to be ours). The proc groups only show
+-- with castable-only on, and then the other buff groups leave CastableProcIDs out.
 local function Auras_ApplyFilters(self)
 	local auras = self.auras
 	local opts = auras.opts
@@ -2085,25 +2129,37 @@ local function Auras_ApplyFilters(self)
 				elseif (conf.buffs.ignoreSeasonal) then
 					exclude = SeasonalDebuffIDs
 				end
+			elseif (raid) then
+				exclude = CastableProcIDs
 			end
+			local procCount = raid and maxCount or 0
 
 			for key in pairs(auras.style[kind]) do
 				if (key == "all") then
 					container:SetAuraGroupFilterString(key, base..suffix)
 					container:SetAuraGroupMaxFrameCount(key, maxCount)
+				elseif (key == "allProc") then
+					container:SetAuraGroupFilterString(key, base)
+					container:SetAuraGroupMaxFrameCount(key, procCount)
 				elseif (key == "mine") then
 					container:SetAuraGroupFilterString(key, base.."|PLAYER"..suffix)
 					container:SetAuraGroupMaxFrameCount(key, outOfSight and 0 or maxCount)
+				elseif (key == "mineProc") then
+					container:SetAuraGroupFilterString(key, base.."|PLAYER")
+					container:SetAuraGroupMaxFrameCount(key, outOfSight and 0 or procCount)
 				elseif (key == "steal") then
 					container:SetAuraGroupFilterString(key, base..others..suffix)
 					container:SetAuraGroupMaxFrameCount(key, maxCount)
+				elseif (key == "otherProc") then
+					container:SetAuraGroupFilterString(key, base..others)
+					container:SetAuraGroupMaxFrameCount(key, onlyMine and 0 or procCount)
 				else
 					container:SetAuraGroupFilterString(key, base..others..suffix)
 					container:SetAuraGroupMaxFrameCount(key, onlyMine and 0 or maxCount)
 				end
 
-				if (auras.exclude[container] ~= exclude) then
-					container:SetAuraGroupCandidateFilters(key, exclude and {excludeSpellIDs = exclude} or nil)
+				if (not AuraProcGroupStyle[key] and auras.exclude[container] ~= exclude) then
+					container:SetAuraGroupCandidateFilters(key, Auras_Candidates(kind, key, exclude))
 				end
 			end
 			auras.exclude[container] = exclude

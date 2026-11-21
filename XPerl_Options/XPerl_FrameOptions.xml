@@ -7038,8 +7038,8 @@
 								self.configBase = "XPerlDB.target.debuffs"
 								self.configIndex = "onlyMine"
 								self.configClick = function()
-										XPerlDB.targettarget.buffs.onlyMine = XPerlDB.target.debuffs.onlyMine
-										XPerlDB.targettargettarget.buffs.onlyMine = XPerlDB.target.debuffs.onlyMine
+										XPerlDB.targettarget.debuffs.onlyMine = XPerlDB.target.debuffs.onlyMine
+										XPerlDB.targettargettarget.debuffs.onlyMine = XPerlDB.target.debuffs.onlyMine
 										XPerl_Target_Reset()
 										XPerl_TargetTarget_Reset()
 									end
