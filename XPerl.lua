@@ -2011,13 +2011,16 @@ local function Auras_ConfigureRow(self, kind)
 	container:SetFlowLayoutAnchorPoint((opts.above and "BOTTOM" or "TOP")..(opts.flip and "RIGHT" or "LEFT"))
 	container:SetFlowLayoutGrowthDirection(opts.flip and Dir.Left or Dir.Right, opts.above and Dir.Up or Dir.Down)
 
-	-- Line length is in the container's own (scaled) units
+	-- Line length is in the container's own (scaled) units. The row limit caps each group on its own (the
+	-- groups' aura counts are secret), so with more than one group showing, wrapped rows can run past it. A
+	-- one-row limit is kept by not wrapping at all: the line can then run past lineWidth instead.
 	local lineWidth = row.lineWidth
 	if (lineWidth == nil) then
 		lineWidth = opts.lineWidth
 	end
 	local lineSize = lineWidth and (lineWidth / scale) or nil
-	container:SetFlowLayoutMaximumLineSize(lineSize)
+	local oneRow = not row.max and row.rows and row.rows <= 1
+	container:SetFlowLayoutMaximumLineSize((not oneRow) and lineSize or nil)
 
 	local maxCount = row.max or math.huge
 	if (not row.max and lineSize and row.rows) then
@@ -2165,7 +2168,8 @@ end
 -- XPerl_Auras_Configure(self, opts)
 -- (Re)applies the aura row settings:
 --	buffs, debuffs	row settings, usually the frame's conf.buffs/conf.debuffs: enable, size, big (own auras
---			double size), bigStealable (buffs we can spellsteal double size), rows (with lineWidth),
+--			double size), bigStealable (buffs we can spellsteal double size), rows (with lineWidth; 1
+--			keeps the row on one unwrapped line),
 --			max (icon limit per group), lineWidth (this row's wrap width, false for none; overrides
 --			opts.lineWidth), and castable (buffs), curable (debuffs), onlyMine
 --	cooldown, cooldownAny, countdown, countdownAny	swipe/countdown on own auras, or on all of them
