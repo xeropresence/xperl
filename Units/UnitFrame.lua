@@ -498,8 +498,9 @@ function UF:SetEnabled(on)
 			XPerl_EditMode_Register(self, self.frameKey, {label = self.editModeLabel, default = self.defaultPosition, preview = self.editModePreview})
 		end
 		if (not self.headerChild) then
+			-- unitWatchAsState: the type shows and hides the frame itself from the watch's state-unitexists
 			if (self.useUnitWatch) then
-				RegisterUnitWatch(self)
+				RegisterUnitWatch(self, self.unitWatchAsState)
 			else
 				self:Show()
 			end
@@ -553,7 +554,7 @@ function UF:EditModePreview(on)
 				self.nameFrame.text:SetText(self.editModeLabel)
 			end
 		else
-			RegisterUnitWatch(self)
+			RegisterUnitWatch(self, self.unitWatchAsState)
 		end
 	end
 	self:TypePreview(on)

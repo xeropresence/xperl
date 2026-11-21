@@ -11,8 +11,10 @@
 -- (SetText, SetTexture, SetVertexColor, SetAlphaFromBoolean, duration objects); nothing compares them.
 --
 -- Outside arenas the arena units are the battleground flag carriers, so WoW: Forever, which has no arenas, gets
--- these frames as well (in place of Blizzard's old arena frames, which show the flag carriers there).
+-- these frames as well (in place of Blizzard's old arena frames, which show the flag carriers there). As those
+-- do, a frame stays while its opponent is known, also out of sight (UpdateVisibility).
 
+local UF = XPerl_UnitFrameMixin
 local SF = XPerl_UnitStackFrameMixin
 local C_PvP = C_PvP
 
@@ -40,6 +42,7 @@ XPerl_ArenaFrameMixin = CreateFromMixins(SF, {
 	portraitHiddenWidth = 2,
 	optionalPower = true,
 	useUnitWatch = true,
+	unitWatchAsState = true,
 	auraOrder = "reaction",
 	unitPrefix = "arena",
 	labelFormat = XPERL_EDITMODE_UNIT_ARENA,
@@ -180,18 +183,81 @@ end
 -- Frame
 ------------------------------------------------------------------------------
 
+-- Run from secure code whenever the unit watch reports (in combat too): the frame shows as its unit appears.
+-- It doesn't hide as the unit disappears, which an opponent out of sight does as well.
+local SHOW_SNIPPET = [[
+	if (name == "state-unitexists" and value) then
+		self:Show()
+	end
+]]
+
 -- InitType: the stack's setup, neutral icons until there is an opponent
 function A:InitType()
 	SF.InitType(self)
 	self.specFrame.icon:SetTexture(UNKNOWN_ICON)
 	self.specFrame.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 	self.trinketFrame.icon:SetTexture(TrinketIcon(self.partyid))
+	SecureHandlerWrapScript(self, "OnAttributeChanged", self, SHOW_SNIPPET)
 end
 
--- OnOpponentUpdate(event, token): the opponent behind our token was seen (again) or went away
+-- UpdateVisibility() -> known
+-- As Blizzard's flag carrier frames: a frame stays while its opponent is known (has a GUID), also while the
+-- opponent is out of sight ("unseen": out of range, stealthed), when it is faded and keeps its last values.
+-- It goes once the opponent is gone; in combat the protected frame can't hide, so it is invisible until combat
+-- ends. Nothing in combat can show a frame for an opponent who is out of sight from the start.
+function A:UpdateVisibility()
+	if (not self.active or self.stack.previewing) then
+		return
+	end
+	local unit = self.partyid
+	local guid = UnitGUID(unit)
+	if (not issecretvalue(guid) and guid == nil) then
+		if (InCombatLockdown()) then
+			self:SetAlpha(0)
+			XPerl_ProtectedCall(stack.updateVisibilityDeferred)
+		else
+			self:Hide()
+			self:SetAlpha(XPerlDB.transparency.frame)
+		end
+		return false
+	end
+	if (not InCombatLockdown()) then
+		self:Show()
+	end
+	if (not UnitExists(unit)) then
+		-- The range fade only follows units that exist
+		self:SetAlpha(XPerlDB.transparency.frame * XPerlDB.rangeFinder.Main.FadeAmount)
+	end
+	return true
+end
+
+-- OnOpponentUpdate(event, token): the opponent behind our token was seen (again), went out of sight or went away
 function A:OnOpponentUpdate(_, token)
 	if (token == self.partyid) then
-		self:UnitChanged()
+		if (self:UpdateVisibility() and not UnitExists(token)) then
+			self:UpdateName()		-- a new opponent can turn up out of sight
+		else
+			self:UnitChanged()
+		end
+	end
+end
+
+-- OnTick: range, and the unit watch's polling for an opponent gone without an event
+function A:OnTick()
+	UF.OnTick(self)
+	self:UpdateVisibility()
+end
+
+-- OnActivate(on): the stack's, then the frame as its opponent is
+function A:OnActivate(on)
+	SF.OnActivate(self, on)
+	self:UpdateVisibility()
+end
+
+-- TypePreview(on): out of Edit Mode the frame is as its opponent is again
+function A:TypePreview(on)
+	if (not on) then
+		self:UpdateVisibility()
 	end
 end
 
@@ -276,7 +342,21 @@ function stack:UpdatePrep()
 	end
 end
 
-stack:SetScript("OnEvent", stack.UpdatePrep)
+-- UpdateVisibility: every frame as its opponent is (A:UpdateVisibility)
+function stack:UpdateVisibility()
+	for _, frame in ipairs(self.frames) do
+		frame:UpdateVisibility()
+	end
+end
+stack.updateVisibilityDeferred = function() stack:UpdateVisibility() end
+
+-- OnEvent: the placeholders, and on entering a battleground its flag carriers already known out of sight
+stack:SetScript("OnEvent", function(self, event)
+	if (event == "PLAYER_ENTERING_WORLD") then
+		self:UpdateVisibility()
+	end
+	self:UpdatePrep()
+end)
 
 -- OnActiveChanged(on): the placeholder events
 function stack:OnActiveChanged(on)
