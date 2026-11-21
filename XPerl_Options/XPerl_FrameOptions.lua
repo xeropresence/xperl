@@ -1165,10 +1165,8 @@ end
 -- XPerl_Player_AlignTop
 function XPerl_Player_AlignTop()
 
-	-- We set this for 1 reason, so that all the related frames scale in the same direction should the user do that...
+	-- The player frame stays where it is, stored as TOPLEFT so the related frames scale in the same direction.
 	if (XPerl_Player) then
-		XPerl_Player:ClearAllPoints()
-		XPerl_Player:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", XPerl_Player:GetLeft() or 5, XPerl_Player:GetTop() or 948)
 		XPerl_SavePosition(XPerl_Player)
 	end
 
@@ -1176,11 +1174,6 @@ function XPerl_Player_AlignTop()
 		if (self and other) then
 			local top = self:GetTop() * self:GetEffectiveScale()
 			local otherLeft = other:GetLeft() or 220
-			local selfLeft = self:GetLeft() or 5
-
-			if (otherLeft == nil) then
-				otherLeft = selfLeft + 200
-			end
 
 			other:ClearAllPoints()
 			local newTop = top / other:GetEffectiveScale()

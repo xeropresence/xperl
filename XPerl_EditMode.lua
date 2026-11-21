@@ -501,6 +501,55 @@ local function OnMoved(frame)
 	end
 end
 
+-- How far (UIParent units) a dropped frame moves along one axis to snap: its sides `low`, `high` or their middle
+-- onto the screen's (`parentLow`, `parentHigh`) or onto a grid line of `lines` (nil while the grid is hidden),
+-- the closest one within Blizzard's magnetism range; 0 when none is in range
+local function SnapOffset(low, high, parentLow, parentHigh, lines)
+	local mid, parentMid = (low + high) / 2, (parentLow + parentHigh) / 2
+	local best = parentLow - low
+	for _, delta in ipairs({parentHigh - high, parentMid - mid, parentMid - low, parentMid - high}) do
+		if (abs(delta) < abs(best)) then
+			best = delta
+		end
+	end
+	if (lines) then
+		for _, line in pairs(lines) do
+			for _, source in ipairs({low, high, mid}) do
+				if (abs(line - source) < abs(best)) then
+					best = line - source
+				end
+			end
+		end
+	end
+	if (abs(best) * UIParent:GetEffectiveScale() <= EditModeMagnetismManager.magnetismRange) then
+		return best
+	end
+	return 0
+end
+
+-- Edit Mode's Snap for X-Perl frames, which LibEditMode leaves out: with Snap on, a dropped frame snaps to the
+-- grid lines (while the grid shows) and the screen's sides and center, each axis on its own, as Blizzard's
+-- frames do (EditModeMagnetismManager:FindClosestGridLine). Runs after LibEditMode's drag stop stored the drop;
+-- the snap move stores again and updates the dialog's coordinates.
+local function SnapOnDrop(selection)
+	if (InCombatLockdown() or not EditModeManagerFrame:IsSnapEnabled()) then
+		return
+	end
+	local frame = selection.parent
+	local left, bottom, width, height = frame:GetRect()
+	if (not left) then
+		return
+	end
+	local k = frame:GetEffectiveScale() / UIParent:GetEffectiveScale()
+	local parentLeft, parentBottom, parentWidth, parentHeight = UIParent:GetRect()
+	local grid = EditModeMagnetismManager.magneticGridLines
+	local dx = SnapOffset(left * k, (left + width) * k, parentLeft, parentLeft + parentWidth, grid and grid.vertical)
+	local dy = SnapOffset(bottom * k, (bottom + height) * k, parentBottom, parentBottom + parentHeight, grid and grid.horizontal)
+	if (dx ~= 0 or dy ~= 0) then
+		LEM.internal:MoveParent(selection, dx / k, dy / k)
+	end
+end
+
 -- XPerl_SavePosition(frame, arranged)
 -- Drag-stop handler of the options window's unlocked mode, and the store of its alignment tools (`arranged`:
 -- a linked raid group stays linked): stores a registered frame's position in the active layout. Unregistered
@@ -619,7 +668,9 @@ function XPerl_EditMode_Register(frame, frameKey, info)
 	tinsert(order, frame)
 
 	LEM:AddFrame(frame, OnMoved, reg.default, format(XPERL_EDITMODE_LABEL, info.label))
-	LEM.frameSelections[frame]:HookScript("OnShow", SelectionOnShow)
+	local selection = LEM.frameSelections[frame]
+	selection:HookScript("OnShow", SelectionOnShow)
+	selection:HookScript("OnDragStop", SnapOnDrop)
 
 	if (loggedIn) then
 		AddSettings(frame, reg)
