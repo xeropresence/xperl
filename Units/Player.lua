@@ -197,9 +197,6 @@ function P:ApplyTypeSettings()
 	end
 	self.highlight:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
 
-	if (not c.totems) then
-		c.totems = {enable = true, offsetX = 0, offsetY = 0}
-	end
 	self:UpdateTotems()
 
 	self:ShowBlizzardAuras(not (c.buffs.enable and c.buffs.hideBlizzard))

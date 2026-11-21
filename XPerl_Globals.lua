@@ -537,6 +537,12 @@ function XPerl_ValidateSettings()
 		if (type(conf.player.aggroWarning) ~= "table") then
 			conf.player.aggroWarning = {enable = 1}
 		end
+		-- Totem placement; settings from elsewhere can hold a plain flag here instead of the table (0 or false
+		-- for off)
+		local totems = conf.player.totems
+		if (type(totems) ~= "table") then
+			conf.player.totems = {enable = totems ~= 0 and totems ~= false, offsetX = 0, offsetY = 0}
+		end
 	end
 
 	-- The target frame's assist counter came back on by default; switching it off stores false
