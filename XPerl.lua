@@ -933,6 +933,24 @@ function XPerl_ClassPos(class)
 	return 0.25, 0.5, 0.5, 0.75
 end
 
+-- XPerl_SetClassIcon(texture, class, classID): the class icon for UnitClass's class file name and class ID.
+-- Both are secret for an enemy player whose identity is restricted (battlegrounds). A secret value can't be
+-- looked up or tested and SetTexture refuses a secret path, but SetSpriteSheetCell takes a secret cell.
+-- Images\XPerl_ClassIcons holds the UI-CharacterCreate-Classes icons in a 4x4 grid by class ID, plus the
+-- Evoker (13), which that sheet lacks: ClassIcon_Evoker in the same frame.
+local CLASS_ICON_FILE = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
+local CLASS_ID_SHEET = "Interface\\AddOns\\XPerl\\Images\\XPerl_ClassIcons"
+local CLASS_ID_SHEET_COUNT = 13
+function XPerl_SetClassIcon(texture, class, classID)
+	if (issecretvalue(classID) or (classID and classID >= 1 and classID <= CLASS_ID_SHEET_COUNT)) then
+		texture:SetTexture(CLASS_ID_SHEET)
+		texture:SetSpriteSheetCell(classID, 4, 4)
+	else
+		texture:SetTexture(CLASS_ICON_FILE)
+		texture:SetTexCoord(XPerl_ClassPos(class))
+	end
+end
+
 -- Raid class columns
 -- When the raid frames sort by class there's one column (XPerl_Raid_GrpN) per playable class. This is
 -- the default order; Demon Hunter and Evoker came after the original eleven.

@@ -290,7 +290,7 @@ function T:UpdateType()
 
 	local isPlayer = UnitIsPlayer(unit)
 	if (self.conf.classIcon and (isPlayer or UnitClassification(unit) == "normal")) then
-		local localClass, class = UnitClass(unit)
+		local localClass, class, classID = UnitClass(unit)
 		if (self.conf.classText) then
 			local bf = self.bossFrame
 			bf.text:SetText(localClass)
@@ -298,10 +298,8 @@ function T:UpdateType()
 			bf:Show()
 			FitWidth(bf, bf.text)
 		elseif (isPlayer or not UnitPlayerControlled(unit)) then
-			if (not issecretvalue(class)) then
-				self.classFrame.classTexture:SetTexCoord(XPerl_ClassPos(class))
-				self.classFrame:Show()
-			end
+			XPerl_SetClassIcon(self.classFrame.classTexture, class, classID)
+			self.classFrame:Show()
 		end
 	end
 	if (isPlayer) then

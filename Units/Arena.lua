@@ -20,7 +20,6 @@ local C_PvP = C_PvP
 -- removal until it is known
 local TRINKET_ICONS = {Alliance = "Interface\\Icons\\INV_Jewelry_TrinketPVP_01", Horde = "Interface\\Icons\\INV_Jewelry_TrinketPVP_02"}
 local UNKNOWN_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
-local CLASS_ICONS = "Interface\\Glues\\CharacterCreate\\UI-CharacterCreate-Classes"
 
 -- Plain(value): nil for a secret value, which can't even be tested
 local function Plain(value)
@@ -113,10 +112,9 @@ function A:UpdateSpec()
 		icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 		return
 	end
-	local class = Plain(select(2, UnitClass(self.partyid)))
-	if (class) then
-		icon:SetTexture(CLASS_ICONS)
-		icon:SetTexCoord(XPerl_ClassPos(class))
+	local _, class, classID = UnitClass(self.partyid)
+	if (issecretvalue(class) or class) then
+		XPerl_SetClassIcon(icon, class, classID)
 	else
 		icon:SetTexture(UNKNOWN_ICON)
 		icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)

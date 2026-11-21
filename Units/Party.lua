@@ -505,7 +505,7 @@ end
 function P:UpdateClassIcon()
 	local texture = self.levelFrame.classTexture
 	if (self.conf.classIcon) then
-		texture:SetTexCoord(XPerl_ClassPos(Plain(select(2, UnitClass(self.partyid)))))
+		XPerl_SetClassIcon(texture, select(2, UnitClass(self.partyid)))
 		texture:Show()
 	else
 		texture:Hide()

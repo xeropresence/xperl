@@ -782,7 +782,7 @@ function UF:UpdateClassIcon()
 	local icon = self.classFrame
 	if (icon) then
 		if (self.conf.classIcon) then
-			icon.classTexture:SetTexCoord(XPerl_ClassPos(Plain(select(2, UnitClass(self.partyid)))))
+			XPerl_SetClassIcon(icon.classTexture, select(2, UnitClass(self.partyid)))
 			icon:Show()
 		else
 			icon:Hide()
