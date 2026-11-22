@@ -145,6 +145,11 @@ so the target frame's counter shows "?" for other targets there.
   is open, all frames are unlocked and empty frames show placeholders so you can see and
   drag them. Right-click the minimap button for quick raid toggles. If you use a
   LibDataBroker display, X-Perl also adds a launcher to it.
+- **Game settings:** Esc → Options → AddOns → X-Perl UnitFrames has the global settings
+  and the frame switches, with a page per frame type below it holding that frame's
+  settings. The panel's search box finds them by name. Colours, bar textures, frame
+  layouts and the other pickers are only in the options window; "Options Window" at
+  the top of the page opens it.
 - **Edit Mode:** open Edit Mode (Esc → Edit Mode). Every X-Perl frame is listed as
   "X-Perl Player", "X-Perl Target", "X-Perl Raid Group 1" and so on. Drag a frame to
   move it, or click it to open its settings dialog.
@@ -284,11 +289,27 @@ Traditional Chinese.
 | --- | --- |
 | `XPerl.toc`, `XPerl_Camelot.toc` | The two TOCs; identical apart from the interface number |
 | `XPerl*.lua`, `XPerl*.xml`, `localization*.lua` | Core: settings, templates, minimap button, highlights, slash commands, profiles |
-| `XPerl_EditMode.lua`, `XPerl_EditModeSettings.lua` | Edit Mode frames, per-layout data and the settings dialogs |
+| `XPerl_EditMode.lua`, `XPerl_EditModeSettings.lua` | Edit Mode frames, per-layout data and the settings definitions shared by the Edit Mode dialogs and the game's Settings panel |
+| `XPerl_SettingsPanel.lua` | X-Perl's pages in the game's Settings panel (Options → AddOns) |
 | `Units/` | Shared unit frame framework (`UnitFrame.lua`, `CastBar.lua`, `Templates.xml`) and one Lua/XML pair per frame type |
 | `XPerl_Options/` | Options window and its localizations |
 | `Libs/` | LibStub and LibEditMode, bundled unmodified |
 | `Images/` | Textures |
+
+To run a checkout in the game, `dev-link.bat` (Windows; not in the release zips) links
+it in through two junctions:
+
+```
+<client>\Interface\AddOns\XPerl  ->  <main checkout>\.addon-link  ->  <active worktree>
+```
+
+- `dev-link install "<client>\Interface\AddOns"`: once per client (Retail, WoW: Forever).
+  An installed `XPerl` folder there is kept as `XPerl.installed`.
+- `dev-link` from a worktree: makes that worktree the one every installed client loads.
+  `/reload` picks it up, unless a TOC changed (restart the game then).
+- `dev-link status ["<AddOns folder>"]` shows where the links point;
+  `dev-link uninstall "<AddOns folder>"` removes the client's link and restores
+  `XPerl.installed`.
 
 Checks (CI runs all three on every push):
 

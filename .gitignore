@@ -3,6 +3,9 @@
 /release/
 *.zip
 
+# dev-link.bat's junction to the active worktree (in the main checkout)
+/.addon-link
+
 # Editors
 .vscode/*
 !.vscode/extensions.json

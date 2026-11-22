@@ -374,6 +374,7 @@ local function startupCheckSettings(self,event)
 
 	XPerl_Init()
 	XPerl_EditMode_OnLogin()
+	XPerl_pcall(XPerl_SettingsPanel_OnLogin)
 	XPerl_BlizzFrameDisable = nil
 	XPerl_RegisterLDB()
 
