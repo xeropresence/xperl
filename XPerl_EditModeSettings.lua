@@ -2,9 +2,10 @@
 -- Author: Zek <Boodhoof-EU>
 -- License: GNU GPL v3, 29 June 2007 (see LICENSE.txt)
 --
--- Edit Mode settings dialogs: one per registered frame, editing that frame's settings section of XPerlDB (the
--- same in every layout). They are a second view of the same settings the options window edits, with its labels
--- (XPERL_CONF_*). Built at login, when every localization file is loaded.
+-- Settings definitions: the Edit Mode settings dialogs, one per registered frame, editing that frame's settings
+-- section of XPerlDB (the same in every layout), and the game's Settings panel (XPerl_SettingsPanel.lua), which
+-- shows the same lists plus the global settings. Both are second views of the settings the options window
+-- edits, with its labels (XPERL_CONF_*). Built at login, when every localization file is loaded.
 
 XPerl_SetModuleRevision("$Revision$")
 
@@ -51,6 +52,20 @@ local function Write(t, parts, value)
 	t[parts[#parts]] = value
 end
 
+-- The table a section's paths start from: the settings themselves for the global settings (section nil)
+local function SectionTable(root, section)
+	if (root and section) then
+		return root[section]
+	end
+	return root
+end
+
+-- Upper end of a scale slider in percent: the maximum frame scale (options window, Colours tab)
+local function MaxScalePercent(minValue)
+	local maxScale = floor(((XPerlDB and tonumber(XPerlDB.maximumScale)) or 1.5) * 100 + 0.5)
+	return max(maxScale, minValue + 1)
+end
+
 ------------------------------------------------------------------------------
 -- Builder: each call appends one LibEditMode setting
 ------------------------------------------------------------------------------
@@ -62,7 +77,7 @@ local function NewBuilder(frameKey)
 	return setmetatable({frameKey = frameKey, section = frameKey, list = {}}, Builder)
 end
 
--- Settings after this belong to another section (party pets inside the party dialog)
+-- Settings after this belong to another section (party pets inside the party dialog); nil: the global settings
 function Builder:Section(section)
 	self.section = section
 end
@@ -90,25 +105,26 @@ function Builder:Group(label, open)
 end
 
 -- Adds a value setting. convert(stored) -> widget value, store(widget value) -> stored value.
--- fallback: the stored default for "Reset to default" where the default settings have none
+-- fallback: the stored default for "Reset to default" where the default settings have none.
+-- Returns the setting; its optional apply() runs after each change, before the settings are applied.
 function Builder:Add(setting, path, convert, store, fallback)
 	local section = self.section
 	local parts = SplitPath(path)
 
 	setting.hidden = self.hidden
-	local default = Read(defaults[section], parts)
+	local default = Read(SectionTable(defaults, section), parts)
 	if (default == nil) then
 		default = fallback
 	end
 	setting.default = convert(default)
 	setting.get = function()
-		return convert(Read(XPerlDB and XPerlDB[section], parts))
+		return convert(Read(SectionTable(XPerlDB, section), parts))
 	end
 	setting.set = function(_, value)
 		if (not XPerlDB) then
 			return
 		end
-		local t = XPerlDB[section]
+		local t = SectionTable(XPerlDB, section)
 		if (not t) then
 			-- A frame type newer than the settings: modules pick its new section up from the notification
 			t = {}
@@ -116,6 +132,9 @@ function Builder:Add(setting, path, convert, store, fallback)
 			XPerl_NotifyConfig()
 		end
 		Write(t, parts, store(value))
+		if (setting.apply) then
+			setting.apply()
+		end
 		ns.EditMode.SettingChanged()
 	end
 	tinsert(self.list, setting)
@@ -128,11 +147,13 @@ end
 
 local function FlagGet(v)		return v ~= nil and v ~= false end	-- any value but nil/false is on
 local function FlagSet(v)		return v and 1 or nil end
+local function FlagFalseSet(v)	return v and 1 or false end
 local function StrictGet(v)		return v == 1 or v == true end		-- castable/curable: 0 means off
 local function BoolSet(v)		return v and true or false end
 local function Same(v)			return v end
 
--- mode: nil (1/nil flag), "strict" (only 1/true is on), "bool" (stored as true/false)
+-- mode: nil (1/nil flag), "strict" (only 1/true is on), "bool" (stored as true/false), "false" (1/false: settings
+-- that a missing value turns on)
 -- generic: the label is shared with other frames, so its description (written for one frame) is left out
 -- fallback: default when the default settings have none
 function Builder:Check(path, label, mode, generic, fallback)
@@ -141,8 +162,10 @@ function Builder:Check(path, label, mode, generic, fallback)
 		get = StrictGet
 	elseif (mode == "bool") then
 		set = BoolSet
+	elseif (mode == "false") then
+		set = FlagFalseSet
 	end
-	self:Add({kind = SettingType.Checkbox, name = Text(label), desc = not generic and Describe(label) or nil}, path, get, set, fallback)
+	return self:Add({kind = SettingType.Checkbox, name = Text(label), desc = not generic and Describe(label) or nil}, path, get, set, fallback)
 end
 
 -- fallback: default when the default settings have none (else 0, kept within the range)
@@ -154,23 +177,29 @@ function Builder:Slider(path, label, minValue, maxValue, step, generic, fallback
 	if (fallback == nil) then
 		fallback = min(max(0, minValue), maxValue)
 	end
-	self:Add({kind = SettingType.Slider, name = Text(label), desc = not generic and Describe(label) or nil,
+	return self:Add({kind = SettingType.Slider, name = Text(label), desc = not generic and Describe(label) or nil,
 		minValue = minValue, maxValue = maxValue, valueStep = step or 1}, path, get, Same, fallback)
 end
 
--- Scales are stored as factors and shown in percent, as in the options window
-function Builder:Scale(label, minPercent, generic)
-	minPercent = minPercent or 50
+-- Factors (1 = 100%) shown in percent, as in the options window. fallback: the factor where the settings have none
+function Builder:Percent(path, label, minPercent, maxPercent, step, generic, fallback)
 	local function get(v)
-		v = tonumber(v)
-		return v and floor(v * 100 + 0.5) or 100
+		v = tonumber(v) or fallback
+		return v and floor(v * 100 + 0.5) or minPercent
 	end
 	local function set(v)
 		return v / 100
 	end
-	local setting = self:Add({kind = SettingType.Slider, name = Text(label), desc = not generic and Describe(label) or nil,
-		minValue = minPercent, maxValue = 150, valueStep = 1}, "scale", get, set)
+	return self:Add({kind = SettingType.Slider, name = Text(label), desc = not generic and Describe(label) or nil, percent = true,
+		minValue = minPercent, maxValue = maxPercent, valueStep = step or 1}, path, get, set, fallback)
+end
+
+-- Frame scales; their maximum follows XPerlDB.maximumScale (RefreshLimits, MaxScalePercent)
+function Builder:Scale(label, minPercent, generic)
+	local setting = self:Percent("scale", label, minPercent or 50, 150, 1, generic, 1)
+	setting.scale = true
 	tinsert(scaleSettings, setting)
+	return setting
 end
 
 -- values: {{label, value}, ...}
@@ -185,7 +214,12 @@ function Builder:Dropdown(path, label, values)
 		end
 		return v
 	end
-	self:Add({kind = SettingType.Dropdown, name = Text(label), desc = Describe(label), values = options}, path, get, Same)
+	return self:Add({kind = SettingType.Dropdown, name = Text(label), desc = Describe(label), values = options}, path, get, Same)
+end
+
+-- A push button; only the Settings panel shows these (Edit Mode has no dialog for the global settings)
+function Builder:Button(label, func)
+	tinsert(self.list, {kind = "button", name = Text(label), desc = Describe(label), func = func})
 end
 
 function Builder:Healer()
@@ -693,11 +727,109 @@ function specs.arena(s)
 	HostileAuras(s)
 end
 
+-- The global settings (XPerlDB itself) and the frame switches: the Settings panel's main page. Pickers (colours,
+-- bar textures, the range finder's spell), lists and layouts are only in the options window.
+function specs.global(s)
+	-- Rows that only read right beside another one ("All" beside "Buff Cooldown") are labelled "<that row>: <label>",
+	-- as the panel's search lists every row on its own
+	local function Sub(parent, label)
+		return format(XPERL_SETTINGS_SUBOPTION, Text(parent), Text(label))
+	end
+	local function SubCheck(path, parent, label, mode)
+		s:Check(path, Sub(parent, label), mode, true).desc = Describe(label)
+	end
+
+	s:Section(nil)
+
+	s:Group("XPERL_CONF_ADDONS")
+	for _, row in ipairs(XPerl_FrameToggles) do
+		s:Section(row[1])
+		s:Check("enable", row[2], "false")
+	end
+	s:Section(nil)
+	s:Button("XPERL_CONF_RELOADUI", function() ReloadUI() end)
+
+	s:Group("XPERL_EDITMODE_GROUP_BARS")
+	s:Check("bar.background", "XPERL_CONF_BAR_TEXTURES_BACKGROUND")
+	s:Check("bar.inverse", "XPERL_CONF_INVERSEBARS")
+	s:Check("bar.fat", "XPERL_CONF_FATHEALTHBARS").apply = XPerl_Options_SetupStatsFrames
+	s:Check("bar.fullNumbers", "XPERL_CONF_FULLNUMBERS")
+
+	s:Group("XPERL_SETTINGS_GROUP_GENERAL")
+	s:Check("combatFlash", "XPERL_CONF_COMBAT_FLASH")
+	s:Check("highlightSelection", "XPERL_CONF_SELECTION_HIGHLIGHT")
+	s:Check("showAFK", "XPERL_CONF_SHOWAFKFLAG")
+	s:Check("showFD", "XPERL_CONF_SHOWFD")
+	s:Check("showReadyCheck", "XPERL_CONF_SHOWREADYCHECK")
+	s:Check("xperlOldroleicons", "XPERL_CONF_XPERLOLDROLEICONS")
+	s:Check("minimap.enable", "XPERL_CONF_MINIMAP_ICON").apply = function()
+		XPerl_MinimapButton_Frame:SetShown(XPerlDB.minimap.enable and true or false)
+	end
+
+	s:Group("XPERL_SETTINGS_GROUP_AURATIMERS")
+	s:Check("buffs.cooldown", "XPERL_CONF_BUFFCOOLDOWN")
+	SubCheck("buffs.cooldownAny", "XPERL_CONF_BUFFCOOLDOWN", "XPERL_CONF_BUFFCOOLDOWNANY")
+	s:Check("buffs.countdown", "XPERL_CONF_BUFFCOUNTDOWN")
+	SubCheck("buffs.countdownAny", "XPERL_CONF_BUFFCOUNTDOWN", "XPERL_CONF_BUFFCOUNTDOWNANY")
+	SubCheck("buffs.countdownExternal", "XPERL_CONF_BUFFCOUNTDOWN", "XPERL_CONF_BUFFCOUNTDOWNEXTERNAL")
+	s:Slider("buffs.countdownStart", "XPERL_CONF_BUFFCOUNTDOWNSTART", 1, 60)
+	s:Check("buffs.ignoreSeasonal", "XPERL_CONF_BUFFIGNORESEASONAL")
+
+	local H = "XPERL_CONF_RAID_HIGHLIGHTS"
+	s:Group(H)
+	s:Check("highlight.enable", H)
+	SubCheck("highlight.AGGRO", H, H.."_AGGRO")
+	SubCheck("highlight.TARGET", H, H.."_TARGET")
+	SubCheck("highlight.DEBUFF", H, H.."_DEBUFF", "false")
+	s:Dropdown("highlight.debuffStyle", "XPERL_SETTINGS_DEBUFFSTYLE", {
+		{H.."_DEBUFF_BORDER", "border"},
+		{H.."_DEBUFF_BACKGROUND", "background"},
+		{H.."_DEBUFF_BOTH", "both"},
+	})
+	SubCheck("highlight.curable", H, H.."_CURABLE", "false")
+
+	-- The options window edits one part of the frame at a time; here each part has its own rows
+	local R = "XPERL_CONF_RANGEFINDER"
+	s:Group(R)
+	s:Check("rangeFinder.enabled", R, "bool", true)
+	s:Check("rangeFinder.raidOnly", "XPERL_CONF_RANGE_RAIDONLY")
+	for _, part in ipairs({"Main", "NameFrame", "StatsFrame"}) do
+		local label = "XPERL_CONF_RANGE_"..strupper(part)
+		local path = "rangeFinder."..part.."."
+		s:Check(path.."enabled", Sub(R, label), "bool", true)
+		s:Percent(path.."FadeAmount", Sub(label, "XPERL_CONF_RANGEFADEAMOUNT"), 10, 80, 10, true).desc = Describe("XPERL_CONF_RANGEFADEAMOUNT")
+		SubCheck(path.."PlusDebuff", label, "XPERL_CONF_RANGEDEBUFF", "bool")
+	end
+
+	s:Group("XPERL_SETTINGS_GROUP_TOOLTIPS")
+	s:Check("tooltip.enable", "XPERL_CONF_UNITTOOLTIPS")
+	s:Check("tooltip.enableBuffs", "XPERL_CONF_BUFFTOOLTIPS")
+	s:Check("tooltip.fading", "XPERL_CONF_FADINGTOOLTIP")
+	s:Check("tooltip.xperlInfo", "XPERL_CONF_XPERL_TOOLTIP_INFO")
+
+	s:Group("XPERL_CONF_COLOUR_BARS")
+	s:Check("colour.class", "XPERL_CONF_COLOUR_NAMES")
+	s:Check("colour.guildList", "XPERL_CONF_COLOUR_APPLYTOGUILDLIST")
+	s:Check("colour.classbar", "XPERL_CONF_COLOUR_CLASSBARS")
+	local bright = s:Percent("colour.classbarBright", Sub("XPERL_CONF_COLOUR_CLASSBARS", "XPERL_CONF_COLOUR_CLASSBARS_BRIGHT"), 5, 200, 1, true, 1)
+	bright.desc = Describe("XPERL_CONF_COLOUR_CLASSBARS_BRIGHT")
+	bright.apply = XPerl_ResetBarColourCache
+	s:Check("colour.classic", "XPERL_CONF_COLOUR_CLASSIC")
+
+	s:Group("XPERL_CONF_FRAME_APPEARANCE")
+	s:Percent("transparency.frame", "XPERL_CONF_FRAME_TRANSPARENCY", 0, 100)
+	s:Percent("transparency.text", "XPERL_CONF_TEXT_TRANSPARENCY", 0, 100)
+	s:Percent("maximumScale", "XPERL_CONF_MAXIMUM_SCALE", 100, 400, 25).apply = XPerl_Options_MaxScaleSet
+	s:Check("colour.gradient.enable", "XPERL_CONF_COLOUR_FRAMES_GRADIENT")
+	SubCheck("colour.gradient.horizontal", "XPERL_CONF_COLOUR_FRAMES_GRADIENT", "XPERL_CONF_COLOUR_FRAMES_HORIZONTAL")
+end
+
 ------------------------------------------------------------------------------
 
 ns.EditModeSettings = {}
 
--- Settings list for a frame key's dialog (shared by all frames of that key), or nil
+-- Settings list of a frame key's dialog (shared by all frames of that key), of "global" for the Settings panel's
+-- main page, or nil
 function ns.EditModeSettings.Get(frameKey)
 	if (built[frameKey] == nil) then
 		local spec = specs[frameKey]
@@ -716,10 +848,11 @@ function ns.EditModeSettings.Get(frameKey)
 	return built[frameKey] or nil
 end
 
+ns.EditModeSettings.MaxScalePercent = MaxScalePercent
+
 -- Called when Edit Mode opens: scale sliders go up to the maximum frame scale (options window, Colours tab)
 function ns.EditModeSettings.RefreshLimits()
-	local maxScale = floor(((XPerlDB and tonumber(XPerlDB.maximumScale)) or 1.5) * 100 + 0.5)
 	for _, setting in ipairs(scaleSettings) do
-		setting.maxValue = max(maxScale, setting.minValue + 1)
+		setting.maxValue = MaxScalePercent(setting.minValue)
 	end
 end

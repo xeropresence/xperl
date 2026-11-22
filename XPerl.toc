@@ -29,5 +29,6 @@ XPerl_Globals.xml
 XPerl.xml
 XPerl_EditMode.lua
 XPerl_EditModeSettings.lua
+XPerl_SettingsPanel.lua
 Units\Units.xml
 XPerl_Options\XPerl_FrameOptions.xml

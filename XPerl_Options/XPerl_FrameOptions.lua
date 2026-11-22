@@ -951,7 +951,7 @@ end
 -- Frames panel: the frame enable flags (XPerlDB.<key>.enable, 1 or false) with the type a row
 -- depends on. The flags in use when the UI loaded tell whether a reload is needed. A second column switches
 -- each type's heal prediction (XPerlDB.<key>.healPrediction, 1 or false), which belongs to the active Edit Mode
--- layout like the other frame settings.
+-- layout like the other frame settings. The Settings panel's main page lists the same switches.
 local frameToggles = {
 	{"player", "XPERL_CONF_ADDON_PLAYER"},
 	{"pet", "XPERL_CONF_ADDON_PET"},
@@ -968,6 +968,7 @@ local frameToggles = {
 	{"boss", "XPERL_CONF_ADDON_BOSS"},
 	{"arena", "XPERL_CONF_ADDON_ARENA"},
 }
+XPerl_FrameToggles = frameToggles
 
 local function FrameEnabled(key)
 	local section = XPerlDB[key]

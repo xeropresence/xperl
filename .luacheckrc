@@ -16,6 +16,7 @@ cache = true
 -- benefit.
 exclude_files = {
 	".release/",
+	".addon-link/",	-- dev-link.bat's junction to the active worktree (in the main checkout)
 	"Libs/",
 	"**/localization*.lua",
 	"**/Localization*.lua",
@@ -119,6 +120,9 @@ read_globals = {
 	"PowerBarColor", "RAID_CLASS_COLORS", "RAID_TARGET_ICON", "READY_CHECK_NOT_READY_TEXTURE",
 	"READY_CHECK_READY_TEXTURE", "READY_CHECK_WAITING_TEXTURE", "SOUL_SHARDS_POWER", "SPELL_FAILED_INTERRUPTED",
 	"UIDROPDOWNMENU_MENU_VALUE", "UIDROPDOWNMENU_OPEN_MENU", "UISpecialFrames",
+	-- XPerl_SettingsPanel.lua (checked against the 12.1 and 1.60.1 Blizzard_Settings_Shared)
+	"CreateSettingsButtonInitializer", "CreateSettingsListSectionHeaderInitializer", "HideUIPanel",
+	"MinimalSliderWithSteppersMixin", "Settings", "SettingsPanel",
 	-- Other add-ons X-Perl integrates with when they are loaded
 	"BCastBar", "BCastBarDragButton", "BCastingBar", "CT_PartyBuffFrame1", "CT_PartyBuffFrame2",
 	"CT_PartyBuffFrame3", "CT_PartyBuffFrame4", "CT_PetBuffFrame", "CT_RAGroup1", "CT_RAMTGroup", "CT_RAMTTGroup",

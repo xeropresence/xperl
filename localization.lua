@@ -214,6 +214,19 @@ XPERL_EDITMODE_SPOT_BOTTOMLEFT		= "Bottom Left"
 XPERL_EDITMODE_SPOT_BOTTOM			= "Bottom"
 XPERL_EDITMODE_SPOT_BOTTOMRIGHT	= "Bottom Right"
 
+-- The game's Settings panel (Options → AddOns): the global settings and a page per frame type, with the
+-- options window's labels; these are its own
+XPERL_SETTINGS_CATEGORY		= "X-Perl UnitFrames"	-- plain text: the panel sorts add-ons by name
+XPERL_SETTINGS_OPTIONS			= "Options Window"
+XPERL_SETTINGS_OPTIONS_DESC	= "X-Perl's own options window (/xperl). It also has the colours, bar textures, frame layouts, the raid's class order, the tooltip details and the range finder's spell. While it is open the frames are unlocked and empty frames show placeholders"
+XPERL_SETTINGS_OPTIONS_BUTTON	= "Open"
+XPERL_SETTINGS_GROUP_GENERAL	= "General"
+XPERL_SETTINGS_GROUP_AURATIMERS	= "Aura Timers"
+XPERL_SETTINGS_GROUP_TOOLTIPS	= "Tooltips"
+XPERL_SETTINGS_DEBUFFSTYLE		= "Debuff Highlight Style"
+XPERL_SETTINGS_DEBUFFSTYLE_DESC	= "How Status Highlighting marks a debuff: the frame's border, its background or both"
+XPERL_SETTINGS_SUBOPTION		= "%s: %s"				-- a range finder part and one of its settings
+
 -- Default spells for range checking in the healer visual out-of-range cues.
 XPerl_DefaultRangeSpells = {
 	DRUID	= {spell = C_Spell.GetSpellName(5185)},				-- Healing Touch
