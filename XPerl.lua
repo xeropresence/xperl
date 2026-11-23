@@ -2438,12 +2438,15 @@ function XPerl_ProtectedCall(func, self)
 	end
 end
 
--- XPerl_Unit_UpdatePortrait()
+-- XPerl_Unit_UpdatePortrait(self, event)
 -- The 2D portrait is always painted, so it can stand in for the model. A model needs the unit's identity
 -- (PlayerModel:SetUnit is guarded by it), which the game keeps secret for creatures in instances and for
 -- target chains through them; SetUnit then draws nothing. Those units, and units the model can't draw (out
 -- of range), get the 2D portrait.
-function XPerl_Unit_UpdatePortrait(self)
+-- Reloading a model blanks it until its file streams back in, so a model that already shows the unit (same
+-- GUID, file loaded) is kept; full refreshes (party roster updates and the like) would blink it otherwise.
+-- UNIT_MODEL_CHANGED (the unit's looks changed) always reloads.
+function XPerl_Unit_UpdatePortrait(self, event)
 	local c = self.conf
 	if (not c or not c.portrait) then
 		return
@@ -2453,11 +2456,20 @@ function XPerl_Unit_UpdatePortrait(self)
 	SetPortraitTexture(pf.portrait, unit)
 	local show3D = c.portrait3D and UnitIsVisible(unit) and not (C_Secrets and C_Secrets.ShouldUnitIdentityBeSecret(unit))
 	if (show3D) then
-		model:Show()
-		model:ClearModel()
-		show3D = model:SetUnit(unit) == true
-		if (show3D) then
-			model:SetPortraitZoom(1)
+		local guid = UnitGUID(unit)
+		if (issecretvalue(guid)) then
+			guid = nil
+		end
+		-- type(): the file ID can be secret
+		local loaded = guid and model.guid == guid and model:IsShown() and type(model:GetModelFileID()) ~= "nil"
+		if (not loaded or event == "UNIT_MODEL_CHANGED") then
+			model.guid = guid
+			model:Show()
+			model:ClearModel()
+			show3D = model:SetUnit(unit) == true
+			if (show3D) then
+				model:SetPortraitZoom(1)
+			end
 		end
 	end
 	pf.portrait:SetShown(not show3D)
