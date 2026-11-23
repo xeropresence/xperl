@@ -72,23 +72,42 @@ local function UnitKey(unit)
 	return Ambiguate(name.."-"..second, "none")
 end
 
--- GetUsage(unitName, unitID): what that player's X-Perl announced, asking for it by whisper when it isn't known
-local function GetUsage(unitName, unitID)
-	local ver = XPerl_Usage[unitName]
-	if (not ver) then
-		if (unitID and unitName ~= UNKNOWN and (UnitIsPlayer(unitID) and UnitFactionGroup("player") == UnitFactionGroup(unitID) and UnitIsConnected(unitID))) then
-			if (not mod.directQueries) then
-				mod.directQueries = {}
-			end
-			if (not mod.directQueries[unitName]) then
-				mod.directQueries[unitName] = true
-				-- A whispered VER gets no reply (replies are whispers too), so ask for one
-				C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true).."#ASK", "WHISPER", unitName)
-			end
+-- GetUsage(key, canAsk): what that player's X-Perl announced. While it isn't known, asks for it by whisper once,
+-- if canAsk says the player is online and on our faction (an add-on whisper can reach them).
+local function GetUsage(key, canAsk)
+	local ver = XPerl_Usage[key]
+	if (not ver and canAsk and key ~= UNKNOWN) then
+		if (not mod.directQueries) then
+			mod.directQueries = {}
+		end
+		if (not mod.directQueries[key]) then
+			mod.directQueries[key] = true
+			-- A whispered VER gets no reply (replies are whispers too), so ask for one
+			C_ChatInfo.SendAddonMessage(XPERL_COMMS_PREFIX, mod:MakePacket(nil, true).."#ASK", "WHISPER", key)
 		end
 	end
 
 	return ver
+end
+
+-- The tooltip line for what a player's X-Perl announced; isPlayer when that's our own
+function mod:UsageLine(xpUsage, isPlayer)
+	local xp = "|cFFD00000X-Perl|r "..(xpUsage.version or XPerl_VersionNumber)
+
+	if (xpUsage.revision) then
+		local r = "r"..xpUsage.revision
+		xp = format("%s |cFF%s%s", xp, r == XPerl_GetRevision() and "80FF80" or "FF8080", r)
+	elseif (isPlayer) then
+		xp = xp.." |cFF80FF80"..XPerl_GetRevision()
+	end
+
+	if (xpUsage.mods and IsShiftKeyDown()) then
+		local modList = self:DecodeModuleList(xpUsage.mods)
+		if (modList) then
+			xp = xp.." : |c00909090"..modList
+		end
+	end
+	return xp
 end
 
 function mod:TooltipInfo(tooltip, unitid)
@@ -103,45 +122,105 @@ function mod:TooltipInfo(tooltip, unitid)
 			xpUsage = self.ownUsage			-- known here, without waiting for our own announcement to come back
 		else
 			local key = UnitKey(unitid)
-			xpUsage = key and GetUsage(key, unitid)
+			xpUsage = key and GetUsage(key, UnitFactionGroup("player") == UnitFactionGroup(unitid) and UnitIsConnected(unitid))
 		end
 		if (xpUsage) then
-			local xp = "|cFFD00000X-Perl|r "..(xpUsage.version or XPerl_VersionNumber)
-
-			if (xpUsage.revision) then
-				local r = "r"..xpUsage.revision
-				xp = format("%s |cFF%s%s", xp, r == XPerl_GetRevision() and "80FF80" or "FF8080", r)
-			elseif (isPlayer) then
-				xp = xp.." |cFF80FF80"..XPerl_GetRevision()
-			end
-
-			if (xpUsage.mods and IsShiftKeyDown()) then
-				local modList = self:DecodeModuleList(xpUsage.mods)
-				if (modList) then
-					xp = xp.." : |c00909090"..modList
-				end
-			end
-
-			GameTooltip:AddLine(xp, 1, 1, 1, 1)
+			GameTooltip:AddLine(self:UsageLine(xpUsage, isPlayer), 1, 1, 1, 1)
 			GameTooltip:Show()
 		end
 	end
 end
 
--- CheckForNewerVersion
-function mod:CheckForNewerVersion(ver)
-	--if (not strfind(strlower(ver), "beta")) then
-		if (ver > XPerl_VersionNumber) then
-			if (not self.notifiedVersion or self.notifiedVersion < ver) then
-				self.notifiedVersion = ver
+-- The guild roster and community member lists (Blizzard_Communities, on Retail and WoW: Forever) build their
+-- tooltips by hand rather than from a unit, so the unit tooltip hook above never sees them
+local ONLINE_PRESENCE = {
+	[Enum.ClubMemberPresence.Online] = true,
+	[Enum.ClubMemberPresence.Away] = true,
+	[Enum.ClubMemberPresence.Busy] = true,
+}
 
-				--if (not conf or conf.tooltip.xperlInfo) then
-					DEFAULT_CHAT_FRAME:AddMessage(format(XPERL_USAGE_AVAILABLE, XPerl_ProductName, ver))
-				--end
-			end
-			return true
+local function MemberListEntryOnEnter(entry)
+	if (not conf or not conf.tooltip.xperlInfo) then
+		return
+	end
+	local memberInfo = entry:GetMemberInfo()
+	if (not memberInfo) then
+		return
+	end
+	-- Battle.net community members are accounts, not characters an add-on message can name
+	local clubInfo = entry:GetMemberList():GetSelectedClubInfo()
+	if (clubInfo and clubInfo.clubType == Enum.ClubType.BattleNet) then
+		return
+	end
+
+	local name = memberInfo.name
+	if (not name or issecretvalue(name)) then
+		return
+	end
+
+	local xpUsage
+	if (memberInfo.isSelf) then
+		xpUsage = mod.ownUsage
+	else
+		-- The name is the one Blizzard's Whisper menu entry uses; keyed the way that player's messages arrive
+		local faction = memberInfo.faction and PLAYER_FACTION_GROUP[memberInfo.faction]
+		local presence = memberInfo.presence
+		local canAsk = not issecretvalue(presence) and ONLINE_PRESENCE[presence] and (not faction or faction == UnitFactionGroup("player"))
+		xpUsage = GetUsage(SenderKey(name), canAsk)
+	end
+	if (not xpUsage) then
+		return
+	end
+
+	if (not GameTooltip:IsOwned(entry)) then
+		-- The expanded guild roster only shows a tooltip for truncated columns; show one for the X-Perl line
+		GameTooltip:SetOwner(entry)
+		GameTooltip:AddLine(name)
+	end
+	GameTooltip:AddLine(mod:UsageLine(xpUsage, memberInfo.isSelf), 1, 1, 1, 1)
+	GameTooltip:Show()
+end
+
+-- Roster entries are created from the template on demand, taking the mixin's methods as they are at that time
+EventUtil.ContinueOnAddOnLoaded("Blizzard_Communities", function()
+	hooksecurefunc(CommunitiesMemberListEntryMixin, "OnEnter", MemberListEntryOnEnter)
+end)
+
+-- A release version's numbers, so "4.1.10" sorts after "4.1.9" where a string comparison has it before. A suffix
+-- ("-beta", a packager build's "-3-gabc123") is left out. nil for anything else: a git checkout's "dev", or text
+-- that isn't a plain version and shouldn't reach the chat frame.
+local function VersionNumbers(ver)
+	if (not strmatch(ver, "^%d[%w%.%-]*$")) then
+		return
+	end
+	local numbers = {}
+	for n in gmatch(strmatch(ver, "^[%d%.]+"), "%d+") do
+		numbers[#numbers + 1] = tonumber(n)
+	end
+	return numbers
+end
+
+-- Whether ver is a later release than than; never for a version that isn't a release, ours included
+local function IsNewerVersion(ver, than)
+	local a, b = VersionNumbers(ver), VersionNumbers(than)
+	if (not a or not b) then
+		return false
+	end
+	for i = 1, max(#a, #b) do
+		local x, y = a[i] or 0, b[i] or 0
+		if (x ~= y) then
+			return x > y
 		end
-	--end
+	end
+	return false
+end
+
+-- CheckForNewerVersion: say in chat, once per version, when another player's X-Perl is newer than ours
+function mod:CheckForNewerVersion(ver)
+	if (IsNewerVersion(ver, XPerl_VersionNumber) and (not self.notifiedVersion or IsNewerVersion(ver, self.notifiedVersion))) then
+		self.notifiedVersion = ver
+		DEFAULT_CHAT_FRAME:AddMessage(format(XPERL_USAGE_AVAILABLE, XPerl_ProductName, ver))
+	end
 end
 
 -- ProcessXPerlMessage
@@ -162,7 +241,7 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 			myUsage.version = nil
 		else
 			myUsage.version = ver
-			self:CheckForNewerVersion(ver) -- Won't do a per revision check
+			self:CheckForNewerVersion(ver)
 		end
 
 		if (channel ~= "WHISPER" and sender and sender ~= UnitKey("player")) then
@@ -178,10 +257,8 @@ function mod:ProcessXPerlMessage(sender, msg, channel)
 		end
 
 	elseif (strsub(msg, 1, 7) == "MAXVER ") then
-		local ver = strsub(msg, 8)
-		if (ver >= XPerl_VersionNumber) then
-			self:CheckForNewerVersion(ver)
-		end
+		-- The newest version that player has heard of
+		self:CheckForNewerVersion(strsub(msg, 8))
 
 	elseif (msg == "S") then
 		if (channel == "WHISPER") then
@@ -328,7 +405,7 @@ function mod:MakePacket(response, versionOnly)
 		local gc = floor(collectgarbage("count"))
 
 		local s = format("%sVER %s#REV %s#GC %d#LOC %s#MOD %s", resp, XPerl_VersionNumber, XPerl_GetRevision(), gc, GetLocale(), ownModules)
-		if (self.notifiedVersion and self.notifiedVersion > XPerl_VersionNumber) then
+		if (self.notifiedVersion) then			-- only ever set to a version newer than ours
 			s = format("%s#MAXVER %s", s, self.notifiedVersion)
 		end
 		return s

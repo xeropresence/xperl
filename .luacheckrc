@@ -123,6 +123,8 @@ read_globals = {
 	-- XPerl_SettingsPanel.lua (checked against the 12.1 and 1.60.1 Blizzard_Settings_Shared)
 	"CreateSettingsButtonInitializer", "CreateSettingsListSectionHeaderInitializer", "HideUIPanel",
 	"MinimalSliderWithSteppersMixin", "Settings", "SettingsPanel",
+	-- XPerl_Usage.lua (checked against the 12.1 and 1.60.1 Blizzard_Communities)
+	"CommunitiesMemberListEntryMixin", "PLAYER_FACTION_GROUP",
 	-- Other add-ons X-Perl integrates with when they are loaded
 	"BCastBar", "BCastBarDragButton", "BCastingBar", "CT_PartyBuffFrame1", "CT_PartyBuffFrame2",
 	"CT_PartyBuffFrame3", "CT_PartyBuffFrame4", "CT_PetBuffFrame", "CT_RAGroup1", "CT_RAMTGroup", "CT_RAMTTGroup",
