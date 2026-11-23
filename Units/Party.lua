@@ -9,12 +9,13 @@
 -- from Units/UnitFrame.lua.
 --
 -- Settings: XPerlDB.party for the party frames, their targets (party.target) and the anchor (scale, anchor
--- point, spacing, showPlayer); XPerlDB.partypet for the pets, which follow the party's flip and healer mode.
+-- point, spacing, showPlayer); XPerlDB.partypet for the pets, which follow the party's flip and healer mode
+-- and sit beside the stats, or above the frame's top right with partypet.above.
 
 local _, ns = ...		-- ns.Raid (Units/Raid.lua, loaded after this file)
 local UF = XPerl_UnitFrameMixin
-local pconf
-XPerl_RequestConfig(function(new) pconf = new.party end, "$Revision$")
+local pconf, ppconf
+XPerl_RequestConfig(function(new) pconf = new.party; ppconf = new.partypet end, "$Revision$")
 
 local UnitIsPVP = XPerlAPI.UnitIsPVP			-- secret-safe unit flags, see XPerl_Api.lua
 local IsEventValid = C_EventUtils and C_EventUtils.IsEventValid
@@ -133,12 +134,40 @@ function A:UpdateVisibility()
 	self:SetShown((active and not self.petBattle) and true or false)
 end
 
+-- FrameSpacing(anchor): party.spacing, plus the room the target and pet need between the frames. Side by
+-- side (anchor LEFT or RIGHT): how far the target (beside the name bar, party.target) and the pet (beside
+-- the stats) reach past a party frame's side. Stacked: the pet's height with partypet.above.
+local function FrameSpacing(anchor)
+	local spacing = tonumber(pconf.spacing) or 0
+	local pet = ppconf and ppconf.enable and XPerl_partypet1
+	local petScale = ppconf and tonumber(ppconf.scale) or 1
+	if (anchor ~= "LEFT" and anchor ~= "RIGHT") then
+		if (pet and ppconf.above) then
+			spacing = spacing + pet:GetHeight() * petScale
+		end
+		return spacing
+	end
+	local frame = XPerl_party1
+	local reach = 0
+	if (pconf.name and pconf.target.enable) then
+		local left = 0
+		if (pconf.portrait) then
+			left = frame.levelFrame:GetWidth() + frame.portraitFrame:GetWidth() - 4
+		end
+		reach = left + frame.nameFrame:GetWidth() - 2 + (tonumber(pconf.target.size) or 120) - frame:GetWidth()
+	end
+	if (pet and not ppconf.above) then
+		reach = max(reach, (pet:GetWidth() - 2) * petScale)
+	end
+	return spacing + max(reach, 0)
+end
+
 -- ApplySettings: scale, header placement, child offsets and whether you are listed, size. Run by XPerl_party1's
 -- settings (out of combat), once the party frames have their size.
 function A:ApplySettings()
 	local header = XPerl_Party_SecureHeader
 	local anchor = headerPoints[pconf.anchor] and pconf.anchor or "TOP"
-	local spacing = tonumber(pconf.spacing) or 0
+	local spacing = FrameSpacing(anchor)
 
 	self:SetScale(pconf.scale or 1)
 
@@ -197,7 +226,7 @@ function A:Preview(on)
 	end
 
 	local anchor = headerPoints[pconf.anchor] and pconf.anchor or "TOP"
-	local spacing = tonumber(pconf.spacing) or 0
+	local spacing = FrameSpacing(anchor)
 	local count = FrameCount()
 	local w, h = XPerl_party1:GetWidth(), XPerl_party1:GetHeight()
 	for i = 1, count do
@@ -463,7 +492,11 @@ function P:ApplyTypeSettings()
 	local pet = self.petFrame
 	if (pet) then
 		pet:ClearAllPoints()
-		pet:SetPoint(M("TOPLEFT", flip), sf, M("TOPRIGHT", flip), -2 * x, 0)
+		if (ppconf.above) then
+			pet:SetPoint(M("BOTTOMRIGHT", flip), self, M("TOPRIGHT", flip), 0, 0)
+		else
+			pet:SetPoint(M("TOPLEFT", flip), sf, M("TOPRIGHT", flip), -2 * x, 0)
+		end
 		pet:ApplySettings()
 	end
 
@@ -583,10 +616,10 @@ function P:GetAuraLineWidth()
 end
 
 -- PlaceDebuffs: debuffs beside the frame rather than below the buffs: right of the stats, or of the pet's
--- name while the pet frame shows (left of them when flipped)
+-- name while the pet frame shows beside them (left of them when flipped)
 local function PlaceDebuffs(self, debuffs, point)
 	local anchor = self.statsFrame
-	if (self.petFrame and self.petFrame:IsVisible()) then
+	if (self.petFrame and self.petFrame:IsVisible() and not ppconf.above) then
 		anchor = self.petFrame.nameFrame
 	end
 	if (self.conf.flip) then
@@ -804,16 +837,20 @@ function PP:ApplySize()
 	self:SetHeight(c.mana and 50 or 40)
 end
 
--- ApplyTypeSettings
+-- ApplyTypeSettings: the pets' scale is part of the room side by side party frames leave between them
 function PP:ApplyTypeSettings()
 	local sf = self.statsFrame
 	sf.healthBar.text:Show()
 	sf.healthBar.percent:Hide()
 	sf.manaBar.text:Hide()
 	sf.manaBar.percent:Hide()
+
+	if (self:GetID() == 1) then
+		XPerl_Party_Anchor:ApplySettings()
+	end
 end
 
--- OnShow / OnHide: the party frame's debuffs sit beside the pet while it shows
+-- OnShow / OnHide: the party frame's debuffs sit beside a pet shown beside the stats
 function PP:OnShow()
 	UF.OnShow(self)
 	self:UpdateDisplay()
@@ -905,11 +942,18 @@ function PP:UpdateHealth()
 	end
 end
 
--- PlaceAuras: below the stats, growing away from the party frame
+-- PlaceAuras: below the stats, or above the name with partypet.above, growing away from the party frame
 function PP:PlaceAuras()
 	local bf = self.buffFrame
 	bf:ClearAllPoints()
-	if (pconf.flip) then
+	if (self.conf.above) then
+		local nf = self.nameFrame
+		if (pconf.flip) then
+			bf:SetPoint("BOTTOMRIGHT", nf, "TOPRIGHT", -5, 0)
+		else
+			bf:SetPoint("BOTTOMLEFT", nf, "TOPLEFT", 5, 0)
+		end
+	elseif (pconf.flip) then
 		bf:SetPoint("TOPRIGHT", self.statsFrame, "BOTTOMRIGHT", -5, 0)
 	else
 		bf:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 5, 0)
@@ -924,7 +968,7 @@ end
 -- buff size
 function PP:ConfigureAuras()
 	local c = self.conf
-	local opts = XPerl_Auras_UnitOptions(self, {flip = pconf.flip})
+	local opts = XPerl_Auras_UnitOptions(self, {flip = pconf.flip, above = c.above})
 	opts.debuffs = setmetatable({
 		enable = c.buffs.enable and c.debuffs.enable,
 		size = c.debuffs.size or c.buffs.size,

@@ -9081,6 +9081,7 @@
 											XPerl_Options_EnableSibling(self, "PetNames")
 											XPerl_Options_EnableSibling(self, "PetLevel", "PetNames")
 											XPerl_Options_EnableSibling(self, "PetMana")
+											XPerl_Options_EnableSibling(self, "PetAbove")
 											XPerl_Options_EnableSibling(self, "PetBuffs")
 											XPerl_Options_EnableSibling(self, "BuffSize", "PetBuffs")
 											XPerl_Options_EnableSibling(self, "DebuffSize", "PetBuffs")
@@ -9148,10 +9149,29 @@
 								</Scripts>
 							</CheckButton>
 
-							<CheckButton name="$parent_PetBuffs" inherits="XPerlCheckButtonTemplate">
+							<CheckButton name="$parent_PetAbove" inherits="XPerlCheckButtonTemplate">
 								<Size><AbsDimension x="26" y="26"/></Size>
 								<Anchors>
 									<Anchor point="TOPLEFT" relativeTo="$parent_PetMana" relativePoint="BOTTOMLEFT">
+										<Offset><AbsDimension x="0" y="6"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_PARTY_PETABOVE")
+										self.flashFrame = {XPerl_partypet1, XPerl_partypet2, XPerl_partypet3, XPerl_partypet4, XPerl_partypet5}
+										self.configBase = "XPerlDB.partypet"
+										self.configIndex = "above"
+										self.configClick = XPerl_Party_Reset
+										XPerl_Options_RegisterProtected(self)
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+
+							<CheckButton name="$parent_PetBuffs" inherits="XPerlCheckButtonTemplate">
+								<Size><AbsDimension x="26" y="26"/></Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_PetAbove" relativePoint="BOTTOMLEFT">
 										<Offset><AbsDimension x="0" y="6"/></Offset>
 									</Anchor>
 								</Anchors>

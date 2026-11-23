@@ -584,6 +584,8 @@ if (GetLocale() == "frFR") then
 	XPERL_CONF_PARTY_PETMANA_DESC			= "Permettre l'affichage de la mana des familiers du groupe"
 	XPERL_CONF_PARTY_PETLEVEL			= "Niveau des familiers du groupe"
 	XPERL_CONF_PARTY_PETLEVEL_DESC			= "Permettre l'affichage des niveaux des familiers du groupe"
+	XPERL_CONF_PARTY_PETABOVE			= "Familier au-dessus"
+	XPERL_CONF_PARTY_PETABOVE_DESC			= "Affiche le familier du membre du groupe au-dessus de son cadre, en haut à droite (en haut à gauche si inversé), au lieu d'à côté"
 	XPERL_CONF_PARTY_PETBUFF_SIZE			= "Taille des buffs"
 	XPERL_CONF_PARTY_PETBUFF_SIZE_DESC		= "Ajuste la taille d'affichage des buffs des familiers du groupe"
 	XPERL_CONF_PARTY_PETDEBUFF_SIZE			= "Taille des debuffs"

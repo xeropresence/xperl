@@ -2164,6 +2164,7 @@ local function XPerl_PartyPet_ConfigDefault(default)
 		},
 --		mana			= nil,			-- 1.9.1
 --		level			= nil,			-- 1.9.1
+--		above			= nil,			-- above the party frame's top right instead of beside its stats
 	}
 end
 
