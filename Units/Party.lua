@@ -213,8 +213,47 @@ local function PlaceholderDragStop()
 	XPerl_Party_Anchor:StopDrag()
 end
 
--- Preview(on): placeholders where the party frames go (you first with party.showPlayer), for Edit Mode and the
--- options window unlock
+-- PreviewPet(p): the pet placeholder beside the stats of party placeholder p, or above its top right with
+-- partypet.above, laid out like the pet frames (P:ApplyTypeSettings); hidden while party pets are off
+local function PreviewPet(p)
+	local pet = p.pet
+	if (not ppconf or not ppconf.enable) then
+		if (pet) then
+			pet:Hide()
+		end
+		return
+	end
+	if (not pet) then
+		pet = CreateFrame("Frame", p:GetName().."Pet", p, "BackdropTemplate")
+		pet:SetBackdrop(XPERL_BACKDROP_PARTY_VIRTUAL)
+		pet:SetBackdropColor(0, 0, 0, 1)
+		pet:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
+		pet.text = pet:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+		pet.text:SetAllPoints()
+		pet.text:SetText(PET)
+		pet:EnableMouse(true)
+		pet:RegisterForDrag("LeftButton")
+		pet:SetScript("OnDragStart", PlaceholderDragStart)
+		pet:SetScript("OnDragStop", PlaceholderDragStop)
+		p.pet = pet
+	end
+	local flip = pconf.flip and true or false
+	local scale = tonumber(ppconf.scale) or 1
+	pet:SetScale(scale)
+	pet:SetSize(XPerl_partypet1:GetWidth(), XPerl_partypet1:GetHeight())
+	pet:ClearAllPoints()
+	if (ppconf.above) then
+		pet:SetPoint(M("BOTTOMRIGHT", flip), p, M("TOPRIGHT", flip), 0, 0)
+	else
+		-- The stats start 3 above the name bar's bottom; offsets are in the pet's scale
+		local statsTop = XPerl_party1.nameFrame:GetHeight() - 3
+		pet:SetPoint(M("TOPLEFT", flip), p, M("TOPRIGHT", flip), (flip and 2 or -2), -statsTop / scale)
+	end
+	pet:Show()
+end
+
+-- Preview(on): placeholders where the party frames go (you first with party.showPlayer), with their pets,
+-- for Edit Mode and the options window unlock
 function A:Preview(on)
 	self.previewing = on and true or nil
 	local list = self.placeholders
@@ -264,6 +303,7 @@ function A:Preview(on)
 			p:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -step * (w + spacing), 0)
 		end
 		p:Show()
+		PreviewPet(p)
 	end
 	for i = count + 1, #list do
 		list[i]:Hide()
