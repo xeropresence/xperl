@@ -148,7 +148,7 @@ XPERL_CONF_RANGE_RAIDONLY_DESC			= "Only allow the range finder to affect raid f
 XPERL_CONF_RANGE_INTERACTNONE			= "Spell"
 XPERL_CONF_RANGE_INTERACTNONE_DESC		= "Use the specified spell to check range of players. Without a usable spell, a 40 yard check is used"
 XPERL_CONF_RANGE_INTERACT40				= "40 Yards"
-XPERL_CONF_RANGE_INTERACT40_DESC		= "Use a fixed 40 yard range check regardless of spell selection"
+XPERL_CONF_RANGE_INTERACT40_DESC		= "Use a fixed 40 yard range check regardless of spell selection. The game only measures this for your party or raid members, so other units never fade"
 
 if (GetCursorInfo) then
 XPERL_CONF_CUSTOMSPELL_DESC2			= "Drop a spell here to replace this"

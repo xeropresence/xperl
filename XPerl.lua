@@ -19,6 +19,10 @@ local min = math.min
 local IsSpellInRange = C_Spell.IsSpellInRange
 local GetDebuffDataByIndex = XPerlAPI.GetDebuffDataByIndex			-- secret-safe, see XPerl_Api.lua
 local UnitCanAssist = UnitCanAssist
+local UnitInRange = UnitInRange
+local UnitIsUnit = UnitIsUnit
+local UnitPlayerOrPetInParty = UnitPlayerOrPetInParty
+local UnitPlayerOrPetInRaid = UnitPlayerOrPetInRaid
 local UnitCanAttack = UnitCanAttack
 local UnitClass = UnitClass
 local UnitExists = UnitExists
@@ -196,6 +200,21 @@ local function HasCurableDebuff(unit)
 	return false
 end
 
+-- Within40Yards(unit)
+-- UnitInRange's 40 yards: true, false or a restricted (secret) boolean. The game measures it only for your party
+-- or raid members and their pets, and says out of range for you and anyone else. Its checkedRange return is secret,
+-- so a unit it can't measure counts as in range here, as on Blizzard's raid frames
+local function Within40Yards(unit)
+	if (not (UnitPlayerOrPetInParty(unit) or UnitPlayerOrPetInRaid(unit))) then
+		return true
+	end
+	local isMe = UnitIsUnit(unit, "player")
+	if (not issecretvalue(isMe) and isMe) then
+		return true
+	end
+	return (UnitInRange(unit))
+end
+
 -- DoRangeCheck(unit, opt)
 -- Whether unit counts as in range for a range finder row (rangeFinder.Main/NameFrame/StatsFrame): true, false, or a
 -- restricted (secret) boolean that only widgets can read (see SetRangeAlpha)
@@ -205,13 +224,13 @@ local function DoRangeCheck(unit, opt)
 	end
 	if (opt.spell and not opt.interact) then
 		local inRange = IsSpellInRange(opt.spell, unit)
-		if (issecretvalue(inRange)) then
+		if (issecretvalue(inRange) or inRange ~= nil) then
 			return inRange
 		end
-		return inRange == true
+		-- nil: the spell can't check this unit (not one you know, or one that can't target it)
 	end
-	-- 40 yards, also when there's no usable spell. UnitInRange is always restricted (secret) for add-on code
-	return (UnitInRange(unit))
+	-- 40 yards, also when there's no usable spell
+	return Within40Yards(unit)
 end
 
 -- RangeSpell(opt): the spell a range finder row checks, or nil for 40 yards
