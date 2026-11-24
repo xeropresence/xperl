@@ -52,6 +52,7 @@ XPERL_RAID_TOOLTIP_AFK		= "AFK for %s"
 XPERL_RAID_TOOLTIP_DND		= "DND for %s"
 XPERL_RAID_TOOLTIP_DYING	= "Dying in %s"
 XPERL_RAID_RESSING		= " ressing"
+XPERL_RAID_INCOMING_RES		= "Res incoming"
 XPERL_RAID_AFK			= "AFK"
 XPERL_RAID_RESSER_AVAIL		= "Rezzers Available: "
 

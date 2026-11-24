@@ -38,6 +38,7 @@ percentCurve:AddPoint(1, 100)
 
 local UnitIsAFK = XPerlAPI.UnitIsAFK			-- secret-safe unit flags, see XPerl_Api.lua
 local UnitIsDND = XPerlAPI.UnitIsDND
+local UnitHasIncomingResurrection = UnitHasIncomingResurrection
 
 -- Shared with Units/RaidPets.lua
 local Raid = {titles = titles}
@@ -846,10 +847,12 @@ Define("raidPower",	{events = {UNIT_POWER_FREQUENT = "unit", UNIT_MAXPOWER = "un
 Define("raidRole",	{events = {GROUP_ROSTER_UPDATE = true, PLAYER_ROLES_ASSIGNED = true}, method = "UpdateRole", enabled = RoleIconsEnabled})
 -- Shared with the raid pets: a roster change can put somebody else behind the same unit token
 Define("groupRoster",	{events = {GROUP_ROSTER_UPDATE = true}, method = "OnRosterChanged", full = false})
+-- Any resurrection cast on the member, whatever the resser targets (mouseover, click casting, Mass Resurrection)
+Define("raidResurrect",	{events = {INCOMING_RESURRECT_CHANGED = "unit"}, method = "UpdateHealth", full = false})
 
 XPerl_RaidFrameMixin = {
 	elementList = {"raidPower", "raidRole", "health", "name", "combat", "readyCheck", "statusIcons", "auras",
-		"range", "highlight", "healPrediction", "combatFeedback", "groupRoster"},
+		"range", "highlight", "healPrediction", "combatFeedback", "groupRoster", "raidResurrect"},
 	flashFrameKeys = {"nameFrame", "statsFrame"},
 	auraSetup = {single = true, raid = true, crop = true},
 	statusIconSize = 12,
@@ -990,7 +993,8 @@ function R:UpdateRange()
 end
 
 -- GetFlags(unit, name)
--- Text shown instead of the health (being resurrected, resurrected, AFK) and its background colour
+-- Text shown instead of the health (being resurrected, resurrected, AFK) and its background colour. The resser's
+-- name is only known when the resser targets the dead member; otherwise the client's incoming resurrection shows.
 local function GetFlags(unit, name)
 	for resser, target in pairs(ResArray) do
 		if (target == name) then
@@ -999,6 +1003,13 @@ local function GetFlags(unit, name)
 			end
 			ResArray[resser] = nil
 			break
+		end
+	end
+
+	if (UnitHasIncomingResurrection) then
+		local incoming = UnitHasIncomingResurrection(unit)
+		if (not issecretvalue(incoming) and incoming) then
+			return XPERL_RAID_INCOMING_RES, 0, 0.5, 1
 		end
 	end
 
