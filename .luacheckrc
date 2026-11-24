@@ -90,7 +90,7 @@ read_globals = {
 	"UnitName", "UnitOnTaxi", "UnitPhaseReason", "UnitPlayerControlled", "UnitPlayerOrPetInParty",
 	"UnitPlayerOrPetInRaid", "UnitPopup_OpenMenu", "UnitPower", "UnitPowerMax", "UnitPowerPercent",
 	"UnitPowerType", "UnitRace", "UnitReaction", "UnitUsingVehicle", "UnitXP", "UnitXPMax",
-	"UnregisterUnitWatch", "UpdateAddOnCPUUsage", "UpdateAddOnMemoryUsage", "abs", "atan2", "ceil", "cos", "date",
+	"UnregisterAttributeDriver", "UnregisterUnitWatch", "UpdateAddOnCPUUsage", "UpdateAddOnMemoryUsage", "abs", "atan2", "ceil", "cos", "date",
 	"debugstack", "deg", "floor", "format", "geterrorhandler", "gmatch", "gsub",
 	"hooksecurefunc", "issecretvalue", "issecure", "log", "max", "min", "mod", "random", "securecall",
 	"sin", "sort", "strfind", "strjoin", "strlen", "strlower", "strmatch", "strsplit", "strsub",

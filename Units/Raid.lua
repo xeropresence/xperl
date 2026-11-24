@@ -100,13 +100,18 @@ local function HeaderCount()
 	return rconf.sortByClass and WoWclassCount or MAX_GROUPS
 end
 
+-- HiddenInBG(): raid.notInBG keeps the raid frames out of battlegrounds
+local function HiddenInBG()
+	return rconf.notInBG and select(2, IsInInstance()) == "pvp"
+end
+
 -- Raid.Shown(): raid frames are enabled, not hidden in battlegrounds and not left to the party frames
 -- (party frames switched on with party.smallRaid while the whole raid is in group 1)
 function Raid.Shown()
 	if (not rconf.enable) then
 		return false
 	end
-	if (rconf.notInBG and select(2, IsInInstance()) == "pvp") then
+	if (HiddenInBG()) then
 		return false
 	end
 	if (conf.party.enable and conf.party.smallRaid and IsInRaid() and XPerl_Party_SingleGroup()) then
@@ -120,9 +125,11 @@ function Raid.ShowsParty()
 	return (rconf and rconf.inParty and IsInGroup() and not IsInRaid() and Raid.Shown()) and true or false
 end
 
--- Raid.HidesParty(): the party frames make way for the raid frames listing your party (raid.hideParty)
+-- Raid.HidesParty(): whether the party frames make way for the raid frames while you are in a party (not a
+-- raid): raid.inParty with raid.hideParty. Independent of your group, as the party header's visibility
+-- driver (Units/Party.lua) holds it for the party you may join in combat.
 function Raid.HidesParty()
-	return (rconf and rconf.hideParty and Raid.ShowsParty()) and true or false
+	return (rconf and rconf.enable and rconf.inParty and rconf.hideParty and not HiddenInBG()) and true or false
 end
 
 -- HeaderUsed(i): whether header i shows anybody with the current settings

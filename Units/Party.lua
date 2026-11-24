@@ -120,17 +120,32 @@ function A:OnEvent(event)
 	self:UpdateVisibility()
 end
 
--- UpdateVisibility: the header shows in a party, and in raids with party.inRaid (or party.smallRaid while
--- everybody is in group 1); it hides while the raid frames list the party with raid.hideParty
--- (Units/Raid.lua), and everything hides during pet battles
+-- VisibilityConditions(): the header's visibility driver. It shows the header in a party, and in raids with
+-- party.inRaid (or party.smallRaid while everybody is in group 1); not while the raid frames list the party
+-- with raid.hideParty (Units/Raid.lua), nor during pet battles. A driver, unlike Show, works in combat: a
+-- party joined mid-fight is listed at once. Settings, the battleground and the raid's groups change out of
+-- combat, or wait for it to end (UpdateVisibility).
+local function VisibilityConditions()
+	local raid = pconf.inRaid or (pconf.smallRaid and XPerl_Party_SingleGroup())
+	local party = not ns.Raid.HidesParty()
+	return format("[petbattle] hide; [group:raid] %s; [group:party] %s; hide", raid and "show" or "hide", party and "show" or "hide")
+end
+
+-- UpdateVisibility: the header follows VisibilityConditions while the party type is on; everything hides
+-- during pet battles
 function A:UpdateVisibility()
 	if (InCombatLockdown()) then
 		XPerl_ProtectedCall(self.updateVisibility)
 		return
 	end
+	local header = XPerl_Party_SecureHeader
 	local active = self.active and pconf
-	local show = active and not ns.Raid.HidesParty() and (pconf.inRaid or (pconf.smallRaid and XPerl_Party_SingleGroup()) or (GetNumGroupMembers() > 0 and not IsInRaid()))
-	XPerl_Party_SecureHeader:SetShown(show and true or false)
+	if (active) then
+		RegisterAttributeDriver(header, "state-visibility", VisibilityConditions())
+	else
+		UnregisterAttributeDriver(header, "state-visibility")
+		header:Hide()
+	end
 	self:SetShown((active and not self.petBattle) and true or false)
 end
 
