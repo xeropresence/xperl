@@ -2198,6 +2198,7 @@ local function XPerl_Player_ConfigDefault(default)
 --		withName		= nil,
 		showRunes		= 1,
 		dockRunes		= 1,
+--		blizzardRunes		= nil,
 
 		fullScreen = {
 			enable		= 1,

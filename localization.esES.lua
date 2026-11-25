@@ -128,7 +128,6 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_EDITMODE_GROUP_COMBO				= "Puntos de combo"
 	XPERL_EDITMODE_GROUP_BUFFS				= "Ventajas"
 	XPERL_EDITMODE_GROUP_DEBUFFS			= "Desventajas"
-	XPERL_EDITMODE_GROUP_TOTEMS				= "T\195\179tems"
 	XPERL_EDITMODE_GROUP_WARNING			= "Avisos"
 	XPERL_EDITMODE_GROUP_TARGETS			= "Objetivos del grupo"
 	XPERL_EDITMODE_GROUP_PARTYPETS			= "Mascotas del grupo"

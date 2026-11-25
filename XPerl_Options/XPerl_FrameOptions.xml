@@ -4234,7 +4234,7 @@
 						</Scripts>
 					</CheckButton>
 
-					<CheckButton name="$parent_ShowRunes" inherits="XPerlCheckButtonTemplate">
+					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPRIGHT" relativeTo="$parent_HitIndicator" relativePoint="BOTTOM">
 								<Offset><AbsDimension x="0" y="6"/></Offset>
@@ -4242,57 +4242,6 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								if (not (XPerl_Player and XPerl_Player.runes)) then
-									self:Hide()		-- no special bar for this class
-								end
-
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_SHOW_RUNES")
-								self.configBase = "XPerlDB.player"
-								self.flashFrame = XPerl_Player and XPerl_Player.runes;
-								self.configIndex = "showRunes"
-								self.configClick = XPerl_Player_Reset
-								self.Validate = function()
-									XPerl_Options_EnableSibling(self,"DockRunes")
-								end
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_DockRunes" inherits="XPerlCheckButtonTemplate">
-						<Size><AbsDimension x="26" y="26"/></Size>
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_ShowRunes" relativePoint="TOPRIGHT">
-								<Offset><AbsDimension x="85" y="0"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>  
-								if (not (XPerl_Player and XPerl_Player.runes)) then
-									self:Hide()
-								end
-
-								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_DOCKRUNES")
-								self.configBase = "XPerlDB.player"
-								self.flashFrame = XPerl_Player and XPerl_Player.runes;
-								self.configIndex = "dockRunes"
-								self.configClick = XPerl_Player_Reset
-							</OnLoad>
-						</Scripts>
-					</CheckButton>
-
-					<CheckButton name="$parent_ArcaneBar" inherits="XPerlCheckButtonTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_ShowRunes" relativePoint="BOTTOMLEFT">
-								<Offset><AbsDimension x="0" y="6"/></Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>
-								if (not (XPerl_Player and XPerl_Player.runes)) then
-									self:ClearAllPoints()
-									self:SetPoint("TOPLEFT", XPerl_Options_Player_Options_ShowRunes, "TOPLEFT")
-								end
-
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_ARCANE_BAR")
 								self.configBase = "XPerlDB.player.castBar"
 								self.configIndex = "enable"
@@ -4918,7 +4867,8 @@
 						</Frames>
 					</Frame>
 
-					<Frame name="$parent_Totems" inherits="BackdropTemplate">
+					<!-- Class resources: the special bar (hidden for classes without one) and Blizzard's TotemFrame -->
+					<Frame name="$parent_ClassResources" inherits="BackdropTemplate">
 						<KeyValues>
 							<KeyValue key="backdropInfo" value="XPERL_BACKDROP_OPTIONS_AREA" type="global"/>
 						</KeyValues>
@@ -4932,7 +4882,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString inherits="GameFontNormalSmall" text="XPERL_CONF_PLAYER_TOTEMS">
+								<FontString inherits="GameFontNormalSmall" text="XPERL_CONF_PLAYER_CLASSRESOURCES">
 								<Color r="1" g="1" b="1" a="1" />
 									<Anchors>
 										<Anchor point="TOPLEFT">
@@ -4943,8 +4893,7 @@
 							</Layer>
 						</Layers>
 						<Frames>
-							<CheckButton name="$parent_Enable" inherits="XPerlCheckButtonTemplate">
-								<Size><AbsDimension x="26" y="26"/></Size>
+							<CheckButton name="$parent_ShowRunes" inherits="XPerlCheckButtonTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT">
 										<Offset><AbsDimension x="5" y="-20"/></Offset>
@@ -4952,6 +4901,86 @@
 								</Anchors>
 								<Scripts>
 									<OnLoad>
+										if (not (XPerl_Player and XPerl_Player.runes)) then
+											self:Hide()		-- no special bar for this class
+										end
+
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_SHOW_RUNES")
+										self.configBase = "XPerlDB.player"
+										self.flashFrame = XPerl_Player and XPerl_Player.runes;
+										self.configIndex = "showRunes"
+										self.configClick = XPerl_Player_Reset
+										self.Validate = function()
+											XPerl_Options_EnableSibling(self,"DockRunes")
+											XPerl_Options_EnableSibling(self,"BlizzardRunes")
+										end
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+
+							<CheckButton name="$parent_DockRunes" inherits="XPerlCheckButtonTemplate">
+								<Size><AbsDimension x="26" y="26"/></Size>
+								<Anchors>
+									<Anchor point="TOP" relativeTo="$parent_ShowRunes" relativePoint="BOTTOMRIGHT">
+										<Offset><AbsDimension x="0" y="6"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										if (not (XPerl_Player and XPerl_Player.runes)) then
+											self:Hide()
+										end
+
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_DOCKRUNES")
+										self.configBase = "XPerlDB.player"
+										self.flashFrame = XPerl_Player and XPerl_Player.runes;
+										self.configIndex = "dockRunes"
+										self.configClick = XPerl_Player_Reset
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+
+							<CheckButton name="$parent_BlizzardRunes" inherits="XPerlCheckButtonTemplate">
+								<Size><AbsDimension x="26" y="26"/></Size>
+								<Anchors>
+									<Anchor point="TOPLEFT" relativeTo="$parent_DockRunes" relativePoint="BOTTOMLEFT">
+										<Offset><AbsDimension x="0" y="6"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										if (not (XPerl_Player and XPerl_Player.runeButtons)) then
+											self:Hide()		-- death knights only
+										end
+
+										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_BLIZZARDRUNES")
+										self.configBase = "XPerlDB.player"
+										self.flashFrame = XPerl_Player and XPerl_Player.runes;
+										self.configIndex = "blizzardRunes"
+										self.configClick = XPerl_Player_Reset
+									</OnLoad>
+								</Scripts>
+							</CheckButton>
+
+							<!-- At the top without a special bar, else under its last shown setting -->
+							<CheckButton name="$parent_Totems" inherits="XPerlCheckButtonTemplate">
+								<Anchors>
+									<Anchor point="TOPLEFT">
+										<Offset><AbsDimension x="5" y="-20"/></Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>
+										local prefix = self:GetParent():GetName()
+										local above = _G[prefix.."_BlizzardRunes"]
+										if (not above:IsShown()) then
+											above = _G[prefix.."_DockRunes"]
+										end
+										if (above:IsShown()) then
+											self:ClearAllPoints()
+											self:SetPoint("TOPRIGHT", above, "BOTTOM", 0, 6)
+										end
+
 										XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_TOTEMS_ENABLE")
 										self.configBase = "XPerlDB.player.totems"
 										self.configIndex = "enable"
@@ -4962,7 +4991,7 @@
 							<Slider name="$parent_OffsetX" inherits="XPerlSlider">
 								<Size><AbsDimension x="140" y="16"/></Size>
 								<Anchors>
-									<Anchor point="TOPLEFT" relativeTo="$parent_Enable" relativePoint="BOTTOMLEFT">
+									<Anchor point="TOPLEFT" relativeTo="$parent_Totems" relativePoint="BOTTOMLEFT">
 										<Offset><AbsDimension x="5" y="-15"/></Offset>
 									</Anchor>
 								</Anchors>

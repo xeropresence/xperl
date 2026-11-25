@@ -293,8 +293,6 @@ function specs.player(s)
 	s:Check("xpDeficit", P.."XPDEFICIT")
 	s:Check("repBar", P.."REP")
 	s:Check("noDruidBar", P.."DRUIDBAR")
-	s:Check("showRunes", P.."SHOW_RUNES")
-	s:Check("dockRunes", P.."DOCKRUNES")
 
 	s:Group("XPERL_EDITMODE_GROUP_CASTBAR")
 	s:Check("castBar.enable", "XPERL_CONF_ARCANE_BAR")
@@ -320,8 +318,13 @@ function specs.player(s)
 	s:Check("debuffs.enable", P.."DEBUFFS")
 	s:Slider("debuffs.size", P.."DEBUFFSIZE", 7, 45)
 
-	-- The player code creates the same settings at runtime, so they are the "Reset to default" values
-	s:Group("XPERL_EDITMODE_GROUP_TOTEMS")
+	s:Group(P.."CLASSRESOURCES")
+	s:Check("showRunes", P.."SHOW_RUNES")
+	s:Check("dockRunes", P.."DOCKRUNES")
+	if (select(2, UnitClass("player")) == "DEATHKNIGHT") then
+		s:Check("blizzardRunes", P.."BLIZZARDRUNES")
+	end
+	-- The player code creates the totem settings at runtime, so they are the "Reset to default" values
 	s:Check("totems.enable", P.."TOTEMS_ENABLE", "bool", nil, true)
 	s:Slider("totems.offsetX", P.."TOTEM_OFFSETX", -1100, 1100, nil, nil, 0)
 	s:Slider("totems.offsetY", P.."TOTEM_OFFSETY", -800, 800, nil, nil, 0)

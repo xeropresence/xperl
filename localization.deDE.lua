@@ -128,7 +128,6 @@ if (GetLocale() == "deDE") then
 	XPERL_EDITMODE_GROUP_COMBO				= "Combopunkte"
 	XPERL_EDITMODE_GROUP_BUFFS				= "Buffs"
 	XPERL_EDITMODE_GROUP_DEBUFFS				= "Debuffs"
-	XPERL_EDITMODE_GROUP_TOTEMS				= "Totems"
 	XPERL_EDITMODE_GROUP_WARNING				= "Warnungen"
 	XPERL_EDITMODE_GROUP_TARGETS				= "Gruppenziele"
 	XPERL_EDITMODE_GROUP_PARTYPETS			= "Gruppenbegleiter"

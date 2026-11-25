@@ -2,29 +2,18 @@
 
 	<Script file="Player.lua"/>
 
-	<!-- One death knight rune (XPerl_RuneButtonIndividual1..6) -->
+	<!-- One death knight rune (XPerl_RuneButtonIndividual1..6). The cooldown keeps the rune's strata: a fixed one
+	     (it had LOW) drew it under the rune once the bar sat in a higher strata, on UIParent when undocked. Its
+	     swipe, edge and finish flash cover the rune; Lua sets the rune's texture per specialization. -->
 	<Button name="XPerl_RuneButtonIndividualTemplate" virtual="true">
 		<Size x="22" y="22"/>
 		<Frames>
-			<Cooldown name="$parentCooldown" parentKey="cooldown" drawEdge="true" frameStrata="LOW">
+			<Cooldown name="$parentCooldown" parentKey="cooldown" drawEdge="true">
 				<Anchors>
-					<Anchor point="TOPLEFT"/>
-					<Anchor point="BOTTOMRIGHT" x="0" y="1"/>
+					<Anchor point="TOPLEFT" x="1" y="-1"/>
+					<Anchor point="BOTTOMRIGHT" x="-1" y="1"/>
 				</Anchors>
 			</Cooldown>
-			<Frame frameStrata="MEDIUM" setAllPoints="true" name="$parentShine">
-				<Layers>
-					<Layer level="OVERLAY">
-						<Texture name="$parentTexture" file="Interface\ComboFrame\ComboPoint" alphaMode="ADD" hidden="true">
-							<Size x="60" y="35"/>
-							<Anchors>
-								<Anchor point="CENTER"/>
-							</Anchors>
-							<TexCoords left="0.5625" right="1" top="0" bottom="1"/>
-						</Texture>
-					</Layer>
-				</Layers>
-			</Frame>
 		</Frames>
 		<Layers>
 			<Layer level="ARTWORK">

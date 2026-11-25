@@ -125,7 +125,6 @@ XPerl_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_EDITMODE_GROUP_COMBO	= "Приемы серии"
 	XPERL_EDITMODE_GROUP_BUFFS	= "Баффы"
 	XPERL_EDITMODE_GROUP_DEBUFFS	= "Дебаффы"
-	XPERL_EDITMODE_GROUP_TOTEMS	= "Тотемы"
 	XPERL_EDITMODE_GROUP_WARNING	= "Предупреждения"
 	XPERL_EDITMODE_GROUP_TARGETS	= "Цели группы"
 	XPERL_EDITMODE_GROUP_PARTYPETS	= "Питомцы группы"

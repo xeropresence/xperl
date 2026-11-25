@@ -37,10 +37,12 @@ One download covers both clients; each client loads its own TOC.
   their identity there, and a 3D model needs it.
 - **Cast bars on every frame:** cast time and latency, and a shield icon when the
   cast can't be interrupted.
-- **Class resources** (Retail) under the player frame, with Options → Player → "Show
-  special bar": X-Perl's death knight runes, or the game's own Soul Shards, Holy Power,
-  Chi, Arcane Charges or Essence bar, in the specializations that use them. Untick
-  "Docked with Player" to place the bar in Edit Mode.
+- **Class resources** (Retail) under the player frame, with Options → Player → Class
+  Resources → "Show special bar": X-Perl's death knight runes (coloured for your
+  specialization), or the game's own Soul Shards, Holy Power, Chi, Arcane Charges or
+  Essence bar, in the specializations that use them. Death knights can tick "Blizzard
+  Runes" for the game's rune bar instead. Untick "Docked with Player" to place the bar in
+  Edit Mode. The same box can move the game's totem frame under the player frame.
 - **Heal prediction:** your incoming heals, other players' incoming heals, absorb
   shields and heal absorbs, in and out of combat. A glow marks absorbs that don't fit on
   the bar.
@@ -262,7 +264,7 @@ information they need:
   - the HoT monitor (HoT borders, timer bars, the HoT counter and sparkles): in combat
     every aura slot reads as hidden, even empty ones, so add-ons can't tell your HoTs
   - threat on boss frames
-  - the death knight rune flash
+  - the death knight rune energize flash
   - Spirit of Redemption shown as dead
   - counting enemies that target you
   - the Tooltip Buff Helper and caster names in aura tooltips

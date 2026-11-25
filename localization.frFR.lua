@@ -111,7 +111,6 @@ if (GetLocale() == "frFR") then
 	XPERL_EDITMODE_GROUP_COMBO = "Points de combo"
 	XPERL_EDITMODE_GROUP_BUFFS = "Buffs"
 	XPERL_EDITMODE_GROUP_DEBUFFS = "Debuffs"
-	XPERL_EDITMODE_GROUP_TOTEMS = "Totems"
 	XPERL_EDITMODE_GROUP_WARNING = "Avertissements"
 	XPERL_EDITMODE_GROUP_TARGETS = "Cibles du groupe"
 	XPERL_EDITMODE_GROUP_PARTYPETS = "Familiers du groupe"

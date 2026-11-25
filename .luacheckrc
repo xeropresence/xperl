@@ -54,7 +54,7 @@ read_globals = {
 	"C_UnitAuras", "CanInspect", "CheckInteractDistance", "ClearCursor", "ClearFocus",
 	"CloseMenus", "CombatFeedback_Initialize", "CombatFeedback_OnUpdate", "CombatFeedbackText",
 	"BreakUpLargeNumbers", "COMBAT_TEXT_BLOCK_REDUCED",
-	"CooldownFrame_Set", "Constants", "CopyTable",
+	"Constants", "CopyTable",
 	"CreateColor", "CreateFrame", "DEFAULT_CHAT_FRAME", "Enum",
 	"FauxScrollFrame_GetOffset", "FauxScrollFrame_OnVerticalScroll",
 	"FauxScrollFrame_Update", "GameTooltip_Hide", "GameTooltip_SetDefaultAnchor", "GetAddOnCPUUsage",

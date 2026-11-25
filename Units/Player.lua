@@ -18,8 +18,10 @@ local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%.0f"..PERCENT_SYMBOL
 
 -- Blizzard's class resource bar per class (Retail), shown as the special bar, and its name as the undocked bar's
--- Edit Mode label. Death knights get X-Perl's own runes instead; combo points show on the target frame.
+-- Edit Mode label (death knights: XPERL_LOC_RUNES). Death knights get X-Perl's own runes unless
+-- conf.player.blizzardRunes picks Blizzard's RuneFrame; combo points show on the target frame.
 local CLASS_BARS = {
+	DEATHKNIGHT	= {frame = "RuneFrame"},
 	WARLOCK	= {frame = "WarlockPowerFrame", label = SOUL_SHARDS_POWER},
 	PALADIN	= {frame = "PaladinPowerBarFrame", label = HOLY_POWER},
 	MONK	= {frame = "MonkHarmonyBarFrame", label = CHI_POWER},
@@ -55,7 +57,7 @@ local Define = XPerl_UnitFrame_DefineElement
 local function XPBarEnabled() return pconf.xpBar end
 local function RepBarEnabled() return pconf.repBar end
 local function IsDruid() return playerClass == "DRUID" end
-local function HasRunes(self) return self.runeButtons ~= nil end
+local function OwnRunes(self) return self.runeButtons ~= nil and not pconf.blizzardRunes end
 local function FullScreenEnabled() return pconf.fullScreen.enable end
 
 Define("playerVehicle",	{events = {UNIT_ENTERED_VEHICLE = "player", UNIT_EXITED_VEHICLE = "player", PLAYER_ENTERING_WORLD = true}, method = "UpdateVehicle", full = false})
@@ -67,7 +69,7 @@ Define("playerGroup",	{events = {GROUP_ROSTER_UPDATE = true}, method = "UpdateGr
 Define("playerXP",	{events = {PLAYER_XP_UPDATE = true, UPDATE_EXHAUSTION = true, PLAYER_LEVEL_UP = true, PLAYER_UPDATE_RESTING = true}, method = "UpdateXP", enabled = XPBarEnabled})
 Define("playerRep",	{events = {UPDATE_FACTION = true}, method = "UpdateRep", enabled = RepBarEnabled})
 Define("playerShapeshift", {events = {UPDATE_SHAPESHIFT_FORM = true}, method = "UpdateShapeshift", full = false, enabled = IsDruid})
-Define("playerRunes",	{events = {RUNE_POWER_UPDATE = true}, method = "UpdateRunes", enabled = HasRunes})
+Define("playerRunes",	{events = {RUNE_POWER_UPDATE = true, PLAYER_SPECIALIZATION_CHANGED = "player"}, method = "UpdateRunes", enabled = OwnRunes})
 Define("playerControl",	{events = {PLAYER_CONTROL_LOST = true, PLAYER_CONTROL_GAINED = true}, method = "UpdateControl", full = false, enabled = FullScreenEnabled})
 
 ------------------------------------------------------------------------------
@@ -514,10 +516,10 @@ end
 -- free, where Edit Mode places it
 ------------------------------------------------------------------------------
 
--- CreateSpecialBar(template): XPerl_Runes. Undocked, it can also be dragged while the options window has the
--- frames unlocked.
-function P:CreateSpecialBar(template)
-	local runes = CreateFrame("Frame", "XPerl_Runes", self, template)
+-- CreateSpecialBar: XPerl_Runes. Undocked, it can also be dragged while the options window has the frames
+-- unlocked.
+function P:CreateSpecialBar()
+	local runes = CreateFrame("Frame", "XPerl_Runes", self)
 	self.runes = runes
 	runes:SetMovable(true)
 	runes:RegisterForDrag("LeftButton")
@@ -537,23 +539,54 @@ function P:CreateSpecialBar(template)
 	return runes
 end
 
--- InitDeathKnight: our own rune buttons, on a backdrop
+-- InitDeathKnight: our own rune buttons, on a backdrop (runeBorder) filling XPerl_Runes. Blizzard's RuneFrame
+-- takes their place while conf.player.blizzardRunes is on (SetupRunes), and runeBorder is hidden then.
 function P:InitDeathKnight()
-	local runes = self:CreateSpecialBar("BackdropTemplate")
-	self.runeBorder = runes
-	runes:SetBackdrop({bgFile = "Interface\\Addons\\XPerl\\Images\\XPerl_FrameBack",
+	local runes = self:CreateSpecialBar()
+	local border = CreateFrame("Frame", "XPerl_RunesBorder", runes, "BackdropTemplate")
+	self.runeBorder = border
+	border:SetAllPoints()
+	border:SetBackdrop({bgFile = "Interface\\Addons\\XPerl\\Images\\XPerl_FrameBack",
 			edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
 			tile = true, tileSize = 32, edgeSize = 12,
 			insets = {left = 3, right = 3, top = 3, bottom = 3}})
-	runes:SetBackdropColor(0, 0, 0, 0.8)
-	runes:SetBackdropBorderColor(1, 1, 1, 1)
+	border:SetBackdropColor(0, 0, 0, 0.8)
+	border:SetBackdropBorderColor(1, 1, 1, 1)
 
 	self.runeButtons = {}
 	for i = 1, 6 do
-		local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, runes, "XPerl_RuneButtonIndividualTemplate")
+		local rune = CreateFrame("Button", "XPerl_RuneButtonIndividual"..i, border, "XPerl_RuneButtonIndividualTemplate")
 		rune:EnableMouse(false)
 		rune:SetID(i)
 		self.runeButtons[i] = rune
+	end
+	-- Docked, the bar's size follows the portrait and stats, which are sized after SetupRunes
+	border:SetScript("OnSizeChanged", function() self:LayoutRunes() end)
+end
+
+local RUNE_SIZE = 22
+local RUNE_INSET = 4		-- the backdrop's border
+
+-- LayoutRunes: the six runes in pairs, centred in the bar, spaced wide where it has room, and smaller where it
+-- is narrower than they are
+function P:LayoutRunes()
+	local width, height = self.runeBorder:GetSize()
+	local pairGap, gap = 1, 6
+	if (width >= 200) then
+		pairGap, gap = 4, 20
+	end
+	local gaps = 3 * pairGap + 2 * gap
+	local size = min(RUNE_SIZE, floor((width - 2 * RUNE_INSET - gaps) / 6), floor(height - 2 * RUNE_INSET))
+	if (size < 1) then
+		return		-- not sized yet
+	end
+	local x = -floor((6 * size + gaps) / 2)
+	for i = 1, 6 do
+		local rune = self.runeButtons[i]
+		rune:ClearAllPoints()
+		rune:SetSize(size, size)
+		rune:SetPoint("LEFT", self.runeBorder, "CENTER", x, 0)
+		x = x + size + (i % 2 == 1 and pairGap or gap)
 	end
 end
 
@@ -564,7 +597,10 @@ function P:SpecialBarDocked()
 	if (not (runes and runes:IsShown() and pconf.dockRunes)) then
 		return false
 	end
-	return self.runeButtons ~= nil or (classBarParent ~= nil and classBar:IsShown())
+	if (self.runeBorder and self.runeBorder:IsShown()) then
+		return true
+	end
+	return classBarParent ~= nil and classBar:IsShown()
 end
 
 -- UpdateClassBar(take): Blizzard's class bar into XPerl_Runes, or back where it was. Like TotemFrame (see
@@ -665,40 +701,46 @@ function P:SetupRunes()
 		XPerl_EditMode_ApplyPosition(runes)
 	end
 
-	if (not self.runeButtons) then
-		self:UpdateClassBar(true)
-		return
+	local own = OwnRunes(self)
+	if (self.runeBorder) then
+		self.runeBorder:SetShown(own)
 	end
-	local wide = runes:GetWidth() >= 200
-	local prev
-	for i = 1, 6 do
-		local rune = self.runeButtons[i]
-		rune:ClearAllPoints()
-		rune:SetSize(22, 22)
-		if (prev) then
-			rune:SetPoint("LEFT", prev, "RIGHT", wide and (4 + ((i % 2) * 16)) or (1 + ((i % 2) * 5)), 0)
-		else
-			rune:SetPoint("LEFT", wide and 10 or 1, 0)
-		end
-		prev = rune
+	self:UpdateClassBar(not own)
+	if (own) then
+		self:LayoutRunes()
 	end
 end
 
--- UpdateRunes
--- The payload can be secret (restricted combat), so every rune is refreshed, as Blizzard's RuneFrame does.
+-- Rune art per specialization; death runes' art before one is chosen
+local RUNE_ART = {"Blood", "Frost", "Unholy"}
+
+-- UpdateRunes: every rune is refreshed, as Blizzard's RuneFrame does, in the specialization's colour. A rune
+-- that isn't ready is greyed, under its cooldown swipe when it has a recharge start. GetRuneCooldown never
+-- returns secret values.
 function P:UpdateRunes()
+	local spec = C_SpecializationInfo.GetSpecialization()
+	local art = spec ~= self.runeSpec and "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-"..(RUNE_ART[spec] or "Death")
+	self.runeSpec = spec
+	local now = GetTime()
 	for i = 1, 6 do
 		local rune = self.runeButtons[i]
+		if (art) then
+			rune.rune:SetTexture(art)
+		end
 		local start, duration, isReady = GetRuneCooldown(i)
-		if (issecretvalue(start) or issecretvalue(duration) or issecretvalue(isReady)) then
-			-- Restricted rune timings can't be handed to a cooldown from add-on code
-			rune.cooldown:Hide()
-		elseif (not isReady) then
-			if (start) then
-				CooldownFrame_Set(rune.cooldown, start, duration, 1)
+		rune.rune:SetDesaturated(not isReady)
+		local cooldown = rune.cooldown
+		if (not isReady and start and start > 0 and duration > 0) then
+			cooldown:SetCooldown(start, duration)
+		elseif (isReady) then
+			-- Back before its swipe ran out (refunded runes): cleared. Its ready event can come a moment before the
+			-- swipe ends, which is left to finish with its flash.
+			local cdStart, cdDuration = cooldown:GetCooldownTimes()
+			if ((cdStart + cdDuration) / 1000 - now > 0.1) then
+				cooldown:Clear()
 			end
 		else
-			rune.cooldown:Hide()
+			cooldown:Clear()
 		end
 	end
 end
