@@ -2874,6 +2874,47 @@ local function threatOnUpdate(self, elapsed)
 	self:Draw(self.current)
 end
 
+-- SetNameThreatInset(self, t)
+-- The name bar threat percentage sits at the bar's left; while it shows (t: the shown name bar gauge, else nil)
+-- the name text's left edge moves past it so a long name can't run under it. The text's own TOPLEFT anchor
+-- (each unit type lays its name out differently) is kept and put back when the percentage hides.
+local function SetNameThreatInset(self, t)
+	local text = self.nameFrame and self.nameFrame.text
+	if (not text or (t ~= nil) == (self.nameThreatInset ~= nil)) then
+		return
+	end
+	if (t) then
+		local anchor
+		for i = 1, text:GetNumPoints() do
+			local point, relativeTo, relativePoint, x, y = text:GetPoint(i)
+			if (point == "TOPLEFT") then
+				anchor = {relativeTo, relativePoint, x, y}
+				break
+			end
+		end
+		if (not anchor) then
+			return
+		end
+		if (not t.reserve) then
+			-- Widest percentage, measured once so the name doesn't shift as the number changes
+			local current = t.text:GetText()
+			t.text:SetText("100%")
+			local width = t.text:GetStringWidth()
+			t.text:SetText(current)
+			if (width > 0) then
+				t.reserve = width
+			end
+		end
+		local reserve = 4 + (t.reserve or 24) + 3		-- the percentage's 4px inset (XPerl_ThreatTemplatenameFrame), a gap
+		self.nameThreatInset = anchor
+		text:SetPoint("TOPLEFT", anchor[1], anchor[2], max(anchor[3], reserve), anchor[4])
+	else
+		local anchor = self.nameThreatInset
+		self.nameThreatInset = nil
+		text:SetPoint("TOPLEFT", anchor[1], anchor[2], anchor[3], anchor[4])
+	end
+end
+
 -- XPerl_Unit_ThreatStatus
 function XPerl_Unit_ThreatStatus(self, relative, immediate)
 	if (not self.partyid or not self.conf) then
@@ -2886,6 +2927,7 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 		if (t) then
 			t:Hide()
 		end
+		SetNameThreatInset(self, nil)
 		return
 	end
 
@@ -2899,6 +2941,7 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 		else
 			self.threatFrames = {}
 		end
+		SetNameThreatInset(self, nil)
 		if (self[mode]) then		-- If desired parent frame exists
 			t = CreateFrame("Frame", self:GetName().."Threat"..mode, self[mode], "XPerl_ThreatTemplate"..mode)
 			t:SetAllPoints()
@@ -2947,10 +2990,12 @@ function XPerl_Unit_ThreatStatus(self, relative, immediate)
 			local r, g, b = smoothColor(1 - scaledPercent / 100)		-- green, turning red as you near pulling aggro
 			t.text:SetTextColor(r, g, b)
 
+			SetNameThreatInset(self, mode == "nameFrame" and t or nil)
 			t:Show()
 			return
 		end
 
+		SetNameThreatInset(self, nil)
 		t:Hide()
 	end
 end
