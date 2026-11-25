@@ -14,6 +14,9 @@ XPerl_RequestConfig(function(new) conf = new pconf = new.player end, "$Revision$
 
 local playerClass = select(2, UnitClass("player"))
 local isOutOfControl
+-- GetTime() of the last TakeTaxiNode: a flight path's PLAYER_CONTROL_LOST comes before UnitOnTaxi turns true
+local taxiTakenAt
+hooksecurefunc("TakeTaxiNode", function() taxiTakenAt = GetTime() end)
 local perc1F = "%.1f"..PERCENT_SYMBOL
 local percD = "%.0f"..PERCENT_SYMBOL
 
@@ -499,11 +502,14 @@ function P:UpdateFullScreen()
 	end
 end
 
--- UpdateControl
+-- UpdateControl: out of control flashes at once, except right after TakeTaxiNode. A flight started another way
+-- (a quest's) is caught 0.5 s later, once UnitOnTaxi is true, and UpdateFullScreen stops its flash.
 function P:UpdateControl(event)
 	if (event == "PLAYER_CONTROL_LOST") then
-		if (not UnitOnTaxi("player")) then
+		if (not UnitOnTaxi("player") and not (taxiTakenAt and GetTime() - taxiTakenAt < 5)) then
 			isOutOfControl = true
+			self:UpdateFullScreen()
+			C_Timer.After(0.5, function() self:UpdateFullScreen() end)
 		end
 	else
 		isOutOfControl = nil
