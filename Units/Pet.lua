@@ -4,7 +4,8 @@
 --
 -- Pet frame (XPerl_Player_Pet): shows the player while the player is in a vehicle (the player frame shows the
 -- vehicle then), the pet's threat on the player's target, the portrait-side layout with the level box left of
--- the portrait, the optional name bar, and on WoW: Forever the hunter pet's happiness below the level box.
+-- the portrait, the optional name bar, and on WoW: Forever the hunter pet's happiness below the level box and its
+-- experience bar below the mana bar.
 -- Everything else comes from Units/UnitFrame.lua.
 
 local UF = XPerl_UnitFrameMixin
@@ -13,8 +14,8 @@ XPerl_RequestConfig(function(new) conf = new end, "$Revision$")
 
 XPerl_PetFrameMixin = {
 	elementList = {
-		"highlight", "petVehicle", "portrait", "name", "level", "happiness", "power", "health", "statusIcons", "combat",
-		"petCombat", "threat", "petThreat", "healPrediction", "combatFeedback", "auras", "castBar", "petBattle",
+		"highlight", "petVehicle", "portrait", "name", "level", "happiness", "petXP", "power", "health", "statusIcons",
+		"combat", "petCombat", "threat", "petThreat", "healPrediction", "combatFeedback", "auras", "castBar", "petBattle",
 	},
 	perlFrameKeys = {"nameFrame", "statsFrame", "portraitFrame", "levelFrame", "happinessFrame"},
 	flashFrameKeys = {"nameFrame", "levelFrame", "statsFrame", "portraitFrame"},
@@ -22,6 +23,8 @@ XPerl_PetFrameMixin = {
 	exactPowerText = true,
 	useUnitWatch = true,
 	highlightRatio = 2,
+	-- Only WoW: Forever's hunter pets earn experience (GetPetExperience); other pets level with the player
+	petExperience = XPerlAPI.isForever and select(2, UnitClass("player")) == "HUNTER",
 }
 local P = XPerl_PetFrameMixin
 P.GetTargetInfo = UF.ShownUnitTargetInfo	-- pings the player while in a vehicle (the "unit" attribute stays "pet")
@@ -35,6 +38,9 @@ Define("petThreat",	{events = {UNIT_THREAT_LIST_UPDATE = "target", PLAYER_TARGET
 -- frame refreshes it along with the unit.
 Define("happiness",	{method = "UpdateHappiness", enabled = function(self) return self.happinessFrame ~= nil end,
 	init = function(self) if (XPerlAPI.isForever) then self:CreateHappiness() end end})
+-- The hunter pet's experience. A level up also changes the amount the next level needs.
+Define("petXP",		{events = {UNIT_PET_EXPERIENCE = true, UNIT_LEVEL = "unit"}, method = "UpdateXP",
+	enabled = function(self) return self:XPShown() end})
 
 ------------------------------------------------------------------------------
 -- Setup
@@ -69,14 +75,24 @@ function P:CreateHappiness()
 	self.happinessFrame = hf
 end
 
+-- XPShown: whether the frame has the experience bar (conf.xpBar, hunter pets on WoW: Forever)
+function P:XPShown()
+	return self.petExperience and self.conf.xpBar and true or false
+end
+
+-- GetExtraBars
+function P:GetExtraBars()
+	return {self.statsFrame.xpBar}
+end
+
 -- ApplySize(width): the name and stats bars
 function P:ApplySize(width)
 	self.nameFrame:SetWidth(80 + width)
 	self.statsFrame:SetWidth(80 + width)
 end
 
--- ApplyTypeSettings: portrait size, the optional name bar, the level and happiness boxes beside the portrait
--- (or the stats), the highlight area and the frame's own size
+-- ApplyTypeSettings: portrait size, the optional name bar, the experience bar, the level and happiness boxes
+-- beside the portrait (or the stats), the highlight area and the frame's own size
 function P:ApplyTypeSettings()
 	local c = self.conf
 	local pf, nf, sf, lf = self.portraitFrame, self.nameFrame, self.statsFrame, self.levelFrame
@@ -86,6 +102,25 @@ function P:ApplyTypeSettings()
 
 	nf:SetShown(c.name and true or false)
 	nf:SetHeight(c.name and 24 or 2)
+
+	-- The experience bar takes a row below the mana bar
+	local xpShown = self:XPShown()
+	if (xpShown) then
+		local bar = sf.xpBar
+		if (not bar) then
+			bar = CreateFrame("StatusBar", sf:GetName().."xpBar", sf, "XPerlStatusBar")
+			bar:SetHeight(10)
+			bar:SetStatusBarColor(0.3, 0.3, 1, 1)
+			bar.bg:SetVertexColor(0.3, 0.3, 1, 0.25)
+			bar.percent:Hide()
+			sf.xpBar = bar
+		end
+		bar:Show()
+		bar.text:SetShown(c.values and true or false)
+	elseif (sf.xpBar) then
+		sf.xpBar:Hide()
+	end
+	sf:SetHeight(xpShown and 44 or 34)
 
 	local beside = (c.name or c.portrait) and pf or sf
 	lf:ClearAllPoints()
@@ -193,17 +228,30 @@ function P:UpdateHappiness()
 	self.happinessFrame.indicator:UpdateHappiness()
 end
 
+-- UpdateXP: the pet's experience toward its next level
+function P:UpdateXP()
+	local xpBar = self.statsFrame.xpBar
+	if (not xpBar) then
+		return
+	end
+	local xp, xpMax = GetPetExperience()
+	xpBar:SetMinMaxValues(0, max(1, xpMax))
+	xpBar:SetValue(xp)
+	XPerl_SetValuedText(xpBar.text, xp, xpMax)
+end
+
 ------------------------------------------------------------------------------
 -- Auras
 ------------------------------------------------------------------------------
 
 -- PlaceAuras: above the portrait (or name), or below the portrait unless it is shorter than the stats
+-- (the experience bar takes the stats below an unextended portrait)
 function P:PlaceAuras()
 	local c, bf = self.conf, self.buffFrame
 	bf:ClearAllPoints()
 	if (c.buffs.above) then
 		bf:SetPoint("BOTTOMLEFT", c.portrait and self.portraitFrame or self.nameFrame, "TOPLEFT", 3, 0)
-	elseif (not c.extendPortrait and (not c.portrait or not c.name)) then
+	elseif (not c.extendPortrait and (self:XPShown() or not c.portrait or not c.name)) then
 		bf:SetPoint("TOPLEFT", self.statsFrame, "BOTTOMLEFT", 3, 0)
 	else
 		bf:SetPoint("TOPLEFT", self.portraitFrame, "BOTTOMLEFT", 3, 0)

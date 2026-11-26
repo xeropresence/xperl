@@ -63,7 +63,7 @@ read_globals = {
 	"GetGuildInfo", "GetGuildRosterInfo", "GetGuildRosterSelection", "GROUP",
 	"GetInventoryItemBroken", "GetInventoryItemTexture", "GetLocale", "GetMouseFoci",
 	"GetNetStats", "GetNumGroupMembers", "GetNumGuildMembers", "GetNumSpecializations", "GetNumSubgroupMembers",
-	"GetPVPTimer", "GetQuestDifficultyColor", "GetRaidRosterInfo", "GetRaidTargetIndex",
+	"GetPVPTimer", "GetPetExperience", "GetQuestDifficultyColor", "GetRaidRosterInfo", "GetRaidTargetIndex",
 	"GetReadyCheckStatus", "GetRealZoneText", "GetRealmName", "GetRuneCooldown",
 	"GetShapeshiftFormID", "GetSpecializationInfoByID", "GetText", "GetTime",
 	"GetUnitPowerBarInfo", "GetXPExhaustion", "HideDropDownMenu",

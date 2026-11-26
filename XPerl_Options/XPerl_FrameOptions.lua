@@ -2335,6 +2335,7 @@ local function XPerl_Pet_ConfigDefault(default)
 		threat			= 1,
 		threatMode		= "portraitFrame",
 		level			= 1,
+		xpBar			= 1,			-- hunter pets on WoW: Forever
 		scale			= 0.7,
 		name			= 1,
 		buffs = {

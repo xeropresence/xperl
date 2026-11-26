@@ -348,6 +348,11 @@ function specs.pet(s)
 	s:Check("values", P.."VALUES")
 	s:Healer()
 
+	if (XPerl_PetFrameMixin.petExperience) then
+		s:Group("XPERL_EDITMODE_GROUP_BARS")
+		s:Check("xpBar", P.."XP")
+	end
+
 	s:Group("XPERL_EDITMODE_GROUP_ICONS")
 	s:StatusIcons("icons")
 

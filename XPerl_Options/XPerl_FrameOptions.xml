@@ -5258,6 +5258,28 @@
 						</Scripts>
 					</CheckButton>
 
+					<CheckButton name="$parent_XP" inherits="XPerlCheckButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_Level" relativePoint="TOPRIGHT">
+								<Offset><AbsDimension x="85" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								if (not XPerl_PetFrameMixin.petExperience) then
+									self:Hide()
+								end
+
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_PLAYER_PET_XP")
+								self.flashFrame = XPerl_Player_PetstatsFramexpBar
+								self.configBase = "XPerlDB.pet"
+								self.configIndex = "xpBar"
+								self.configClick = XPerl_Player_Pet_Reset
+								XPerl_Options_RegisterProtected(self)
+							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
 					<CheckButton name="$parent_Values" inherits="XPerlCheckButtonTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parent_Level" relativePoint="BOTTOMLEFT">

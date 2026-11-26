@@ -58,6 +58,8 @@ One download covers both clients; each client loads its own TOC.
   pet, an NPC), as on Blizzard's frames.
 - **Pet happiness** (WoW: Forever): the hunter pet's happiness icon below the pet frame's level
   box. Hover it for the pet's damage, loyalty and diet.
+- **Pet experience** (WoW: Forever): the hunter pet's experience bar below its mana bar.
+  Options → Pet → "Pet XP Bar" switches it off.
 - **Surnames** (WoW: Forever): frames show players' full names. Your own shows only your
   first name while "My Secondary Name" is off in the game's Options → Nameplates, and
   follows that option as soon as you change it.
