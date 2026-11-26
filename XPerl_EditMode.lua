@@ -230,6 +230,8 @@ local function ShareFrameSettings(current)
 					section.enable = settings[key].enable
 				end
 				settings[key] = section
+				-- A layout's frame settings are from before "off" was stored (XPerl_Options_CompleteSettings)
+				settings.explicitOff = nil
 			end
 			if (type(settings[key]) == "table") then
 				settings[key].unlinked = nil

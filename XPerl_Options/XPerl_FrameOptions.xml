@@ -610,11 +610,8 @@
 			</OnLeave>
 			<OnClick>
 				if (self.configBase) then
-					if self:GetChecked() then
-						XPerl_Options_SetIndex(self, 1)
-					else
-						XPerl_Options_SetIndex(self, self.configOff)	-- nil, or false for a setting that a missing value turns on
-					end
+					-- Off is stored, as false: a setting the settings lack has its default (XPerl_Options_CompleteSettings)
+					XPerl_Options_SetIndex(self, self:GetChecked() and 1 or false)
 
 				elseif (type(self.configSelection) == "table") then
 					if (self.configIndex == nil) then
@@ -630,11 +627,7 @@
 						end
 
 						if (type(table) == "table") then
-							if self:GetChecked() then
-								table[self.configIndex] = 1
-							else
-								table[self.configIndex] = nil
-							end
+							table[self.configIndex] = self:GetChecked() and 1 or false
 						end
 					end
 				end
@@ -3379,7 +3372,6 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_DEBUFF")
 								self.configBase = "XPerlDB.highlight"
 								self.configIndex = "DEBUFF"
-								self.configOff = false
 								self.configClick = XPerl_OptionActions
 								self.Validate = function()
 									XPerl_Options_EnableSibling(self,"HighlightDebuffBackground", "Highlights")
@@ -3466,7 +3458,6 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_HIGHLIGHTS_CURABLE")
 								self.configBase = "XPerlDB.highlight"
 								self.configIndex = "curable"
-								self.configOff = false
 								self.configClick = XPerl_OptionActions
 							</OnLoad>
 						</Scripts>
@@ -6193,7 +6184,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.target.elite = true
-								XPerlDB.target.eliteGfx = nil
+								XPerlDB.target.eliteGfx = false
 								XPerl_Options_CheckRadio(self,{"Elite", "EliteGfx"})
 								XPerl_Target:UpdateDisplay()
 							</OnClick>
@@ -6302,7 +6293,6 @@
 								XPerl_OptionsSetMyText(self, "XPERL_CONF_TARGET_COMBO")
 								self.configBase = "XPerlDB.target.combo"
 								self.configIndex = "show"
-								self.configOff = false
 								self.configClick = XPerl_Target_Reset
 								self.Validate = function()
 									XPerl_Options_EnableSibling(self, "CPBlizzard")
@@ -7588,7 +7578,7 @@
 							</OnShow>
 							<OnClick>
 								XPerlDB.focus.elite = true
-								XPerlDB.focus.eliteGfx = nil
+								XPerlDB.focus.eliteGfx = false
 								XPerl_Options_CheckRadio(self,{"Elite", "EliteGfx"})
 								XPerl_Focus:UpdateDisplay()
 							</OnClick>
@@ -9511,7 +9501,7 @@
 							</OnShow>
 							<OnClick>
 								self:SetChecked(true)
-								XPerlDB.raid.values = nil
+								XPerlDB.raid.values = false
 								XPerl_Raid_OptionActions()
 								XPerl_Options_CheckRadio(self,{"Percent", "Values"})
 								XPerl_Options_EnableCheck(_G[self:GetParent():GetName().."_precisionPercent"], true)
@@ -9632,7 +9622,7 @@
 								end
 								self.configClick = function()
 										if (XPerlDB.raid.buffs.enable) then
-											XPerlDB.raid.debuffs.enable = nil
+											XPerlDB.raid.debuffs.enable = false
 											_G[self:GetParent():GetName().."_Debuffs"]:SetChecked(0)
 										end
 										self.Validate()
@@ -9658,7 +9648,7 @@
 								end
 								self.configClick = function()
 										if (XPerlDB.raid.debuffs.enable) then
-											XPerlDB.raid.buffs.enable = nil
+											XPerlDB.raid.buffs.enable = false
 											_G[self:GetParent():GetName().."_Buffs"]:SetChecked(0)
 										end
 										self.Validate()
@@ -10635,7 +10625,7 @@
 										f:SetVertexColor(XPerlDB.colour.bar.healthEmpty.r, XPerlDB.colour.bar.healthEmpty.g, XPerlDB.colour.bar.healthEmpty.b)
 									</OnShow>
 									<OnClick>
-										XPerlDB.colour.classic = nil
+										XPerlDB.colour.classic = false
 										_G[self:GetParent():GetName().."_ClassicHealth"]:SetChecked(false)
 
 										XPerlLocked = 1
@@ -10669,7 +10659,7 @@
 										f:SetVertexColor(XPerlDB.colour.bar.healthFull.r, XPerlDB.colour.bar.healthFull.g, XPerlDB.colour.bar.healthFull.b)
 									</OnShow>
 									<OnClick>
-										XPerlDB.colour.classic = nil
+										XPerlDB.colour.classic = false
 										_G[self:GetParent():GetName().."_ClassicHealth"]:SetChecked(false)
 
 										XPerlLocked = 1
@@ -11404,7 +11394,7 @@
 										self:SetChecked(not XPerlDB.colour.gradient.horizontal)
 									</OnShow>
 									<OnClick>
-										XPerlDB.colour.gradient.horizontal = nil
+										XPerlDB.colour.gradient.horizontal = false
 										XPerl_OptionActions()
 										XPerl_Options_CheckRadio(self,{"Vertical", "Horizontal"})
 									</OnClick>
@@ -11545,7 +11535,6 @@
 								self.flashFrame = XPerl_Player and XPerl_Player.targetCounter
 								self.configBase = "XPerlDB.player"
 								self.configIndex = "targetCounter"
-								self.configOff = false
 								self.configClick = XPerl_Player_Reset
 								self.Validate = function()
 									XPerl_Options_EnableSibling(self, "TargetCounterHealers")
@@ -11567,7 +11556,6 @@
 								self.flashFrame = XPerl_Player and XPerl_Player.targetCounter
 								self.configBase = "XPerlDB.player"
 								self.configIndex = "targetCounterHealers"
-								self.configOff = false
 								self.configClick = XPerl_Player_Reset
 							</OnLoad>
 						</Scripts>
@@ -11601,7 +11589,6 @@
 								self.flashFrame = XPerl_Target and XPerl_Target.assistCounter
 								self.configBase = "XPerlDB.target"
 								self.configIndex = "assistCounter"
-								self.configOff = false
 								self.configClick = XPerl_Target_Reset
 							</OnLoad>
 						</Scripts>

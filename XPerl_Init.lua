@@ -166,9 +166,9 @@ function XPerl_Init()
 
 	-- Check for eCastbar and disable old frame if used.
 	if (eCastingBar_Saved and eCastingBar_Player and eCastingBar_Saved[eCastingBar_Player].Enabled == 1) then
-		conf.player.castBar.original = nil
+		conf.player.castBar.original = false
 	elseif (BCastBar and BCastingBar and BCastBarDragButton) then
-		conf.player.castBar.original = nil
+		conf.player.castBar.original = false
 	end
 
 	XPerl_pcall(XPerl_OptionActions)

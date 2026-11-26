@@ -1379,16 +1379,16 @@ function XPerl_ToggleRaidBuffs(castable)
 		end
 	else
 		if (rconf.buffs.enable) then
-			rconf.buffs.enable = nil
+			rconf.buffs.enable = false
 			rconf.debuffs.enable = 1
 			XPerl_Notice(XPERL_KEY_NOTICE_RAID_DEBUFFS)
 		elseif (rconf.debuffs.enable) then
-			rconf.buffs.enable = nil
-			rconf.debuffs.enable = nil
+			rconf.buffs.enable = false
+			rconf.debuffs.enable = false
 			XPerl_Notice(XPERL_KEY_NOTICE_RAID_NOBUFFS)
 		else
 			rconf.buffs.enable = 1
-			rconf.debuffs.enable = nil
+			rconf.debuffs.enable = false
 			XPerl_Notice(XPERL_KEY_NOTICE_RAID_BUFFS)
 		end
 	end
@@ -1413,6 +1413,6 @@ function XPerl_ToggleRaidSort(mode)
 	else
 		byClass = not rconf.sortByClass
 	end
-	rconf.sortByClass = byClass and 1 or nil
+	rconf.sortByClass = byClass and 1 or false
 	XPerl_Raid_OptionActions()
 end

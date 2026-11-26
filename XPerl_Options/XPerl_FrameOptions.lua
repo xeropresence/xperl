@@ -1952,6 +1952,93 @@ function XPerl_Options_Defaults(new)
 	XPerl_MakeDefaultConfig(new)
 end
 
+-- Flags that were on by default while switching a flag off still dropped it from the settings (per section;
+-- LEGACY_ON_GLOBAL from the top of the settings). Settings of that time that lack one had it switched off, or are
+-- older than the flag, which showed the same. This list is closed: a flag that arrives later must not be in it,
+-- so that those settings get its default.
+local LEGACY_ON_GLOBAL = "bar.background bar.fat buffs.cooldown buffs.countdown colour.class colour.classic "..
+	"colour.gradient.enable colour.guildList combatFlash highlight.AGGRO highlight.DEBUFF highlight.curable "..
+	"highlight.enable highlightSelection minimap.enable rangeFinder.Main.enabled showAFK tooltip.enable "..
+	"tooltip.enableBuffs xperlOldroleicons"
+local legacyTarget = "buffs.enable buffs.wrap castBar.enable classIcon combo.blizzard combo.enable combo.show "..
+	"debuffs.big debuffs.enable elite enable healPrediction hitIndicator level mana mobType percent portrait "..
+	"portrait3D pvpIcon sound threat values"
+local legacyTargetOf = "buffs.enable buffs.wrap debuffs.enable healPrediction mana percent pvpIcon values"
+local LEGACY_ON = {
+	player = "aggroWarning.enable buffs.cooldown buffs.enable buffs.hideBlizzard buffs.wrap castBar.enable classIcon "..
+		"debuffs.enable dockRunes enable fullScreen.enable healPrediction hitIndicator level partyNumber percent "..
+		"portrait portrait3D pvpIcon showRunes targetCounter targetCounterHealers threat values",
+	pet = "buffs.enable castBar.enable debuffs.enable enable healPrediction hitIndicator level name portrait "..
+		"portrait3D size.enable threat values",
+	target = legacyTarget.." assistCounter",
+	focus = legacyTarget,
+	targettarget = legacyTargetOf.." enable",
+	focustarget = legacyTargetOf.." enable",
+	pettarget = legacyTargetOf.." enable",
+	targettargettarget = legacyTargetOf,
+	party = "buffs.enable buffs.wrap castBar.enable classIcon debuffs.below debuffs.enable debuffs.halfSize enable "..
+		"healPrediction hitIndicator inRaid level name percent portrait portrait3D pvpIcon target.enable "..
+		"target.large threat values",
+	partypet = "buffs.enable debuffs.enable enable healPrediction name",
+	raid = "buffs.inside buffs.right debuffs.enable enable healPrediction percent precisionManaPercent "..
+		"precisionPercent sortByRole titles",
+	raidpet = "enable healPrediction hunter warlock",
+	boss = "buffs.enable buffs.wrap castBar.enable debuffs.enable debuffs.onlyMine elite enable healPrediction "..
+		"hitIndicator level mana percent portrait values",
+	arena = "buffs.bigStealable buffs.enable buffs.wrap castBar.enable classIcon debuffs.enable enable "..
+		"healPrediction hitIndicator mana percent trinket values",
+}
+
+-- SwitchOffMissing(set, flags): false for each of the flags (paths from set) that set lacks
+local function SwitchOffMissing(set, flags)
+	for path in gmatch(flags, "%S+") do
+		local tablePath, key = strmatch(path, "^(.-)%.?([^.]+)$")
+		local t = set
+		for part in gmatch(tablePath, "[^.]+") do
+			t = type(t) == "table" and t[part]
+		end
+		if (type(t) == "table" and t[key] == nil) then
+			t[key] = false
+		end
+	end
+end
+
+-- FillDefaults(set, default): what set lacks comes from default, table by table. Lists (the raid groups and
+-- classes, the bar texture) are left alone: their entries are not settings with a default each.
+local function FillDefaults(set, default)
+	for key, value in pairs(default) do
+		local have = set[key]
+		if (have == nil) then
+			set[key] = value
+		elseif (type(have) == "table" and type(value) == "table" and value[1] == nil) then
+			FillDefaults(have, value)
+		end
+	end
+end
+
+-- XPerl_Options_CompleteSettings(set)
+-- Gives a settings slot every default it lacks, so a setting that is not there has its default instead of
+-- being off, and a new setting needs no more than its default below. That takes "off" being stored: the
+-- options window, the Edit Mode dialogs and the Settings panel write false for it.
+-- Settings from before that (without the explicitOff mark) switched a flag off by dropping it, so the LEGACY_ON
+-- flags they lack become false first. Runs last in XPerl_ValidateSettings, whose checks know what else a
+-- missing value meant in older settings.
+function XPerl_Options_CompleteSettings(set)
+	if (not set.explicitOff) then
+		SwitchOffMissing(set, LEGACY_ON_GLOBAL)
+		for section, flags in pairs(LEGACY_ON) do
+			if (type(set[section]) == "table") then
+				SwitchOffMissing(set[section], flags)
+			end
+		end
+		set.explicitOff = true
+	end
+
+	local default = {}
+	XPerl_MakeDefaultConfig(default)
+	FillDefaults(set, default)
+end
+
 
 -- XPerl_Global_ConfigDefault
 local function XPerl_Global_ConfigDefault(default)

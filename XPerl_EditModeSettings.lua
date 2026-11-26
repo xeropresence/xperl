@@ -146,14 +146,12 @@ local function Describe(label)
 end
 
 local function FlagGet(v)		return v ~= nil and v ~= false end	-- any value but nil/false is on
-local function FlagSet(v)		return v and 1 or nil end
-local function FlagFalseSet(v)	return v and 1 or false end
+local function FlagSet(v)		return v and 1 or false end		-- off is stored (XPerl_Options_CompleteSettings)
 local function StrictGet(v)		return v == 1 or v == true end		-- castable/curable: 0 means off
 local function BoolSet(v)		return v and true or false end
 local function Same(v)			return v end
 
--- mode: nil (1/nil flag), "strict" (only 1/true is on), "bool" (stored as true/false), "false" (1/false: settings
--- that a missing value turns on)
+-- mode: nil (1/false flag), "strict" (only 1/true is on), "bool" (stored as true/false)
 -- generic: the label is shared with other frames, so its description (written for one frame) is left out
 -- fallback: default when the default settings have none
 function Builder:Check(path, label, mode, generic, fallback)
@@ -162,8 +160,6 @@ function Builder:Check(path, label, mode, generic, fallback)
 		get = StrictGet
 	elseif (mode == "bool") then
 		set = BoolSet
-	elseif (mode == "false") then
-		set = FlagFalseSet
 	end
 	return self:Add({kind = SettingType.Checkbox, name = Text(label), desc = not generic and Describe(label) or nil}, path, get, set, fallback)
 end
@@ -748,7 +744,7 @@ function specs.global(s)
 	s:Group("XPERL_CONF_ADDONS")
 	for _, row in ipairs(XPerl_FrameToggles) do
 		s:Section(row[1])
-		s:Check("enable", row[2], "false")
+		s:Check("enable", row[2])
 	end
 	s:Section(nil)
 	s:Button("XPERL_CONF_RELOADUI", function() ReloadUI() end)
@@ -784,13 +780,13 @@ function specs.global(s)
 	s:Check("highlight.enable", H)
 	SubCheck("highlight.AGGRO", H, H.."_AGGRO")
 	SubCheck("highlight.TARGET", H, H.."_TARGET")
-	SubCheck("highlight.DEBUFF", H, H.."_DEBUFF", "false")
+	SubCheck("highlight.DEBUFF", H, H.."_DEBUFF")
 	s:Dropdown("highlight.debuffStyle", "XPERL_SETTINGS_DEBUFFSTYLE", {
 		{H.."_DEBUFF_BORDER", "border"},
 		{H.."_DEBUFF_BACKGROUND", "background"},
 		{H.."_DEBUFF_BOTH", "both"},
 	})
-	SubCheck("highlight.curable", H, H.."_CURABLE", "false")
+	SubCheck("highlight.curable", H, H.."_CURABLE")
 
 	-- The options window edits one part of the frame at a time; here each part has its own rows
 	local R = "XPERL_CONF_RANGEFINDER"

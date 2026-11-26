@@ -637,4 +637,8 @@ function XPerl_ValidateSettings()
 	conf.custom = nil		-- settings of the removed custom highlight module
 	conf.highlightDebuffs = nil	-- the old debuff highlighting's settings (now conf.highlight.DEBUFF)
 	conf.buffHelper = nil		-- removed tooltip buff helper
+
+	-- Last: whatever the settings still lack takes its default. The checks above know what a missing value
+	-- meant in older settings.
+	XPerl_Options_CompleteSettings(conf)
 end
