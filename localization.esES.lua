@@ -135,6 +135,7 @@ if (GetLocale() == "esES" or GetLocale() == "esMX") then
 	XPERL_EDITMODE_GROUP_ICONS				= "Iconos de estado"
 	XPERL_EDITMODE_HEALERTYPE				= "Texto de sanador"
 	XPERL_EDITMODE_THREATMODE				= "Indicador de amenaza"
+	XPERL_EDITMODE_PARTYNUMBERPOS			= "Posici\195\179n del n\195\186mero de grupo"
 	XPERL_EDITMODE_COMBOPOS					= "Posici\195\179n"
 	XPERL_EDITMODE_LAYOUT_ENTRY				= "%s (Modo Edici\195\179n)"
 	XPERL_EDITMODE_FRAME_TARGETTARGET		= "Objetivo del objetivo"

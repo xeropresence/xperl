@@ -159,6 +159,7 @@ XPERL_EDITMODE_GROUP_SORTING	= "Groups and Sorting"
 XPERL_EDITMODE_GROUP_ICONS		= "Status Icons"
 XPERL_EDITMODE_HEALERTYPE		= "Healer Text"
 XPERL_EDITMODE_THREATMODE		= "Threat Display"
+XPERL_EDITMODE_PARTYNUMBERPOS	= "Party Number Position"
 XPERL_EDITMODE_COMBOPOS		= "Position"
 XPERL_EDITMODE_LAYOUT_ENTRY		= "%s (Edit Mode)"		-- an Edit Mode layout in the options window's Frame Layout list
 XPERL_EDITMODE_LAYOUT_OTHERCHAR	= "%s (%s)"				-- another character's own Edit Mode layout: layout name, character

@@ -280,6 +280,10 @@ function specs.player(s)
 	s:Check("percent", P.."PERCENT")
 	s:Check("partyNumber", "XPERL_CONF_RAID_PARTY_NUM")
 	s:Check("withName", "XPERL_CONF_RAID_PARTYWITHNAME")
+	s:Dropdown("partyNumberAbove", "XPERL_EDITMODE_PARTYNUMBERPOS", {
+		{"XPERL_CONF_RAID_PARTYABOVENAME", "nameFrame"},
+		{"XPERL_CONF_RAID_PARTYABOVEPORTRAIT", "portraitFrame"},
+	})
 	s:Healer()
 	s:Check("targetCounter", "XPERL_CONF_PLAYER_TARGETCOUNTER", "bool")
 	s:Check("targetCounterHealers", "XPERL_CONF_PLAYER_TARGETCOUNTER_HEALERS", "bool")

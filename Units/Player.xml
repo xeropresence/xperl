@@ -93,11 +93,9 @@
 				</Anchors>
 			</Frame>
 
+			<!-- Placed above the name frame or the portrait by P:ApplyTypeSettings (conf.partyNumberAbove) -->
 			<Frame name="$parentgroupFrame" parentKey="groupFrame" inherits="BackdropTemplate" hidden="true">
 				<Size x="65" y="18"/>
-				<Anchors>
-					<Anchor point="BOTTOMLEFT" relativeTo="$parentnameFrame" relativePoint="TOPLEFT" x="1" y="-2"/>
-				</Anchors>
 				<KeyValues>
 					<KeyValue key="backdropInfo" value="XPERL_BACKDROP_PLAYER_GROUP" type="global"/>
 				</KeyValues>

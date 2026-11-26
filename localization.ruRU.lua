@@ -132,6 +132,7 @@ XPerl_LongDescription	= "Фреймы Игроков заменяются на �
 	XPERL_EDITMODE_GROUP_ICONS	= "Значки состояния"
 	XPERL_EDITMODE_HEALERTYPE	= "Текст лекаря"
 	XPERL_EDITMODE_THREATMODE	= "Отображение угрозы"
+	XPERL_EDITMODE_PARTYNUMBERPOS	= "Положение номера группы"
 	XPERL_EDITMODE_COMBOPOS	= "Положение"
 	XPERL_EDITMODE_LAYOUT_ENTRY	= "%s (режим редактирования)"
 	XPERL_EDITMODE_FRAME_TARGETTARGET	= "Цель цели"

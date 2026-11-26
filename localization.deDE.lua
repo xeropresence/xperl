@@ -135,6 +135,7 @@ if (GetLocale() == "deDE") then
 	XPERL_EDITMODE_GROUP_ICONS				= "Statussymbole"
 	XPERL_EDITMODE_HEALERTYPE				= "Heilertext"
 	XPERL_EDITMODE_THREATMODE				= "Bedrohungsanzeige"
+	XPERL_EDITMODE_PARTYNUMBERPOS			= "Position der Gruppennummer"
 	XPERL_EDITMODE_COMBOPOS					= "Position"
 	XPERL_EDITMODE_LAYOUT_ENTRY				= "%s (Bearbeitungsmodus)"
 	XPERL_EDITMODE_FRAME_TARGETTARGET		= "Ziel des Ziels"

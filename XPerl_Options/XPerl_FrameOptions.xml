@@ -4491,8 +4491,12 @@
 								self.configBase = "XPerlDB.player"
 								self.configIndex = "partyNumber"
 								self.configClick = XPerl_Player_Reset
+								-- The position radios apply to the group box, not to the number with the name
 								self.Validate = function()
 									XPerl_Options_EnableSibling(self,"WithName")
+									local above = self:GetChecked() and not XPerl_Options_GetSibling("WithName", self):GetChecked()
+									XPerl_Options_EnableCheck(XPerl_Options_GetSibling("NumberAboveName", self), above)
+									XPerl_Options_EnableCheck(XPerl_Options_GetSibling("NumberAbovePortrait", self), above)
 								end
 							</OnLoad>
 						</Scripts>
@@ -4511,14 +4515,59 @@
 								self.configBase = "XPerlDB.player"
 								self.configIndex = "withName"
 								self.configClick = XPerl_Player_Reset
+								self.Validate = function()
+									XPerl_Options_GetSibling("Number", self).Validate()
+								end
 							</OnLoad>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_NumberAboveName" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parent_WithName" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="3" y="2"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_PARTYABOVENAME")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.player.partyNumberAbove ~= "portraitFrame")
+							</OnShow>
+							<OnClick>
+								XPerlDB.player.partyNumberAbove = "nameFrame"
+								XPerl_Options_CheckRadio(self,{"NumberAboveName", "NumberAbovePortrait"})
+								XPerl_Player_Reset()
+							</OnClick>
+						</Scripts>
+					</CheckButton>
+
+					<CheckButton name="$parent_NumberAbovePortrait" inherits="XPerlRadioButtonTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parent_NumberAboveNameText" relativePoint="RIGHT">
+								<Offset><AbsDimension x="10" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								XPerl_OptionsSetMyText(self, "XPERL_CONF_RAID_PARTYABOVEPORTRAIT")
+							</OnLoad>
+							<OnShow>
+								self:SetChecked(XPerlDB.player.partyNumberAbove == "portraitFrame")
+							</OnShow>
+							<OnClick>
+								XPerlDB.player.partyNumberAbove = "portraitFrame"
+								XPerl_Options_CheckRadio(self,{"NumberAboveName", "NumberAbovePortrait"})
+								XPerl_Player_Reset()
+							</OnClick>
 						</Scripts>
 					</CheckButton>
 
 					<Frame name="$parent_Healer" inherits="XPerl_Options_HealerModeTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parent_WithName" relativePoint="BOTTOMLEFT">
-								<Offset><AbsDimension x="-16" y="5"/></Offset>
+							<Anchor point="TOPLEFT" relativeTo="$parent_NumberAboveName" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="-19" y="3"/></Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>

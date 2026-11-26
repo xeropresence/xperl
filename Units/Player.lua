@@ -93,6 +93,13 @@ function P:InitType()
 	nf.pvpIcon:ClearAllPoints()
 	nf.pvpIcon:SetPoint("TOPLEFT", nf, "TOPLEFT", -4, 1)
 
+	-- The role icon straddles the name bar's top edge, where the raid group box (groupFrame) sits. The box is a
+	-- sibling of the name bar, so its text and backdrop drew over the icon; a layer above the box carries it.
+	local roleLayer = CreateFrame("Frame", nil, nf)
+	roleLayer:SetAllPoints()
+	roleLayer:SetFrameLevel(self.groupFrame:GetFrameLevel() + 1)
+	nf.roleIcon:SetParent(roleLayer)
+
 	if (playerClass == "DEATHKNIGHT") then
 		self:InitDeathKnight()
 	elseif (classBar) then
@@ -201,6 +208,17 @@ function P:ApplyTypeSettings()
 		self.highlight:SetPoint("TOPLEFT", self.levelFrame, "TOPLEFT", 0, 0)
 	end
 	self.highlight:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 0, 0)
+
+	-- The raid group box: as wide as the portrait above it, or above the name frame (also while the portrait is
+	-- hidden) at its own width
+	local gf = self.groupFrame
+	gf:ClearAllPoints()
+	if (c.partyNumberAbove == "portraitFrame" and c.portrait) then
+		gf:SetPoint("BOTTOMLEFT", self.portraitFrame, "TOPLEFT", 0, -2)
+		gf:SetPoint("BOTTOMRIGHT", self.portraitFrame, "TOPRIGHT", 0, -2)
+	else
+		gf:SetPoint("BOTTOMLEFT", self.nameFrame, "TOPLEFT", 1, -2)
+	end
 
 	self:UpdateTotems()
 

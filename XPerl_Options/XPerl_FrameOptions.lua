@@ -2283,6 +2283,7 @@ local function XPerl_Player_ConfigDefault(default)
 		scale			= 0.9,
 		partyNumber		= 1,
 --		withName		= nil,
+		partyNumberAbove	= "nameFrame",	-- the group box sits above the name frame or the portrait ("portraitFrame")
 		showRunes		= 1,
 		dockRunes		= 1,
 --		blizzardRunes		= nil,

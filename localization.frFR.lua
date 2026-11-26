@@ -118,6 +118,7 @@ if (GetLocale() == "frFR") then
 	XPERL_EDITMODE_GROUP_ICONS = "Ic\195\180nes d'\195\169tat"
 	XPERL_EDITMODE_HEALERTYPE = "Texte de soigneur"
 	XPERL_EDITMODE_THREATMODE = "Affichage de la menace"
+	XPERL_EDITMODE_PARTYNUMBERPOS = "Position du num\195\169ro de groupe"
 	XPERL_EDITMODE_COMBOPOS = "Position"
 	XPERL_EDITMODE_LAYOUT_ENTRY = "%s (mode \195\137dition)"
 	XPERL_EDITMODE_FRAME_TARGETTARGET = "Cible de la cible"
