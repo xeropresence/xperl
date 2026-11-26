@@ -2878,23 +2878,36 @@ end
 -- The name bar threat percentage sits at the bar's left; while it shows (t: the shown name bar gauge, else nil)
 -- the name text's left edge moves past it so a long name can't run under it. The text's own TOPLEFT anchor
 -- (each unit type lays its name out differently) is kept and put back when the percentage hides.
+-- The anchors read back secret while the text holds a secret name (restricted units), and the name's width
+-- can't be measured then either, so the name is assumed long enough to need the inset and the last readable
+-- anchor is used; none read yet means the template's own (XPerl_UnitNameFrameTemplate: TOPLEFT, no offset).
 local function SetNameThreatInset(self, t)
 	local text = self.nameFrame and self.nameFrame.text
-	if (not text or (t ~= nil) == (self.nameThreatInset ~= nil)) then
+	if (not text) then
 		return
 	end
-	if (t) then
-		local anchor
+	local anchor = self.nameTextAnchor
+	if (not anchor) then
+		anchor = {self.nameFrame, "TOPLEFT", 0, 0}
+		self.nameTextAnchor = anchor
+	end
+	if (not self.nameThreatInset) then
+		-- The name sits at its own anchor; keep the copy current while it can be read
 		for i = 1, text:GetNumPoints() do
 			local point, relativeTo, relativePoint, x, y = text:GetPoint(i)
+			if (issecretvalue(point) or issecretvalue(relativeTo) or issecretvalue(relativePoint) or issecretvalue(x) or issecretvalue(y)) then
+				break
+			end
 			if (point == "TOPLEFT") then
-				anchor = {relativeTo, relativePoint, x, y}
+				anchor[1], anchor[2], anchor[3], anchor[4] = relativeTo, relativePoint, x, y
 				break
 			end
 		end
-		if (not anchor) then
-			return
-		end
+	end
+	if ((t ~= nil) == (self.nameThreatInset ~= nil)) then
+		return
+	end
+	if (t) then
 		if (not t.reserve) then
 			-- Widest percentage, measured once so the name doesn't shift as the number changes
 			local current = t.text:GetText()
@@ -2906,10 +2919,9 @@ local function SetNameThreatInset(self, t)
 			end
 		end
 		local reserve = 4 + (t.reserve or 24) + 3		-- the percentage's 4px inset (XPerl_ThreatTemplatenameFrame), a gap
-		self.nameThreatInset = anchor
+		self.nameThreatInset = true
 		text:SetPoint("TOPLEFT", anchor[1], anchor[2], max(anchor[3], reserve), anchor[4])
 	else
-		local anchor = self.nameThreatInset
 		self.nameThreatInset = nil
 		text:SetPoint("TOPLEFT", anchor[1], anchor[2], anchor[3], anchor[4])
 	end
